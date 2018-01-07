@@ -71,6 +71,7 @@ http.createServer(app).listen(config.port, () => {
     }, 300000); // every 5 minutes (300000)
 
     // Startup Timesheet Notification timer process 
-    timerUtils.setupTimer(timesheetnotification.process);
+    // TODO: Need to make this a configurable not required 
+   //   timerUtils.setupTimer(timesheetnotification.process);
 });
 

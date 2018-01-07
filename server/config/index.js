@@ -19,10 +19,22 @@ module.exports = {
     url: process.env.HEROKU_URL || 'http://localhost:3001/' ,
     jwt_secret: process.env.jwt_secret || 'lfanflaefknawelf',
     jwt_expires: process.env.jwt_expires || 3600,
-    mongodb: process.env.MONGODB_URI || 'mongodb://heroku_gcs4053b:ld4t5rv5a8u8c64iivqrr374k8@ds131687.mlab.com:31687/heroku_gcs4053b',
+    mongodb: process.env.MONGODB_URI || '<your maongodb uri here>',
     passwordCrypto: process.env.passwordCrypto || "k2312lk3m12l31",
     event_dir: process.env.event_dir || './server/convoevents',
     uploaded_event_dir: './server/services/convo/events',
     template_dir: process.env.template_dir || 'server/convoevents',
-    ping_url: process.env.PING_URL || 'http://khs-convo-dev.herokuapp.com'
+    ping_url: process.env.PING_URL || 'http://khs-convo-dev.herokuapp.com',
+    slack: {
+        webhookUri: 'your slack webhook here',
+        channel:  '<channel name>',
+        userName: '<user name>',
+        successMessage:  'You Success Message here',
+        failureMessage: 'You failure message here '
+    },
+    twilio: {
+        accountSid: process.env.accountSid || '<twilio account sid>',
+        authToken: process.env.authToken || '<twilio auth token>',
+        phone: process.env.phone || '<twilio phone #?'
+    },
 }
