@@ -1,5 +1,0 @@
-## CHANGE LOG
-
-## INTERNAL LINKS
-
-## NOTES
