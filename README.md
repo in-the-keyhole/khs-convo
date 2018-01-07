@@ -5,9 +5,9 @@ KHS{Convo} is a Node.js based platform that supports implementing SMS conversati
 
 ### Topics 
 
-##### [Examples](docs/examples) - Best way to learn how to implement your own conversational {KHS}Convo app
+##### [Examples](docs/examples.md) - Best way to learn how to implement your own conversational {KHS}Convo app
 
-##### [UI Dashboard](docs/admin-dashboard) - ReactJS UI Dashboard that has features of Dynamic Loading, Analytics, and testing {KHS}Convo events  
+##### [UI Dashboard](docs/admin-dashboard.md) - ReactJS UI Dashboard that has features of Dynamic Loading, Analytics, and testing {KHS}Convo events  
 
 ### Installing and Getting Started
 
@@ -15,7 +15,7 @@ You need to have [Node.js](https://nodejs.org) installed, then follow these step
 
 * npm install
 
-* A MongoDB instance is required. A connection URI can be supplied or defined in the `server/config/index.ja` property config script. (See [MongoDB Config Doc](docs/mongodb.md) for more information)
+* A [MongoDB](https://www.mongodb.com) instance is required. A connection URI needs to be supplied in the `server/config/index.ja` property config script. (See [MongoDB Config Doc](docs/mongodb.md) for more information)
 
 * Create and Admin User with the following command. This will create an admin user with a userid of `admin` and prompt for a password.
 
