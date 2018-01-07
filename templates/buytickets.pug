@@ -1,0 +1,27 @@
+//- buytickets.pug
+doctype html
+html(lang="en")
+   head
+      title Buy Tickets
+      meta(name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no")
+      link(href='http://fonts.googleapis.com/css?family=Roboto', rel='stylesheet', type='text/css')
+      link(href='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css', rel="stylesheet")
+      link(href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css", rel='stylesheet')
+      link(href='/styles/global.css', rel='stylesheet')
+      link(href='/styles/tickets.css', rel='stylesheet')
+   body
+      .page-container
+
+         .page-conatiner__nav-bar
+            .nav-bar__title Ticket Purchase
+
+         .page-container__content
+
+            h3.white-text Imagine a HTTPS UI to purchase tickets for...
+
+            .page-content__container
+               .col-xs-3
+                  img.movie-list__movie-cover(src= url+movie.image width="280" height="400")
+                  h4.white-text= movie.name
+                  h6.white-text= movie.locations.join(', ')
+                  button.movie__buy-tickets-btn(href="#") buy tickets

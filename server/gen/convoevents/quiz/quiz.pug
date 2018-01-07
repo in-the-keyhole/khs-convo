@@ -1,0 +1,49 @@
+//- quiz.pug
+doctype html
+html(lang="en")
+   head
+      title Keyhole Quiz
+      meta(name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no")
+      link(href='http://fonts.googleapis.com/css?family=Roboto', rel='stylesheet', type='text/css')
+      link(href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css", rel='stylesheet')
+      link(href='/styles/global.css', rel='stylesheet')
+      link(href='/styles/quiz.css', rel='stylesheet')
+   body
+      .page-container
+
+         .page-conatiner__nav-bar
+            .nav-bar__title Keyhole Software Quiz
+
+         .page-container__content
+            .page-content__container
+
+               .page-quiz__score-container
+                  span.large-text Score: #{score}
+
+               .page-quiz__questions-container
+                  each result, index in results
+                     .page-quiz__question
+                        .question__header
+                           .question__index Question #{index + 1} of #{results.length}
+                           if (result.input == result.correctAnswer)
+                              .question__status.question__status--correct correct
+                           else
+                              .question__status.question__status--incorrect incorrect
+                           .question__question-text Q: #{result.item.question}
+
+                        .question-content
+                           each option in result.item.options
+                              .question-content__option
+                                 span.question-option__text (#{option.abbr}) #{option.text}
+                                 if (option.abbr == result.correctAnswer)
+                                    span.question-option__status.question-option__status--green Correct Answer
+                                 else if ((option.abbr == result.input) && (result.input != result.correctAnswer))
+                                    span.question-option__status.question-option__status--red Your Answer
+
+                        .question-explanation
+                           .question-explanation__title Explanation:
+                           .question-explanation__text #{result.item.explain}
+
+         .page-conatiner__footer
+            .footer__container--right
+               span.medium-text Brought to you by #[a(href='https://keyholesoftware.com' target='_blank') www.keyholesoftware.com]

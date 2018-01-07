@@ -1,0 +1,48 @@
+.emulator-input {
+   display: inline-block;
+   vertical-align: top;
+}
+
+.emulator__message-list {
+   width: 100%;
+   min-height: 100px;
+   max-height: 450px;
+   padding: 15px 30px 15px 15px;
+   overflow-y: scroll;
+   overflow-x: hidden;
+}
+
+.conversation__message-container {
+   position: relative;
+   display: block;
+   margin: 14px 0;
+}
+
+.conversation__message-container:after {
+   content: '';
+   display: block;
+   clear: both;
+}
+
+.conversation__message-content {
+   max-width: 60%;
+   padding: 2px 6px;
+   border-radius: 6px;
+   display: inline-block;
+   vertical-align: top;
+   word-wrap: break-word;
+   word-break: break-all;
+}
+
+.conversation__message-question .conversation__message-content {
+   float: right;
+   text-align: right;
+   background-color: #208CF9;
+   color: white;
+}
+
+.conversation__message-answer .conversation__message-content {
+   background-color: #E5E4EA;
+   color: black;
+   text-align: left;
+}

@@ -1,0 +1,50 @@
+//- allmovies.pug
+doctype html
+html(lang="en")
+   head
+      title Movies
+      meta(name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no")
+      link(href='http://fonts.googleapis.com/css?family=Roboto', rel='stylesheet', type='text/css')
+      link(href='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css', rel="stylesheet")
+      link(href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css", rel='stylesheet')
+      link(href='https://cdnjs.cloudflare.com/ajax/libs/Swiper/3.4.2/css/swiper.min.css', rel="stylesheet")
+      link(href='/styles/global.css', rel='stylesheet')
+      link(href='/styles/movies.css', rel='stylesheet')
+   body
+      .page-container
+
+         .page-conatiner__nav-bar
+            .nav-bar__title All movies
+
+         .page-container__content
+            .page-content__container
+
+               .swiper-container
+                  .swiper-wrapper
+                     each movie in movies
+                        .swiper-slide
+                           .swiper__carousel-image(style='background-image: url(' + url + movie.image + ')')
+                           span.carousel-item__description.white-text= movie.name
+                           span.carousel-item__locations.white-text= movie.locations.join(', ')
+
+                  .swiper-button-next.swiper-button-white
+                  .swiper-button-prev.swiper-button-white
+
+      script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js")
+      script(src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/3.4.2/js/swiper.min.js")
+      script(type="text/javascript").
+         $(document).ready( function() {
+
+            var swiper = new Swiper('.swiper-container', {
+               nextButton: '.swiper-button-next',
+               prevButton: '.swiper-button-prev',
+               slidesPerView: 1,
+               spaceBetween: 20,
+               loop: true
+            });
+
+            $(window).resize(function() {
+               swiper.update();
+            });
+
+         });

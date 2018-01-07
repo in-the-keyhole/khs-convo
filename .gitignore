@@ -1,0 +1,8 @@
+node_modules/**
+.vscode/
+.idea/
+client/lib/
+db_backups/
+server/events/.git
+build/**
+*.log
