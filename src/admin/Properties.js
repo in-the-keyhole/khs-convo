@@ -198,8 +198,8 @@ class Properties extends React.Component {
                                 afterSaveCell: this.onAfterSaveCell
                             }}>
                             <TableHeaderColumn dataField='_id' isKey hidden>ID</TableHeaderColumn>
-                            <TableHeaderColumn dataField='Name' editable={ false } >Name</TableHeaderColumn>
-                            <TableHeaderColumn dataField='Content' >Property</TableHeaderColumn>
+                            <TableHeaderColumn dataField='Name' editable={ false } >Property</TableHeaderColumn>
+                            <TableHeaderColumn dataField='Content' >Value</TableHeaderColumn>
                             <TableHeaderColumn width="60" editable={ false } dataFormat={this.propertyToolbar}></TableHeaderColumn>
                         </BootstrapTable>
                     </div>
