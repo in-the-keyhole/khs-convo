@@ -3,7 +3,7 @@
 
 KHS{Convo} is a Node.js based platform that supports implementing SMS conversational experiences. 
 
-*built by [Keyhole Software](https:keyholesoftware.com)*
+*built by [Keyhole Software](https://keyholesoftware.com)*
 
 ### Topics 
 
