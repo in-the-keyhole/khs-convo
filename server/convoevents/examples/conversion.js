@@ -21,6 +21,7 @@ var session = require("../../services/session");
 var mongo = require("../../services/mongo");
 var config = require('../../config');
 var StateService = require('../../services/stateservice');
+var pug = require('pug');
 
 
 var host_url = config.url;
@@ -80,7 +81,7 @@ module.exports = function (events) {
 }
 
 function generateConversion(session, phone, number, unit) {
-
+    var compiledFunction="";
     var stream = "";
     var write = function (value) {
         stream = stream + value;
@@ -90,45 +91,11 @@ function generateConversion(session, phone, number, unit) {
 
         mongo.Get({ phone: phone, state: 2 }, 'Sessions')
             .then(function (list) {
-
-                write("<head>");
-                write("<meta name='viewport' content='width=device-width, initial-scale=1'>");
-                write('<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">');
-                write('<script> function doit(v,x,id) {  var e = document.getElementById(id.id); id.innerHTML = (v * x).toFixed(3);} </script>');
-                write('<style>');
-                write('.table-condensed { font-size: 10px; }');
-                write('</style>');
-                write("</head>");
-                write("<div class='container'>");
-                write("<div class='row'>");
-                write("<div class='col-xs-12'>");
-                write("<h3>English to Metric Conversion Chart</h3> <h4><em>by <a href='http://keyholesoftware.com'>Keyhole Software</a></h4>");
-                write("</div>");
-                write("</div>");
-                write("<div class='row'>");
-                write("<div class='col-xs-12'>");
-                write("<table class='table table-condensed'>");
-
-
-                write("<tr><th>English</th><th></th><th></th><th></th><th></th><th>Metric</th><th></th></tr>");
-
-                for (var i = 0; i < uom.length; i++) {
-  
-                     write("<tr><td>" + uom[i].e + "(" + uom[i].abr + ") " + "</td> <td> <input size='7' type='text' onchange='doit(this.value,"+uom[i].value+","+uom[i].abr+")'/> </td><td> X </td><td>" + uom[i].value + "</td><td> = </td><td id='"+uom[i].abr+"'></td><td> " + uom[i].m + "</td></tr>");
-                }
-
-
-                write("</table");
-                write("</div>");
-
-                write("</div>");
-
-                write("</div>");
-
+            
+                compiledFunction = pug.compileFile(config.template_dir+  '/template/conversion-metric.pug');
+                stream = compiledFunction({uom:uom});
                 mongo.Update({ phone: phone }, { phone: phone, conversion: stream }, "Conversions", { upsert: true });
-
                 session.Delete(phone);
-
                 return;
             });
     });
@@ -136,7 +103,7 @@ function generateConversion(session, phone, number, unit) {
 
 
 function generateEnglishConversion(session, phone, number, unit) {
-
+    var compiledFunction;
     var stream = "";
     var write = function (value) {
         stream = stream + value;
@@ -147,47 +114,15 @@ function generateEnglishConversion(session, phone, number, unit) {
         mongo.Get({ phone: phone, state: 2 }, 'Sessions')
             .then(function (list) {
 
-
-
-                write("<head>");
-                write("<meta name='viewport' content='width=device-width, initial-scale=1'>");
-                write('<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">');
-                write('<script> function doit(v,x,id) {  var e = document.getElementById("#"+id); id.innerHTML = (v * x).toFixed(3);} </script>');
-                write('<style>');
-                write( '.table-condensed { font-size: 10px; }');
-                write('</style>');
-                write("</head>");
-                write("<div class='fluid-container'>");
-                write("<div class='row'>");
-                write("<div class='col-xs-12'>");
-                write("<h3>Metric to English Conversion Chart</h3> <h4><em>by <a href='http://keyholesoftware.com'>Keyhole Software</a></h4>");
-                write("</div>");
-                write("</div>");
-                write("<div class='row'>");
-                write("<div class='col-xs-12'>");
-                write("<table class='table table-condensed'>");
-
-                write("<tr><th>Metric</th><th></th><th></th><th></th><th></th><th>Eng</th><th></th></tr>");
-
-                for (var i = 0; i < uom.length; i++) {
-
-                    write("<tr><td>" + uom[i].m + "(" + uom[i].mabr + ") " + "</td> <td> <input size='7' type='text' onchange='doit(this.value,"+uom[i].evalue+","+uom[i].abr+")'/> </td><td> X </td><td>" + uom[i].evalue + "</td><td> = </td><td id="+uom[i].abr+"></td><td> " + uom[i].e + "</td></tr>");
-
-                }
-
-
-                write("</table");
-                write("</div>");
-
-                write("</div>");
-
-                write("</div>");
-                //stream.end();
-
-                mongo.Update({ phone: phone }, { phone: phone, conversion: stream }, "Conversions", { upsert: true });
-
+                compiledFunction = pug.compileFile(config.template_dir+ '/template/conversion-english.pug');
+                stream = compiledFunction({uom:uom});
+                mongo.Update({ phone: phone }, { phone: phone, conversion: stream }, "Conversions", { upsert: true })
+                .then(function (response) {  
+                })
+                .catch(function (error) {
+                    console.log(" Error in updated in Conversions " + error ) ; 
+                });
                 session.Delete(phone);
-
                 return;
             });
     });

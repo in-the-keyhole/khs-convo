@@ -93,17 +93,17 @@ class Emulator extends Component {
 
 
     determineEventCommand(command) {
-        console.log ("command  passedin   "   + command) ;
+        //console.log ("command  passedin   "   + command) ;
         var enabled = 'enabled';
         this.state.EventArray.forEach(function (item, index) {
-            console.log ("item eventStatus  "   + item.eventStatus) ;
+            //console.log ("item eventStatus  "   + item.eventStatus) ;
             var re = /\((.*)\)/g;
             var commandArray = item.key.match(re);
             //should be only one record like   (hellotest | hi)
             commandArray[0] = commandArray[0].replace('(', '').replace(')', '');
             var commands = commandArray[0].split('|');
             commands.forEach(function (commandItem, commandIndex) {
-                console.log ("commandItem   "   + commandItem.trim()) ;
+                //console.log ("commandItem   "   + commandItem.trim()) ;
                 if (commandItem.trim() === command && item.eventStatus === 'disabled') {
                     enabled = 'disabled'
                 }
