@@ -109,13 +109,13 @@ Event API's can be invoked from an SMS messaging provider, such as Twillio with 
 
 ### API Server (Conversational API Messaging)
 
-You can start just the API server with Convo, without the UI dashboard. This can be helpful when debugging Convo events. or invoking the Conversational Events from a Chatbot or interface other than SMS 
+You can start just the API server with Convo, without the UI dashboard. This can be helpful when debugging Convo events. or invoking the Conversational Events from a Chatbot or interface other than SMS provider. 
 
 Execute the command below from a command shell to start just the API server. Note, the API server is avalaible via Port `3001` it the Dashboard is running. This allows the API only server to be started. 
 
     > npm start
 
-This will start an `Express` server on port `30001` by default. And is sometimes useful when you want to test and debug Convo API's.   
+This will start an `Express` server on port `30001` by default. And is sometimes useful when you want to test and debug, and user Convo API's other than from an SMS provider. 
 
 The Twillio account will forward text messages to Convo with a `POST` http API call.
 
@@ -125,15 +125,9 @@ Response-Type: application/xml
 
 * `POST` http://<server:3000>/api/convo
     + Request Body `Content-Type: application/json`
-        - FromZip = `66839`
-        - FromState = `KS`
-        - FromCity = `BURLINGTON`
         - Body = `Hello`
-        - FromCountry = `US`
         - To = `+19132703506`
-        - NumSegments = `1`
         - From = `+15555555555`
-
 
 The `Body` key value pair is the Convo event command. In the case above it is the `Hello` command.
 
@@ -145,7 +139,7 @@ Result response are returned in the format shown below.
         - Message = `Hello! David`
 
 
-## Implementing a Convo SMS Event 
+## Implementing a Convo Conversational Event 
 
 Events are JavaScript classes that are loaded at startup. Default example events can be found in the following folder. 
 
@@ -196,7 +190,7 @@ An event module `must` create an event object with the following `properties` an
 
 #### Request Object 
 
-An example request supplied to the `run` object is supplied by the Twillio API. An example is shown below.
+An example request supplied to the `run` object is supplied by the Twillio API is shown below.  The additional properties in the POSTSed object are supplied by the Twillio service.  
 
     { phone: '9134885577',
     question: [ 'hello' ],
@@ -233,7 +227,24 @@ An example request supplied to the `run` object is supplied by the Twillio API. 
         Username: 'dpitt',
         Status: 'admin' } }
 
-Notice how the request objects properties. The question/message the user texted is contained in an array in the `question` property. The `me` property contains user information that texted, if they exist in the User database. 
+Notice how the request objects properties. `The question/message` the user texted is contained in an array in the `question` property. The `me` property contains user information that texted, if they exist in the User database. 
+
+JavaScript events have access to request objects as a parameter in the `run` function. The example below i
+   
+    ...
+    event.run = function (request) {
+            return new Promise(function (resolve, reject) {
+                if (request.me) {
+                    return resolve("Hello " + request.me.FirstName + "!");
+                } else {
+                    return resolve("Hello!");
+                }
+            })
+        }
+    ...
+
+    
+
 
 ## State Machine
 
