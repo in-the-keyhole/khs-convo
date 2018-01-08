@@ -107,8 +107,8 @@ Event API's can be invoked from an SMS messaging provider, such as Twillio with 
 
 #### [Twillio Configuration Steps](docs/twillio.md)
 
+### API Server (Conversational API Messaging)
 
-### API Server
 You can start just the API server with Convo, without the UI dashboard. This can be helpful when debugging Convo events. or invoking the Conversational Events from a Chatbot or interface other than SMS 
 
 Execute the command below from a command shell to start just the API server. Note, the API server is avalaible via Port `3001` it the Dashboard is running. This allows the API only server to be started. 
