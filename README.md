@@ -105,7 +105,7 @@ The convo server does not require an SMS messaging provider. You can invoke serv
 
 Event API's can be invoked from an SMS messaging provider, such as Twillio with the instructions shown below. 
 
-#### [Twillio Configuration](docs/twillio.md)
+#### [Twillio Configuration Steps](docs/twillio.md)
 
 
 ### API Server
