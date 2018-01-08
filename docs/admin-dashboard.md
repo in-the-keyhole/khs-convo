@@ -62,5 +62,5 @@ Uploading can be done by clicking the Upload button next to a directory, or drag
 
 
 
-## [Back to Main](https://github.com/in-the-keyhole/khs-convo/readme.md) 
+## [Back to Main](https://github.com/in-the-keyhole/khs-convo) 
 
