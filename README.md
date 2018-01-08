@@ -21,7 +21,7 @@ You need to have [Node.js](https://nodejs.org) installed, then follow these step
 
 * Create and Admin User with the following command. This will create an admin user with a userid of `admin` and prompt for a password.
 
-    $ node aadminuser.js
+    $ node adminuser.js
 
 * npm run startdev
 
