@@ -96,15 +96,23 @@ An alternative directory can be specified by specifiying by specifiying it in th
 
 Events that are successfully loaded are displayed in the `Emulator` and `Upload` dashboard views.
 
-### Configuring Twilio 
+### Configuring SMS (Twillio)
+
+The convo server does not require an SMS messaging provider. You can invoke server conversation api's directly through the Emulator, or directly with a tool like Postman. 
+
+Event API's can be invoked from an SMS messaging provider, such as Twillio with the instructions shown below. 
+
+
 
 
 ### API Server
-You can start just the API server with Convo, without the UI dashboard. This can be helpful when debugging Convo events. Execute the command below from a command shell.
+You can start just the API server with Convo, without the UI dashboard. This can be helpful when debugging Convo events. or invoking the Conversational Events from a Chatbot or interface other than SMS 
+
+Execute the command below from a command shell to start just the API server. Note, the API server is avalaible via Port `3001` it the Dashboard is running. This allows the API only server to be started. 
 
     > npm start
 
-This will start an `Express` server on port 30001 by default. And is sometimes useful when you want to test and debug Convo API's.   
+This will start an `Express` server on port `30001` by default. And is sometimes useful when you want to test and debug Convo API's.   
 
 The Twillio account will forward text messages to Convo with a `POST` http API call.
 
