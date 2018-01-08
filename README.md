@@ -229,7 +229,7 @@ An example request supplied to the `run` object is supplied by the Twillio API i
 
 Notice how the request objects properties. `The question/message` the user texted is contained in an array in the `question` property. The `me` property contains user information that texted, if they exist in the User database. 
 
-JavaScript events have access to request objects as a parameter in the `run` function. The example below i
+JavaScript events have access to request objects as a parameter in the `run` function. The example snippet below show the request object in use.
    
     ...
     event.run = function (request) {
@@ -242,9 +242,6 @@ JavaScript events have access to request objects as a parameter in the `run` fun
             })
         }
     ...
-
-    
-
 
 ## State Machine
 
