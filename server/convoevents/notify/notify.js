@@ -164,7 +164,7 @@ var sendSMS = function (msg, number) {
 
 var sendMsg = function (msg, number) {
     client.messages.create({
-        from: '+19132703506',
+        from: '+'+config.twilio.phone,
         to: '+1' + number,
         body: msg
     }).then(function (msg) { console.log(msg); });
