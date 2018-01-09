@@ -279,7 +279,7 @@ function timesheetnotification(req, res) {
 
         for(var i=0;i<uniquePhones.length;i++) {
             client.messages.create( {
-                from: '+19132703506',
+                from: '+'+config.twilio.phone,
                 to: '+1'+uniquePhones[i],
                 body: notificationText
             })
