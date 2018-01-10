@@ -26,12 +26,8 @@ KHS{Convo} is a Node.js based platform that supports implementing SMS conversati
 * After cloning this repository run the command:
     > `npm install` 
 
-<<<<<<< Updated upstream
-    $ node adminuser.js
-=======
 * Verify / Create a MongoDB database. 
     * `khs-convo` is being used for this demo. 
->>>>>>> Stashed changes
 
 * Update the MongoDB connection setting `mongodb: process.env.MONGODB_URI` in the [server/config/index.js](server/config/index.js) property config script. 
     * See [MongoDB Config Doc](docs/mongodb.md) for more information
