@@ -19,7 +19,7 @@ module.exports = {
     url: process.env.HEROKU_URL || 'http://localhost:3001/' ,
     jwt_secret: process.env.jwt_secret || 'lfanflaefknawelf',
     jwt_expires: process.env.jwt_expires || 3600,
-    mongodb: process.env.MONGODB_URI || '<your maongodb uri here>',
+    mongodb: process.env.MONGODB_URI || 'mongodb://localhost:27017/khs-convo',
     passwordCrypto: process.env.passwordCrypto || "k2312lk3m12l31",
     event_dir: process.env.event_dir || './server/convoevents',
     uploaded_event_dir: './server/services/convo/events',

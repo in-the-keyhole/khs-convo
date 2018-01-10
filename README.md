@@ -11,25 +11,43 @@ KHS{Convo} is a Node.js based platform that supports implementing SMS conversati
 
 ##### [UI Dashboard](docs/admin-dashboard.md) - ReactJS UI Dashboard that has features of Dynamic Loading, Analytics, and testing {KHS}Convo events  
 
-### Installing and Getting Started
+## Getting Started
 
-You need to have [Node.js](https://nodejs.org) installed, then follow these steps.
+### Install Prerequistes
 
-* npm install
+* [Node.js](https://nodejs.org)
+* [MongoDB](https://www.mongodb.com)
+    * The directions below assume a local instance running on `localhost:27017`
+    * Note: there is currently an issue with using the free mongodb atlas instance.
+        * TODO: seems to be related to the ssl, but not sure  
 
-* A [MongoDB](https://www.mongodb.com) instance is required. A connection URI needs to be supplied in the `server/config/index.ja` property config script. (See [MongoDB Config Doc](docs/mongodb.md) for more information)
+### Setup Environment
 
-* Create and Admin User with the following command. This will create an admin user with a userid of `admin` and prompt for a password.
+* After cloning this repository run the command:
+    > `npm install` 
 
+<<<<<<< Updated upstream
     $ node adminuser.js
+=======
+* Verify / Create a MongoDB database. 
+    * `khs-convo` is being used for this demo. 
+>>>>>>> Stashed changes
 
-* npm run startdev
+* Update the MongoDB connection setting `mongodb: process.env.MONGODB_URI` in the [server/config/index.js](server/config/index.js) property config script. 
+    * See [MongoDB Config Doc](docs/mongodb.md) for more information
 
-This will start the API and UI servers on port 3000 and 30001 respectivley. 
+* Create an Admin User with the following command. 
+    * This will create an admin user with a userid of `admin` and prompt for a password. 
+    > `node adminuser.js`
+             
+* Start the API and UI servers on port 3000 and 3001 respectivley. 
+    > `npm run startdev`
 
-The ReactJS UI Dashboard should open in a browser, if not click this link [http://localhost:3000](http://localhost:3000).
+* The ReactJS UI Dashboard should have opened in a browser, if not click this link [http://localhost:3000](http://localhost:3000).
 
-You can then login to the UI Dashboard with the `admin` userid and the password you entered.  Go to this [Link](docs/admin.md) for more information.
+* You can then login to the UI Dashboard with the `admin` userid and the password you entered.  Go to this [Link](docs/admin.md) for more information.
+
+## Usage
 
 ### SMS Emulator
 
