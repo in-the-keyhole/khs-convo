@@ -63,22 +63,31 @@ class GroupUserList extends Component {
         }).then(function(res) {
             self.setState({ 
                 availableUsers: res.data
-             });
+            });
         }).catch(function(err){console.log(err)});
     }
 
 
     addUser(event) {
         let selectedUser =  _.find(this.state.availableUsers, { 'uuid': event.target.value });
-        let newUser = {
-            uuid: selectedUser.uuid,
-            Name: selectedUser.Name,
-            Username: selectedUser.Username
-        }
-        let group = this.props.group
-        group.Users.push(newUser);
 
-        this.putGroup(group)
+        if(selectedUser !== undefined) {
+            let userExists =  _.find(this.props.group.Users, { 'uuid': event.target.value }) !== undefined;
+
+            if(!userExists) {
+                let newUser = {
+                    uuid: selectedUser.uuid,
+                    Name: selectedUser.Name,
+                    Username: selectedUser.Username
+                }
+                let group = this.props.group
+                group.Users.push(newUser);
+
+                this.putGroup(group)
+            }
+
+            this.setState({user: ""});
+        }
     }
 
     addAllUsers(event) {
@@ -117,41 +126,72 @@ class GroupUserList extends Component {
     }
 
     render() {
-
         if (!this.props.group.GroupName){return null;}
-        
-        
+
         const MailingList = this.props.group.Users.map((user) =>
-            <li key={user.uuid} value={user.uuid}>
-                {user.Name} - {user.Username}  <i title="delete" className="glyphicon glyphicon-remove-sign text-danger clickable"  onClick={() => this.deleteUser(user.uuid)}  />
-            </li>
-        );      
+            <div className="row row-striped">
+                <div className="col-xs-1"><i title="Delete from list" className="glyphicon glyphicon-remove-sign text-danger clickable"  onClick={() => this.deleteUser(user.uuid)}  /></div>
+                <div className="col-xs-4">{user.Name}</div>
+                <div className="col-xs-6">{user.Username}</div>
+            </div>
+        );
 
         const selectUsers = this.state.availableUsers.map((user) =>
             <option key={user.uuid} value={user.uuid}>{user.Name} - {user.Username}</option>
         );
 
+        const headerStyle = {
+            borderBottom: '1px solid #000'
+        };
+        const userlistStyle = {
+            paddingLeft: '.3em',
+            paddingTop: '.8em'
+        };
+
         return (
-            
-            <div className="row">
-                
-                <h3>{this.props.group.GroupName} ({this.props.group.Users.length})</h3>
+            <div>
+
+                <div className="row">
+                    <div className="col-md-12">
+                        <h3>{this.props.group.GroupName} ({this.props.group.Users.length})</h3>
+                    </div>
+                </div>
+
                 <NotifyEmulator group={this.props.group}/>
 
-                send to: 
-                <Checkbox name="checkSMS" checked={this.props.group.checkSMS} onChange={this.handleChange}>SMS</Checkbox>
-                <Checkbox name="checkEmail" checked={this.props.group.checkEmail} onChange={this.handleChange}>Email</Checkbox>
-                <Checkbox name="checkSlack" checked={this.props.group.checkSlack} onChange={this.handleChange}>Slack</Checkbox>
-                user: <select value={this.state.user} onChange={this.addUser}>
-                    {selectUsers}
-                </select>
-                <button className="btn btn-default" onClick={() => this.addAllUsers()} >Add All</button>
+                <div className="row">
+                    <div className="col-md-12">
+                        <h4 style={headerStyle}>Send To</h4>
+                        <Checkbox name="checkSMS" checked={this.props.group.checkSMS} onChange={this.handleChange}>SMS</Checkbox>
+                        <Checkbox name="checkEmail" checked={this.props.group.checkEmail} onChange={this.handleChange}>Email</Checkbox>
+                        <Checkbox name="checkSlack" checked={this.props.group.checkSlack} onChange={this.handleChange}>Slack</Checkbox>
+                    </div>
+                </div>
 
-                <ul>
-                    {MailingList}
-                </ul>
+                <div className="row">
+                    <div className="col-md-12">
+                        <h4 style={headerStyle}>Users</h4>
+                        
+                        <div className="row">
+                            <div className="col-xs-10">
+                                <select value={this.state.user} className="form-control emulator-input" onChange={this.addUser}>
+                                    <option value="">Select user to add to list OR click 'Add All' button</option>
+                                    {selectUsers}
+                                </select>
+                            </div>
+                            <div className="col-xs-2">
+                                <button className="btn btn-default" onClick={() => this.addAllUsers()} >Add All</button>
+                           </div>
+                        </div>
+ 
+                        <div className="container-fluid" style={userlistStyle}>
+                            {MailingList}
+                        </div>
+                    </div>
+                </div>
+
             </div>
-        )
+            )
       }
 }
 

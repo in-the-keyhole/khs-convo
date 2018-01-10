@@ -141,7 +141,7 @@ class NotificationGroups extends Component {
     }
 
     showGroupUsers(row){
-console.log(row);
+        //console.log(row);
         this.setState({
             currentGroup: row,
             showUserList: true,
@@ -165,8 +165,8 @@ console.log(row);
     groupToolbar(cell, row) {
         return (
                 <div className="adminIcons">
-                    <i title="users" className="glyphicon glyphicon-user clickable"  onClick={() => this.showGroupUsers(row)}  />
-                    <i title="delete" className="glyphicon glyphicon-remove-sign text-danger clickable"  onClick={() => this.openDeleteModal(row)}  />
+                    <i title="View Group" className="glyphicon glyphicon-user clickable"  onClick={() => this.showGroupUsers(row)}  />
+                    <i title="Delete Group" className="glyphicon glyphicon-remove-sign text-danger clickable"  onClick={() => this.openDeleteModal(row)}  />
                 </div>  
         )
     }
@@ -235,35 +235,35 @@ console.log(row);
                     </Modal.Body>
                 </Modal>
 
-                <div className="col-md-3 list">
-                    <div className="row">
-                        <BootstrapTable 
-                            data={ this.state.users } 
-                            //insertRow={ true }
-                            
-                            cellEdit={ {
-                                mode: 'click',
-                                blurToSave: true,
-                                afterSaveCell: this.onAfterSaveGroup
-                            }}>
-                            <TableHeaderColumn dataField='uuid' isKey hidden>ID</TableHeaderColumn>
-                            <TableHeaderColumn dataField='GroupName' >Group Name</TableHeaderColumn>
-
-                            <TableHeaderColumn width="60" editable={ false } dataFormat={this.groupToolbar}></TableHeaderColumn>
+                <div className="row">
+                    <div className="col-md-3 list">
+                        <div className="row">
+                            <BootstrapTable 
+                                data={ this.state.users } 
+                                //insertRow={ true }
                                 
-                        </BootstrapTable>
-                    </div>
-                </div>      
+                                cellEdit={ {
+                                    mode: 'click',
+                                    blurToSave: true,
+                                    afterSaveCell: this.onAfterSaveGroup
+                                }}>
+                                <TableHeaderColumn dataField='uuid' isKey hidden>ID</TableHeaderColumn>
+                                <TableHeaderColumn dataField='GroupName' >Group Name</TableHeaderColumn>
 
-                <div className="col-md-1"></div>
+                                <TableHeaderColumn width="60" editable={ false } dataFormat={this.groupToolbar}></TableHeaderColumn>
+                                    
+                            </BootstrapTable>
+                        </div>
+                    </div>      
 
-                <div className="col-md-6 list">
-                        
+                    
+
+                    <div className="col-md-8 col-md-offset-1">
                         <GroupUserList group={this.state.currentGroup}  />
-                </div>     
-
+                    </div>
+                </div>
             </div>
-        ) 
+                ) 
     }
 }
 

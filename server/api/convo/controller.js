@@ -259,7 +259,7 @@ function timesheetnotification(req, res) {
         for (var k=0;k<tsDueUsers.length;k++){
             allLatestEntriesUserNames.push(tsDueUsers[k].userName);
         }
-        console.log('All latest time entries: ' + util.inspect(tsDueUsers));
+        //console.log('All latest time entries: ' + util.inspect(tsDueUsers));
 
         for (var k=0;k<tsDueUsers.length;k++){
             let entry = tsDueUsers[k].day.split("-");
@@ -268,7 +268,6 @@ function timesheetnotification(req, res) {
                 timesheetsDueUserNames.push(tsDueUsers[k].userName);
             }
         }
-
         console.log('All DUE latest time entry usernames: ' + util.inspect(timesheetsDueUserNames));
 
         let phones = retrieveDueTimesheetPhones(allConvoUsers, allLatestEntriesUserNames, timesheetsDueUserNames)
@@ -278,11 +277,13 @@ function timesheetnotification(req, res) {
         })
 
         for(var i=0;i<uniquePhones.length;i++) {
+            //console.log('SEND TEXT TO: +1'+uniquePhones[i]);
+
             client.messages.create( {
                 from: '+'+config.twilio.phone,
                 to: '+1'+uniquePhones[i],
                 body: notificationText
-            })
+            });
         }
 
         res.send("Notifications Sent");
@@ -291,11 +292,7 @@ function timesheetnotification(req, res) {
 
 function retrieveDueTimesheetPhones(all, allLatestEntriesUserNames, timesheetsDueUserNames) {
     var phoneNumbers = [];
-    for (var k=0;k<all.length;k++) {
-        if (all[k].Username == undefined || allLatestEntriesUserNames.indexOf(all[k].Username) == 0) {
-            phoneNumbers.push(all[k].Phone.replace(/\D/g,''));
-        }
-    }
+
     for (var i=0;i<all.length;i++) {
         for (var j=0;j<timesheetsDueUserNames.length;j++) {
             if (all[i].Username == timesheetsDueUserNames[j]) {

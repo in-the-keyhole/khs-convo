@@ -64,12 +64,30 @@ svg {
  
 
 .footer {
-
+  /* position: fixed; */
   position: fixed;
   left: 0;
   bottom: 0;
   width: 100%;
   text-align: center;
+  /* margin-top: 30px; */
+  background-color: #f8f8f8;
+  padding: 1em;
+  border: 1px solid #e7e7e7;
+}
+
+body {
+  margin-bottom: 5em;
+}
+
+.row-striped {
+  padding: .2em 0;
+}
+/* .row-striped:nth-of-type(odd){
+  background-color: #867d7d;
+} */
+.row-striped:nth-of-type(even){
+  background-color: #efefef;
 }
 
 
