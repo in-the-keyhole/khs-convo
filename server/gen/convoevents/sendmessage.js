@@ -38,15 +38,10 @@ module.exports = function (events) {
            ); 
           
           return resolve(  client.messages.create( {
-
-                from: '+19132703506'  ,
-                to:   '+19134885577',
-                body:  'Hello World'        
-
-               }).then( function(msg) { console.log(msg);  }  ) );
-
-           
-
+            from: '+'+config.twilio.phone,
+            to:   '+19134885577',
+            body:  'Hello World'        
+          }).then( function(msg) { console.log(msg);  }  ) );
         })
     }
 

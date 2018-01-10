@@ -88,27 +88,16 @@ var send = function (msg, number) {
                    }     
                    
                 }
-
             });
-
     }
-
-
 
 }
 
-
 var sendMsg = function (msg, number) {
-
-
     client.messages.create({
-
-        from: '+19132703506',
+        from: '+'+config.twilio.phone,
         to: '+1' + number,
         body: 'Open Shift Build/Deploy Failure'
 
     }).then(function (msg) { console.log(msg); });
-
-
-
 }
