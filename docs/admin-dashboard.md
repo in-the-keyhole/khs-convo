@@ -31,7 +31,7 @@ Event metric views are available from the `Anayltics` menu.
 
 ![](images/analytics-menu.png)
 
-`Search All` - All Event SMS conversation requests made from Twillio and the Emulator can be viewed. The view displays a chronological table with date and time stamps, the phone number that made the request. 
+`Search All` - All Event SMS conversation requests made from Twilio and the Emulator can be viewed. The view displays a chronological table with date and time stamps, the phone number that made the request. 
 
 `Group by Question` - Diplays Graph of event question word frequency.
 

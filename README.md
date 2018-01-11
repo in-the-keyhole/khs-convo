@@ -5,11 +5,11 @@ KHS{Convo} is a Node.js based platform that supports implementing SMS conversati
 
 *built by [Keyhole Software](https://keyholesoftware.com)*
 
-### Topics 
+## Topics 
 
-##### [Examples](docs/examples.md) - Best way to learn how to implement your own conversational {KHS}Convo app
+### [Examples](docs/examples.md) - Best way to learn how to implement your own conversational {KHS}Convo app
 
-##### [UI Dashboard](docs/admin-dashboard.md) - ReactJS UI Dashboard that has features of Dynamic Loading, Analytics, and testing {KHS}Convo events  
+### [UI Dashboard](docs/admin-dashboard.md) - ReactJS UI Dashboard that has features of Dynamic Loading, Analytics, and testing {KHS}Convo events  
 
 ## Getting Started
 
@@ -20,6 +20,7 @@ KHS{Convo} is a Node.js based platform that supports implementing SMS conversati
     * The directions below assume a local instance running on `localhost:27017`
     * Note: there is currently an issue with using the free mongodb atlas instance.
         * TODO: seems to be related to the ssl, but not sure  
+* [Twillo](https://www.twilio.com/) account
 
 ### Setup Environment
 
@@ -29,17 +30,18 @@ KHS{Convo} is a Node.js based platform that supports implementing SMS conversati
 * Verify / Create a MongoDB database. 
     * `khs-convo` is being used for this demo. 
 
-* Update the MongoDB connection setting `mongodb: process.env.MONGODB_URI` in the [server/config/index.js](server/config/index.js) property config script. 
-    * See [MongoDB Config Doc](docs/mongodb.md) for more information
+* Update [server/config/index.js](server/config/index.js) property config script
+    * MongoDB connection setting `mongodb: process.env.MONGODB_URI` ( See [MongoDB Config Doc](docs/mongodb.md) for more information )
+    * Twillo account configuration ( See [Twilio Config Doc](docs/twilio.md) )
 
 * Create an Admin User with the following command. 
     * This will create an admin user with a userid of `admin` and prompt for a password. 
     > `node adminuser.js`
              
-* Start the API and UI servers on port 3000 and 3001 respectivley. 
+* Start the API and UI servers on port 3001. 
     > `npm run startdev`
 
-* The ReactJS UI Dashboard should have opened in a browser, if not click this link [http://localhost:3000](http://localhost:3000).
+* The ReactJS UI Dashboard should have opened in a browser, if not click this link [http://localhost:3001](http://localhost:3001).
 
 * You can then login to the UI Dashboard with the `admin` userid and the password you entered.  Go to this [Link](docs/admin.md) for more information.
 
@@ -110,16 +112,16 @@ An alternative directory can be specified by specifiying by specifiying it in th
 
 Events that are successfully loaded are displayed in the `Emulator` and `Upload` dashboard views.
 
-### Configuring SMS (Twillio)
+### Configuring SMS (Twilio)
 
 The convo server does not require an SMS messaging provider. You can invoke server conversation api's directly through the Emulator, or directly with a tool like Postman. 
 
 
 
 
-Event API's can be invoked from an SMS messaging provider, such as Twillio with the instructions shown below. 
+Event API's can be invoked from an SMS messaging provider, such as Twilio with the instructions shown below. 
 
-#### [Twillio Configuration Steps](docs/twillio.md)
+#### [Twilio Configuration Steps](docs/twilio.md)
 
 ### API Server (Conversational API Messaging)
 
@@ -131,9 +133,9 @@ Execute the command below from a command shell to start just the API server. Not
 
 This will start an `Express` server on port `30001` by default. And is sometimes useful when you want to test and debug, and user Convo API's other than from an SMS provider. 
 
-The Twillio account will forward text messages to Convo with a `POST` http API call.
+The Twilio account will forward text messages to Convo with a `POST` http API call.
 
-Using a tool like `Postman` you can emulate a Twillio request with the following POST command
+Using a tool like `Postman` you can emulate a Twilio request with the following POST command
 
 Response-Type: application/xml
 
@@ -204,7 +206,7 @@ An event module `must` create an event object with the following `properties` an
 
 #### Request Object 
 
-An example request supplied to the `run` object is supplied by the Twillio API is shown below.  The additional properties in the POSTSed object are supplied by the Twillio service.  
+An example request supplied to the `run` object is supplied by the Twilio API is shown below.  The additional properties in the POSTSed object are supplied by the Twilio service.  
 
     { phone: '9134885577',
     question: [ 'hello' ],
