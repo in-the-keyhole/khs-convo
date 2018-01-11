@@ -81,11 +81,28 @@ function contentget(req, res) {
 function post(req, res) {
 
     req.body.uuid = uuid();
+    if (req.body.Email != req.body.ConfirmEmail){
+         return res.send("your email addresses are not the same");
+    }
 
-    mongo.Insert(req.body, 'Users')
-        .then(function (contact) {
-            res.send(req.body);
-        })
+   mongo.Get({Username:req.body.Email, Status:{$ne:"removed"}}, "Users" )
+   .then (function (response){
+  
+       if (response.length> 0 ){
+           res.send("The email address you have entered is already registered") ;
+       }else {
+            mongo.Insert(req.body, 'Users')
+            .then(function (contact) { 
+            });
+    
+            req.body.RegistrationEmail = req.body.Email;
+            return sendRegistrationEmail(req,res );
+       }
+   })
+   .catch (function (error){
+        console.log(" duplication check error  "    + error) ;
+       
+   }); 
 }
 
 function blacklistpost(req, res) {
@@ -343,6 +360,7 @@ function sendRegistrationEmail(req, res) {
                     '/register?uuid=' + req.body.uuid +
                     '&registrationEmail=' + req.body.RegistrationEmail +
                     '">Click this link to register for Convo.</a>';
+
     var transporter = nodemailer.createTransport({
             host: 'smtp.gmail.com',
             service: 'Gmail',

@@ -54,6 +54,9 @@ class AddUser extends Component {
             <input name="Phone" id="Phone" className="form-control" type="phone" value={this.state.Phone} onChange={this.handleInputChange} placeholder="Phone Number" />
         </div>
 
+        <div className="form-group">
+            <input name="Email" id="Email" className="form-control" type="email" value={this.state.Email} onChange={this.handleInputChange} placeholder="Email" />
+        </div>
         <input className="btn btn-default" type="submit" value="Add User" />
       </form>
     );

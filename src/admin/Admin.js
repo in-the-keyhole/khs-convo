@@ -47,8 +47,11 @@ class Admin extends Component {
             FirstName: this.state.FirstName,
             LastName: this.state.LastName,
             Phone: this.state.Phone,
+            Email:this.state.Email,
+            ConfirmEmail:this.state.ConfirmEmail,
             Status: this.state.Status,
-            Name: this.state.FirstName + ' ' + this.state.LastName
+            Name: this.state.FirstName + ' ' + this.state.LastName,
+            basePath: window.location.origin
         }
 
         var self = this;
@@ -57,12 +60,30 @@ class Admin extends Component {
             url:'/api/admin', 
             data: add
         }).then(function(res) {
-            self.closeAddUserModal()
-            self.fetchUsers();
-        }).catch(function(err){console.log(err)});
 
-        event.preventDefault();
-    }    
+            if (res.data!=null &&  res.data ==='The email address you have entered is already registered') {
+                self.setState({
+                    errorMsg: "The email address you have entered is already registered."
+                })
+            }
+            else if (res.data!=null &&  res.data ==='your email addresses are not the same') {
+                self.setState({
+                    errorMsg: "your email addresses are not the same"
+                })
+            }
+            else{
+                self.setState({
+                    errorMsg: ''
+                })
+                self.closeAddUserModal()
+                self.fetchUsers();
+            }
+
+
+        }).catch(function(err){
+            console.log(err)});
+            event.preventDefault();
+        }    
 
     
     fetchUsers(){
@@ -78,6 +99,8 @@ class Admin extends Component {
                 FirstName: '',
                 LastName: '',
                 Phone: '',
+                Email:'',
+                ConfirmEmail:'',
                 Status: 'active'
              });
 
@@ -174,7 +197,18 @@ class Admin extends Component {
 
     openAddUserModal(){ this.setState( { addUserModal: true })  }
 
-    closeAddUserModal(){ this.setState( { addUserModal: false }) }
+    closeAddUserModal(){ this.setState( 
+        { 
+            addUserModal: false ,
+            FirstName: '',
+            LastName: '',
+            Phone: '',
+            Email:'',
+            ConfirmEmail:'',
+            Status: 'active',
+            errorMsg: ''
+        
+        }) }
 
     userToolbar(cell, row) {
         return (
@@ -206,6 +240,12 @@ class Admin extends Component {
                         <form className="form" onSubmit={this.addUser}>
                     
                             <div className="container">
+
+                            <div className="row">
+                            <div className="col-md-12">
+                                     <p className="text-danger">{this.state.errorMsg}</p>
+                            </div>
+                            </div>
                                 <div className="row">
                                     <div className="col-md-3">
                                         <div className="form-group">
@@ -214,7 +254,7 @@ class Admin extends Component {
                                                 id="FirstName" 
                                                 className="form-control" 
                                                 type="text" 
-                                                required="required"
+                                                required
                                                 value={this.state.FirstName} 
                                                 onChange={this.handleInputChange} 
                                                 placeholder="First Name" />
@@ -226,35 +266,52 @@ class Admin extends Component {
                                                 id="LastName" 
                                                 className="form-control" 
                                                 type="text" 
-                                                required="required"
+                                                required
                                                 value={this.state.LastName} 
                                                 onChange={this.handleInputChange} 
                                                 placeholder="Last Name" />
                                         </div>
                     
                                         <div className="form-group">
-                                            <input name="Phone" id="Phone" className="form-control" type="phone" required="required" value={this.state.Phone} onChange={this.handleInputChange} placeholder="Phone Number" />
+                                            <input name="Phone" id="Phone" className="form-control" type="text" required value={this.state.Phone} onChange={this.handleInputChange} placeholder="Phone Number" />
                                         </div>
                                     </div>
 
 
-                                    <div className="col-md-3">                                
+                                    <div className="col-md-3"> 
+ 
                                         <div className="form-group">
-                                            <label>User Type</label>
-                                            <select id="addStatus" className="form-control" name="Status" value={this.state.Status} onChange={this.handleInputChange}>
-                                                <option value="active">active</option>
-                                                <option value="admin">admin</option>
-                                            </select>                            
+                                            <input name="Email" id="Email" className="form-control" type="email" required value={this.state.Email} onChange={this.handleInputChange} placeholder="Email" />
+                                        </div>
+
+                                        <div className="form-group">
+                                            <input name="ConfirmEmail" id="ConfirmEmail" className="form-control" type="email" required="required"   value={this.state.ConfirmEmail} onChange={this.handleInputChange} placeholder="Confirm Email" />
+                                        </div>
+
+                                        <div className="form-group">
+                                            
+                                            <div className="row"> 
+                                                <div className="col-md-4">
+                                                <label> <h5>User Type</h5></label>
+                                                 </div>
+                                                <div className="col-md-8"> 
+                                                 
+                                                    <select id="addStatus"    className="form-control" name="Status" value={this.state.Status} onChange={this.handleInputChange}>
+                                                        <option   value="active">active</option>
+                                                        <option   value="admin">admin</option>
+                                                    </select> 
+                                                </div> 
+                                                
+                                            </div>                         
                                         </div>
                                     </div>
                                 </div>
-                                <div className="row">     
-                                    <div className="col-md-12">         
-                                        <input className="btn btn-primary" type="submit" value="Add User" />
-                                        <button className="btn btn-default" onClick={() => this.closeAddUserModal()}>Cancel</button>                
-                                    </div>
-                                </div>
-                            </div>
+                                <div className="row">
+                                    <div className="col-md-1"> </div>
+                                    <div className="col-md-2"> <input className="btn btn-primary" type="submit" value="Add User" />  </div>
+                                    <div className="col-md-9"> <button className="btn btn-default" onClick={() => this.closeAddUserModal()}>Cancel</button> </div> 
+                               </div>
+                               </div>
                         </form>
                     </Modal.Body>
                 </Modal>
@@ -305,7 +362,6 @@ class Admin extends Component {
                                 editable={ { type: 'select', options: { values: ['active','admin'] } } }
                                 >Status</TableHeaderColumn>
                             <TableHeaderColumn width="300" dataField='Username' dataSort={ true } filter={ { type: 'TextFilter' } }>Username</TableHeaderColumn>
-
                             <TableHeaderColumn width="60" editable={ false } dataFormat={this.userToolbar}></TableHeaderColumn>
                                 
                         </BootstrapTable>

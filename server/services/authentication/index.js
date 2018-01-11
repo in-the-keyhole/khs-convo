@@ -33,8 +33,7 @@ function encodePassword(password) {
 function auth(username, password) {
     return new Promise(function (resolve, reject) {
         try {
-
-            mongo.Get({Username: username}, 'Users')
+            mongo.Get({Username: username, Status: {$ne: "removed"}},"Users")
                 .then(function (docs) {
 
                     if (docs.length === 0) {
