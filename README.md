@@ -20,7 +20,9 @@ KHS{Convo} is a Node.js based platform for creating SMS conversational experienc
     * The directions below assume a local instance running on `localhost:27017`
     * Note: there is currently an issue with using the free mongodb atlas instance.
         * TODO: seems to be related to the ssl, but not sure  
-* [Twillo](https://www.twilio.com/) account
+
+* [Twillo](https://www.twilio.com/) account (Optional)
+    * The built in Emulator can be used to test the interactions
 
 ### Setup Environment
 
