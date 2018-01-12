@@ -2,6 +2,11 @@
 
 Here are a number of examples you can use 
 
+* [Date / Time](#date-time)
+* [Math](#math)
+* [Conversions](#conversions)
+* [Tip Calculator](#tip-calculator)
+
 ## Date / Time
 ![](images/examples/DateTime.PNG)
 
