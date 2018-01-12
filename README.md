@@ -47,6 +47,10 @@ KHS{Convo} is a Node.js based platform for creating SMS conversational experienc
 
 ## Usage
 
+### [Timer Events](docs/timerevents.md)
+
+KHS{Convo} Timer Events can be created to run code at any particular interval and for however long you want it to run.
+
 ### SMS Emulator
 
 KHS{Convo} SMS events can be tested from the Dashboard, by selecting the Emulator and typing 'hello' or one the Convo events listed in the emulator. 
