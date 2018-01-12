@@ -22,6 +22,7 @@ module.exports = {
     mongodb: process.env.MONGODB_URI || 'mongodb://localhost:27017/khs-convo',
     passwordCrypto: process.env.passwordCrypto || "k2312lk3m12l31",
     event_dir: process.env.event_dir || './server/convoevents',
+    timerevent_dir: process.env.timerevent_dir || './server/timerevents',
     uploaded_event_dir: './server/services/convo/events',
     template_dir: process.env.template_dir || 'server/convoevents',
     ping_url: process.env.PING_URL || 'http://khs-convo-dev.herokuapp.com',
