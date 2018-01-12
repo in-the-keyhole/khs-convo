@@ -16,10 +16,7 @@ limitations under the License.
 
 var log4js = require('log4js');
 var logger = log4js.getDefaultLogger();
-
-var timerNameDefault = 'Unnamed Timer';     // Default timerName
-var callbackDelayDefault = 60*1000;         // Default callbackDelay is 1 minute
-var callbackMaxRunDefault = 0;              // Default callbackMaxRun is to run forever
+var config = require('../config');
 
 module.exports = {
     // Usage:
@@ -30,12 +27,12 @@ module.exports = {
     //          A local method defined
     //          An anonymous method define inline
     //
-    //      The "config" is a JSON object consisting of the following:
+    //      The "timerconfig" is a JSON object consisting of the following:
     //          timerName = Display name for timer
     //          callbackDelay = Delay between calls
     //          callbackMaxRun = Number of times to run (0 = forever)
     //
-    //      EXAMPLES:
+    //      EXAMPLES: (based on initial defaults defined in config)
     //      1. This sets up the callback to be called "Unnamed Timer", to run every minute, forever
     //          timerUtils.setupTimer(timesheetnotification.process);
     //
@@ -48,12 +45,12 @@ module.exports = {
     //      4. This sets up the callback to be called "Timesheet Timer", to run every 5 minutes, will run 6 times
     //          timerUtils.setupTimer(timesheetnotification.process, {timerName: 'Timersheet Timer', callbackDelay: 60*1000*5, callbackMaxRun: 6});
     //
-    setupTimer: function( callback = null, config = {} ) {
+    setupTimer: function( callback = null, timerconfig = {} ) {
         if (callback !== null) {
 
-            let timerName = typeof config.timerName === 'string' ? config.timerName : timerNameDefault;
-            let callbackDelay = typeof config.callbackDelay === 'number' && config.callbackDelay > 0 ? config.callbackDelay : callbackDelayDefault;
-            let callbackMaxRun = typeof config.callbackMaxRun === 'number' ? config.callbackMaxRun : callbackMaxRunDefault;
+            let timerName = typeof timerconfig.timerName === 'string' ? timerconfig.timerName : config.timerevent_timerName_default;
+            let callbackDelay = typeof timerconfig.callbackDelay === 'number' && timerconfig.callbackDelay > 0 ? timerconfig.callbackDelay : config.timerevent_callbackDelay_default;
+            let callbackMaxRun = typeof timerconfig.callbackMaxRun === 'number' ? timerconfig.callbackMaxRun : config.timerevent_callbackMaxRun_default;
             logger.debug('   setupTimer: timerName: ' + timerName);
             logger.debug('   setupTimer: callbackDelay: ' + callbackDelay);
             logger.debug('   setupTimer: callbackMaxRun: ' + callbackMaxRun);
