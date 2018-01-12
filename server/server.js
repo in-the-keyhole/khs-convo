@@ -32,8 +32,8 @@ var request = require('request');
 var logger = log4js.getDefaultLogger();
 var app = express();
 
-var timesheetnotification = require('./timesheetnotification.js');
-var timerUtils = require("./services/timerUtils.js");
+var timerEventLoader = require('./services/timereventloader');
+
 
 const util = require('util');
 
@@ -63,15 +63,6 @@ app.use('/*', function(req, res){
 http.createServer(app).listen(config.port, () => {
     logger.info('App Listening on port: ' + config.port);
 
-    // ping server to keep from sleeping
-    var http = require("http");
-    setInterval(function() {
-       http.get(config.ping_url);
-       console.log("Pinging Server to keep from sleeping");
-    }, 300000); // every 5 minutes (300000)
-
-    // Startup Timesheet Notification timer process 
-    // TODO: Need to make this a configurable not required 
-   //   timerUtils.setupTimer(timesheetnotification.process);
+    timerEventLoader.load();
 });
 

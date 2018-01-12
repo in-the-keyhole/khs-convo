@@ -17,55 +17,72 @@ limitations under the License.
 var log4js = require('log4js');
 var logger = log4js.getDefaultLogger();
 
-// Default Callback Delay is 1 minute
-var callbackDelayDefault = 60*1000;
+var timerNameDefault = 'Unnamed Timer';     // Default timerName
+var callbackDelayDefault = 60*1000;         // Default callbackDelay is 1 minute
+var callbackMaxRunDefault = 0;              // Default callbackMaxRun is to run forever
 
 module.exports = {
-// Usage:
-//      var timerUtils = require("./services/timerUtils.js");
-//
-//      The "callback" can be:
-//          A method of an object
-//          A local method defined
-//          An anonymous method define inline
-//
-//      The "callbackDelay" default is 1 minute, if 0 or no value is passed the default will be used
-//
-//      The "callbackMaxRun" default is 0 which is "forever". This is the number of times to run the "callback"
-//
-//      This sets up the callback to run every minute, forever
-//          timerUtils.setupTimer(timesheetnotification.process);
-//      This setup the callback to run every 5 minutes, forever
-//          timerUtils.setupTimer(timesheetnotification.process, 60*1000*5);
-//      This setup the callback to run every 5 minutes, will run 6 times
-//          timerUtils.setupTimer(timesheetnotification.process, 60*1000*5, 6);
-//
-setupTimer: function(callback = '', callbackDelay = callbackDelayDefault, callbackMaxRun = 0) {
-        if (callback !== '') {
-            // Allow user to pass 0 and get default
-            callbackDelay = callbackDelay > 0 ? callbackDelay : callbackDelayDefault;
+    // Usage:
+    //      var timerUtils = require("./services/timerUtils.js");
+    //
+    //      The "callback" can be:
+    //          A method of an object
+    //          A local method defined
+    //          An anonymous method define inline
+    //
+    //      The "config" is a JSON object consisting of the following:
+    //          timerName = Display name for timer
+    //          callbackDelay = Delay between calls
+    //          callbackMaxRun = Number of times to run (0 = forever)
+    //
+    //      EXAMPLES:
+    //      1. This sets up the callback to be called "Unnamed Timer", to run every minute, forever
+    //          timerUtils.setupTimer(timesheetnotification.process);
+    //
+    //      2. This sets up the callback to be called "Timesheet Timer", to run every minute, forever
+    //          timerUtils.setupTimer(timesheetnotification.process, {timerName: 'Timersheet Timer'});
+    //
+    //      3. This sets up the callback to be called "Timesheet Timer", to run every 5 minutes, forever
+    //          timerUtils.setupTimer(timesheetnotification.process, {timerName: 'Timersheet Timer', callbackDelay: 60*1000*5});
+    //
+    //      4. This sets up the callback to be called "Timesheet Timer", to run every 5 minutes, will run 6 times
+    //          timerUtils.setupTimer(timesheetnotification.process, {timerName: 'Timersheet Timer', callbackDelay: 60*1000*5, callbackMaxRun: 6});
+    //
+    setupTimer: function( callback = null, config = {} ) {
+        if (callback !== null) {
+
+            let timerName = typeof config.timerName === 'string' ? config.timerName : timerNameDefault;
+            let callbackDelay = typeof config.callbackDelay === 'number' && config.callbackDelay > 0 ? config.callbackDelay : callbackDelayDefault;
+            let callbackMaxRun = typeof config.callbackMaxRun === 'number' ? config.callbackMaxRun : callbackMaxRunDefault;
+            logger.debug('   setupTimer: timerName: ' + timerName);
+            logger.debug('   setupTimer: callbackDelay: ' + callbackDelay);
+            logger.debug('   setupTimer: callbackMaxRun: ' + callbackMaxRun);
 
             let runCallbackCount = 0;
-            let callbackName = callback.name !== '' ? callback.name : 'anonymous';
 
             // Run callback initially
+            logger.info('Running: ' + timerName + ': ' + (runCallbackCount+1) + (callbackMaxRun > 0 ? ' of ' + callbackMaxRun : ''));
             callback();
+            runCallbackCount++;
 
-            // Setup setInterval() using parameters
-            var si = setInterval(function() {
-                runCallbackCount++;
-                logger.info('Running: ' + callbackName + '(): ' + runCallbackCount + (callbackMaxRun > 0 ? ' of ' + callbackMaxRun : ''));
-                callback();
-            
-                // If there is a max number of calls, then evaluate and stop if necessary
-                if(callbackMaxRun > 0 && runCallbackCount === callbackMaxRun) {
-                    logger.info('Stopping: ' + callbackName + '()');
-                    clearInterval(si);
-                } 
-            }, callbackDelay);
+            // Create setInterval if needed to run more than 1 time
+            if(callbackMaxRun !== 1) {
+                // Setup setInterval() using parameters
+                let si = setInterval(function() {
+                    logger.info('Running: ' + timerName + ': ' + (runCallbackCount+1) + (callbackMaxRun > 0 ? ' of ' + callbackMaxRun : ''));
+                    callback();
+                    runCallbackCount++;
+                
+                    // If there is a max number of calls, then evaluate and stop if necessary
+                    if(callbackMaxRun > 0 && runCallbackCount >= callbackMaxRun) {
+                        logger.info('* Stopping: ' + timerName);
+                        clearInterval(si);
+                    } 
+                }, callbackDelay);
+            }
         } 
         else {
-            logger.info('No callback passed in');
+            logger.error('No callback passed in');
         }
     }
 }
