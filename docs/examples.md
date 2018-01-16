@@ -13,8 +13,7 @@ Here are a number of examples available to try out using the Dashboard emulator.
 
 Conversation confirming an appointment.  [Appointment.js Source](../server/convoevents/examples/appointment.js)
 
-
-
+![](images/appt-convo.png)
 
 
 # Date / Time
