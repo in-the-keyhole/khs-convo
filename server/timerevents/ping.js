@@ -21,8 +21,6 @@ var log4js = require('log4js');
 var logger = log4js.getDefaultLogger();
 var http = require("http");
 
-var timesThru = 0;
-
 module.exports = {
     config: { 
         timerName: 'Ping Timer',
@@ -31,13 +29,10 @@ module.exports = {
     },
 
     process: function() {
-        timesThru++;
-        
         if(config.ping_url) {
             var res = http.get(config.ping_url, function(response) {
-                logger.info('   Timer Pinging Server to keep from sleeping: ' + response.statusCode + ' / ' + response.statusMessage);
+                logger.info('   Timer Pinging Server: ' + response.statusCode + ' / ' + response.statusMessage);
             });
         }
     }
- 
 }
