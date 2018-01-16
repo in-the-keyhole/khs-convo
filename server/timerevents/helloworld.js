@@ -19,8 +19,6 @@ limitations under the License.
 var log4js = require('log4js');
 var logger = log4js.getDefaultLogger();
 
-var timesThru = 0;
-
 module.exports = {
     config: { 
         timerName: 'Hello World Timer',
@@ -29,9 +27,7 @@ module.exports = {
     },
 
     process: function() {
-        timesThru++;
         logger.info('   helloworld.process() called');
-
         module.exports.sayHello();
     },
  

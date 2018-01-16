@@ -74,7 +74,7 @@ module.exports = {
             runCallbackCount++;
 
             // Create setInterval if needed to run more than 1 time
-            if(callbackMaxRun !== 1) {
+            if(callbackMaxRun === 0 || callbackMaxRun > 1) {
                 // Setup setInterval() using parameters
                 let si = setInterval(function() {
                     logger.info('Running: ' + timerName + ': ' + (runCallbackCount+1) + (callbackMaxRun > 0 ? ' of ' + callbackMaxRun : ''));
@@ -82,7 +82,7 @@ module.exports = {
                     runCallbackCount++;
                 
                     // If there is a max number of calls, then evaluate and stop if necessary
-                    if(callbackMaxRun > 0 && runCallbackCount >= callbackMaxRun) {
+                    if(callbackMaxRun > 1 && runCallbackCount >= callbackMaxRun) {
                         logger.info('* Stopping: ' + timerName);
                         clearInterval(si);
                     } 
