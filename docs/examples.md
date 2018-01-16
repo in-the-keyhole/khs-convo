@@ -1,6 +1,6 @@
 ## Example Implementations 
 
-Here are a number of examples you can use 
+Here are a number of examples available to try out using the Dashboard emulator. The example JavaScript implementation code can be found in this folder ![Example Source]
 
 * [Date / Time](#date-time)
 * [Math](#math)
