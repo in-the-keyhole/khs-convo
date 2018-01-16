@@ -7,9 +7,9 @@ KHS{Convo} is a Node.js based platform for creating SMS conversational experienc
 
 ## Topics 
 
-### [Examples](docs/examples.md) - Best way to learn how to implement your own conversational {KHS}Convo app
+[Examples](docs/examples.md) - Best way to learn how to implement your own conversational {KHS}Convo app
 
-### [UI Dashboard](docs/admin-dashboard.md) - ReactJS UI Dashboard that has features of Dynamic Loading, Analytics, and testing {KHS}Convo events  
+[UI Dashboard](docs/admin-dashboard.md) - ReactJS UI Dashboard that has features of Dynamic Loading, Analytics, and testing {KHS}Convo events  
 
 ## Getting Started
 
