@@ -5,18 +5,18 @@ Here are a number of examples you can use
 * [Date / Time](#date-time)
 * [Math](#math)
 * [Conversions](#conversions)
-* [Tip Calculator](##tip-calculator)
+* [Tip Calculator](#tip-calculator)
 
-## Date / Time
+# Date / Time
 ![](images/examples/DateTime.PNG)
 
-## Math
+# Math
 ![](images/examples/Math.PNG)
 
-## Conversions
+# Conversions
 ![](images/examples/Conversions.PNG)
 
-## Tip Calculator
+# Tip Calculator
 ![](images/examples/TipCalculator.PNG)
 
 ### [Back to Main](https://github.com/in-the-keyhole/khs-convo) 
