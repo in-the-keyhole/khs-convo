@@ -1,7 +1,7 @@
 
 ![](docs/images/convo.png)
 
-KHS{Convo} is a Node.js based platform for creating SMS conversational experiences. 
+KHS{Convo} is a Node.js based platform for creating SMS and Web Based `conversational` experiences. 
 
 *built by [Keyhole Software](https://keyholesoftware.com)*
 
