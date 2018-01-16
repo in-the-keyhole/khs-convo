@@ -26,7 +26,7 @@ KHS{Convo} is a Node.js based platform for creating SMS conversational experienc
 
 ### Setup Environment
 
-* After cloning this repository run the command:
+* After `cloning` this repository run the command:
     > `npm install` 
 
 * Verify / Create a MongoDB database. 
