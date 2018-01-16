@@ -22,7 +22,7 @@ KHS{Convo} is a Node.js based platform for creating SMS conversational experienc
         * TODO: seems to be related to the ssl, but not sure  
 
 * [Twillo](https://www.twilio.com/) account (Optional)
-    * The built in Emulator can be used to test the interactions
+    * The UI Dashboards built in Emulator can be used to test the interactions
 
 ### Setup Environment
 
