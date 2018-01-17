@@ -25,7 +25,7 @@ Here are a number of examples available to try out using the Dashboard emulator.
 
 ### Text `knots` and a conversation for the type of fly fishing knot you need will occur
 
-![](images/examples/knots-convo.PNG)
+![](images/examples/knot-convo.PNG)
 
 # Date / Time
 ![](images/examples/DateTime.PNG)
