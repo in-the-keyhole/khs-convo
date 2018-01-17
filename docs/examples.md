@@ -4,22 +4,28 @@ Here are a number of examples available to try out using the Dashboard emulator.
 
 * [Appointment](#appointment) 
 * [Tip Calculator](#tip-calculator)
-* [Fishing Knots](#knots)
+* [Fly Fishing Knots](#fly-fishing-knots)
 * [Date / Time](#date-time)
 * [Math](#math)
 * [Conversions](#conversions)
 
 # Appointment 
 
-Text `appt` for a conversation confirming an appointment.  [appointment.js source](../server/convoevents/examples/appointment.js)
+### Text `appt` for a conversation confirming an appointment.  [appointment.js source](../server/convoevents/examples/appointment.js)
 
 ![](images/appt-convo.png)
 
 # Tip Calculator
 
-Text `tip <amount>` an tip amounts will be returned.   [tips.js source](../server/convoevents/examples/tips.js)  
+### Text `tip <amount>` and tip amounts will be returned.   [tips.js source](../server/convoevents/examples/tips.js)  
 
 ![](images/examples/TipCalculator.PNG)
+
+# Fly Fishing Knots 
+
+### Text `knots` and a conversation for the type of fly fishing knot you need will occur
+
+![](images/examples/knot-convo.PNG)
 
 # Date / Time
 ![](images/examples/DateTime.PNG)
