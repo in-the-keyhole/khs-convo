@@ -36,7 +36,6 @@ Here are a number of examples available to try out using the Dashboard emulator.
 
 ### Text `convert` for a metric to english units,or vis versa, conversation. [conversion.js](../server/convoevents/examples/conversion.js)
 
-![](images/examples/Conversion.PNG)
-
+![](images/examples/conversion.PNG)
 
 ### [Back to Main](https://github.com/in-the-keyhole/khs-convo) 
