@@ -11,7 +11,7 @@ Here are a number of examples available to try out using the Dashboard emulator.
 
 # Appointment 
 
-Text `appt` for a conversation confirming an appointment.  [appointment.js source](../server/convoevents/examples/appointment.js)
+### Text `appt` for a conversation confirming an appointment.  [appointment.js source](../server/convoevents/examples/appointment.js)
 
 ![](images/appt-convo.png)
 
