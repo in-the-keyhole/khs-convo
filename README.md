@@ -310,7 +310,7 @@ As an example, consider an example appointement scheduling converstation, which 
 
 Here's some screen shots showing the appointmemnt events conversation...
 
-![appt-convo](https://github.com/in-the-keyhole/khs-grok-convo/blob/develop/docs/appt-convo.png)
+![appt-convo](./images/appt-convo.png)
 
 ### Making it Real
 
