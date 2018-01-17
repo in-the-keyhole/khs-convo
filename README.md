@@ -1,15 +1,15 @@
 
 ![](docs/images/convo.png)
 
-KHS{Convo} is a Node.js based platform for creating SMS conversational experiences. 
+KHS{Convo} is a Node.js based platform for creating SMS and Web Based `conversational` experiences. 
 
 *built by [Keyhole Software](https://keyholesoftware.com)*
 
 ## Topics 
 
-### [Examples](docs/examples.md) - Best way to learn how to implement your own conversational {KHS}Convo app
+[Examples](docs/examples.md) - Best way to learn how to implement your own conversational {KHS}Convo app
 
-### [UI Dashboard](docs/admin-dashboard.md) - ReactJS UI Dashboard that has features of Dynamic Loading, Analytics, and testing {KHS}Convo events  
+[UI Dashboard](docs/admin-dashboard.md) - ReactJS UI Dashboard that has features of Dynamic Loading, Analytics, and testing {KHS}Convo events  
 
 ## Getting Started
 
@@ -22,11 +22,11 @@ KHS{Convo} is a Node.js based platform for creating SMS conversational experienc
         * TODO: seems to be related to the ssl, but not sure  
 
 * [Twillo](https://www.twilio.com/) account (Optional)
-    * The built in Emulator can be used to test the interactions
+    * The UI Dashboards built in Emulator can be used to test the interactions
 
 ### Setup Environment
 
-* After cloning this repository run the command:
+* After `cloning` this repository run the command:
     > `npm install` 
 
 * Verify / Create a MongoDB database. 
