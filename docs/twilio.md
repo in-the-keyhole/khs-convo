@@ -9,4 +9,3 @@ twilio: {
         phone: process.env.PHONE || '<twilio phone #>'
     },
 
-## [Back to Main](https://github.com/in-the-keyhole/khs-convo) 
