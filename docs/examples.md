@@ -36,7 +36,10 @@ Here are a number of examples available to try out using the Dashboard emulator.
 ![](images/examples/Math.PNG)
 
 # Conversions
-![](images/examples/Conversions.PNG)
+
+### Text `convert` for a metric to english units,or vis versa, conversation. [convers.js](../server/convoevents/examples/tips.js)
+
+![](images/examples/Conversion.PNG)
 
 
 
