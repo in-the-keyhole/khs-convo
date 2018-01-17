@@ -310,7 +310,7 @@ As an example, consider an example appointement scheduling converstation, which 
 
 Here's some screen shots showing the appointmemnt events conversation...
 
-![appt-convo](./images/appt-convo.png)
+![appt-convo](docs/images/appt-convo.png)
 
 ### Making it Real
 
