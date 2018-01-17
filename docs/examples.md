@@ -31,7 +31,8 @@ Here are a number of examples available to try out using the Dashboard emulator.
 
 # Math
 
-### Text math expression  `math 1 * 2 * 10 `  [tips.js source](../server/convoevents/examples/math.js)  
+### Text math expression  `1 * 2 * 10 ` evaluated results will be returned.  [math.js source](../server/convoevents/examples/math.js)  
+
 ![](images/examples/Math.PNG)
 
 # Conversions
