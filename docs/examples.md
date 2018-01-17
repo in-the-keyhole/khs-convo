@@ -5,7 +5,6 @@ Here are a number of examples available to try out using the Dashboard emulator.
 * [Appointment](#appointment) 
 * [Tip Calculator](#tip-calculator)
 * [Fly Fishing Knots](#fly-fishing-knots)
-* [Date / Time](#date-time)
 * [Math](#math)
 * [Conversions](#conversions)
 
@@ -31,6 +30,9 @@ Here are a number of examples available to try out using the Dashboard emulator.
 ![](images/examples/DateTime.PNG)
 
 # Math
+
+### Text math expression  `1 * 2 * 10 ` evaluated results will be returned.  [math.js source](../server/convoevents/examples/math.js)  
+
 ![](images/examples/Math.PNG)
 
 # Conversions
