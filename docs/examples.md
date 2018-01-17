@@ -17,9 +17,15 @@ Here are a number of examples available to try out using the Dashboard emulator.
 
 # Tip Calculator
 
-Text `tip <amount>` an tip amounts will be returned.   [tips.js source](../server/convoevents/examples/tips.js)  
+### Text `tip <amount>` and tip amounts will be returned.   [tips.js source](../server/convoevents/examples/tips.js)  
 
 ![](images/examples/TipCalculator.PNG)
+
+# Fishing Knots 
+
+### Text `knots` and a conversation for the type of fly fishing knot you need will occur
+
+![](images/examples/knots-convo.PNG)
 
 # Date / Time
 ![](images/examples/DateTime.PNG)
