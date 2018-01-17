@@ -4,7 +4,7 @@ Here are a number of examples available to try out using the Dashboard emulator.
 
 * [Appointment](#appointment) 
 * [Tip Calculator](#tip-calculator)
-* [Fishing Knots](#knots)
+* [Fly Fishing Knots](#fly-fishing-knots)
 * [Date / Time](#date-time)
 * [Math](#math)
 * [Conversions](#conversions)
@@ -21,7 +21,7 @@ Here are a number of examples available to try out using the Dashboard emulator.
 
 ![](images/examples/TipCalculator.PNG)
 
-# Fishing Knots 
+# Fly Fishing Knots 
 
 ### Text `knots` and a conversation for the type of fly fishing knot you need will occur
 
