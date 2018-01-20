@@ -20,7 +20,7 @@ KHS{Convo} is a Node.js based platform for creating SMS and Web Based `conversat
 * [Conversation State Machine](#conversation-state-machine)
 * [Session Management](#session-management)
 * [Generating a Dynamic UI](#dynamic-html-ui)
-* [Creating and Running with Docker](#creaging-and-running-with-docker)
+* [Creating and Running with Docker](#creating-and-running-with-docker)
 
 # Getting Started
 
@@ -436,7 +436,7 @@ KHS-Convo saves user's session reply data in a `Session` Mongodb collection. Thi
 
 The user can delete a session by texting "c", which will delete the event. 
 
-# Sessions
+# Session Management
 
 When a user invokes an event converstion from either twilio SMS or from the Web UI Dashboard, the request phone number is used to identify a user request. This request is persisted in the configured MongoDB instance. 
 
@@ -544,8 +544,8 @@ Here's the movies PUG template rendered in a mobile browser.
 # Creating and Running with Docker
 Conversational Server Implementation
 
-- docker build --tag convo .
-- docker run -d -p 27017:27017 --name mongo mongo
-- docker run -it -d --restart always -p3000:3000 --name grokconvo grokconvo
+   $ docker build --tag convo .
+   $ docker run -d -p 27017:27017 --name mongo mongo
+   $ docker run -it -d --restart always -p3000:3000 --name convo convo
 
 
