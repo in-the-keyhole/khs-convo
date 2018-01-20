@@ -20,8 +20,7 @@ KHS{Convo} is a Node.js based platform for creating SMS and Web Based `conversat
 * [Conversation State Machine](#conversation-state-machine)
 * [Session Management](#session-management)
 * [Generating a Dynamic UI](#dynamic-html-ui)
-
-
+* [Creating and Running with Docker](#creaging-and-running-with-docker)
 
 # Getting Started
 
@@ -542,11 +541,10 @@ Here's the movies PUG template rendered in a mobile browser.
 
 ![pug-html](docs/images/pug-html.png)
 
-
-### Creating and Running with Docker
+# Creating and Running with Docker
 Conversational Server Implementation
 
-- docker build --tag grokconvo .
+- docker build --tag convo .
 - docker run -d -p 27017:27017 --name mongo mongo
 - docker run -it -d --restart always -p3000:3000 --name grokconvo grokconvo
 
