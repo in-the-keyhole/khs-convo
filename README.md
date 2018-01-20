@@ -18,7 +18,9 @@ KHS{Convo} is a Node.js based platform for creating SMS and Web Based `conversat
 * [API Server](#api-server)
 * [Implementing a Conversation](#implementing-a-conversation)
 * [Conversation State Machine](#conversation-state-machine)
+* [Session Management](#session-management)
 * [Generating a Dynamic UI](#dynamic-html-ui)
+
 
 
 # Getting Started
@@ -425,7 +427,7 @@ A choice state object is defined in an array of reply objects.  So, if Y or N is
 ...
 
 
-### Ending or Stopping a session 
+## Ending or Stopping a session 
 
 KHS-Convo saves user's session reply data in a `Session` Mongodb collection. This needs to be removed when the session is done. This can be done by defining a `postAction: stop ` in the reply state. Or, can be done with code using the Session service object, like this.   
 
@@ -434,6 +436,9 @@ KHS-Convo saves user's session reply data in a `Session` Mongodb collection. Thi
     ...      
 
 The user can delete a session by texting "c", which will delete the event. 
+
+# Session Managment 
+
 
 # Dynamic HTML UI 
 
