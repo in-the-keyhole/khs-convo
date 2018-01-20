@@ -1,0 +1,36 @@
+head
+  meta(name='viewport', content='width=device-width, initial-scale=1')
+  link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css')
+  script.
+    function doit(v,x,id) {  var e = document.getElementById(id.id); id.innerHTML = (v * x).toFixed(3);}
+  style.
+    .table-condensed { font-size: 10px; }
+.container
+  .row
+    .col-xs-12
+      h3 Metric to English Conversion Chart
+      h4
+        em
+          | by 
+          a(href='http://keyholesoftware.com') Keyhole Software
+  .row
+    .col-xs-12
+      table.table.table-condensed
+            tbody
+              tr
+                th English
+                th
+                th
+                th
+                th
+                th Metric
+                th
+                each u in uom
+                  tr
+                  td #{u.e} (#{u.abr})
+                  td <input (size='7', type='text', onchange='doit(this.value,  #{u.value},  #{u.abr})')/>
+                  td  X 
+                  td #{u.value}
+                  td  = 
+                  td(id=u.abr) 
+                  td #{u.m}

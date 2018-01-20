@@ -1,0 +1,97 @@
+//- help.pug
+doctype html
+html(lang="en")
+   head
+      title Knots
+      meta(name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1")
+      link(href='https://fonts.googleapis.com/css?family=Roboto', rel='stylesheet', type='text/css')
+      link(href='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css', rel="stylesheet")
+      link(href='https://cdnjs.cloudflare.com/ajax/libs/Swiper/3.4.2/css/swiper.min.css', rel="stylesheet")
+      //- TODO: Abstract to separate file
+      style(text="text/css").
+         body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+         }
+         .page-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+         }
+         .page-conatiner__nav-bar {
+            position: relative;
+            width: 100%;
+            height: 50px;
+            line-height: 50px;
+            background-color: #f8f8f8;
+            border-bottom: 1px solid #e7e7e7;
+         }
+         .nav-bar__title {
+            margin-left: 15px;
+            color: black;
+            font-family: 'Roboto', sans-serif;
+            font-size: 18px;
+         }
+         
+        .page-container__content{
+            display:flex;
+            flex-direction:column;
+            max-width:800px;
+            margin:auto;
+        }
+        .help-content{
+            flex:1;
+            display:flex;
+            flex-direction:row;
+            height:30px;
+        }
+        .help-content:nth-child(odd){
+            background-color: #dddddd;
+        }
+        .carousel-item{
+            flex:2;
+            padding:5px;
+        }
+        .carousel-item__commands{
+            display:flex;
+            flex-direction:row;
+            flex:3;
+            text-align:center;
+        }
+        .carousel-item__description{
+            flex:1;
+            padding: 5px;
+            border-left:solid 1px;
+            border-right:solid 1px;
+            margin:0 2px;
+        }
+        .header-item{
+            background-color:#aacccc;
+        }
+        .header-item .carousel-item__description{
+            border:none;
+        }
+   body
+        .page-container
+
+         .page-conatiner__nav-bar
+            .nav-bar__title All Available Commands
+
+         .page-container__content
+            .page-content__container
+                .help-content
+                    .carousel-item.header-item= 'Conversation'
+                    .carousel-item__commands.header-item 
+                        .carousel-item__description= 'Available Commands'
+                each event in convos
+                    .help-content
+                        .carousel-item= event.description
+                        .carousel-item__commands
+                            each word in event.words
+                                .carousel-item__description= word.word
+                        

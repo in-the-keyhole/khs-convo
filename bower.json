@@ -1,0 +1,21 @@
+{
+  "name": "khs-grok-convo",
+  "description": "",
+  "main": "server/server.js",
+  "authors": [
+    "Greg Yotz <greg@yotzee.com>"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/in-the-keyhole/khs-grok-convo",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "client/lib",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.6.4"
+  }
+}

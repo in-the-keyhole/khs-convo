@@ -1,0 +1,99 @@
+input{margin:0 10px 10px 0 }
+.red{color:#bf0d3c}
+a.login{  float: right; margin-top: 10px;}
+div.login-error{color:#A94442; margin-top: 10px}
+div.logout{float:right; margin-top:10px}
+div.logout span{margin-right:5px}
+.clickable{cursor: pointer; margin-right:10px}
+.white-space{white-space: pre-line}
+h3.command{margin-top:0}
+div.emulator{margin-top: 20px;margin-bottom: 20px;}
+div.list-item{ padding: 5px}
+div.list{ margin-top: 30px;}
+
+.bar {
+  fill: steelblue;
+}
+
+.bar:hover {
+  fill: brown;
+}
+
+.axis {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
+}
+
+svg {
+      /*padding-left: 10px;*/
+}
+
+@media screen and (max-width: 991px) {
+     .img-responsive {
+       min-width: 70%;
+     }
+}
+
+@media screen and (max-width: 767px) {
+     .img-responsive {
+       min-width: 30%;
+     }
+}
+
+@media screen and (max-width: 479px) {
+     .img-responsive {
+       min-width: 10%;
+     }
+}
+
+.panel-body {
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-top: 0px;
+}
+ 
+
+.footer {
+  /* position: fixed; */
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  /* margin-top: 30px; */
+  background-color: #f8f8f8;
+  padding: 1em;
+  border: 1px solid #e7e7e7;
+}
+
+body {
+  margin-bottom: 5em;
+}
+
+.row-striped {
+  padding: .2em 0;
+}
+/* .row-striped:nth-of-type(odd){
+  background-color: #867d7d;
+} */
+.row-striped:nth-of-type(even){
+  background-color: #efefef;
+}
+
+
+.mainContent {
+    width: 100%;
+    height: 100%;
+    border-width: 0px;
+    overflow: auto;
+}

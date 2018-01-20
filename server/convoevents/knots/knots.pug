@@ -1,0 +1,87 @@
+//- knots.pug
+doctype html
+html(lang="en")
+   head
+      title Knots
+      meta(name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1")
+      link(href='https://fonts.googleapis.com/css?family=Roboto', rel='stylesheet', type='text/css')
+      link(href='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css', rel="stylesheet")
+      link(href='https://cdnjs.cloudflare.com/ajax/libs/Swiper/3.4.2/css/swiper.min.css', rel="stylesheet")
+      link(href='/styles/global.css', rel='stylesheet')
+      link(href='/styles/knots.css', rel='stylesheet')
+   body
+      .page-container
+
+         .page-conatiner__nav-bar
+            .nav-bar__title Fly-fishing Knots
+
+         .page-container__content
+            .page-content__container
+
+               .page__carousel-container
+                  .carousel-title all knots
+                  .carousel-subtitle (swipe/click to see knots)
+                  .swiper-container
+                     .swiper-wrapper
+                        each knot in knots.all
+                           .swiper-slide
+                              .carousel-item__knot-image(style='background-image: url(' + url+knot.image +')')
+                              span.carousel-item__description.black-text= knot.desc
+
+                     .swiper-button-next
+                     .swiper-button-prev
+
+               .page__carousel-container
+                  .carousel-title line to leader knots
+                  .carousel-subtitle (swipe/click to see knots)
+                  .swiper-container
+                     .swiper-wrapper
+                        each knot in knots.lineToLeader
+                           .swiper-slide
+                              .carousel-item__knot-image(style='background-image: url(' + url+knot.image +')')
+                              span.carousel-item__description.black-text= knot.desc
+
+                     .swiper-button-next
+                     .swiper-button-prev
+
+               .page__carousel-container
+                  .carousel-title fly to line knots
+                  .carousel-subtitle (swipe/click to see knots)
+                  .swiper-container
+                     .swiper-wrapper
+                        each knot in knots.flyToLine
+                           .swiper-slide
+                              .carousel-item__knot-image(style='background-image: url(' + url+knot.image +')')
+                              span.carousel-item__description.black-text= knot.desc
+
+                     .swiper-button-next
+                     .swiper-button-prev
+
+               .page__carousel-container
+                  .carousel-title tippet knots
+                  .carousel-subtitle (swipe/click to see knots)
+                  .swiper-container
+                     .swiper-wrapper
+                        each knot in knots.tibbetKnots
+                           .swiper-slide
+                              .carousel-item__knot-image(style='background-image: url(' + url+knot.image +')')
+                              span.carousel-item__description.black-text= knot.desc
+
+                     .swiper-button-next
+                     .swiper-button-prev
+
+      script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js")
+      script(src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/3.4.2/js/swiper.min.js")
+      script(type="text/javascript").
+         $(document).ready( function() {
+
+            var swiper = new Swiper('.swiper-container', {
+               nextButton: '.swiper-button-next',
+               prevButton: '.swiper-button-prev',
+               slidesPerView: 1,
+               spaceBetween: 20,
+               loop: true
+            });
+
+         });
+
