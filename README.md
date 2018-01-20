@@ -42,7 +42,9 @@ KHS{Convo} is a Node.js based platform for creating SMS and Web Based `conversat
 * Verify / Create a MongoDB database. 
     * `khs-convo` is being used for this demo. 
 
-* Update [server/config/index.js](server/config/index.js) property config script
+* Copy the `server/config/copy-to-indexjs.tmp` file to `index.js`. This is where config properties are set. 
+  
+  `Note:` The index.js file is ignored, to prevent accidental committing of configuraiton properties. 
     * MongoDB connection setting `mongodb: process.env.MONGODB_URI` ( See [MongoDB Config Doc](docs/mongodb.md) for more information )
     * Twillo account configuration ( See [Twilio Config Doc](docs/twilio.md) )
 
