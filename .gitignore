@@ -7,4 +7,4 @@ server/events/.git
 build/
 *.log
 server/appevents
-server/config/index.js
+server/config/*.js
