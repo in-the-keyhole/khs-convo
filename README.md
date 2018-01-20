@@ -437,7 +437,20 @@ KHS-Convo saves user's session reply data in a `Session` Mongodb collection. Thi
 
 The user can delete a session by texting "c", which will delete the event. 
 
-# Session Managment 
+# Sessions
+
+When a user invokes an event converstion from either twilio SMS or from the Web UI Dashboard, the request phone number is used to identify a user request. This request is persisted in the configured MongoDB instance. 
+
+### Timeout
+If a user conversation is inactive for a period of time(default 5 minutes), then the session and conversation will be ended.
+
+Only one conversation per user session is active at a time. So the conversation has to be completed by user, or a timeout before another converstion can begin.  
+
+Users can force the end of a conversation by texting an 'x'. This will end the session, so another can being. 
+
+By default a session time out is active for five minutes. This means a user converstion 
+
+
 
 
 # Dynamic HTML UI 
