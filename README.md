@@ -447,10 +447,9 @@ Only one conversation per user session is active at a time. So the conversation 
 
 Users can force the end of a conversation by texting an 'x'. This will end the session, so another can being. 
 
+![](docs/images/examples/session-end.png)
+
 By default a session time out is active for five minutes. This means a user converstion 
-
-
-
 
 # Dynamic HTML UI 
 
