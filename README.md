@@ -359,7 +359,12 @@ This state `reply` function must return a Promise and is supplied a session, req
 
 ### State Transition
 
-By Default, states transition sequentially, however you can `jump` to different states by 
+By Default, states transition sequentially, however you can `jump` to different states using the `transition` property with a transistion function that returns the next state to execute. 
+
+Here's a simple example of a transition function applied to a conversation that ... 
+
+   example taken from the `apointment.js` convo event 
+
 
 
 
