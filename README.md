@@ -361,25 +361,25 @@ This state `reply` function must return a Promise and is supplied a session, req
 
 By Default, states transition sequentially, however you can `jump` to different states using the `transition` property with a transistion function that returns the next state to execute. 
 
-Here's a simple example with that applies a `transition function`,   
-
-
-   applied to a conversation that ... 
+Here's a simple state definition example with that applies a `transition function', that based upon your birthday determines if you are legal to drink alcohol.
 
       ...
-      event.states = [
-            { reply: 'When you where born?', validator: 'date', transition:
-                     function(dateString) {
-                        var birthday = +new Date(dateString);
-                        var age =  ~~((Date.now() - birthday) / (31557600000));
-                        return age >= 21 ? 'legal' : 'illegal'; 
-                     } },
-                         
-            { reply: 'You are Legal to Drink', validator: 'date', postAction: 'stop', state: 'legal'},
-            { reply: 'To young to dring, sorry', validator: 'date', postAction: 'stop', state: 'illegal'}
-        ];
-        
-        ...
+       event.states = [
+        { reply: 'When you where born?', validator: 'date', state: 'ask'},
+        {    
+           transition:
+                 function(session, request, event) {
+                    var birthday = +new Date(request.question[0]);
+                    var age =  ~~((Date.now() - birthday) / (31557600000));
+                    return age >= 21 ? 'legal' : 'illegal'; 
+                 }, state: 'calc'},
+                     
+        { reply: 'You are Legal to Drink', postAction: 'stop', state: 'legal'},
+        { reply: 'To young to dring, sorry', postAction: 'stop', state: 'illegal'}
+    ];
+    ...
+    
+Notice the `tranisition` state that defines a function which returns a 'legal' or 'illegal' state id, based upon the age caulation. The `request` convo object is provided as input. 
 
 
 ### State Validation 
