@@ -445,11 +445,18 @@ If a user conversation is inactive for a period of time(default 5 minutes), then
 
 Only one conversation per user session is active at a time. So the conversation has to be completed by user, or a timeout before another converstion can begin.  
 
-Users can force the end of a conversation by texting an 'x'. This will end the session, so another can being. 
+Users can force the end of a conversation by texting an 'x'. This will end the session, so another can begin.
 
 ![](docs/images/examples/session-end.PNG)
 
-By default a session time out is active for five minutes. This means a user converstion 
+By default, a session time out is active for five minutes. This timeout period can be changed by setting the `session-timeout` config property in the `server/config/index.js` file.
+
+   ...
+   session_timeout: process.env.SESSION_TIMEOUT || 5
+   ...
+
+
+
 
 # Dynamic HTML UI 
 
