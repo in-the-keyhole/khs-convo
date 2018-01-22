@@ -366,18 +366,20 @@ Here's a simple example with that applies a `transition function`,
 
    applied to a conversation that ... 
 
+      ...
       event.states = [
-            { reply: 'Your appointment is tommorrow at 1:00 pm, can you make it (Y)es or (N)o?', validator: 'choice:y,n', desc: 'Appointment' },
-                {choices: [
-                    { choice: 'y', reply: 'Thank you, see you at 1:00', postAction: 'cancel' },
-                    { choice: 'n', reply: 'Would you like to schedule a different time (Y)es (N)o ?', validator: 'choice:y,n' }]
-            },
-                {choices: [
-                    { choice: 'Y', reply: 'Ok, new date time', postAction: 'cancel' },
-                    { choice: 'n', reply: 'Goodbye, call this number to reschedule 123-456-7890', postAction: 'cancel' }]
-            }
+            { reply: 'When you where born?', validator: 'date', transition:
+                     function(dateString) {
+                        var birthday = +new Date(dateString);
+                        var age =  ~~((Date.now() - birthday) / (31557600000));
+                        return age >= 21 ? 'legal' : 'illegal'; 
+                     } },
+                         
+            { reply: 'You are Legal to Drink', validator: 'date', postAction: 'stop', state: 'legal'},
+            { reply: 'To young to dring, sorry', validator: 'date', postAction: 'stop', state: 'illegal'}
         ];
-
+        
+        ...
 
 
 ### State Validation 
