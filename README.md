@@ -361,7 +361,7 @@ This state `reply` function must return a Promise and is supplied a session, req
 
 By Default, states transition sequentially, however you can `jump` to different states using the `transition` property with a transistion function that returns the next state to execute. 
 
-Here's a simple state definition example with that applies a `transition function', that based upon your birthday determines if you are legal to drink alcohol.
+Here's a simple state definition example with that applies a `transition function`, that based upon your birthday determines if you are legal to drink alcohol.
 
       ...
        event.states = [
@@ -474,8 +474,6 @@ By default, a session time out is active for five minutes. This timeout period c
    ...
    session_timeout: process.env.SESSION_TIMEOUT || 5
    ...
-
-
 
 
 # Dynamic HTML UI 
