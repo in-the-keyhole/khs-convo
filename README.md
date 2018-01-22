@@ -359,7 +359,7 @@ This state `reply` function must return a Promise and is supplied a session, req
 
 ### State Transition
 
-By Default, states transition sequentially, however they can 
+By Default, states transition sequentially, however you can `jump` to different states by 
 
 
 
