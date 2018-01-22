@@ -361,10 +361,22 @@ This state `reply` function must return a Promise and is supplied a session, req
 
 By Default, states transition sequentially, however you can `jump` to different states using the `transition` property with a transistion function that returns the next state to execute. 
 
-Here's a simple example of a transition function applied to a conversation that ... 
+Here's a simple example with that applies a `transition function`,   
 
-   example taken from the `apointment.js` convo event 
 
+   applied to a conversation that ... 
+
+      event.states = [
+            { reply: 'Your appointment is tommorrow at 1:00 pm, can you make it (Y)es or (N)o?', validator: 'choice:y,n', desc: 'Appointment' },
+                {choices: [
+                    { choice: 'y', reply: 'Thank you, see you at 1:00', postAction: 'cancel' },
+                    { choice: 'n', reply: 'Would you like to schedule a different time (Y)es (N)o ?', validator: 'choice:y,n' }]
+            },
+                {choices: [
+                    { choice: 'Y', reply: 'Ok, new date time', postAction: 'cancel' },
+                    { choice: 'n', reply: 'Goodbye, call this number to reschedule 123-456-7890', postAction: 'cancel' }]
+            }
+        ];
 
 
 
