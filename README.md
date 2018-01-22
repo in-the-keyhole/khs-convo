@@ -551,7 +551,9 @@ Here's the movies PUG template rendered in a mobile browser.
 Conversational Server Implementation
 
    $ docker build --tag convo .
+   
    $ docker run -d -p 27017:27017 --name mongo mongo
+   
    $ docker run -it -d --restart always -p3000:3000 --name convo convo
 
 
