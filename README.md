@@ -365,7 +365,7 @@ Here's a simple state definition example with that applies a `transition functio
 
       ...
        event.states = [
-        { reply: 'When you where born?', validator: 'date', state: 'ask'},
+        { reply: 'When you where born (mm/dd/yyyy) ?', validator: 'date', state: 'ask'},
         {    
            transition:
                  function(session, request, event) {
@@ -381,6 +381,7 @@ Here's a simple state definition example with that applies a `transition functio
     
 Notice the `tranisition` state that defines a function which returns a 'legal' or 'illegal' state id, based upon the age caulation. The `request` convo object is provided as input. 
 
+The complete listing for thie example can be found [here](server/convoevents/examples/alcholo.js).  You can invoke from the Emulator by texting "drink". 
 
 ### State Validation 
 
