@@ -13,6 +13,7 @@ KHS{Convo} is a Node.js based platform for creating SMS and Web Based `conversat
 
 * [Getting Started](#getting-started)
 * [SMS/Chatbot Emulator](#sms-chatbot-emulator)
+* [Configuration Properties](#configuration-properties)
 * [Event Loading](#event-loading-directory)
 * [Configuring SMS](#configuring-sms)
 * [API Server](#api-server)
@@ -117,19 +118,6 @@ A successful upload will be indicated.
 
 `3.` To test, navigate to the `Emulator` view, and type in `convo` in the Emulator to invoke the uploaded convo event.  
 
-# Event Loading Directory 
-
-When the Dashboard is started it will automatically load KHS{Conov} events stored in the default `/server/convoevents` directory. You can see the example Convo events defined in that directory. 
-
-![](docs/images/events-dir.png)
-
-An alternative directory can be specified by specifiying by specifiying it in the `server/config/index.js` property configuration module. 
-
-    ...
-    event_dir: process.env.event_dir || './server/convoevents',
-    ...
-
-Events that are successfully loaded are displayed in the `Emulator` and `Upload` dashboard views.
 
 # Configuration Properties
 
@@ -197,7 +185,19 @@ Here are properties annotated with descriptions.
     smtp_user: 'grokola@keyholesoftware.com',
     smtp_password: '%KeyholeGrokola',
   
+# Event Loading Directory 
 
+When the Dashboard is started it will automatically load KHS{Conov} events stored in the default `/server/convoevents` directory. You can see the example Convo events defined in that directory. 
+
+![](docs/images/events-dir.png)
+
+An alternative directory can be specified by specifiying by specifiying it in the `server/config/index.js` property configuration module. 
+
+    ...
+    event_dir: process.env.event_dir || './server/convoevents',
+    ...
+
+Events that are successfully loaded are displayed in the `Emulator` and `Upload` dashboard views.
 
 # Configuring SMS
 
