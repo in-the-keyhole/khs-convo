@@ -232,7 +232,8 @@ Response-Type: application/xml
         - To = `+19132703506`
         - From = `+15555555555`
         
-    + The request `header` must have a key named "token" with a value matching the api_token value in the [config file](#configuration-properties)
+    + Request `Header` -  Key/Value with a key named "token" with a value matching the api_token value in the [config file](#configuration-properties)
+         - Token = `token value from config'
 
 The `Body` key value pair is the Convo event command. In the case above it is the `Hello` command.
 
