@@ -23,7 +23,7 @@ module.exports = {
     passwordCrypto: process.env.passwordCrypto || "k2312lk3m12l31",
 
 
-    api_token: process.env.api_token || 'abc',
+    api_token: process.env.api_token || 'changemeplease',
 
 
     mongodb: process.env.MONGODB_URI || 'mongodb://localhost:27017/khs-convo',
@@ -31,7 +31,7 @@ module.exports = {
     event_dir: process.env.event_dir || './server/convoevents',
 
     
-    session_timeout: process.env.SESSION_TIMEOUT || 5
+    session_timeout: process.env.SESSION_TIMEOUT || 5,
 
     timerevent_dir: './server/timerevents',
     timerevent_timerName_default: 'Unnamed Timer',
