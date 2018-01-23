@@ -20,7 +20,8 @@ KHS{Convo} is a Node.js based platform for creating SMS and Web Based `conversat
 * [Implementing a Conversation](#implementing-a-conversation)
 * [Conversation State Machine](#conversation-state-machine)
 * [Session Management](#session-management)
-* [Generating a Dynamic UI](#dynamic-html-ui)
+* [Session Management](#session-management)
+* [Starting a Conversation from an Application](#starting-a-conversation-from-an-application)
 * [Creating and Running with Docker](#creating-and-running-with-docker)
 
 # Getting Started
@@ -546,11 +547,22 @@ By default, a session time out is active for five minutes. This timeout period c
    session_timeout: process.env.SESSION_TIMEOUT || 5
    ...
 
-# Starting a Conversation with an API call
+# Starting a Conversation from an Application
 
 Users can initiate a conversational event by Texting an event word through an SMS client or the UI Dashboard. You can also start a Conversation with an API call. This enables applications from starting conversations with a user base. 
 
 The hello world conversation can be invoked wih the following `Post` command 
+
+Response-Type: application/xml
+
+* `POST` http://<server:30001>/api/convo/sms
+    + Request Body `Content-Type: application/json`
+        - Body = `hello`
+        - To = `+1913XXXYYYY`  Number that will recieve text conversation
+        - From = `+15555555555` Twilio number you are sending message from
+        
+    + Request `Header` -  Key/Value with a key named "token" with a value matching the `api_token` value in the [config file](#configuration-properties)
+         - Token = `token value from config`
 
 
 # Dynamic HTML UI 
