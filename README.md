@@ -131,6 +131,16 @@ An alternative directory can be specified by specifiying by specifiying it in th
 
 Events that are successfully loaded are displayed in the `Emulator` and `Upload` dashboard views.
 
+# Configuration Properties
+
+Configuration properites are defined int he [`server/config/index.js'](server/config/index.js) file. There are default value properties supplied, that can be changed or set by `Enviroment Variables`. Using environment variables for sensitive and environment specific properties supports portability. 
+
+Here's a table and definition of configuration values 
+
+
+
+
+
 # Configuring SMS
 
 The convo server does not require an SMS messaging provider. You can invoke server conversation api's directly through the Emulator, or directly with a tool like Postman. 
