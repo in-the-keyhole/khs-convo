@@ -65,6 +65,7 @@ function auth(username, password) {
                                 );
 
                                 user.token = token;
+                                user.apitoken = config.api_token;
 
                                 return resolve(user);
                             }

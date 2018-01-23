@@ -14,18 +14,37 @@ limitations under the License.
 module.exports = {
     port: process.env.PORT || 3001,
     url: process.env.HEROKU_URL || 'http://localhost:3001/' ,
+
+
     jwt_secret: process.env.jwt_secret || 'lfanflaefknawelf',
     jwt_expires: process.env.jwt_expires || 3600,
-    mongodb: process.env.MONGODB_URI || 'mongodb://localhost:27017/khs-convo',
+
+  
     passwordCrypto: process.env.passwordCrypto || "k2312lk3m12l31",
+
+
+    api_token: process.env.api_token || 'abc',
+
+
+    mongodb: process.env.MONGODB_URI || 'mongodb://localhost:27017/khs-convo',
+
     event_dir: process.env.event_dir || './server/convoevents',
+
+    
+    session_timeout: process.env.SESSION_TIMEOUT || 5
+
     timerevent_dir: './server/timerevents',
     timerevent_timerName_default: 'Unnamed Timer',
     timerevent_callbackDelay_default: 60*1000,
     timerevent_callbackMaxRun_default: 0,
+
+
     uploaded_event_dir: './server/services/convo/events',
+    
     template_dir: process.env.template_dir || 'server/convoevents',
+    
     ping_url: process.env.PING_URL || 'http://khs-convo-dev.herokuapp.com',
+    
     slack: {
         webhookUri: 'your slack webhook here',
         channel:  '<channel name>',
@@ -33,9 +52,14 @@ module.exports = {
         successMessage:  'You Success Message here',
         failureMessage: 'You failure message here '
     },
+
     twilio: {
         accountSid: process.env.accountSid || '<twilio account sid>',
         authToken: process.env.authToken || '<twilio auth token>',
         phone: process.env.PHONE || '<twilio phone #?'
     },
+
+    smtp_user: 'grokola@keyholesoftware.com',
+    smtp_password: '%KeyholeGrokola',
+  
 }

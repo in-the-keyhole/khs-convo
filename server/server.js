@@ -61,7 +61,6 @@ app.use('/*', function(req, res){
 //listen on port in config || convo_port env 
 http.createServer(app).listen(config.port, () => {
     logger.info('App Listening on port: ' + config.port);
-
     timerEventLoader.load();
 });
 

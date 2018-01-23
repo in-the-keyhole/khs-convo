@@ -55,6 +55,7 @@ class Login extends Component {
             window.sessionStorage.setItem('lastName', res.data.LastName);
             window.sessionStorage.setItem('phone', res.data.Phone);
             window.sessionStorage.setItem('status', res.data.Status);
+            window.sessionStorage.setItem('apitoken', res.data.apitoken);
             window.location = ('/emulator');
         }).catch(function(err){
             self.setState({loginError: 'Username or password incorrect. Please try again.'});

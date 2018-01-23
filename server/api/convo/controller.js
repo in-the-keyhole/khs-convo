@@ -223,6 +223,11 @@ function post(req, res) {
     result.rawQuestion = body;
     result.raw = req.body;
   
+    if (!isTokenValid(req)) {
+        res.end("Invalid API token");
+        return;
+    } 
+
     ConvoService.findAnswer(result)
         .then(function(result) {
             var twiml = new MessagingResponse();
@@ -375,7 +380,12 @@ function sms(req,res) {
 
     var event;
     var convo = request.question[0];
-  
+
+    if (!isTokenValid(req)) {
+        res.end("Invalid API token");
+        return;
+    }   
+
      return new Promise(function (resolve, reject) {
 
       for (var i = 0; i < events.length; i++) {
@@ -453,6 +463,16 @@ function processRequest(req) {
     return result; 
 }
 
+function isTokenValid(req) {
+    var token = req.headers['token']; 
+    if (token) {
+        if (token === config.api_token) {
+            return true;
+        }
+    } 
+
+    return false;
+}
 
 
 module.exports = {

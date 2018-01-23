@@ -126,7 +126,8 @@ class Emulator extends Component {
             ajax({
                 method:'POST',
                 url:'/api/convo',
-                data: payload
+                data: payload,
+                headers: {"token": window.sessionStorage.getItem('apitoken') }
             }).then(function(res) {
 
                 self.setState({ Body: "" });
@@ -172,7 +173,8 @@ class Emulator extends Component {
         ajax({
             method: 'POST',
             url: '/api/convo',
-            data: myData
+            data: myData,
+            headers: {"token": window.sessionStorage.getItem('apitoken') }
         }).then(function (res) {
             var re = /(.*)[\n\r]/g;
             var tempString = res.data;
@@ -328,6 +330,9 @@ class Emulator extends Component {
         });
 
     }
+
+
+
     render() {
         var conversationElements = this.renderConversation();
         var editable =  false;
@@ -397,5 +402,11 @@ class Emulator extends Component {
         )
     }
 }
+
+
+
+
+
+
 
 export default Emulator
