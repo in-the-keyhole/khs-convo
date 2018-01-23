@@ -546,6 +546,12 @@ By default, a session time out is active for five minutes. This timeout period c
    session_timeout: process.env.SESSION_TIMEOUT || 5
    ...
 
+# Starting a Conversation with an API call
+
+Users can initiate a conversational event by Texting an event word through an SMS client or the UI Dashboard. You can also start a Conversation with an API call. This enables applications from starting conversations with a user base. 
+
+The hello world conversation can be invoked wih the following `Post` command 
+
 
 # Dynamic HTML UI 
 
