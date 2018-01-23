@@ -135,10 +135,68 @@ Events that are successfully loaded are displayed in the `Emulator` and `Upload`
 
 Configuration properites are defined int he [`server/config/index.js'](server/config/index.js) file. There are default value properties supplied, that can be changed or set by `Enviroment Variables`. Using environment variables for sensitive and environment specific properties supports portability. 
 
-Here's a table and definition of configuration values 
+Here are properties annotated with descriptions.
+
+    port: process.env.PORT || 3001,
+    url: process.env.HEROKU_URL || 'http://localhost:3001/' ,
+
+    // used to encrypt admin ui JWT password
+    jwt_secret: process.env.jwt_secret || 'lfanflaefknawelf',
+    jwt_expires: process.env.jwt_expires || 3600,
+
+     // UI Dashboard user password encyrption key
+    passwordCrypto: process.env.passwordCrypto || "k2312lk3m12l31",
+
+    // API integration token, don't use default for production, specify one  
+    api_token: process.env.api_token || 'abc',
 
 
+    // MONGO DB URI
+    mongodb: process.env.MONGODB_URI || 'mongodb://localhost:27017/khs-convo',
 
+    // Even upload directory
+    event_dir: process.env.event_dir || './server/convoevents',
+
+    
+    // Conversation session timeout in minutes
+    session_timeout: process.env.SESSION_TIMEOUT || 5
+
+
+    // Scheduled Timer properties
+    timerevent_dir: './server/timerevents',
+    timerevent_timerName_default: 'Unnamed Timer',
+    timerevent_callbackDelay_default: 60*1000,
+    timerevent_callbackMaxRun_default: 0,
+
+    // Event upload directory 
+
+    uploaded_event_dir: './server/services/convo/events',
+    
+    // PUG template directory
+    template_dir: process.env.template_dir || 'server/convoevents',
+    
+    ping_url: process.env.PING_URL || 'http://khs-convo-dev.herokuapp.com',
+    
+    // Notification Slack configuration
+    slack: {
+        webhookUri: 'your slack webhook here',
+        channel:  '<channel name>',
+        userName: '<user name>',
+        successMessage:  'You Success Message here',
+        failureMessage: 'You failure message here '
+    },
+
+    // Twillio Configuration
+    twilio: {
+        accountSid: process.env.accountSid || '<twilio account sid>',
+        authToken: process.env.authToken || '<twilio auth token>',
+        phone: process.env.PHONE || '<twilio phone #?'
+    },
+   
+    // SMTP Configuration 
+    smtp_user: 'grokola@keyholesoftware.com',
+    smtp_password: '%KeyholeGrokola',
+  
 
 
 # Configuring SMS
