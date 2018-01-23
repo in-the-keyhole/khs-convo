@@ -16,8 +16,7 @@ var _ = require('lodash');
 
 var sendmail = require('sendmail')({silent: false})
 var nodemailer = require('nodemailer');
-const smtpUser = config.smtp_user;
-const smtpPassword = config.smtp_password;
+const emailConfig = config.email;
 
 var nodeSchedule = require('node-schedule');
 
@@ -115,11 +114,11 @@ function chooseChannels(msg, group){
 var sendEmail = function( msg, group ){
 
     let transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        service: 'Gmail',
+        host: emailConfig.smtp_host,
+        service: emailConfig.smtp_service,
         auth: {
-            user: smtpUser,
-            pass: smtpPassword
+            user: emailConfig.smtp_user,
+            pass: emailConfig.smtp_password
         }
     });
 
@@ -131,9 +130,9 @@ var sendEmail = function( msg, group ){
                         if (user.Username) {
 
                             let mailOptions = {
-                                from: 'no-reply@convo.com',
+                                from: emailConfig.from,
                                 to: user.Username,
-                                subject: 'Convo message',
+                                subject: emailConfig.notify_subject,
                                 html: msg
                             };
 

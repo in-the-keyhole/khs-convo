@@ -39,8 +39,7 @@ var fs = require('fs');
 const path = require('path');
 const util = require('util');
 var events = require('../../services/convo/events');
-const smtpUser = config.smtp_user;
-const smtpPassword = config.smtp_password;
+const emailConfig = config.email;
 
 let platform = process.platform;
 let hostPath = '\\convoevents\\';
@@ -362,18 +361,18 @@ function sendRegistrationEmail(req, res) {
                     '">Click this link to register for Convo.</a>';
 
     var transporter = nodemailer.createTransport({
-            host: 'smtp.gmail.com',
-            service: 'Gmail',
+            host: emailConfig.smtp_host,
+            service: emailConfig.smtp_service,
             auth: {
-                user: smtpUser,
-                pass: smtpPassword
+                user: emailConfig.smtp_user,
+                pass: emailConfig.smtp_password
             }
         });
 
     let mailOptions = {
-        from: 'no-reply@convo.com',
+        from: emailConfig.from,
         to: req.body.RegistrationEmail,
-        subject: 'Register for Convo',
+        subject: emailConfig.register_subject,
         html: msgBody
     }
 
