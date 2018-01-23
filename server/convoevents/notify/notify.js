@@ -46,35 +46,25 @@ module.exports = function (events) {
         
             var scheduleExists = typeof request.schedule !== 'undefined';
             if(scheduleExists) {
-                //console.log('SCHEDULE');
-                //console.dir(request.schedule);
-
                 var scheduleDateExists = typeof request.schedule.date !== 'undefined' && !isEmpty(request.schedule.date);
-                //console.log("DATE EXISTS: " + scheduleDateExists);
                 var scheduleTimeExists = typeof request.schedule.time !== 'undefined' && !isEmpty(request.schedule.time);
-                //console.log("TIME EXISTS: " + scheduleTimeExists);
 
                 if(scheduleDateExists) {
                     var requestScheduleDate = request.schedule.date;
                     var requestScheduleTime = '';
 
                     if(scheduleTimeExists) {
-                        //console.log("TIME EXISTS");
                         requestScheduleTime = request.schedule.time;
                     } else {
-                        //console.log("NOW");
                         var now = new Date();
                         requestScheduleTime = now.getHours() + ':' + now.getMinutes();
                     }
-                    //console.log("REQUESTSCHEDULEDATE: " + requestScheduleDate);
-                    //console.log("REQUESTSCHEDULETIME: " + requestScheduleTime);
 
                     var dateParts = requestScheduleDate.split('-');
                     var timeParts = requestScheduleTime.split(':');
 
                     var scheduleDate = new Date(dateParts[0], parseInt(dateParts[1])-1, dateParts[2], timeParts[0], timeParts[1], 0);
                     var isInTheFuture = scheduleDate > Date.now();
-                    //console.log("IS IN THE FUTURE: " + isInTheFuture);
 
                     if(isInTheFuture) {
                         var j = nodeSchedule.scheduleJob(scheduleDate, function(){
@@ -87,7 +77,6 @@ module.exports = function (events) {
                     chooseChannels(msg, group);
                 }
             } else {
-                //console.log('EMPTY SCHEDULE');
                 chooseChannels(msg, group);
             }
 

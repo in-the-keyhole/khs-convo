@@ -49,8 +49,12 @@ class NotifyEmulator extends Component {
 
         if(target.name === 'scheduleDate') {
             var now = new Date();
+            var hours = now.getHours();
+            var mins = now.getMinutes()+1;
+            hours = (hours < 10 ? '0' : '') + hours;
+            mins = (mins < 10 ? '0' : '') + mins;
             this.setState({
-                scheduleTime: now.getHours() + ':' + (now.getMinutes()+1)
+                scheduleTime: hours + ':' + mins
             });
         }
     }
