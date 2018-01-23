@@ -97,3 +97,7 @@ body {
     border-width: 0px;
     overflow: auto;
 }
+
+.notificationsHeaderStyle {
+  border-bottom: 1px solid #000;
+}

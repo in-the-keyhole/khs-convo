@@ -140,9 +140,6 @@ class GroupUserList extends Component {
             <option key={user.uuid} value={user.uuid}>{user.Name} - {user.Username}</option>
         );
 
-        const headerStyle = {
-            borderBottom: '1px solid #000'
-        };
         const userlistStyle = {
             paddingLeft: '.3em',
             paddingTop: '.8em'
@@ -161,7 +158,7 @@ class GroupUserList extends Component {
 
                 <div className="row">
                     <div className="col-md-12">
-                        <h4 style={headerStyle}>Send To</h4>
+                        <h4 className="notificationsHeaderStyle">Send To</h4>
                         <Checkbox name="checkSMS" checked={this.props.group.checkSMS} onChange={this.handleChange}>SMS</Checkbox>
                         <Checkbox name="checkEmail" checked={this.props.group.checkEmail} onChange={this.handleChange}>Email</Checkbox>
                         <Checkbox name="checkSlack" checked={this.props.group.checkSlack} onChange={this.handleChange}>Slack</Checkbox>
@@ -170,7 +167,7 @@ class GroupUserList extends Component {
 
                 <div className="row">
                     <div className="col-md-12">
-                        <h4 style={headerStyle}>Users</h4>
+                        <h4 className="notificationsHeaderStyle">Users</h4>
                         
                         <div className="row">
                             <div className="col-xs-10">
