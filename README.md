@@ -9,6 +9,8 @@ KHS{Convo} is a Node.js based platform for creating SMS and Web Based `conversat
 
 [UI Dashboard](docs/admin-dashboard.md) - ReactJS UI Dashboard that has features of Dynamic Loading, Analytics, and testing {KHS}Convo events  
 
+[Notification Center](docs/notification-center.md) - Schedule, and notifiy Users through SMS, Slack, and Email. 
+
 ## Table of Contents 
 
 * [Getting Started](#getting-started)
