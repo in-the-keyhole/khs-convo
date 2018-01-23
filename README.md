@@ -1,15 +1,15 @@
 
-![](docs/images/convo.png) *built by [Keyhole Software](https://keyholesoftware.com)*
+![](docs/images/ConvoLogo.png) *built by [Keyhole Software](https://keyholesoftware.com)*
 
-KHS{Convo} is a Node.js based platform for creating SMS and Web Based `conversational` experiences. 
+KHS{Convo} is a Node.js-based platform for creating SMS and Web-based `conversational` experiences. 
 
 ## Guides 
 
-[Examples](docs/examples.md) - Best way to learn how to implement your own conversational {KHS}Convo app
+[Examples](docs/examples.md) - Best way to learn how to implement your own conversational {KHS} Convo app.
 
-[UI Dashboard](docs/admin-dashboard.md) - ReactJS UI Dashboard that has features of Dynamic Loading, Analytics, and testing {KHS}Convo events  
+[UI Dashboard](docs/admin-dashboard.md) - ReactJS UI Dashboard that has features of Dynamic Loading, Analytics, and testing {KHS} Convo events.  
 
-[Notification Center](docs/notification-center.md) - Schedule, and notifiy Users through SMS, Slack, and Email. 
+[Notification Center](docs/notification-center.md) - Schedule and notifiy users through SMS, Slack, and Email. 
 
 ## Table of Contents 
 
