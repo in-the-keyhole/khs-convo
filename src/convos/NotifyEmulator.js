@@ -85,7 +85,8 @@ class NotifyEmulator extends Component {
         ajax({
             method:'POST',
             url:'/api/convo',
-            data: payload
+            data: payload,
+            headers: {"token": window.sessionStorage.getItem('apitoken') }
         }).then(function(res) {
 
             self.setState({  
