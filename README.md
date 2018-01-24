@@ -11,6 +11,8 @@ KHS{Convo} is a Node.js-based platform for creating SMS and Web-based `conversat
 
 [Notification Center](docs/notification-center.md) - Schedule and notify users through SMS, Slack, and Email. 
 
+[Twilio Configuration](docs/twilio.md) - Schedule and notify users through SMS, Slack, and Email. 
+
 ## Table of Contents 
 
 * [Getting Started](#getting-started)
