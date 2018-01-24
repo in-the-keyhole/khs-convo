@@ -119,7 +119,6 @@ class App extends Component {
                       <MenuItem eventKey={2.1} href="/analytics/visitors">Visitors</MenuItem>
                     </NavDropdown>
                     <NavDropdown eventKey={4} title="Convos" id="nav-dropdown">
-                      <MenuItem eventKey={4.1} href="/convos/tailwater">Tailwater</MenuItem>
                       <MenuItem eventKey={4.2} href="/convos/notifications">Notifications</MenuItem>
 
                       
