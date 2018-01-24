@@ -25,7 +25,7 @@ Here are the steps to configure a Twilio SMS service that points to KHS{Convo}
 
 `6.` Enter the configuration options shown below, and `save`.
 
-   ![](./images/twilio.png)  
+   ![](./images/twilio-config.png)  
 
 
 ## Configuring KHS{Convo} 
