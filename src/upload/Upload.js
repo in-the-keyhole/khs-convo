@@ -244,8 +244,13 @@ class Upload extends Component {
         let newDirectory = self.state.newDirectory;
         let currentDirectory = self.state.CurrentDirectory;
 
+
+        var base = window.location.hostname;
+        if (window.location.hostname === 'localhost'){
+            base = 'http://localhost:3001'
+        }
         superagent
-            .post('../api/admin/fileupload')
+            .post(base+ '/api/admin/fileupload')
             .query({ directory: currentDirectory })
             .query({ newDirectory: newDirectory })
             .send(data)

@@ -1,15 +1,15 @@
 
-![](docs/images/convo.png) *built by [Keyhole Software](https://keyholesoftware.com)*
+![](docs/images/ConvoLogo.png) *built by [Keyhole Software](https://keyholesoftware.com)*
 
-KHS{Convo} is a Node.js based platform for creating SMS and Web Based `conversational` experiences. 
+KHS{Convo} is a Node.js-based platform for creating SMS and Web-based `conversational` experiences. 
 
 ## Guides 
 
-[Examples](docs/examples.md) - Best way to learn how to implement your own conversational {KHS}Convo app
+[Examples](docs/examples.md) - Best way to learn how to implement your own conversational {KHS} Convo app.
 
-[UI Dashboard](docs/admin-dashboard.md) - ReactJS UI Dashboard that has features of Dynamic Loading, Analytics, and testing {KHS}Convo events  
+[UI Dashboard](docs/admin-dashboard.md) - ReactJS UI Dashboard that has features of Dynamic Loading, Analytics, and testing of {KHS} Convo events.  
 
-[Notification Center](docs/notification-center.md) - Schedule, and notifiy Users through SMS, Slack, and Email. 
+[Notification Center](docs/notification-center.md) - Schedule and notify users through SMS, Slack, and Email. 
 
 ## Table of Contents 
 
@@ -28,7 +28,7 @@ KHS{Convo} is a Node.js based platform for creating SMS and Web Based `conversat
 
 # Getting Started
 
-### Install Prerequistes
+### Install Prerequisites
 
 * [Node.js](https://nodejs.org)
 * [MongoDB](https://www.mongodb.com)
@@ -36,12 +36,12 @@ KHS{Convo} is a Node.js based platform for creating SMS and Web Based `conversat
     * Note: there is currently an issue with using the free mongodb atlas instance.
         * TODO: seems to be related to the ssl, but not sure  
 
-* [Twillo](https://www.twilio.com/) account (Optional)
-    * The UI Dashboards built in Emulator can be used to test the interactions
+* [Twilio](https://www.twilio.com/) account (Optional)
+    * The UI Dashboard's built-in Emulator can be used to test the interactions
 
 ### Setup Environment
 
-* After `cloning` this repository run the command:
+* After `cloning` this repository, run the command:
     > `npm install` 
 
 * Verify / Create a MongoDB database. 
@@ -49,9 +49,9 @@ KHS{Convo} is a Node.js based platform for creating SMS and Web Based `conversat
 
 * Copy the `server/config/copy-to-indexjs.tmp` file to `index.js`. This is where config properties are set. 
   
-  `Note:` The index.js file is ignored, to prevent accidental committing of configuraiton properties. 
+  `Note:` The index.js file is ignored to prevent accidental committing of configuration properties. 
     * MongoDB connection setting `mongodb: process.env.MONGODB_URI` ( See [MongoDB Config Doc](docs/mongodb.md) for more information )
-    * Twillo account configuration ( See [Twilio Config Doc](docs/twilio.md) )
+    * Twilio account configuration ( See [Twilio Config Doc](docs/twilio.md) )
 
 * Create an Admin User with the following command. 
     * This will create an admin user with a userid of `admin` and prompt for a password. 
@@ -60,7 +60,7 @@ KHS{Convo} is a Node.js based platform for creating SMS and Web Based `conversat
 * Start the API and UI servers on port 3001. 
     > `npm run startdev`
 
-* The ReactJS UI Dashboard should have opened in a browser, if not click this link [http://localhost:3000](http://localhost:3001).
+* The ReactJS UI Dashboard should have opened in a browser. If not, click this link [http://localhost:3000](http://localhost:3001).
 
 * You can then login to the UI Dashboard with the `admin` userid and the password you entered.  Go to this [Link](docs/admin.md) for more information.
 
@@ -72,13 +72,13 @@ KHS{Convo} Timer Events can be created to run code at any particular interval an
 
 # SMS Chatbot Emulator
 
-KHS{Convo} SMS events can be tested from the Dashboard, by selecting the Emulator and typing 'hello' or one the Convo events listed in the emulator. 
+KHS{Convo} SMS events can be tested from the Dashboard by selecting the Emulator and typing 'hello' or one the Convo events listed in the emulator. 
 
 ![](docs/images/convo-emulator.png)
 
 ### Your first Hello World Convo event
 
-KHS{Convo} makes it easy to create an SMS conversation.  Follow the steps below to define and execute a simple conversational application. 
+KHS{Convo} makes it easy to create an SMS conversations. Follow the steps below to define and execute a simple conversational application. 
 
 `1.` In an editor of choice, create a JS file named  `helloconvo.js` with the contents shown below. 
 
@@ -114,9 +114,9 @@ KHS{Convo} makes it easy to create an SMS conversation.  Follow the steps below 
 
     }
 
-`2.` Using the Dashboard `Upload` option, load the KHS{convo} SMS event.
+`2.` Using the Dashboard `Upload` option, load the KHS {Convo} SMS event.
 
-Drag and drop or select `Upload` option to upload the convo JavaScript file you defined. You can put it in any folder. 
+Drag and drop or select `Upload` option to upload the Convo JavaScript file you defined. You can put it in any folder. 
 A successful upload will be indicated. 
 
 `3.` To test, navigate to the `Emulator` view, and type in `convo` in the Emulator to invoke the uploaded convo event.  
@@ -124,7 +124,7 @@ A successful upload will be indicated.
 
 # Configuration Properties
 
-Configuration properites are defined int he [`server/config/index.js'](server/config/index.js) file. There are default value properties supplied, that can be changed or set by `Enviroment Variables`. Using environment variables for sensitive and environment specific properties supports portability. 
+Configuration properties are defined in the [`server/config/index.js'](server/config/index.js) file. There are default value properties supplied that can be changed or set by `Environment Variables`. Using environment variables for sensitive and environment-specific properties supports portability. 
 
 Here are properties annotated with descriptions.
 
@@ -135,7 +135,7 @@ Here are properties annotated with descriptions.
     jwt_secret: process.env.jwt_secret || 'lfanflaefknawelf',
     jwt_expires: process.env.jwt_expires || 3600,
 
-     // UI Dashboard user password encyrption key
+     // UI Dashboard user password encryption key
     passwordCrypto: process.env.passwordCrypto || "k2312lk3m12l31",
 
     // API integration token, don't use default for production, specify one  
@@ -177,7 +177,7 @@ Here are properties annotated with descriptions.
         failureMessage: 'You failure message here '
     },
 
-    // Twillio Configuration
+    // Twilio Configuration
     twilio: {
         accountSid: process.env.accountSid || '<twilio account sid>',
         authToken: process.env.authToken || '<twilio auth token>',
@@ -190,11 +190,11 @@ Here are properties annotated with descriptions.
   
 # Event Loading Directory 
 
-When the Dashboard is started it will automatically load KHS{Conov} events stored in the default `/server/convoevents` directory. You can see the example Convo events defined in that directory. 
+When the Dashboard is started, it will automatically load KHS {Convo} events stored in the default `/server/convoevents` directory. You can see the example Convo events defined in that directory. 
 
 ![](docs/images/events-dir.png)
 
-An alternative directory can be specified by specifiying by specifiying it in the `server/config/index.js` property configuration module. 
+An alternative directory can be specified by specifiying it in the `server/config/index.js` property configuration module. 
 
     ...
     event_dir: process.env.event_dir || './server/convoevents',
@@ -204,28 +204,28 @@ Events that are successfully loaded are displayed in the `Emulator` and `Upload`
 
 # Configuring SMS
 
-The convo server does not require an SMS messaging provider. You can invoke server conversation api's directly through the Emulator, or directly with a tool like Postman. 
+The convo server does not require a SMS messaging provider. You can invoke server conversation APIs directly through the Emulator, or directly with a tool like Postman. 
 
 
 
 
-Event API's can be invoked from an SMS messaging provider, such as Twilio with the instructions shown below. 
+Event APIs can be invoked from an SMS messaging provider, such as Twilio with the instructions shown below. 
 
 #### [Twilio Configuration Steps](docs/twilio.md)
 
 # API Server
 
-You can start just the API server with Convo, without the UI dashboard. This can be helpful when debugging Convo events. or invoking the Conversational Events from a Chatbot or interface other than SMS provider. 
+You can start just the API server with Convo, without the UI dashboard. This can be helpful when debugging Convo events or invoking the Conversational Events from a Chatbot or interface other than SMS provider. 
 
-Execute the command below from a command shell to start just the API server. Note, the API server is avalaible via Port `3001` it the Dashboard is running. This allows the API only server to be started. 
+Execute the command below from a command shell to start just the API server. Note: the API server is available via Port `3001` if the Dashboard is running. This allows the API only server to be started. 
 
     > npm start
 
-This will start an `Express` server on port `30001` by default. And is sometimes useful when you want to test and debug, and user Convo API's other than from an SMS provider. 
+This will start an `Express` server on port `30001` by default. And is sometimes useful when you want to test and debug end user Convo APIs other than from an SMS provider. 
 
-The Twilio account will forward text messages to Convo with a `POST` http API call.
+The Twilio account will forward text messages to Convo with a `POST` HTTP API call.
 
-Using a tool like `Postman` you can emulate a Twilio request with the following POST command
+Using a tool like `Postman`, you can emulate a Twilio request with the following POST command.
 
 Response-Type: application/xml
 
@@ -247,7 +247,7 @@ Result response are returned in the format shown below.
     + Response `Content-Type: application/xml`
         - Message = `Hello! David`
 
-Here's and example `POSTMAN` Screen shot that executes the `hello` Convo event. 
+Here's an example `POSTMAN` screenshot that executes the `hello` Convo event. 
 
 ![](docs/images/examples/postman-api.png)
 
@@ -302,7 +302,7 @@ An event module `must` create an event object with the following `properties` an
 
 #### Request Object 
 
-An example request supplied to the `run` object is supplied by the Twilio API is shown below.  The additional properties in the POSTSed object are supplied by the Twilio service.  
+An example request supplied to the `run` object by the Twilio API is shown below. The additional properties in the POSTSed object are supplied by the Twilio service.  
 
     { phone: '9134885577',
     question: [ 'hello' ],
@@ -339,9 +339,9 @@ An example request supplied to the `run` object is supplied by the Twilio API is
         Username: 'dpitt',
         Status: 'admin' } }
 
-Notice how the request objects properties. `The question/message` the user texted is contained in an array in the `question` property. The `me` property contains user information that texted, if they exist in the User database. 
+Notice how the request objects properties. `The question/message` the user texted is contained in an array in the `question` property. The `me` property contains user information that was texted, if they exist in the User database. 
 
-JavaScript events have access to request objects as a parameter in the `run` function. The example snippet below show the request object in use.
+JavaScript events have access to request objects as a parameter in the `run` function. The example snippet below shows the request object in use.
    
     ...
     event.run = function (request) {
@@ -357,9 +357,9 @@ JavaScript events have access to request objects as a parameter in the `run` fun
 
 # State Machine
 
-Convo applies a state machine algorithm that simplifies impementing a conversational experience.  Event objects can be assigned an array of State definitions. A state is defined for each interaction between a users text message and the convo event.   
+Convo applies a state machine algorithm that simplifies implementing a conversational experience. Event objects can be assigned an array of State definitions. A state is defined for each interaction between a user's text message and the convo event.   
 
-As an example, consider an example appointement scheduling converstation, which uses the `state machine module`. Notice the states definition for the event. 
+As an example, consider an example appointment scheduling conversation which uses the `state machine module`. Notice the states definition for the event. 
 
     var StateService = require('../../stateservice');
 
@@ -398,17 +398,17 @@ As an example, consider an example appointement scheduling converstation, which 
 
     }
 
-Here's some screen shots showing the appointmemnt events conversation...
+Here are some screen shots showing the appointment events conversation...
 
 ![appt-convo](docs/images/appt-convo.png)
 
-### Making it Real
+### Making It Real
 
-The `Appointment` convo event is just an example and has "hard coded" elements, such as the appointmemnt time for the user texting. In reality, the appointment time should be dynamically looked up, and displayed for each texting user. 
+The `Appointment` convo event is just an example and has "hard coded" elements, such as the appointment time for the user texting. In reality, the appointment time should be dynamically looked up and displayed for each texting user. 
 
 Instead of replying with a String, a function can be referenced. This function will be supplied with a request argument and state information. Here's how an appointment look up function can be applied to the convo event. 
 
-The first element in the array, replaces the `reply` String  with a `apptLookup` function , as shown below.
+The first element in the array replaces the `reply` String  with a `apptLookup` function, as shown below.
 
      ... 
      event.states = [
@@ -429,13 +429,13 @@ The `apptLookup` function definition defined in the `Appointment.js` event modul
 
     }
 
-This state `reply` function must return a Promise and is supplied a session, request, event, and data objects for the function to ulitize. This function simply calls an API to obtain and return an appointment date/time. 
+This state `reply` function must return a Promise and is supplied a session, request, event, and data objects for the function to utilize. This function simply calls an API to obtain and return an appointment date/time. 
 
 ### State Transition
 
-By Default, states transition sequentially, however you can `jump` to different states using the `transition` property with a transistion function that returns the next state to execute. 
+By Default, states transition sequentially. However, you can `jump` to different states using the `transition` property with a transistion function that returns the next state to execute. 
 
-Here's a simple state definition example with that applies a `transition function`, that based upon your birthday determines if you are legal to drink alcohol.
+Here's a simple state definition example that applies a `transition function` that, based upon your birthday, determines if you are legal to drink alcohol.
 
       ...
        event.states = [
@@ -449,17 +449,17 @@ Here's a simple state definition example with that applies a `transition functio
                  }, state: 'calc'},
                      
         { reply: 'You are Legal to Drink', postAction: 'stop', state: 'legal'},
-        { reply: 'To young to dring, sorry', postAction: 'stop', state: 'illegal'}
+        { reply: 'Too young to drink, sorry', postAction: 'stop', state: 'illegal'}
     ];
     ...
     
-Notice the `tranisition` state that defines a function which returns a 'legal' or 'illegal' state id, based upon the age caulation. The `request` convo object is provided as input. 
+Notice the `transition` state that defines a function, which returns a 'legal' or 'illegal' state id based upon the age caulation. The `request` convo object is provided as input. 
 
-The complete listing for thie example can be found [here](server/convoevents/examples/alcholo.js).  You can invoke from the Emulator by texting "drink". 
+The complete listing for this example can be found [here](server/convoevents/examples/alcohol.js).  You can invoke from the Emulator by texting "drink". 
 
 ### State Validation 
 
-State tranisition, user text response to a state `reply` are validated before the next state is performed by defining a validator.  There are some built in validators for command input types. Examples are shown below.
+State tranisition, user text response to a state `reply` are validated before the next state is performed by defining a validator.  There are some built-in validators for command input types. Examples are shown below.
 
 Validate Number 
 
@@ -478,7 +478,7 @@ Validate a Possible Choice
 
 #### Custom Validation 
 
-A custom validation function can be used by creating a function visible in your `Convo Event` module. Here's an example validator function that validates a set of zip codes. Of course this could be modified to perform a lookup using an API, but for this example possible zips are hard coded. 
+A custom validation function can be used by creating a function visible in your `Convo Event` module. Here's an example validator function that validates a set of zip codes. Of course this could be modified to perform a lookup using an API, but for this example possible zips are hard-coded. 
 
 var zipcodeValidator =  function (session, request, event,data) {
 
@@ -490,7 +490,7 @@ var zipcodeValidator =  function (session, request, event,data) {
        return "Valid Zip Code Please " +zips;    
     }
      
-Validation passes if `undefined` is returned. Otherwise returning a String message, which will be returned to the user, will prevent the state transition from happnening.
+Validation passes if `undefined` is returned. Otherwise returning a String message, which will be returned to the user, will prevent the state transition from happening.
 
 Here's how the custom zipcode function is applied to conversation states.
 
@@ -501,28 +501,28 @@ Here's how the custom zipcode function is applied to conversation states.
 
 #### Choice State Validation
 
-A `choice` state validates a state reply for letters or numbers. Here's an example 
+A `choice` state validates a state reply for letters or numbers. Here's an example:
 
     ...
     event.states = [
-            { reply: 'Your appointment is tommorrow at 1:00 pm, can you make it (Y)es or (N)o?', validator: 'choice:y,n', desc: 'Appointment' },
+            { reply: 'Your appointment is tomorrow at 1:00 pm, can you make it (Y)es or (N)o?', validator: 'choice:y,n', desc: 'Appointment' },
     ...
 
-A choice state object is defined in an array of reply objects.  So, if Y or N is texted to Convo one the matching reply is made.  Here's how a response is made for a user to make a reply, then the choice matching the reply is returned.
+A choice state object is defined in an array of reply objects. So, if Y or N is texted to Convo the matching reply is made.  Here's how a response is made for a user to make a reply, then the choice matching the reply is returned.
 
 ...
 
     event.states = [
-                { reply: 'Your appointment is tommorrow at 1:00 pm, can you make it (Y)es or (N)o?', validator: 'choice:y,n', desc: 'Appointment' },
+                { reply: 'Your appointment is tomorrow at 1:00 pm, can you make it (Y)es or (N)o?', validator: 'choice:y,n', desc: 'Appointment' },
     {choices: [
             { choice: 'y', reply: 'Thank you, see you on 11/1/2017 1:00', postAction: 'stop' },
             { choice: 'n', reply: 'Would you like to schedule a different Date (Y)es (N)o ?', validator: 'choice:y,n' }]
 ...
 
 
-## Ending or Stopping a session 
+## Ending or Stopping a Session 
 
-KHS-Convo saves user's session reply data in a `Session` Mongodb collection. This needs to be removed when the session is done. This can be done by defining a `postAction: stop ` in the reply state. Or, can be done with code using the Session service object, like this.   
+KHS-Convo saves user session reply data in a `Session` Mongodb collection. This needs to be removed when the session is done. This can be done by defining a `postAction: stop ` in the reply state. Or it may be done with code using the Session service object like this:
 
     ...
     session.Delete(request.phone);
@@ -532,14 +532,14 @@ The user can delete a session by texting "c", which will delete the event.
 
 # Session Management
 
-When a user invokes an event converstion from either twilio SMS or from the Web UI Dashboard, the request phone number is used to identify a user request. This request is persisted in the configured MongoDB instance. 
+When a user invokes an event conversation from either Twilio SMS or from the Web UI Dashboard, the request phone number is used to identify a user request. This request is persisted in the configured MongoDB instance. 
 
 ### Timeout
-If a user conversation is inactive for a period of time(default 5 minutes), then the session and conversation will be ended.
+If a user conversation is inactive for a period of time (default: 5 minutes), then the session and conversation will end.
 
-Only one conversation per user session is active at a time. So the conversation has to be completed by user, or a timeout before another converstion can begin.  
+Only one conversation per user session is active at a time. So the conversation has to be completed by user or a timeout before another conversation can begin.  
 
-Users can force the end of a conversation by texting an 'x'. This will end the session, so another can begin.
+Users can force the end of a conversation by texting an 'x'. This will end the session so another can begin.
 
 ![](docs/images/examples/session-end.PNG)
 
@@ -549,11 +549,11 @@ By default, a session time out is active for five minutes. This timeout period c
    session_timeout: process.env.SESSION_TIMEOUT || 5
    ...
 
-# Starting a Conversation from an Application
+# Starting a Conversation From an Application
 
-Users can initiate a conversational event by Texting an event word through an SMS client or the UI Dashboard. You can also start a Conversation with an API call. This enables applications from starting conversations with a user base. 
+Users can initiate a conversational event by Texting an event word through an SMS client or the UI Dashboard. You can also start a Conversation with an API call. This enables applications to start conversations with a user base. 
 
-The hello world conversation can be invoked wih the following `Post` command 
+The hello world conversation can be invoked with the following `Post` command:
 
 Response-Type: application/xml
 
@@ -569,7 +569,7 @@ Response-Type: application/xml
 
 # Dynamic HTML UI 
 
-khs{convo} can generate a link to a dynamically generated HTML user interface.  The user interface is defined as a `PUG` template.  Here's an example state definition that asks user if they want a UI link. 
+KHS {Convo} can generate a link to a dynamically-generated HTML user interface.  The user interface is defined as a `PUG` template.  Here's an example state definition that asks user if they want a UI link. 
     
     ...
     event.states = [
@@ -579,7 +579,7 @@ khs{convo} can generate a link to a dynamically generated HTML user interface.  
                     { choice: 'n', reply: 'Goodbye...', postAction: 'stop' }]
     ...
 
-Notice the `y` choice reply is a function generateLink definition.  Here's this function definition. 
+Notice the `y` choice reply is a function generateLink definition. Here's this function definition. 
 
     ...
     var generateLink = function(session,request,event) {
@@ -596,7 +596,7 @@ Notice the `y` choice reply is a function generateLink definition.  Here's this 
     }
     ...
 
-A PUG template file is defined in the location specified by the  `template_dir` config variable defined in the `/server/config/index.js` file. This can be overriden by an ENV variable
+A PUG template file is defined in the location specified by the  `template_dir` config variable defined in the `/server/config/index.js` file. This can be overridden by an ENV variable.
 
 Here is an example `allmovies.PUG` template file. This template generates an HTML UI displaying a list of movies. 
 
