@@ -31,37 +31,37 @@ var client = require('twilio')(
 const util = require('util');
 
 function get(req, res) {
-    mongo.GetSort({}, {_id: -1}, 'Convos')
-            .then(function (contact) {
-                res.send(contact);
-            });
+    mongo.GetSort({}, { _id: -1 }, 'Convos')
+        .then(function (contact) {
+            res.send(contact);
+        });
 }
 
 function getvisitorschunk(req, res) {
-    mongo.GetSortByChunk({}, {_id: -1}, 'Visitors', parseInt(req.query.limitCount), parseInt(req.query.skipCount))
+    mongo.GetSortByChunk({}, { _id: -1 }, 'Visitors', parseInt(req.query.limitCount), parseInt(req.query.skipCount))
         .then(function (visitor) {
-             res.send(visitor);
+            res.send(visitor);
         });
 }
 
 function getvisitorscount(req, res) {
     mongo.GetCount({}, 'Visitors')
         .then(function (visitor) {
-             res.send(visitor);
+            res.send(visitor);
         });
 }
 
 function getconvochunk(req, res) {
-    mongo.GetSortByChunk({}, {_id: -1}, 'Convos', parseInt(req.query.limitCount), parseInt(req.query.skipCount))
+    mongo.GetSortByChunk({}, { _id: -1 }, 'Convos', parseInt(req.query.limitCount), parseInt(req.query.skipCount))
         .then(function (contact) {
-             res.send(contact);
+            res.send(contact);
         });
 }
 
 function getconvocount(req, res) {
     mongo.GetCount({}, 'Convos')
         .then(function (contact) {
-             res.send(contact);
+            res.send(contact);
         });
 }
 
@@ -74,58 +74,62 @@ function getduplicates(req, res) {
 function getgroupquestion(req, res) {
     let questionsArr = [];
 
-    for(var i=0; i<req.body.length;i++) {
+    for (var i = 0; i < req.body.length; i++) {
         questionsArr.push(req.body[i].replace("'", ""));
     }
 
     let allQuestions = [];
-    for(var i = 1 ; i < questionsArr.length ; i++){
+    for (var i = 1; i < questionsArr.length; i++) {
         allQuestions[i] = questionsArr[i].charAt(0).toUpperCase() + questionsArr[i].slice(1);
     }
 
-    for(var i = 1 ; i < allQuestions.length ; i++){
+    for (var i = 1; i < allQuestions.length; i++) {
         questionsArr.push(allQuestions[i]);
     }
 
     mongo.Aggregate([
-            {
-            "$group" : {
-                _id: {  tag: '$question', lower: { $toLower : '$question' } },
+        {
+            "$group": {
+                _id: { tag: '$question', lower: { $toLower: '$question' } },
                 //"count": { "$sum": 1 },
                 "count": {
                     "$sum": {
-                         "$cond": [
-                             { "$anyElementTrue": { "$map": {
-                                 "input": questionsArr,
-                                 "as": "el",
-                                  "in": { "$eq": [ "$$el", "$question" ] }
-                              }}},
-                              1,
-                              0
-                         ]
-                     }
+                        "$cond": [
+                            {
+                                "$anyElementTrue": {
+                                    "$map": {
+                                        "input": questionsArr,
+                                        "as": "el",
+                                        "in": { "$eq": ["$$el", "$question"] }
+                                    }
+                                }
+                            },
+                            1,
+                            0
+                        ]
+                    }
                 }
             }
-            },
-            {
-                $project: {
-                    _id: 0,
-                    text: "$_id.lower",
-                    count: 1,
-                    value: "$count"
-                }
-            },
-            {
-                $redact: {
-                  $cond: {
-                    if: { $eq: [ "$count", 0 ] },
+        },
+        {
+            $project: {
+                _id: 0,
+                text: "$_id.lower",
+                count: 1,
+                value: "$count"
+            }
+        },
+        {
+            $redact: {
+                $cond: {
+                    if: { $eq: ["$count", 0] },
                     then: '$$PRUNE',
                     else: '$$DESCEND'
-                  }
                 }
-              }
-            ]
-            , 'Convos')
+            }
+        }
+    ]
+        , 'Convos')
         .then(function (contact) {
             res.send(cleanUpGroupByQuestions(contact));
         });
@@ -139,18 +143,18 @@ function cleanUpGroupByQuestions(array) {
 
     var sorted_arr = textArr.slice().sort();
     var dupTexts = [];
-    for (var i=0; i < sorted_arr.length-1; i++) {
+    for (var i = 0; i < sorted_arr.length - 1; i++) {
         if (sorted_arr[i + 1] == sorted_arr[i]) {
             dupTexts.push(sorted_arr[i]);
         }
     }
 
-    for (var i=0; i<dupTexts.length; i++) {
+    for (var i = 0; i < dupTexts.length; i++) {
         var text = dupTexts[i];
         var obj = {};
         var count = 0;
 
-        for (var j=0; j<array.length; j++) {
+        for (var j = 0; j < array.length; j++) {
             if (array[j].text == text) {
                 count += array[j].count;
             }
@@ -159,7 +163,7 @@ function cleanUpGroupByQuestions(array) {
         obj.text = text;
         obj.value = count;
 
-        array = array.filter(function( obj ) {
+        array = array.filter(function (obj) {
             return obj.text !== text;
         });
 
@@ -171,20 +175,20 @@ function cleanUpGroupByQuestions(array) {
 
 function getgroupphone(req, res) {
     mongo.Aggregate(
-            [{
-                "$group" : {
-                    _id: "$phone", count:{$sum:1}
-                }
-            },
-            {
-                $project: {
-                    _id: 0,
-                    text: "$_id",
-                    count: 1,
-                    value: "$count"
-                }
-            }]
-            , 'Convos')
+        [{
+            "$group": {
+                _id: "$phone", count: { $sum: 1 }
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                text: "$_id",
+                count: 1,
+                value: "$count"
+            }
+        }]
+        , 'Convos')
         .then(function (contact) {
             res.send(contact);
         });
@@ -195,8 +199,8 @@ function getConvoForPhone(req, res) {
     var phone = req.query.phone;
     var skipCount = parseInt(req.query.skip) || 0;
     var limitCount = parseInt(req.query.limit) || 20;
-    var query = {phone: phone, question: {$ne: "availablecommands"}};
-    mongo.GetSortByChunk(query, {date: -1}, 'Convos', limitCount, skipCount)
+    var query = { phone: phone, question: { $ne: "availablecommands" } };
+    mongo.GetSortByChunk(query, { date: -1 }, 'Convos', limitCount, skipCount)
         .then(function (conversation) {
             res.send(conversation);
         });
@@ -206,7 +210,7 @@ var twilio = require('twilio');
 var MessagingResponse = require('twilio').twiml.MessagingResponse;
 
 function post(req, res) {
-    
+
     var body = req.body['Body'] || req.body['body'];
     var result = {};
     result.phone = req.body.From.replace(/[\(\)\-\+]/g, "");
@@ -223,23 +227,23 @@ function post(req, res) {
     result.rawQuestion = body;
     result.raw = req.body;
     result.schedule = req.body['Schedule'];
-  
+
     if (!isTokenValid(req)) {
         res.end("Invalid API token");
         return;
-    } 
+    }
 
     ConvoService.findAnswer(result)
-        .then(function(result) {
+        .then(function (result) {
             var twiml = new MessagingResponse();
             // IMPORTANT: don't change date to moment format
-            mongo.Insert({ date: new Date(), phone: result.phone, question: result.rawQuestion, answer: result.answer, word: result.word}, 'Convos');
-            mongo.Update( {phone: result.phone}, { phone: result.phone , lastaccessdate: new Date() }  , "Visitors", { upsert: true } );
+            mongo.Insert({ date: new Date(), phone: result.phone, question: result.rawQuestion, answer: result.answer, word: result.word }, 'Convos');
+            mongo.Update({ phone: result.phone }, { phone: result.phone, lastaccessdate: new Date() }, "Visitors", { upsert: true });
             twiml.message(result.answer);
 
             res.writeHead(200, { 'Content-Type': 'text/xml' });
             res.end(twiml.toString());
-        }).catch( function(e) { console.log(e); });
+        }).catch(function (e) { console.log(e); });
 
 }
 
@@ -250,31 +254,31 @@ function timesheetnotification(req, res) {
     request({
         url: config.timesheet.url + '/sherpa/service/convo/latesttimeentries',
         method: 'GET'
-    }, function(error, response, body){
+    }, function (error, response, body) {
         var timesheetsDueUserNames = [];
         var allLatestEntriesUserNames = [];
 
-        var client = require('twilio') (
+        var client = require('twilio')(
             config.twilio.accountSid,
             config.twilio.authToken
         );
 
         let now = new Date();
         let today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        let lastSunday = new Date(today.setDate(today.getDate()-today.getDay()));
+        let lastSunday = new Date(today.setDate(today.getDate() - today.getDay()));
         let minDate = new Date();
         minDate.setDate(lastSunday.getDate() - 7);
 
         let tsDueUsers = JSON.parse(body);
 
-        for (var k=0;k<tsDueUsers.length;k++){
+        for (var k = 0; k < tsDueUsers.length; k++) {
             allLatestEntriesUserNames.push(tsDueUsers[k].userName);
         }
         //console.log('All latest time entries: ' + util.inspect(tsDueUsers));
 
-        for (var k=0;k<tsDueUsers.length;k++){
+        for (var k = 0; k < tsDueUsers.length; k++) {
             let entry = tsDueUsers[k].day.split("-");
-            let entryDate = new Date(entry[0], entry[1]-1, entry[2]);
+            let entryDate = new Date(entry[0], entry[1] - 1, entry[2]);
             if (entryDate < minDate) {
                 timesheetsDueUserNames.push(tsDueUsers[k].userName);
             }
@@ -283,16 +287,16 @@ function timesheetnotification(req, res) {
 
         let phones = retrieveDueTimesheetPhones(allConvoUsers, allLatestEntriesUserNames, timesheetsDueUserNames)
 
-        let uniquePhones = phones.filter(function(elem, index, self) {
+        let uniquePhones = phones.filter(function (elem, index, self) {
             return index === self.indexOf(elem);
         })
 
-        for(var i=0;i<uniquePhones.length;i++) {
+        for (var i = 0; i < uniquePhones.length; i++) {
             //console.log('SEND TEXT TO: +1'+uniquePhones[i]);
 
-            client.messages.create( {
-                from: '+'+config.twilio.phone,
-                to: '+1'+uniquePhones[i],
+            client.messages.create({
+                from: '+' + config.twilio.phone,
+                to: '+1' + uniquePhones[i],
                 body: notificationText
             });
         }
@@ -304,10 +308,10 @@ function timesheetnotification(req, res) {
 function retrieveDueTimesheetPhones(all, allLatestEntriesUserNames, timesheetsDueUserNames) {
     var phoneNumbers = [];
 
-    for (var i=0;i<all.length;i++) {
-        for (var j=0;j<timesheetsDueUserNames.length;j++) {
+    for (var i = 0; i < all.length; i++) {
+        for (var j = 0; j < timesheetsDueUserNames.length; j++) {
             if (all[i].Username == timesheetsDueUserNames[j]) {
-                phoneNumbers.push(all[i].Phone.replace(/\D/g,''));
+                phoneNumbers.push(all[i].Phone.replace(/\D/g, ''));
             }
         }
     }
@@ -316,14 +320,14 @@ function retrieveDueTimesheetPhones(all, allLatestEntriesUserNames, timesheetsDu
 }
 
 
-function geteventstatus(req, res){
+function geteventstatus(req, res) {
 
     var events = req.body.events;
 
-    mongo.Get({ name:{$in: events} }, "disabled")
-    .then(function (result) {
-        res.send(result);
-    })
+    mongo.Get({ name: { $in: events } }, "disabled")
+        .then(function (result) {
+            res.send(result);
+        })
 }
 
 function disableevent(req, res) {
@@ -357,14 +361,14 @@ function inactivecommand(req, res) {
         phone: phone,
         question: body,
         answer: "\'" + body + "\' has been disabled",
-        word:''
+        word: ''
     }]
 
     mongo.Insert(convo, 'Convos')
-    .then(function (result) {
-    });
+        .then(function (result) {
+        });
 
-    convo.id =id;
+    convo.id = id;
     res.send(convo);
 }
 
@@ -375,7 +379,7 @@ function inactivecommand(req, res) {
  * 
  */
 
-function sms(req,res) {
+function sms(req, res) {
 
     var request = processRequest(req);
 
@@ -385,22 +389,22 @@ function sms(req,res) {
     if (!isTokenValid(req)) {
         res.end("Invalid API token");
         return;
-    }   
+    }
 
-     return new Promise(function (resolve, reject) {
+    return new Promise(function (resolve, reject) {
 
-      for (var i = 0; i < events.length; i++) {
-        for (var j = 0; j < events[i].words.length; j++) {
-            if (events[i].words[j].word.toLowerCase() === convo.toLowerCase()) {
-                event = events[i];
-                break;
+        for (var i = 0; i < events.length; i++) {
+            for (var j = 0; j < events[i].words.length; j++) {
+                if (events[i].words[j].word.toLowerCase() === convo.toLowerCase()) {
+                    event = events[i];
+                    break;
+                }
             }
-          }
-       }
+        }
 
-       if (event) {
+        if (event) {
 
-                mongo.Get({ Phone: request.phoneto }, 'Users')
+            mongo.Get({ Phone: request.phoneto }, 'Users')
                 .then(function (contact) {
                     if (contact != null)
                         request.me = contact[0];
@@ -414,29 +418,29 @@ function sms(req,res) {
                     event.run(request)
                         .then(function (answer) {
                             request.answer = answer;
-                                client.messages.create({
-                                    from: '+'+config.twilio.phone,
-                                    to: '+1' + request.phoneto,
-                                    body: answer
-                                }).then(function (msg) { console.log(answer); });
-                          
-                              
+                            client.messages.create({
+                                from: '+' + config.twilio.phone,
+                                to: '+1' + request.phoneto,
+                                body: answer
+                            }).then(function (msg) { console.log(answer); });
+
+
                             return resolve(request);
                         });
 
-                })   
+                })
 
 
-            res.send("Executed: "+event.Description);
+            res.send("Executed: " + event.Description);
 
-       } else {
-            
+        } else {
+
             res.sendStatus(403);
-       }
+        }
 
-     });
-    } 
-  
+    });
+}
+
 function processRequest(req) {
 
     var result = {};
@@ -461,16 +465,24 @@ function processRequest(req) {
     result.rawQuestion = body;
     result.raw = req.body;
 
-    return result; 
+    return result;
 }
 
 function isTokenValid(req) {
-    var token = req.headers['token']; 
+    var token = req.headers['token'];
     if (token) {
         if (token === config.api_token) {
             return true;
         }
-    } 
+    }
+
+    var body = req.body['Body'] || req.body['body'];
+    token = req.body.AccountSid;
+    if (token) {
+        if (token === config.api_token) {
+            return true;
+        }
+    }
 
     return false;
 }
@@ -487,9 +499,9 @@ module.exports = {
     getgroupphone: getgroupphone,
     getduplicates: getduplicates,
     getconvoforphone: getConvoForPhone,
-    geteventstatus:geteventstatus,
-    disableevent:disableevent,
-    inactivecommand:inactivecommand,
+    geteventstatus: geteventstatus,
+    disableevent: disableevent,
+    inactivecommand: inactivecommand,
     timesheetnotification: timesheetnotification,
     sms: sms
 }
