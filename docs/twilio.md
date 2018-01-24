@@ -33,10 +33,10 @@ KHS{Convo} will send SMS messages using the Twilio node.js client. To point KHS{
 
 In the `server/config/index.js` add Twilio configuration
 
- ...
- twilio: {
-         accountSid: process.env.accountSid || '<twilio account sid>',
-         authToken: process.env.authToken || '<twilio auth token>',
-         phone: process.env.PHONE || '<twilio phone #>'
+  ...
+  twilio: {
+      accountSid: process.env.accountSid || '<twilio account sid>',
+      authToken: process.env.authToken || '<twilio auth token>',
+      phone: process.env.PHONE || '<twilio phone #>'
      },
- ...
+  ...
