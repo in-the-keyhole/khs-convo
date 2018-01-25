@@ -1,6 +1,8 @@
 # Notification Center
 The Admin Dashboard has a notification center feature found under Convos / Notifications.
 
+![](images/notification-center.png)
+
 ## Groups
 The Groups appear on the left.  You may add a Group by clicking the "Add Group" button.
 
