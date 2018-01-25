@@ -54,7 +54,7 @@ module.exports = {
     },
 
     twilio: {
-        accountSid: process.env.accountSid || '<twilio account sid>',
+        accountSid: process.env.accountSid || 'AC...',
         authToken: process.env.authToken || '<twilio auth token>',
         phone: process.env.PHONE || '<twilio phone #?'
     },
