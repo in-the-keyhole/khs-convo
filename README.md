@@ -203,8 +203,6 @@ Events that are successfully loaded are displayed in the `Emulator` and `Upload`
 The convo server does not require a SMS messaging provider. You can invoke server conversation APIs directly through the Emulator, or directly with a tool like Postman. 
 
 
-
-
 Event APIs can be invoked from an SMS messaging provider, such as Twilio with the instructions shown below. 
 
 #### [Twilio Configuration Steps](docs/twilio.md)
