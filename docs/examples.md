@@ -25,13 +25,14 @@ Here are a number of examples available to try out using the Dashboard emulator 
 
 # Fly Fishing Knots 
 
-### Text `knots` and a conversation for the type of fly fishing knot you need will occur
+### Text `knots` and a conversation for the type of fly fishing knot you need will occur. [knots.js source](../server/convoevents/knots/knots.js)  
 
 ![](images/examples/knot-convo.PNG)
 
 # Movies
 
-### Text `movies` and a conversation about movie and showtimes will occur
+### Text `movies` and a conversation about movie and showtimes will occur.  [movies.js source](../server/convoevents/movies/movies.js)  
+
 
 ![pug-html](images/pug-html.png)
 
