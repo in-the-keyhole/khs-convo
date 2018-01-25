@@ -2,7 +2,13 @@
 
 The Administration Dashboard is a browser baed UI implmented in [reactjS]( https://reactjs.org/). 
 
-### UI Source Code
+# Table of Contents 
+
+
+
+
+
+# Source Code
 
 Source code and elemeents can be found in the `src` elements. 
 
