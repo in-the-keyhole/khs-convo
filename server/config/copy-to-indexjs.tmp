@@ -39,7 +39,7 @@ module.exports = {
     timerevent_callbackMaxRun_default: 0,
 
 
-    uploaded_event_dir: './server/services/convo/events',
+    uploaded_event_dir: './server/convoevents',
     
     template_dir: process.env.template_dir || 'server/convoevents',
     
