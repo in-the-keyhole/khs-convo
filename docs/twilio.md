@@ -1,6 +1,6 @@
 # Twilio Integration 
 
-KHS{Convo} is integreated with SMS capability the [Twilio](http://twilio.com) api SMS services.    
+KHS{Convo} convo event conversations are integrated with SMS devices such as [Twilio](http://twilio.com) api SMS services.   
 
 This is done by configuring Twilio to route SMS messages to a running KHS{Convo} 
 instance.  KHS{Convo} will execute a matching event and return a result through Twilio to the SMS device, as is depicted below. 
