@@ -6,10 +6,10 @@ The Administration Dashboard is a browser baed UI implmented in [reactjS]( https
 
 * [Source Code](#source-code)
 * [Users](#sms-chatbot-emulator)
-* [Configuration Properties](#configuration-properties)
-* [Event Loading](#event-loading-directory)
-
-
+* [SMS Emulator](#sms-emulator)
+* [Analytics](#analytics)
+* [Admin](#admin)
+* [Event Upload](#upload)
 
 # Source Code
 
@@ -17,16 +17,11 @@ Source code and elemeents can be found in the `src` elements.
 
 ![](images/ui-source.png)
 
-
-## Features
-
-The following sections will describe features of the UI Dashboard 
-
-### Users 
+# Users 
 
 There are two types of users `admin` and `active` users. Active have access to the Emulator and `Analytic` features of the Dashboar. Also, `active` users can access `KHS{Convo}` events that require authentication. 
 
-### SMS Emulator
+# SMS Emulator
 
 You can use the Emulator to interact with KHS{Convo} conversation events without an actual SMS client 
 
@@ -34,7 +29,7 @@ You can use the Emulator to interact with KHS{Convo} conversation events without
 
 Available events with the description and key words to begin the conversation are displayed. Also, if you are an admin user,then you can enable/disable events.
 
-### Analytics 
+# Analytics 
 
 Event metric views are available from the `Anayltics` menu.
 
@@ -48,7 +43,7 @@ Event metric views are available from the `Anayltics` menu.
 
 `Visitors` - Unique visitor phone numbers and last date/tie accessed
 
-### Admin 
+# Admin 
 
 Administrative functions for adding users, managing blacklists, and Key/Value properties.
 
@@ -60,13 +55,15 @@ Administrative functions for adding users, managing blacklists, and Key/Value pr
 
 `Properties` - Configuration properties used by KHS{Convo} events. You can add, edit , and delete properties from this UI.
 
-### Upload UI
+# Event Upload
 
 KHS{Conov} events can be dynamically uploaded and executed through the upload UI.  Events can be uploaded to existing directories or a new directory can be created.  
 
 Uploading can be done by clicking the Upload button next to a directory, or dragging and dropping an event. A successful upload will be indicated. 
 
 ![](images/upload-ui.png)
+
+
 
 
 
