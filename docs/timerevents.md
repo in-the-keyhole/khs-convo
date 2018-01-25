@@ -47,4 +47,3 @@ The following is an example of a Hello World timer.  From looking at the `config
     }
 
 
-

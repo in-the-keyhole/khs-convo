@@ -655,9 +655,9 @@ Here's the movies PUG template rendered in a mobile browser.
 
 # Timer Events
 
-### [Timer Events](docs/timerevents.md)
-
 KHS{Convo} Timer Events can be created to run code at any particular interval and for however long you want it to run.
+
+### [About Time Events](docs/timerevents.md)
 
 # Creating and Running with Docker
 Conversational Server Implementation
