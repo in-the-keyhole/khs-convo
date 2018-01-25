@@ -2,7 +2,7 @@
 
 Here are a number of examples available to try out using the Dashboard emulator or our demo number.  The example JavaScript implementation code can be found in this folder [Example Source](../server/convoevents/examples)
 
-### Try these examples out by texting to ## (913) 270-0360
+### Try these examples out by texting to `(913) 270-0360`
 
 * [Appointment](#appointment) 
 * [Tip Calculator](#tip-calculator)
