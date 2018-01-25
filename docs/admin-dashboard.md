@@ -5,7 +5,7 @@ The Administration Dashboard is a browser baed UI implmented in [reactjS]( https
 ## Table of Contents 
 
 * [Source Code](#source-code)
-* [Users](#sms-chatbot-emulator)
+* [Users](#users)
 * [SMS Emulator](#sms-emulator)
 * [Analytics](#analytics)
 * [Admin](#admin)
