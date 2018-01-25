@@ -64,7 +64,7 @@ KHS{Convo} is a Node.js-based platform for creating SMS and Web-based `conversat
 
 * The ReactJS UI Dashboard should have opened in a browser. If not, click this link [http://localhost:3000](http://localhost:3001).
 
-* You can then login to the UI Dashboard with the `admin` userid and the password you entered.  Go to this [Link](docs/admin.md) for more information.
+* You can then login to the UI Dashboard with the `admin` userid and the password you entered.  Go to this [Link](docs/admin-dashboard.md) for more information.
 
 ## Usage
 
