@@ -56,6 +56,7 @@ class Login extends Component {
             window.sessionStorage.setItem('phone', res.data.Phone);
             window.sessionStorage.setItem('status', res.data.Status);
             window.sessionStorage.setItem('apitoken', res.data.apitoken);
+            window.sessionStorage.setItem('slackchannel', res.data.slackchannel);
             window.location = ('/emulator');
         }).catch(function(err){
             self.setState({loginError: 'Username or password incorrect. Please try again.'});

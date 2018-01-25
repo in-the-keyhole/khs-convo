@@ -161,7 +161,7 @@ class GroupUserList extends Component {
                         <h4 className="notificationsHeaderStyle">Send To</h4>
                         <Checkbox name="checkSMS" checked={this.props.group.checkSMS} onChange={this.handleChange}>SMS</Checkbox>
                         <Checkbox name="checkEmail" checked={this.props.group.checkEmail} onChange={this.handleChange}>Email</Checkbox>
-                        <Checkbox name="checkSlack" checked={this.props.group.checkSlack} onChange={this.handleChange}>Slack</Checkbox>
+                        <Checkbox name="checkSlack" checked={this.props.group.checkSlack} onChange={this.handleChange}>Slack ({window.sessionStorage.getItem('slackchannel')})</Checkbox>
                     </div>
                 </div>
 

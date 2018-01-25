@@ -66,7 +66,8 @@ function auth(username, password) {
 
                                 user.token = token;
                                 user.apitoken = config.api_token;
-
+                                user.slackchannel = config.slack.channel;
+                                
                                 return resolve(user);
                             }
                             else{
