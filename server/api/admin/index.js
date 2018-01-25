@@ -83,6 +83,5 @@ module.exports = function (app) {
   router.post('/fileupload', upload.any(), controller.fileupload);
   router.get('/fileExistsOnUpload', auth.isAuth, controller.fileExistsOnUpload);
   router.post('/fileExistsOnUploadPost', fileNameCheck.any(), controller.fileExistsOnUploadPost);
-  router.get('/createUploadDirectory', auth.isAuth, controller.createUploadDirectory);
   app.use('/api/admin', router);
 }

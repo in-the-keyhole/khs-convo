@@ -311,29 +311,6 @@ function getDirectories(req, res) {
     res.send(results);
 }
 
-function createUploadDirectory(req, res) {
-    let pathStr = [];
-    let srcPath = '';
-    let directory = req.query.name;
-
-    if (req.get('host').indexOf('localhost') > -1 && platform.startsWith('win')) {
-        srcPath = '\\convoevents\\' + directory + '\\';
-        pathStr.push(__dirname.replace('\\api\\admin', ''));
-    } else {
-        srcPath = '/convoevents/' + directory + '/';
-        pathStr.push(__dirname.replace('/api/admin', ''));
-    }
-
-    pathStr.push(srcPath);
-    let source = pathStr.join("");
-
-    if (!fs.existsSync(source)){
-        fs.mkdirSync(source);
-        res.send(directory + " directory has been created");
-    } else {
-        res.send(directory + " directory already exists");
-    }
-}
 
 function sendRegistrationEmailNonSmtp(req, res) {
     var msgBody =   '<a href="' + req.body.basePath +
@@ -440,6 +417,5 @@ module.exports = {
     fileExistsOnUpload: fileExistsOnUpload,
     fileExistsOnUploadPost: fileExistsOnUploadPost,
     getDirectories: getDirectories,
-    createUploadDirectory: createUploadDirectory,
     sendRegistrationEmail: sendRegistrationEmail
 }

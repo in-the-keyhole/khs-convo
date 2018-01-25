@@ -192,10 +192,7 @@ class Upload extends Component {
              }).then(function(res, me) {
                   if (res.data === 'exists') {
                        self.renderConfirmDialog(data);
-                  } else if (self.state.CurrentDirectory === '' && self.state.DirectoryInputValue !== '') {
-                       self.setState({ CurrentDirectory: self.state.DirectoryInputValue});
-                       self.createNewDirectoryAndUpload(data);
-                  } else {
+                  }  else {
                        self.proceedWithUpload(data);
                   }
              })
@@ -217,31 +214,15 @@ class Upload extends Component {
          }).then(function(res, me) {
               if (res.data === 'exists') {
                    self.renderConfirmDialog(data);
-              } else if (self.state.CurrentDirectory === '' && self.state.DirectoryInputValue !== '') {
-                   self.setState({ CurrentDirectory: self.state.DirectoryInputValue});
-                   self.createNewDirectoryAndUpload(data);
-              } else {
+              }  else {
                    self.proceedWithUpload(data);
               }
          })
     }
 
-    createNewDirectoryAndUpload(data) {
-        var self = this;
-        self.setState({ newDirectory: 'true'});
-
-        ajax({
-             url:'../api/admin/createUploadDirectory?name=' + self.state.CurrentDirectory,
-             data: ''
-        }).then(function(res, me) {
-             self.proceedWithUpload(data);
-        })
-    }
-
     proceedWithUpload(data) {
         var self = this;
         self.state.CommandsCached = self.state.Commands;
-        let newDirectory = self.state.newDirectory;
         let currentDirectory = self.state.CurrentDirectory;
 
 
@@ -252,14 +233,10 @@ class Upload extends Component {
         superagent
             .post(base+ '/api/admin/fileupload')
             .query({ directory: currentDirectory })
-            .query({ newDirectory: newDirectory })
             .send(data)
             .end((ex, result) => {
                 if (result.text === "File is uploaded") {
                     $('[name="' + currentDirectory + '"]').html('<p style="color: green;"><b>Event has been uploaded!<b></p>');
-                    if (newDirectory === 'true') {
-                        $('#userDrop').html('<p style="color: green;"><b>Event has been uploaded!<b></p>');
-                    }
                     self.refreshAvailableCommandsList();
                     self.retrieveDirectories();
                 } else {
