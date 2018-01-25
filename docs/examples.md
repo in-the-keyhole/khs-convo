@@ -31,7 +31,7 @@ Here are a number of examples available to try out using the Dashboard emulator 
 
 # Movies
 
-### Text `movies` and a conversation about movie and showtimes will occur.  [movies.js source](../server/convoevents/movies/movies.js)  
+### Text `movies` and a conversation about movie and showtimes will occur.  [movies.js source](../server/convoevents/movie/movies.js)  
 
 
 ![pug-html](images/pug-html.png)
