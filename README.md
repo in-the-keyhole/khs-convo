@@ -112,8 +112,10 @@ KHS{Convo} makes it easy to create an SMS conversations. Follow the steps below 
 
 `2.` Using the Dashboard `Upload` option, load the KHS {Convo} SMS event.
 
-Drag and drop or select `Upload` option to upload the Convo JavaScript file you defined. You can put it in any folder. 
+Drag and drop or select `Upload` option to upload the Convo JavaScript file you defined to the `examples` directory. 
 A successful upload will be indicated. 
+
+![](docs/images/uploaded-event) 
 
 `3.` To test, navigate to the `Emulator` view, and type in `convo` in the Emulator to invoke the uploaded convo event.  
 
