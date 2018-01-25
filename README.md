@@ -59,7 +59,7 @@ KHS{Convo} is a Node.js-based platform for creating SMS and Web-based `conversat
     * This will create an admin user with a userid of `admin` and prompt for a password. 
     > `node adminuser.js`
              
-* Start the API and UI servers on port 3001. 
+* Start the API and UI servers, they will start on 3001 and 3000 respectively. 
     > `npm run startdev`
 
 * The ReactJS UI Dashboard should have opened in a browser. If not, click this link [http://localhost:3000](http://localhost:3001).
