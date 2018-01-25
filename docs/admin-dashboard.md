@@ -9,7 +9,7 @@ The Administration Dashboard is a browser baed UI implmented in [reactjS]( https
 * [SMS Emulator](#sms-emulator)
 * [Analytics](#analytics)
 * [Admin](#admin)
-* [Event Upload](#eventupload)
+* [Event Upload](#event-upload)
 
 # Source Code
 
