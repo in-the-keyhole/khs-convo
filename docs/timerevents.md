@@ -47,8 +47,3 @@ The following is an example of a Hello World timer.  From looking at the `config
     }
 
 
-
-
-
-## [Back to Main](https://github.com/in-the-keyhole/khs-convo) 
-
