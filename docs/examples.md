@@ -33,7 +33,7 @@ Here are a number of examples available to try out using the Dashboard emulator 
 
 ### Text `movies` and a conversation about movie and showtimes will occur
 
-![pug-html](docs/images/pug-html.png)
+![pug-html](images/pug-html.png)
 
 # Math
 
