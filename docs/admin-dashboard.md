@@ -2,7 +2,16 @@
 
 The Administration Dashboard is a browser baed UI implmented in [reactjS]( https://reactjs.org/). 
 
-### UI Source Code
+## Table of Contents 
+
+* [Source Code](#source-code)
+* [Users](#sms-chatbot-emulator)
+* [Configuration Properties](#configuration-properties)
+* [Event Loading](#event-loading-directory)
+
+
+
+# Source Code
 
 Source code and elemeents can be found in the `src` elements. 
 
@@ -60,7 +69,4 @@ Uploading can be done by clicking the Upload button next to a directory, or drag
 ![](images/upload-ui.png)
 
 
-
-
-## [Back to Main](https://github.com/in-the-keyhole/khs-convo) 
 
