@@ -422,30 +422,6 @@ class Upload extends Component {
 
                 <div className="row">
                     <div className="col-md-12">
-                        <div>
-                            <div className="row">
-                                <h5><b>New directory Upload</b></h5>
-                            </div>
-                            <div className="row">
-                                <h5>Enter a new directory name below:</h5>
-                            </div>
-                            <div className="row">
-                                <div className="col-md-2">
-                                    <input type="text" style={directoryInputStyle} id="newDirectoryInput" onChange={this.updateInputValue}/>
-                                </div>
-                                <div className="col-md-2">
-                                    <button className="btn btn-default" type="button" onClick={this.initiateUploadClick.bind(this, '')}>Upload File</button>
-                                </div>
-                                <div className="col-md-8">
-                                    <Dropzone style={{ dropZoneStyle }} disableClick ={true} multiple={false} onDragOver={this.setDropDirectory.bind(this, '')} onDrop={this.uploadDroppedFile}>
-                                        <div id="userDrop" name='' style={ dropZoneStyle }>Drop file here</div>
-                                    </Dropzone>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="row">
-                            <h5><b>Existing directory Upload</b></h5>
-                        </div>
                         {this.renderUploadFile()}
                     </div>
                 </div>
