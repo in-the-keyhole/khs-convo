@@ -1,7 +1,9 @@
 # Notification Center
-The Admin Dashboard has a notification center feature found under Convos / Notifications.
+You can send `SMS`, `Email`, and `Slack` notifications to Groups of users. 
 
 ![](images/notification-center.png)
+
+Notifications can also be scheduled on a date/time basis
 
 ## Groups
 The Groups appear on the left.  You may add a Group by clicking the "Add Group" button.
