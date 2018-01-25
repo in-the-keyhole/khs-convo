@@ -26,6 +26,7 @@ KHS{Convo} is a Node.js-based platform for creating SMS and Web-based `conversat
 * [Session Management](#session-management)
 * [Session Management](#session-management)
 * [Starting a Conversation from an Application](#starting-a-conversation-from-an-application)
+* [Timer Events](#timer-events)
 * [Creating and Running with Docker](#creating-and-running-with-docker)
 
 # Getting Started
@@ -65,12 +66,6 @@ KHS{Convo} is a Node.js-based platform for creating SMS and Web-based `conversat
 * The ReactJS UI Dashboard should have opened in a browser. If not, click this link [http://localhost:3000](http://localhost:3001).
 
 * You can then login to the UI Dashboard with the `admin` userid and the password you entered.  Go to this [Link](docs/admin-dashboard.md) for more information.
-
-## Usage
-
-### [Timer Events](docs/timerevents.md)
-
-KHS{Convo} Timer Events can be created to run code at any particular interval and for however long you want it to run.
 
 # SMS Chatbot Emulator
 
@@ -657,6 +652,12 @@ Here is an example `allmovies.PUG` template file. This template generates an HTM
 Here's the movies PUG template rendered in a mobile browser. 
 
 ![pug-html](docs/images/pug-html.png)
+
+# Timer Events
+
+### [Timer Events](docs/timerevents.md)
+
+KHS{Convo} Timer Events can be created to run code at any particular interval and for however long you want it to run.
 
 # Creating and Running with Docker
 Conversational Server Implementation
