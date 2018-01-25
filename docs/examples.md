@@ -7,6 +7,7 @@ Here are a number of examples available to try out using the Dashboard emulator 
 * [Appointment](#appointment) 
 * [Tip Calculator](#tip-calculator)
 * [Fly Fishing Knots](#fly-fishing-knots)
+* [Movies](#movies)
 * [Math](#math)
 * [Conversions](#conversions)
 
@@ -27,6 +28,12 @@ Here are a number of examples available to try out using the Dashboard emulator 
 ### Text `knots` and a conversation for the type of fly fishing knot you need will occur
 
 ![](images/examples/knot-convo.PNG)
+
+# Movies
+
+### Text `movies` and a conversation about movie and showtimes will occur
+
+
 
 # Math
 
