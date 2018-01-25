@@ -27,3 +27,4 @@ Choose what mediums to send the notification with.  This selection will be retai
 ### Users
 Choose what Users you want to recieve the notification. This selection will be retained on the Group.  Once you have Users in the Group, if you want to remove a user, just click the "Delete from list" icon to the left of the User's name.
 
+
