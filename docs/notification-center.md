@@ -19,7 +19,7 @@ Enter the notification you would like to send.
 \* The "Send" button will be disabled if there is no notification message, no "Send Tos" chosen or if there are no Users in the Group.
 
 ### Schedule
-If you would like the notification to not be sent immediately, but rather at a later date or time, choose the Date and Time.  If the Date/Time is in the past, the notification will be sent immediately.
+If you would like the notification to not be sent immediately, but rather at a later date or time, click on the plus sign.  This will expose a Date and Time.  If the Date/Time is in the past, the notification will be sent immediately.
 
 ### Send To
 Choose what mediums to send the notification with.  This selection will be retained on the Group.
