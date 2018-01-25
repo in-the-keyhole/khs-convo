@@ -122,7 +122,7 @@ A successful upload will be indicated.
 
 # Configuration Properties
 
-Configuration properties are defined in the [`server/config/index.js'](server/config/index.js) file. There are default value properties supplied that can be changed or set by `Environment Variables`. Using environment variables for sensitive and environment-specific properties supports portability. 
+Configuration properties are defined in the  server/config/index.js file. There are default value properties supplied that can be changed or set by `Environment Variables`. Using environment variables for sensitive and environment-specific properties supports portability. 
 
 Here are properties annotated with descriptions.
 
