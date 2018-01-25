@@ -41,7 +41,7 @@ Event metric views are available from the `Anayltics` menu.
 
 `Group by Phone Number` - Displays graph of phone number frequency.
 
-`Visitors` - Unique visitor phone numbers and last date/tie accessed
+`Visitors` - Unique visitor phone numbers and last date/time accessed
 
 # Admin 
 
