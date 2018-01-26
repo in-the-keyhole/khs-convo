@@ -51,7 +51,7 @@ module.exports = function (events) {
 
     event.states = [
         { reply: 'Number to Convert?', validator: 'number', desc: 'Number' },
-        { reply: '(E)nglish or (M)etric?' , validator: 'choice:E,M', desc: 'Choose English or Metric' },
+        { reply: ' Convert to (E)nglish or (M)etric?' , validator: 'choice:E,M', desc: 'Choose English or Metric' },
             { choices:[ { choice: 'e', reply: 'Unit of Measure in Metric Units? '+metricunits(), validator: validUom } ,
                         { choice: 'm', reply: 'Unit of Measure in English Units? '+units(), validator: validUom}] },
         { reply: convert } 
