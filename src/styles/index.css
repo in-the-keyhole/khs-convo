@@ -101,3 +101,7 @@ body {
 .notificationsHeaderStyle {
   border-bottom: 1px solid #000;
 }
+
+.groupListUserCount {
+  text-align: center !important;
+}

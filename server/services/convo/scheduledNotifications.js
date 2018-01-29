@@ -39,7 +39,7 @@ module.exports = {
                 now.setSeconds(0);
                 //console.log('NOW: ' + now);
                 //console.log('NOW: ' + now.getTime());
-                console.log('NOW: ' + now.toUTCString());
+                //console.log('NOW: ' + now.toUTCString());
 
                 for (var i = 0; i < records.length; i++) {
                     var record = records[i];
@@ -47,8 +47,7 @@ module.exports = {
                     //console.dir(record); 
                     //console.log('RECORD: ' + record.scheduleDate);
                     //console.log('RECORD: ' + record.scheduleDate.getTime());
-                    console.log('RECORD: ' + record.scheduleDate.toUTCString());
-
+                    //console.log('RECORD: ' + record.scheduleDate.toUTCString());
 
                     // Send Notification if it's time
                     if(record.scheduleDate.toUTCString() === now.toUTCString()) {

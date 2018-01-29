@@ -150,7 +150,7 @@ class GroupUserList extends Component {
 
                 <div className="row">
                     <div className="col-md-12">
-                        <h3>{this.props.group.GroupName} ({this.props.group.Users.length})</h3>
+                        <h3>{this.props.group.GroupName}</h3>
                     </div>
                 </div>
 
@@ -167,7 +167,7 @@ class GroupUserList extends Component {
 
                 <div className="row">
                     <div className="col-md-12">
-                        <h4 className="notificationsHeaderStyle">Users</h4>
+                        <h4 className="notificationsHeaderStyle">Users ({this.props.group.Users.length})</h4>
                         
                         <div className="row">
                             <div className="col-xs-10">

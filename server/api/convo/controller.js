@@ -210,18 +210,34 @@ var twilio = require('twilio');
 var MessagingResponse = require('twilio').twiml.MessagingResponse;
 
 function post(req, res) {
-
     var body = req.body['Body'] || req.body['body'];
+    console.log('BODY');
+    console.dir(body);
+
     var result = {};
     result.phone = req.body.From.replace(/[\(\)\-\+]/g, "");
     if (result.phone.charAt(0) === '1') {
         result.phone = result.phone.slice(1, result.phone.length);
     }
-    var sub = body.match(/([a-zA-Z0-9\+\*\/\-\!\?'])+/gm);
-    for (var i = 0; i < sub.length; i++) {
-        sub[i] = sub[i].toLowerCase().trim();
-    }
 
+    // ************************************************************
+    // Could not determine why the 2 commented out lines were doing
+    // what they are doing, so changed it to just splitting on a space
+    // and not converting the entire "sub" to lowerCase, but rather
+    // just trimming them.  If no ill effects are seen because of 
+    // this change, the commented out lines below can be removed.
+    
+    //var sub = body.match(/([a-zA-Z0-9\+\*\/\-\!\?'])+/gm);
+    var sub = body.split(' ');
+    //console.log('SUB 1');
+    //console.dir(sub);
+    for (var i = 0; i < sub.length; i++) {
+        //sub[i] = sub[i].toLowerCase().trim();
+        sub[i] = sub[i].trim();
+    }
+    //console.log('SUB 2');
+    //console.dir(sub);
+    // ************************************************************
 
     result.question = sub;
     result.rawQuestion = body;
