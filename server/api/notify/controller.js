@@ -86,12 +86,9 @@ function put(req, res) {
 }
 
 
-function getschedulednotifications(req, res) {
+function getschedulednotification(req, res) {
     var today = new Date();
     today.setSeconds(0);
-    //console.log("DATE: " + today);
-    //today.setHours(today.getHours() + 1);
-    //console.log("DATE: " + today);
 
     mongo.GetCI(
         {'group': req.query.group, 'scheduleDate': {'$gte': today} }, 
@@ -101,6 +98,13 @@ function getschedulednotifications(req, res) {
         res.send(sns); 
     });
 }
+function deleteschedulednotification(req, res) {
+    mongo.Delete({'uuid': req.body.uuid}, 'ScheduledNotifications')
+       .then(function (response) {
+           res.send(response);
+       });  
+}
+
 
 
 module.exports = {
@@ -109,5 +113,6 @@ module.exports = {
     putgroup: putgroup,
     deletegroup: deletegroup,
     
-    getschedulednotifications: getschedulednotifications
+    getschedulednotification: getschedulednotification,
+    deleteschedulednotification: deleteschedulednotification
 }

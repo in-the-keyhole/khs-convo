@@ -2,7 +2,8 @@
 
 var config = require('../../config');
 var mongo = require("../../services/mongo");
-var notifyService = require('../../services/notifyservice')
+var notifyService = require('../../services/notifyservice');
+var uuid = require('uuid');
 
 module.exports = function (events) {
 
@@ -51,6 +52,7 @@ module.exports = function (events) {
 
                     if(notifyService.IsInTheFuture(scheduleDate)) {
                         mongo.Insert({ 
+                            "uuid": uuid(),
                             "scheduleDate": scheduleDate,
                             "msg": msg,
                             "group": group

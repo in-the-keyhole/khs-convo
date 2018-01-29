@@ -18,6 +18,7 @@ import React, { Component } from 'react';
 import ajax from '../util/ajax';
 import '../styles/emulator.css';
 import { Modal  } from 'react-bootstrap';
+var moment = require('moment');
 
 class NotifyEmulator extends Component {
 
@@ -101,7 +102,7 @@ class NotifyEmulator extends Component {
         var self = this;
         ajax({ 
             method: 'get',
-            url:'/api/notify/scheduledNotifications', 
+            url:'/api/notify/schedulednotification', 
             params: {'group': self.props.group.GroupName}
         }).then(function(res) {
 
@@ -128,6 +129,7 @@ class NotifyEmulator extends Component {
     closeConfirmSendModal() { 
         this.setState( { confirmsendmodal: false } );
     }
+
     openDeleteScheduledNotificationModal(sn){ 
         this.setState( { 
             currentScheduledNotification: sn,
@@ -138,9 +140,25 @@ class NotifyEmulator extends Component {
         this.setState( { deleteScheduledNotificationModal: false } );
     }
     deleteScheduledNotification() {
-        console.log("deleteScheduledNotification");
-        console.dir(this.state.currentScheduledNotification);
+        var self = this;
+
+        ajax({ 
+            method: 'delete',
+            url:'/api/notify/schedulednotification', 
+            data: self.state.currentScheduledNotification
+        }).then(function(res) {
+            var deletedFilteredOut = self.state.scheduledNotifications.filter(function(item) { 
+                return item._id !== self.state.currentScheduledNotification._id;
+            });
+            self.setState({ 
+                scheduledNotifications: deletedFilteredOut,
+            });
+
+             self.closeDeleteScheduledNotificationModal();
+        }).catch(function(err){console.log(err)});
     }
+
+
     openEditScheduledNotificationModal(sn){ 
         this.setState( { 
             currentScheduledNotification: sn,
@@ -162,6 +180,8 @@ class NotifyEmulator extends Component {
         if(!this.state.msgtext) { isValid = false; }
         if(!this.props.group.checkSMS && !this.props.group.checkEmail && !this.props.group.checkSlack) { isValid = false; }
         if(this.props.group.Users.length === 0) { isValid = false; }
+        if(this.state.scheduleDate && !this.state.scheduleTime) { isValid = false; }
+        if(this.state.scheduleTime && !this.state.scheduleDate) { isValid = false; }
 
         return isValid;
     }
@@ -190,6 +210,10 @@ class NotifyEmulator extends Component {
         });
     }
 
+    formatScheduleDate(sd) {
+        return moment(sd).format('L') + ' ' + moment(sd).format('LT');
+    }
+
     render() {
         this.state.Body = "notify " + this.props.group.GroupName;
 
@@ -198,9 +222,9 @@ class NotifyEmulator extends Component {
             <div className="row row-striped">
                 <div className="col-xs-2">
                     {/* <i title="Edit" className="glyphicon glyphicon-edit clickable"  onClick={() => this.openEditScheduledNotificationModal(record)} /> */}
-                    {/* <i title="Delete from schedule" className="glyphicon glyphicon-remove-sign text-danger clickable"  onClick={() => this.openDeleteScheduledNotificationModal(record)} /> */}
+                    <i title="Delete from schedule" className="glyphicon glyphicon-remove-sign text-danger clickable"  onClick={() => this.openDeleteScheduledNotificationModal(record)} />
                 </div>
-                <div className="col-xs-4">{record.scheduleDate}</div>
+                <div className="col-xs-4">{this.formatScheduleDate(record.scheduleDate)}</div>
                 <div className="col-xs-6">{record.msg}</div>
             </div>
         );
@@ -251,7 +275,6 @@ class NotifyEmulator extends Component {
                         <div className={this.state.sentMsg !== "" ? 'row visible' : 'row invisible'}>
                             <div className="col-md-12 red text-center">{this.state.sentMsg}</div>
                         </div>
-
                         <div className={this.state.sentMsg === "" ? 'visible' : 'invisible'} >
                             <div className="row">
                                 <div className="col-md-4"><strong>Message:</strong></div>
@@ -259,7 +282,11 @@ class NotifyEmulator extends Component {
                             </div>
                             <div className={"row " + (this.state.scheduleDate === '' ? 'hidden' : '')}>
                                 <div className="col-md-4"><strong>Scheduled date/time:</strong></div>
-                                <div className="col-md-8">{this.state.scheduleDate} {this.state.scheduleTime}</div>
+                                <div className="col-md-8">
+                                    {moment(this.state.scheduleDate + " " + this.state.scheduleTime, "YYYY-MM-DD H:mi").format('L')} 
+                                    &nbsp;
+                                    {moment(this.state.scheduleDate + " " + this.state.scheduleTime, "YYYY-MM-DD H:mi").format('LT')}
+                                </div>
                             </div>
                             <div className="row">
                                 <div className="col-md-4"><strong># Users:</strong></div>
@@ -275,9 +302,8 @@ class NotifyEmulator extends Component {
                     <Modal.Footer>
                         <div className="row">
                             <div className="col-md-12 pull-right">
-                                {/* <input className="btn btn-primary" type="submit" value="Send" /> */}
                                 <button className="btn btn-primary" disabled={this.state.sentMsg !== ""} onClick={() => this.handleSubmit()}>{this.state.scheduleDate === '' ? 'Send' : 'Schedule'}</button>
-                                <button className="btn btn-default" onClick={() => this.closeConfirmSendModal()}>Cancel</button>
+                                <button className="btn btn-default" onClick={() => this.closeConfirmSendModal()}>{this.state.sentMsg !== "" ? 'Close' : 'Cancel'}</button>
                             </div>
                         </div>
                     </Modal.Footer>
@@ -296,7 +322,7 @@ class NotifyEmulator extends Component {
 
                         <div className="row">
                             <div className="col-md-3"><strong>Date:</strong></div>
-                            <div className="col-md-9">{this.state.currentScheduledNotification ? this.state.currentScheduledNotification.scheduleDate : '' } </div>
+                            <div className="col-md-9">{this.state.currentScheduledNotification ? this.formatScheduleDate(this.state.currentScheduledNotification.scheduleDate) : '' } </div>
                         </div> 
                         <div className="row">
                             <div className="col-md-3"><strong>Message:</strong></div>
