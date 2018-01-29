@@ -197,13 +197,9 @@ function findAnswer(result) {
 
             });
     } );
-    
 }
 
-
-
 module.exports = {
-            findAnswer: findAnswer,
-            duplicates: duplicates
-
-        }
+    findAnswer: findAnswer,
+    duplicates: duplicates
+}

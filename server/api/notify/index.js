@@ -27,6 +27,6 @@ module.exports = function (app) {
   router.put('/group', auth.isAuth,  controller.putgroup);
   router.delete('/group', auth.isAuth,  controller.deletegroup);
   //router.post('/content', auth.isAuth,  controller.contentpost);
-
+  router.get('/scheduledNotifications', auth.isAuth,  controller.getschedulednotifications);
   app.use('/api/notify', router);
 }

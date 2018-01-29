@@ -24,6 +24,26 @@ module.exports = {
     load: function() {
         logger.info('TimerEventLoader: load()');
 
+
+        // Remove expired Scheduled Notifications and process others
+        try {
+            var tmp2 = require('./convo/scheduledNotifications.js');
+
+            if(typeof tmp2.removeExpired === 'function') {
+                tmp2.removeExpired();
+            }
+
+            if(typeof tmp2.process === 'function') {
+                logger.info('TimerEventLoader: Loading - scheduledNotifications.js');
+                module.exports.setupTimer(tmp2.process, tmp2.config);
+            }
+        } 
+        catch (err){
+            console.log("NO SCHEDULE NOTIFICATIONS FILE");
+        }
+
+        
+
         var filepath = config.timerevent_dir;
 
         // Read current directory contents

@@ -47,14 +47,16 @@ function Get(query, collectionName) {
 }
 
 // Performs case insensite find
-function GetCI(query, collectionName) {
+function GetCI(query, sort, collectionName) {
+    console.log("MONGO: GETCI: " + collectionName);
+    
     return new Promise(function (resolve, reject) {
         MongoClient.connect(url, function (err, db) {
             if (err) {
                 reject("Failed to Connect to MongoDB ", err);
             }
 
-            return resolve(db.collection(collectionName).find(query).collation({locale:'en', strength: 1}).toArray());
+            return resolve(db.collection(collectionName).find(query).sort(sort).collation({locale:'en', strength: 1}).toArray());
         });
     });
 }
