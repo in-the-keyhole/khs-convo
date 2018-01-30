@@ -34,8 +34,8 @@ function postgroup(req, res) {
 
 function getgroup(req, res) {
     mongo.Get({}, 'NotificationGroups')
-        .then(function (users) {
-            res.send(users); 
+        .then(function (groups) {
+            res.send(groups); 
         })
 }
 
@@ -86,13 +86,33 @@ function put(req, res) {
 }
 
 
+function getschedulednotification(req, res) {
+    var today = new Date();
+    today.setSeconds(0);
+
+    mongo.GetCI(
+        {'group': req.query.group, 'scheduleDate': {'$gte': today} }, 
+        {scheduleDate: 1}, 
+        'ScheduledNotifications')
+    .then(function (sns) {
+        res.send(sns); 
+    });
+}
+function deleteschedulednotification(req, res) {
+    mongo.Delete({'uuid': req.body.uuid}, 'ScheduledNotifications')
+       .then(function (response) {
+           res.send(response);
+       });  
+}
+
 
 
 module.exports = {
     postgroup: postgroup, 
     getgroup: getgroup,
     putgroup: putgroup,
-    deletegroup: deletegroup
+    deletegroup: deletegroup,
     
-
+    getschedulednotification: getschedulednotification,
+    deleteschedulednotification: deleteschedulednotification
 }

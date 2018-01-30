@@ -53,10 +53,10 @@ KHS{Convo} is a Node.js-based platform for creating SMS and Web-based `conversat
 * Copy the `server/config/copy-to-indexjs.tmp` file to `index.js`. This is where config properties are set. 
   
   `Note:` The index.js file is Git ignored to prevent accidental committing of configuration properties. 
-    * MongoDB connection setting `mongodb: process.env.MONGODB_URI` ( See [MongoDB Config Doc](docs/mongodb.md) for more information )
+    * Set the MongoDB connection URI setting `mongodb: process.env.MONGODB_URI` to your local or remote MongoDB instance ( See [MongoDB Config Doc](docs/mongodb.md) for more information )
 
 * Create an Admin User with the following command. 
-    * This will create an admin user with a userid of `admin` and prompt for a password. 
+    * This will create an admin user in your MongoDB instance, with a userid of `admin` and prompt for a password. 
     > `node adminuser.js`
              
 * Start the API and UI servers, they will start on 3001 and 3000 respectively. 

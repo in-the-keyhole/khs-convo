@@ -171,6 +171,12 @@ class NotificationGroups extends Component {
         )
     }
 
+    groupUsers(cell, row) {
+        return (
+            <div className="groupListUserCount">{row.Users.length}</div>  
+        )
+    }
+    
 
     render() {
 
@@ -249,6 +255,8 @@ class NotificationGroups extends Component {
                                 }}>
                                 <TableHeaderColumn dataField='uuid' isKey hidden>ID</TableHeaderColumn>
                                 <TableHeaderColumn dataField='GroupName' >Group Name</TableHeaderColumn>
+
+                                <TableHeaderColumn  className="groupListUserCount" dataField='Users' editable={ false } dataFormat={this.groupUsers} ># Users</TableHeaderColumn>
 
                                 <TableHeaderColumn width="60" editable={ false } dataFormat={this.groupToolbar}></TableHeaderColumn>
                                     

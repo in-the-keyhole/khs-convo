@@ -37,38 +37,38 @@ function removeQuestion(result, word) {
     return result;
 }
 
-function duplicates(){
+function duplicates() {
 
-   var list = _.flatten(_.map(events, 'words'));
-   var dupes = _.filter(_.map(list, 'word'), function (value, index, iteratee) {
-      return _.includes(iteratee, value, index + 1);
-   });
-   
-   var outputList = [];
-   
-   _.forEach(dupes, function(value, key) {
-       
-       var results = _.filter(events, function(obj) { 
-           var mytest = _.includes(_.map(obj.words, 'word'),dupes[key]);
-           //console.log(mytest);
-           return mytest;
-       });
-       
-       
-       outputList.push({
-           term: value,
-           filenames: results[0].filename + ' and ' + results[1].filename
-
-       });
+    var list = _.flatten(_.map(events, 'words'));
+    var dupes = _.filter(_.map(list, 'word'), function (value, index, iteratee) {
+        return _.includes(iteratee, value, index + 1);
     });
-   
+
+    var outputList = [];
+
+    _.forEach(dupes, function (value, key) {
+
+        var results = _.filter(events, function (obj) {
+            var mytest = _.includes(_.map(obj.words, 'word'), dupes[key]);
+            //console.log(mytest);
+            return mytest;
+        });
+
+
+        outputList.push({
+            term: value,
+            filenames: results[0].filename + ' and ' + results[1].filename
+
+        });
+    });
+
 
     return outputList;
 }
 
 function findAnswer(result) {
     return new Promise(function (resolve, reject) {
-    
+
         var mainEvent;
         var mainEventWeight = 0;
         result.answer = "";
@@ -106,15 +106,15 @@ function findAnswer(result) {
                     return resolve(result);
                 }
 
-                if (r.length > 0 ) {
-                  
+                if (r.length > 0) {
+
                     // validate session, if out of date, delete....
-                    var d =  moment(r[r.length-1].date);
+                    var d = moment(r[r.length - 1].date);
                     var d2 = moment(new Date());
-                    if (d2.diff(d,'minutes') > config.session_timeout ) {
+                    if (d2.diff(d, 'minutes') > config.session_timeout) {
                         session.Delete(result.phone);
-                    } else {               
-                         entry = r[r.length - 1].event;
+                    } else {
+                        entry = r[r.length - 1].event;
                     }
                 }
 
@@ -157,16 +157,16 @@ function findAnswer(result) {
 
                 if (mainEvent) {
 
-                  // UI requested
-                  if (ui.includes(result.question[0].toLowerCase()) && mainEvent.html) {
-                    var html = mainEvent.html();
-                    var word  =  mainEvent.words[0].word;
-                    result.answer = 'Link to ' + mainEvent.description + ' UI: ' + 
-                        host_url + 'api/public/html/' + result.phone + '/' + word;
-                    saveHtml(result,html,word);
-                    session.Delete(result.phone);
-                    return resolve(result);
-                  }
+                    // UI requested
+                    if (ui.includes(result.question[0].toLowerCase()) && mainEvent.html) {
+                        var html = mainEvent.html();
+                        var word = mainEvent.words[0].word;
+                        result.answer = 'Link to ' + mainEvent.description + ' UI: ' +
+                            host_url + 'api/public/html/' + result.phone + '/' + word;
+                        saveHtml(result, html, word);
+                        session.Delete(result.phone);
+                        return resolve(result);
+                    }
 
 
                     mongo.Get({ Phone: result.phone }, 'Users')
@@ -183,7 +183,7 @@ function findAnswer(result) {
                             mainEvent.run(result)
                                 .then(function (answer) {
                                     result.answer = answer;
-                                    if ( mainEvent.states)  {
+                                    if (mainEvent.states) {
                                         // return resolve(doStates(mainEvent,result));
                                     }
                                     return resolve(result);
@@ -196,8 +196,7 @@ function findAnswer(result) {
                 }
 
             });
-    } );
-    
+    });
 }
 
 function saveHtml(result, html, word) {
@@ -208,7 +207,7 @@ function saveHtml(result, html, word) {
 
 
 module.exports = {
-            findAnswer: findAnswer,
-            duplicates: duplicates,
-            saveHtml, saveHtml
-        }
+    findAnswer: findAnswer,
+    duplicates: duplicates,
+    saveHtml, saveHtml
+}
