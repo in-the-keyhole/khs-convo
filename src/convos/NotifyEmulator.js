@@ -232,6 +232,9 @@ class NotifyEmulator extends Component {
         return (
             <div>
                 <div className="row">
+                    <div className="col-xs-12 notificationsHeaderStyle"><span>Message</span></div>
+                </div>
+                <div className="row">
                     <div className="col-xs-10">
                         <input name="msgtext" type="text" className="form-control emulator-input" autoFocus value={this.state.msgtext} onChange={this.handleInputChange} onKeyPress={this.onConversationKeypress} placeholder="Enter notification message here" />
                     </div>
@@ -240,29 +243,27 @@ class NotifyEmulator extends Component {
                     </div>
                 </div>
 
+
                 <div className="row">
-                    <div className="col-xs-12">
-                        <h4 className="notificationsHeaderStyle" ><i title="Schedule" className={"glyphicon clickable " + (this.state.scheduleHide ? 'glyphicon-plus' : 'glyphicon-minus')}  onClick={() => this.toggleScheduleHide()} /> Schedule (to send at a later time)</h4>
-                        
-                        <div className={this.state.scheduleHide ? 'hidden' : ''}>
-                            <div className='row'>
-                                <div className="col-xs-3">Schedule Date: <input name="scheduleDate" type="date" className="form-control emulator-input" value={this.state.scheduleDate} onChange={this.handleInputChange} /></div>
-                                <div className="col-xs-3">Schedule Time: <input name="scheduleTime" type="time" className="form-control emulator-input" value={this.state.scheduleTime} onChange={this.handleInputChange} /></div>
-                            </div>
+                    <div className="col-xs-12 notificationsHeaderStyle">
+                    <i title="Schedule" className={"glyphicon clickable " + (this.state.scheduleHide ? 'glyphicon-plus' : 'glyphicon-minus')}  onClick={() => this.toggleScheduleHide()} /> <span>Schedule ({this.state.scheduledNotifications.length})</span> (to send at a later time)
+                    </div>
+                </div>
+                <div className={this.state.scheduleHide ? 'hidden' : ''}>
+                    <div className='row'>
+                        <div className="col-xs-3">Schedule Date: <input name="scheduleDate" type="date" className="form-control emulator-input" value={this.state.scheduleDate} onChange={this.handleInputChange} /></div>
+                        <div className="col-xs-3">Schedule Time: <input name="scheduleTime" type="time" className="form-control emulator-input" value={this.state.scheduleTime} onChange={this.handleInputChange} /></div>
+                    </div>
 
-                            <div className={this.state.scheduledNotifications.length > 0 ? '' : 'hidden'}>
+                        <div className="row">
+                            <div className={this.state.scheduledNotifications.length > 0 ? 'col-xs-offset-1 col-xs-11' : 'hidden'}>
                                 <div className="row">
-                                    <div className="col-xs-offset-1 col-xs-11">
-                                        <div className="row">
-                                            <div className="col-xs-12"><h4 className="notificationsHeaderStyle">Currently Scheduled Notifications</h4></div>
-                                        </div>
-
-                                        {ScheduledNotificationist}
-                                    </div>
+                                    <div className="col-xs-12 notificationsHeaderStyle"><span>Currently Scheduled Notifications</span></div>
                                 </div>
+
+                                {ScheduledNotificationist}
                             </div>
                         </div>
-                    </div>
                 </div>
 
 

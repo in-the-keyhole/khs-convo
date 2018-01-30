@@ -130,7 +130,7 @@ class GroupUserList extends Component {
 
         const MailingList = this.props.group.Users.map((user) =>
             <div className="row row-striped">
-                <div className="col-xs-1"><i title="Delete from list" className="glyphicon glyphicon-remove-sign text-danger clickable"  onClick={() => this.deleteUser(user.uuid)}  /></div>
+                <div className="col-xs-1"><i title="Remove from list" className="glyphicon glyphicon-remove-sign text-danger clickable"  onClick={() => this.deleteUser(user.uuid)}  /></div>
                 <div className="col-xs-4">{user.Name}</div>
                 <div className="col-xs-6">{user.Username}</div>
             </div>
@@ -150,40 +150,48 @@ class GroupUserList extends Component {
 
                 <div className="row">
                     <div className="col-md-12">
-                        <h3>{this.props.group.GroupName}</h3>
+                        <h1>{this.props.group.GroupName}</h1>
                     </div>
                 </div>
 
                 <NotifyEmulator group={this.props.group}/>
 
                 <div className="row">
-                    <div className="col-md-12">
-                        <h4 className="notificationsHeaderStyle">Send To</h4>
+                    <div className="col-md-12 notificationsHeaderStyle"><span>Send To</span></div>
+                </div>
+                <div className="row">
+                    <div className="col-md-3">
                         <Checkbox name="checkSMS" checked={this.props.group.checkSMS} onChange={this.handleChange}>SMS</Checkbox>
+                    </div>
+                    <div className="col-md-3">
                         <Checkbox name="checkEmail" checked={this.props.group.checkEmail} onChange={this.handleChange}>Email</Checkbox>
+                    </div>
+                    <div className="col-md-3">
                         <Checkbox name="checkSlack" checked={this.props.group.checkSlack} onChange={this.handleChange}>Slack ({window.sessionStorage.getItem('slackchannel')})</Checkbox>
                     </div>
                 </div>
 
+
                 <div className="row">
-                    <div className="col-md-12">
-                        <h4 className="notificationsHeaderStyle">Users ({this.props.group.Users.length})</h4>
-                        
+                    <div className="col-md-12 notificationsHeaderStyle"><span>Users ({this.props.group.Users.length})</span></div>
+                </div>
+                <div className="row">
+                    <div className="col-xs-10">
+                        <select value={this.state.user} className="form-control emulator-input" onChange={this.addUser}>
+                            <option value="">Select user to add to list OR click 'Add All' button</option>
+                            {selectUsers}
+                        </select>
+                    </div>
+                    <div className="col-xs-2">
+                        <button className="btn btn-default" onClick={() => this.addAllUsers()} >Add All</button>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className={this.props.group.Users.length > 0 ? 'col-xs-offset-1 col-xs-11' : 'hidden'}>
                         <div className="row">
-                            <div className="col-xs-10">
-                                <select value={this.state.user} className="form-control emulator-input" onChange={this.addUser}>
-                                    <option value="">Select user to add to list OR click 'Add All' button</option>
-                                    {selectUsers}
-                                </select>
-                            </div>
-                            <div className="col-xs-2">
-                                <button className="btn btn-default" onClick={() => this.addAllUsers()} >Add All</button>
-                           </div>
+                            <div className="col-xs-12 notificationsHeaderStyle"><span>Currently assigned Users to Group</span></div>
                         </div>
- 
-                        <div className="container-fluid" style={userlistStyle}>
-                            {MailingList}
-                        </div>
+                        {MailingList}
                     </div>
                 </div>
 

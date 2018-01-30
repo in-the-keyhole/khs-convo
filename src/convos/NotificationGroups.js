@@ -165,7 +165,7 @@ class NotificationGroups extends Component {
     groupToolbar(cell, row) {
         return (
                 <div className="adminIcons">
-                    <i title="View Group" className="glyphicon glyphicon-user clickable"  onClick={() => this.showGroupUsers(row)}  />
+                    <i title="View Group" className="glyphicon glyphicon-cog clickable"  onClick={() => this.showGroupUsers(row)}  />
                     <i title="Delete Group" className="glyphicon glyphicon-remove-sign text-danger clickable"  onClick={() => this.openDeleteModal(row)}  />
                 </div>  
         )
@@ -183,19 +183,6 @@ class NotificationGroups extends Component {
         return (
 
             <div className="container">
-                
-                <div className="row">
-                    <div className="col-md-12"><h1>Groups</h1></div>
-                </div>     
-
-                <div className="row">
-                    <div className="col-md-2 ">              
-                        <button className="btn btn-primary" onClick={() => this.openAddGroupModal()}>Add Group</button>                
-                    </div>
-                </div>        
-
-                    
-
                 <Modal show={this.state.addGroupModal} onHide={this.close}>
                     <Modal.Body>
                         <form className="form" onSubmit={this.addGroup}>
@@ -242,8 +229,19 @@ class NotificationGroups extends Component {
                 </Modal>
 
                 <div className="row">
-                    <div className="col-md-3 list">
+                    <div className="col-md-4">
+
                         <div className="row">
+                            <div className="col-md-12"><h1>Groups</h1></div>
+                        </div>     
+
+                        <div className="row">
+                            <div className="col-md-2 ">              
+                                <button className="btn btn-primary" onClick={() => this.openAddGroupModal()}>Add Group</button>                
+                            </div>
+                        </div>     
+
+                        <div className="row list">
                             <BootstrapTable 
                                 data={ this.state.users } 
                                 //insertRow={ true }
@@ -254,24 +252,21 @@ class NotificationGroups extends Component {
                                     afterSaveCell: this.onAfterSaveGroup
                                 }}>
                                 <TableHeaderColumn dataField='uuid' isKey hidden>ID</TableHeaderColumn>
-                                <TableHeaderColumn dataField='GroupName' >Group Name</TableHeaderColumn>
-
-                                <TableHeaderColumn  className="groupListUserCount" dataField='Users' editable={ false } dataFormat={this.groupUsers} ># Users</TableHeaderColumn>
-
-                                <TableHeaderColumn width="60" editable={ false } dataFormat={this.groupToolbar}></TableHeaderColumn>
-                                    
+                                <TableHeaderColumn width="60%" dataField='GroupName' >Group Name</TableHeaderColumn>
+                                <TableHeaderColumn width="20%" dataAlign="center" dataField='Users' editable={ false } dataFormat={this.groupUsers} ># Users</TableHeaderColumn>
+                                <TableHeaderColumn width="20%" dataAlign="center" editable={ false } dataFormat={this.groupToolbar}></TableHeaderColumn>
                             </BootstrapTable>
                         </div>
                     </div>      
 
                     
 
-                    <div className="col-md-8 col-md-offset-1">
+                    <div className="col-md-offset-1 col-md-7">
                         <GroupUserList group={this.state.currentGroup}  />
                     </div>
                 </div>
             </div>
-                ) 
+        ) 
     }
 }
 
