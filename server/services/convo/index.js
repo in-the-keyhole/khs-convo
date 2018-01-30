@@ -163,7 +163,7 @@ function findAnswer(result) {
                     var word  =  mainEvent.words[0].word;
                     result.answer = 'Link to ' + mainEvent.description + ' UI: ' + 
                         host_url + 'api/public/html/' + result.phone + '/' + word;
-                    mongo.Update({phone: result.phone, event: word},{phone: result.phone, event: word, html: html }, "ui", {upsert: true} );
+                    saveHtml(result,html,word);
                     session.Delete(result.phone);
                     return resolve(result);
                   }
@@ -200,10 +200,15 @@ function findAnswer(result) {
     
 }
 
+function saveHtml(result, html, word) {
+
+    mongo.Update({ phone: result.phone, event: word }, { phone: result.phone, event: word, html: html }, "ui", { upsert: true });
+    return;
+}
 
 
 module.exports = {
             findAnswer: findAnswer,
-            duplicates: duplicates
-
+            duplicates: duplicates,
+            saveHtml, saveHtml
         }
