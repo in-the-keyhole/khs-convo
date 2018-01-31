@@ -34,8 +34,8 @@ class NotifyEmulator extends Component {
             From:  window.sessionStorage.getItem('phone'),
             confirmsendmodal: false,
             scheduleHide: true,
-            scheduleDate: '',
-            scheduleTime: ''
+            newScheduleDate: '',
+            newScheduleTime: ''
         }
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -46,13 +46,11 @@ class NotifyEmulator extends Component {
 
     handleInputChange(event) {
         const target = event.target;
-
         this.setState({
             [target.name]: target.value,
             sentMsg: ""
         });
     }
-
 
     onConversationKeypress(ev) {
         var key = ev.keyCode || ev.which;
@@ -68,11 +66,14 @@ class NotifyEmulator extends Component {
             sentMsg: "Message Sent"
         });
 
+        var tmpScheduleDate = this.createScheduleDate(this.state.newScheduleDate, this.state.newScheduleTime);
+
+        //Schedule: { date: this.state.scheduleDate, time: this.state.scheduleTime },
         var payload = {
             Body: "notify " + this.props.group.GroupName + ' ' + this.state.msgtext,
             From: this.state.From,
             To: this.state.To,
-            Schedule: { date: this.state.scheduleDate, time: this.state.scheduleTime }
+            scheduleDate: tmpScheduleDate
         }
 
         var self = this;
@@ -86,8 +87,8 @@ class NotifyEmulator extends Component {
                 msgtext: "",
                 sentMsg: "Message Sent",
                 scheduleHide: true,
-                scheduleDate: '',
-                scheduleTime: ''
+                newScheduleDate: '',
+                newScheduleTime: ''
             });
 
             // self.getConversationsForPhone();
@@ -123,21 +124,42 @@ class NotifyEmulator extends Component {
         }
     }
 
+    createScheduleDate(tmpDate, tmpTime) {
+        var scheduleTimeExists = typeof tmpTime !== 'undefined' && !this.IsEmpty(tmpTime);
+        var requestScheduleDate = tmpDate;
+        var requestScheduleTime = '';
+    
+        if(scheduleTimeExists) {
+            requestScheduleTime = tmpTime;
+        } else {
+            var now = new Date();
+            requestScheduleTime = now.getHours() + ':' + now.getMinutes();
+        }
+    
+        var dateParts = requestScheduleDate.split('-');
+        var timeParts = requestScheduleTime.split(':');
+    
+        return new Date(dateParts[0], parseInt(dateParts[1])-1, dateParts[2], timeParts[0], timeParts[1], 0);
+    }
+    IsEmpty(obj) {
+        return Object.keys(obj).length === 0;
+    }
+
     openConfirmSendModal() { 
-        this.setState( { confirmsendmodal: true } );
+        this.setState({ confirmsendmodal: true });
     }
     closeConfirmSendModal() { 
-        this.setState( { confirmsendmodal: false } );
+        this.setState({ confirmsendmodal: false });
     }
 
     openDeleteScheduledNotificationModal(sn){ 
-        this.setState( { 
+        this.setState({ 
             currentScheduledNotification: sn,
             deleteScheduledNotificationModal: true
         });
     }
     closeDeleteScheduledNotificationModal() { 
-        this.setState( { deleteScheduledNotificationModal: false } );
+        this.setState({ deleteScheduledNotificationModal: false });
     }
     deleteScheduledNotification() {
         var self = this;
@@ -160,17 +182,42 @@ class NotifyEmulator extends Component {
 
 
     openEditScheduledNotificationModal(sn){ 
-        this.setState( { 
+        this.setState({ 
             currentScheduledNotification: sn,
-            editScheduledNotificationModal: true
+            editScheduledNotificationModal: true,
+            editScheduleDate: moment(sn.scheduleDate).format('YYYY-MM-DD'),
+            editScheduleTime: moment(sn.scheduleDate).format('HH:mm'),
+            editMsg: sn.msg
         });
     }
     closeEditScheduledNotificationModal() { 
-        this.setState( { editScheduledNotificationModal: false } );
+        this.setState({ 
+            editScheduledNotificationModal: false 
+        });
     }
     editScheduledNotification() {
-        console.log("editScheduledNotification");
-        console.dir(this.state.currentScheduledNotification);
+        let tmp = this.state.currentScheduledNotification;
+        let tmpdate = this.createScheduleDate(this.state.editScheduleDate, this.state.editScheduleTime);
+        tmp.scheduleDate = tmpdate;
+        tmp.msg = this.state.editMsg;
+
+        //this.setState({
+        //    currentScheduledNotification: tmp
+        //});
+
+        var self = this;
+        ajax({ 
+            method: 'put',
+            url:'/api/notify/schedulednotification', 
+            data: tmp
+        }).then(function(res) {
+            self.setState({ 
+                currentScheduledNotification: {}
+            });
+            self.fetchScheduledNotifications();
+            self.closeEditScheduledNotificationModal();
+
+        }).catch(function(err){console.log(err)});
     }
 
 
@@ -185,6 +232,16 @@ class NotifyEmulator extends Component {
 
         return isValid;
     }
+     validEdit() {
+         var isValid = true;
+
+         if(!this.state.editMsg) { isValid = false; }
+         if(this.state.editScheduleDate && !this.state.editScheduleTime) { isValid = false; }
+         if(this.state.editScheduleTime && !this.state.editScheduleDate) { isValid = false; }
+
+         return isValid;
+     }
+    
 
     sendMediums() {
         var str = "";
@@ -211,7 +268,7 @@ class NotifyEmulator extends Component {
     }
 
     formatScheduleDate(sd) {
-        return moment(sd).format('L') + ' ' + moment(sd).format('LT');
+        return moment(sd).format('L') + ' @ ' + moment(sd).format('LT');
     }
 
     render() {
@@ -221,7 +278,7 @@ class NotifyEmulator extends Component {
         const ScheduledNotificationist = this.state.scheduledNotifications.map((record) =>
             <div className="row row-striped">
                 <div className="col-xs-2">
-                    {/* <i title="Edit" className="glyphicon glyphicon-edit clickable"  onClick={() => this.openEditScheduledNotificationModal(record)} /> */}
+                    <i title="Edit" className="glyphicon glyphicon-edit clickable"  onClick={() => this.openEditScheduledNotificationModal(record)} />
                     <i title="Delete from schedule" className="glyphicon glyphicon-remove-sign text-danger clickable"  onClick={() => this.openDeleteScheduledNotificationModal(record)} />
                 </div>
                 <div className="col-xs-4">{this.formatScheduleDate(record.scheduleDate)}</div>
@@ -245,25 +302,24 @@ class NotifyEmulator extends Component {
 
 
                 <div className="row">
-                    <div className="col-xs-12 notificationsHeaderStyle">
-                    <i title="Schedule" className={"glyphicon clickable " + (this.state.scheduleHide ? 'glyphicon-plus' : 'glyphicon-minus')}  onClick={() => this.toggleScheduleHide()} /> <span>Schedule ({this.state.scheduledNotifications.length})</span> (to send at a later time)
+                    <div className="col-xs-11 notificationsHeaderStyle">
+                        <i title="Schedule" className={"glyphicon clickable " + (this.state.scheduleHide ? 'glyphicon-plus' : 'glyphicon-minus')}  onClick={() => this.toggleScheduleHide()} /> <span>Schedule ({this.state.scheduledNotifications.length})</span> (to send at a later time)
                     </div>
                 </div>
                 <div className={this.state.scheduleHide ? 'hidden' : ''}>
                     <div className='row'>
-                        <div className="col-xs-3">Schedule Date: <input name="scheduleDate" type="date" className="form-control emulator-input" value={this.state.scheduleDate} onChange={this.handleInputChange} /></div>
-                        <div className="col-xs-3">Schedule Time: <input name="scheduleTime" type="time" className="form-control emulator-input" value={this.state.scheduleTime} onChange={this.handleInputChange} /></div>
+                        <div className="col-xs-4">Schedule Date: <input name="newScheduleDate" type="date" className="form-control emulator-input" value={this.state.newScheduleDate} onChange={this.handleInputChange} /></div>
+                        <div className="col-xs-4">Schedule Time: <input name="newScheduleTime" type="time" className="form-control emulator-input" value={this.state.newScheduleTime} onChange={this.handleInputChange} /></div>
                     </div>
 
-                        <div className="row">
-                            <div className={this.state.scheduledNotifications.length > 0 ? 'col-xs-offset-1 col-xs-11' : 'hidden'}>
-                                <div className="row">
-                                    <div className="col-xs-12 notificationsHeaderStyle"><span>Currently Scheduled Notifications</span></div>
-                                </div>
-
-                                {ScheduledNotificationist}
+                    <div className="row">
+                        <div className={this.state.scheduledNotifications.length > 0 ? 'col-xs-offset-1 col-xs-11' : 'hidden'}>
+                            <div className="row">
+                                <div className="col-xs-12 notificationsHeaderStyle"><span className="sub">Currently Scheduled Notifications</span></div>
                             </div>
+                            {ScheduledNotificationist}
                         </div>
+                    </div>
                 </div>
 
 
@@ -281,12 +337,14 @@ class NotifyEmulator extends Component {
                                 <div className="col-md-4"><strong>Message:</strong></div>
                                 <div className="col-md-8">{this.state.msgtext}</div>
                             </div>
-                            <div className={"row " + (this.state.scheduleDate === '' ? 'hidden' : '')}>
+                            <div className={"row " + (this.state.newScheduleDate === '' ? 'hidden' : '')}>
                                 <div className="col-md-4"><strong>Scheduled date/time:</strong></div>
                                 <div className="col-md-8">
-                                    {moment(this.state.scheduleDate + " " + this.state.scheduleTime, "YYYY-MM-DD H:mi").format('L')} 
+                                    {this.formatScheduleDate(moment(this.state.newScheduleDate + " " + this.state.newScheduleTime, "YYYY-MM-DD HH:mi"))}
+                                    {/* <br />
+                                    {moment(this.state.newScheduleDate + " " + this.state.newScheduleTime, "YYYY-MM-DD HH:mi").format('L')} 
                                     &nbsp;
-                                    {moment(this.state.scheduleDate + " " + this.state.scheduleTime, "YYYY-MM-DD H:mi").format('LT')}
+                                    {moment(this.state.newScheduleDate + " " + this.state.newScheduleTime, "YYYY-MM-DD HH:mi").format('LT')} */}
                                 </div>
                             </div>
                             <div className="row">
@@ -309,7 +367,6 @@ class NotifyEmulator extends Component {
                         </div>
                     </Modal.Footer>
                 </Modal>
-
 
                 <Modal show={this.state.deleteScheduledNotificationModal} onHide={this.close}>
                     <Modal.Header className="bg-danger">
@@ -348,13 +405,18 @@ class NotifyEmulator extends Component {
 
                     <Modal.Body>
                         <div className="row">
-                            <div className="col-md-3"><strong>Date:</strong></div>
-                            <div className="col-md-9">{this.state.currentScheduledNotification ? this.state.currentScheduledNotification.scheduleDate : '' } </div>
+                            <div className="col-md-3 text-right"><strong>Date:</strong></div>
+                            <div className="col-md-4">
+                                <input name="editScheduleDate" type="date" className="form-control emulator-input" defaultValue={this.state.currentScheduledNotification ? this.state.editScheduleDate : ''} onChange={this.handleInputChange} />
+                            </div>
+                            <div className="col-md-4">
+                                <input name="editScheduleTime" type="time" className="form-control emulator-input" defaultValue={this.state.currentScheduledNotification ?  this.state.editScheduleTime : ''} onChange={this.handleInputChange} />
+                            </div>
                         </div> 
                         <div className="row">
-                            <div className="col-md-3"><strong>Message:</strong></div>
+                            <div className="col-md-3 text-right"><strong>Message:</strong></div>
                             <div className="col-md-9">
-                                <input name="currentScheduledNotification.msg" type="text" className="form-control emulator-input" defaultValue={this.state.currentScheduledNotification ? this.state.currentScheduledNotification.msg : ''} onChange={this.handleInputChange} placeholder="Enter notification message here" />
+                                <input name="editMsg" type="text" className="form-control emulator-input" defaultValue={this.state.currentScheduledNotification ? this.state.editMsg : ''} onChange={this.handleInputChange} placeholder="Enter notification message here" />
                             </div>
                         </div> 
                     </Modal.Body>
@@ -362,7 +424,7 @@ class NotifyEmulator extends Component {
                     <Modal.Footer>
                         <div className="row">
                             <div className="col-md-12 pull-right">
-                                <button className="btn btn-primary"  onClick={() => this.editScheduledNotification()} >Submit</button>
+                                <button className="btn btn-primary" disabled={!this.validEdit()} onClick={() => this.editScheduledNotification()} >Submit</button>
                                 <button className="btn btn-default" onClick={() => this.closeEditScheduledNotificationModal()}>Cancel</button>
                             </div> 
                         </div>

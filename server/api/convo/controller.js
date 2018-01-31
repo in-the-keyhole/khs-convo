@@ -242,7 +242,7 @@ function post(req, res) {
     result.question = sub;
     result.rawQuestion = body;
     result.raw = req.body;
-    result.schedule = req.body['Schedule'];
+    result.scheduleDate = req.body['scheduleDate'];
 
     if (!isTokenValid(req)) {
         res.end("Invalid API token");

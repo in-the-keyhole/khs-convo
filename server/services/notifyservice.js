@@ -31,22 +31,36 @@ var slackService = require('./slack')
 module.exports = {
     IsEmpty: IsEmpty,
     IsInTheFuture: IsInTheFuture,
-    ChooseChannels: ChooseChannels
+    ChooseChannels: ChooseChannels,
+    CreateScheduleDate: CreateScheduleDate
+}
+
+
+function CreateScheduleDate(tmpDate, tmpTime) {
+    var scheduleTimeExists = typeof tmpTime !== 'undefined' && !IsEmpty(tmpTime);
+    var requestScheduleDate = tmpDate;
+    var requestScheduleTime = '';
+
+    if(scheduleTimeExists) {
+        requestScheduleTime = tmpTime;
+    } else {
+        var now = new Date();
+        requestScheduleTime = now.getHours() + ':' + now.getMinutes();
+    }
+
+    var dateParts = requestScheduleDate.split('-');
+    var timeParts = requestScheduleTime.split(':');
+
+    return new Date(dateParts[0], parseInt(dateParts[1])-1, dateParts[2], timeParts[0], timeParts[1], 0);
 }
 
 function IsEmpty(obj) {
-    return Object.keys(obj).length === 0;
+    return obj === null || Object.keys(obj).length === 0;
 }
 
 function IsInTheFuture(tmpDate) {
     var now = new Date();
     now.setSeconds(0);
-
-    //console.log("RECORD: " + tmpDate.getTime());
-    //console.log("   NOW: " + now.getTime());
-    //console.log("RECORD: " + tmpDate);
-    //console.log("   NOW: " + now);
-
     return tmpDate.getTime() > now.getTime();
 }
 
@@ -80,13 +94,13 @@ function SendSMS(msg, number) {
         mongo.GetCI({ GroupName: number }, {}, 'NotificationGroups')
             .then(function (groups) {
                 if(groups.length > 0 && groups[0].Users.length > 0) {
-                    console.log('USERS: ' + groups[0].Users.length);
+                    //console.log('USERS: ' + groups[0].Users.length);
                     var users = groups[0].Users; 
 
                     groups[0].Users.forEach(user => {
                         mongo.Get({Username: user.Username} , "Users").then ( function(u) {  
                             if (u.length > 0) {
-                                console.log("Group Text: " + u[0].Phone + " / " + msg); 
+                                //console.log("Group Text: " + u[0].Phone + " / " + msg); 
                                 sendMsg(msg, u[0].Phone);
                             }     
                         })   
@@ -169,116 +183,5 @@ function SendSlack( msg, group ){
         })
 }
 
-
-// // Performs case insensite find
-// function GetCI(query, collectionName) {
-//     return new Promise(function (resolve, reject) {
-//         MongoClient.connect(url, function (err, db) {
-//             if (err) {
-//                 reject("Failed to Connect to MongoDB ", err);
-//             }
-
-//             return resolve(db.collection(collectionName).find(query).collation({locale:'en', strength: 1}).toArray());
-//         });
-//     });
-// }
-
-// function GetSort(query, sort, collectionName) {
-//     return new Promise(function (resolve, reject) {
-//         MongoClient.connect(url, function (err, db) {
-//             if (err) {
-//                 reject("Failed to Connect to MongoDB ", err);
-//             }
-
-//             return resolve(db.collection(collectionName).find(query).sort(sort).toArray());
-//         });
-//     });
-// }
-
-// function GetSortByChunk(query, sort, collectionName, limitCount, skipCount) {
-//     return new Promise(function (resolve, reject) {
-//         MongoClient.connect(url, function (err, db) {
-//             if (err) {
-//                 reject("Failed to Connect to MongoDB ", err);
-//             }
-
-//             return resolve(db.collection(collectionName).find(query).sort(sort).skip(skipCount).limit(limitCount).toArray());
-//         });
-//     });
-// }
-
-// function GetCount(query, collectionName) {
-//      return new Promise(function (resolve, reject) {
-//          MongoClient.connect(url, function (err, db) {
-//              if (err) {
-//                  reject("Failed to Connect to MongoDB ", err);
-//              }
-
-//              db.collection(collectionName).count().then(function(count) {
-//                 return resolve('' + count);
-//              })
-//          });
-//      });
-//  }
-
-// function Aggregate(query, collectionName) {
-//     return new Promise(function (resolve, reject) {
-//         MongoClient.connect(url, function (err, db) {
-//             if (err) {
-//                 reject("Failed to Connect to MongoDB ", err);
-//             }
-
-//             return resolve(db.collection(collectionName).aggregate(query).toArray());
-//         });
-//     });
-// }
-
-// function Delete(query, collectionName) {
-//     return new Promise(function (resolve, reject) {
-//         MongoClient.connect(url, function (err, db) {
-//             if (err) {
-//                 reject("Failed to Connect to MongoDB ", err);
-//             }
-
-//             return resolve(db.collection(collectionName).deleteMany(query));
-//         });
-//     });
-// }
-
-// function DeleteOne(query, collectionName) {
-//     return new Promise(function (resolve, reject) {
-//         MongoClient.connect(url, function (err, db) {
-//             if (err) {
-//                 reject("Failed to Connect to MongoDB ", err);
-//             }
-
-//             return resolve(db.collection(collectionName).deleteOne({"id" : query}));
-//         });
-//     });
-// }
-
-// function Insert(query, collectionName) {
-//     return new Promise(function (resolve, reject) {
-//         MongoClient.connect(url, function (err, db) {
-//             if (err) {
-//                 reject("Failed to Connect to MongoDB ", err);
-//             }
-
-//             return resolve(db.collection(collectionName).insert(query));
-//         });
-//     });
-// }
-
-// function Update(query, data, collectionName, options) {
-//     return new Promise(function (resolve, reject) {
-//         MongoClient.connect(url, function (err, db) {
-//             if (err) {
-//                 reject("Failed to Connect to MongoDB ", err);
-//             }
-
-//             return resolve(db.collection(collectionName).update(query, data, options));
-//         });
-//     });
-// }
 
 

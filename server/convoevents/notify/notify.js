@@ -4,6 +4,7 @@ var config = require('../../config');
 var mongo = require("../../services/mongo");
 var notifyService = require('../../services/notifyservice');
 var uuid = require('uuid');
+var moment = require('moment');
 
 module.exports = function (events) {
 
@@ -18,8 +19,6 @@ module.exports = function (events) {
     
     event.run = function (request) {
         return new Promise(function (resolve, reject) {
-            //console.log('NOTIFY');
-            //console.dir(request);
 
             var group = request.question[1];  // number or group
 
@@ -28,38 +27,18 @@ module.exports = function (events) {
                 msg = request.question.slice(2).join(' ');
             }
         
-            var scheduleExists = typeof request.schedule !== 'undefined';
-            if(scheduleExists) {
-                var scheduleDateExists = typeof request.schedule.date !== 'undefined' && !notifyService.IsEmpty(request.schedule.date);
-                var scheduleTimeExists = typeof request.schedule.time !== 'undefined' && !notifyService.IsEmpty(request.schedule.time);
+            var scheduleDateExists = typeof request.scheduleDate !== 'undefined' && !notifyService.IsEmpty(request.scheduleDate);
 
-                if(scheduleDateExists) {
-                    var requestScheduleDate = request.schedule.date;
-                    var requestScheduleTime = '';
+            if(scheduleDateExists) {
+                var momentScheduleDate = moment(request.scheduleDate).toDate();
 
-                    if(scheduleTimeExists) {
-                        requestScheduleTime = request.schedule.time;
-                    } else {
-                        var now = new Date();
-                        requestScheduleTime = now.getHours() + ':' + now.getMinutes();
-                    }
-
-                    var dateParts = requestScheduleDate.split('-');
-                    var timeParts = requestScheduleTime.split(':');
-
-                    var scheduleDate = new Date(dateParts[0], parseInt(dateParts[1])-1, dateParts[2], timeParts[0], timeParts[1], 0);
-                    //console.log("SCHEDULEDATE.GETTIME: " + scheduleDate.getTime());
-
-                    if(notifyService.IsInTheFuture(scheduleDate)) {
-                        mongo.Insert({ 
-                            "uuid": uuid(),
-                            "scheduleDate": scheduleDate,
-                            "msg": msg,
-                            "group": group
-                            }, 'ScheduledNotifications');
-                    } else {
-                        notifyService.ChooseChannels(msg, group);
-                    }
+                if(notifyService.IsInTheFuture(momentScheduleDate)) {
+                    mongo.Insert({ 
+                        "uuid": uuid(),
+                        "scheduleDate": momentScheduleDate,
+                        "msg": msg,
+                        "group": group
+                        }, 'ScheduledNotifications');
                 } else {
                     notifyService.ChooseChannels(msg, group);
                 }

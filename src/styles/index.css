@@ -1,4 +1,4 @@
-input{margin:0 10px 10px 0 }
+input, select {margin:0 10px 10px 0 }
 .red{color:#bf0d3c}
 a.login{  float: right; margin-top: 10px;}
 div.login-error{color:#A94442; margin-top: 10px}
@@ -103,7 +103,10 @@ body {
   margin: .5em 0;
 }
   .notificationsHeaderStyle span{
-    font-size: 1.5em
+    font-size: 1.5em;
+  }
+  .notificationsHeaderStyle span.sub{
+    font-size: 1.2em;
   }
 
 .groupListUserCount {

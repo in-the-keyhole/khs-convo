@@ -115,7 +115,6 @@ class GroupUserList extends Component {
         this.fetchUsers();
      }
      componentWillReceiveProps(){
-         //console.log(this.props);
          this.setState(this.props);
      }
 
@@ -139,11 +138,6 @@ class GroupUserList extends Component {
         const selectUsers = this.state.availableUsers.map((user) =>
             <option key={user.uuid} value={user.uuid}>{user.Name} - {user.Username}</option>
         );
-
-        const userlistStyle = {
-            paddingLeft: '.3em',
-            paddingTop: '.8em'
-        };
 
         return (
             <div>
@@ -171,7 +165,6 @@ class GroupUserList extends Component {
                     </div>
                 </div>
 
-
                 <div className="row">
                     <div className="col-md-12 notificationsHeaderStyle"><span>Users ({this.props.group.Users.length})</span></div>
                 </div>
@@ -186,10 +179,11 @@ class GroupUserList extends Component {
                         <button className="btn btn-default" onClick={() => this.addAllUsers()} >Add All</button>
                     </div>
                 </div>
+
                 <div className="row">
                     <div className={this.props.group.Users.length > 0 ? 'col-xs-offset-1 col-xs-11' : 'hidden'}>
                         <div className="row">
-                            <div className="col-xs-12 notificationsHeaderStyle"><span>Currently assigned Users to Group</span></div>
+                            <div className="col-xs-12 notificationsHeaderStyle"><span className="sub">Currently assigned Users to Group</span></div>
                         </div>
                         {MailingList}
                     </div>

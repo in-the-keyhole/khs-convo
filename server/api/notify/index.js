@@ -30,6 +30,7 @@ module.exports = function (app) {
 
   router.get('/schedulednotification', auth.isAuth,  controller.getschedulednotification);
   router.delete('/schedulednotification', auth.isAuth,  controller.deleteschedulednotification);
+  router.put('/schedulednotification', auth.isAuth,  controller.putschedulednotification);
   
   app.use('/api/notify', router);
 }

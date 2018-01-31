@@ -21,62 +21,53 @@ var config = require('../../config');
 var _ = require('lodash');
 var fs = require('fs');
 var uuid = require('uuid');
-
+var moment = require('moment');
 
 function postgroup(req, res) {
     req.body.uuid = uuid();
     mongo.Insert(req.body, 'NotificationGroups')
         .then(function (group) {
             res.send(req.body);
-        })
+        });
 }
-
 
 function getgroup(req, res) {
     mongo.Get({}, 'NotificationGroups')
         .then(function (groups) {
             res.send(groups); 
-        })
+        });
 }
 
-
 function putgroup(req, res) {
-    
-        var data = _.omit(req.body, ['_id']);
-    
-        mongo.Update({uuid: req.body.uuid}, {$set: data},  'NotificationGroups')
+    var data = _.omit(req.body, ['_id']);
+
+    mongo.Update({uuid: req.body.uuid}, {$set: data},  'NotificationGroups')
         .then(function (response) {  
             res.send(response); 
-        })  
-    }
-
+        });
+}
 
 function deletegroup(req, res) {
-
     mongo.Delete({uuid: req.body.uuid}, 'NotificationGroups')
         .then(function (response) {
 
             res.send(response);
-        })  
+        });
 }
 
-
 function getgroupusers(req, res) {
-    
-        mongo.GetSort({}, {LastName: 1, FirstName: 1}, 'Users')
-            .then(function (users) {
-                
-                var visible = _.filter(users, function(user) {
-                    return user.Status !== 'removed';
-                });
-                
-                res.send(visible); 
-            })
-    }
-
+    mongo.GetSort({}, {LastName: 1, FirstName: 1}, 'Users')
+        .then(function (users) {
+            
+            var visible = _.filter(users, function(user) {
+                return user.Status !== 'removed';
+            });
+            
+            res.send(visible); 
+        });
+}
 
 function put(req, res) {
-
     var data = _.omit(req.body, ['_id']);
 
     mongo.Update({uuid: req.body.uuid}, {$set: data},  'NotificationGroups')
@@ -84,7 +75,6 @@ function put(req, res) {
         res.send(response); 
     })  
 }
-
 
 function getschedulednotification(req, res) {
     var today = new Date();
@@ -104,6 +94,15 @@ function deleteschedulednotification(req, res) {
            res.send(response);
        });  
 }
+function putschedulednotification(req, res) {
+    var data = _.omit(req.body, ['_id']);
+    data.scheduleDate = moment(data.scheduleDate).toDate();
+
+    mongo.Update({uuid: req.body.uuid}, {$set: data},  'ScheduledNotifications')
+    .then(function (response) {  
+        res.send(response); 
+    });
+}
 
 
 
@@ -114,5 +113,6 @@ module.exports = {
     deletegroup: deletegroup,
     
     getschedulednotification: getschedulednotification,
-    deleteschedulednotification: deleteschedulednotification
+    deleteschedulednotification: deleteschedulednotification,
+    putschedulednotification: putschedulednotification
 }
