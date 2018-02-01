@@ -26,6 +26,7 @@ KHS{Convo} is a Node.js-based platform for creating SMS and Web-based `conversat
 * [Session Management](#session-management)
 * [Session Management](#session-management)
 * [Starting a Conversation from an Application](#starting-a-conversation-from-an-application)
+* [Dynamic HTML](#dynamic-html-ui)
 * [Timer Events](#timer-events)
 * [Creating and Running with Docker](#creating-and-running-with-docker)
 
