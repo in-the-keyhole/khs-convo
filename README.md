@@ -35,8 +35,8 @@ KHS{Convo} is a Node.js-based platform for creating SMS and Web-based `conversat
 ### Install Prerequisites
 
 * [Node.js](https://nodejs.org)
-* [MongoDB](https://www.mongodb.com)
-    * The directions below assume a local instance running on `localhost:27017`
+* [MongoDB](https://www.mongodb.com) (Optional)
+    * A MongoDB instance is required. Instructions below describe how to confifure a `local` or remote instance. 
     * Note: there is currently an issue with using the free mongodb atlas instance.
         * TODO: seems to be related to the ssl, but not sure  
 
