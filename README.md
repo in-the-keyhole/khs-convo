@@ -51,7 +51,7 @@ KHS{Convo} is a Node.js-based platform for creating SMS and Web-based `conversat
 * Verify / Create a MongoDB database. 
     * `khs-convo` is being used for this demo. 
 
-* Copy the `server/config/copy-to-indexjs.tmp` file to `index.js`. This is where config properties are set. 
+* Copy the `server/config/copy-to-indexjs.tmp` file to `server/config/index.js`. This is where config properties are set. 
   
   `Note:` The index.js file is Git ignored to prevent accidental committing of configuration properties. 
     * Set the MongoDB connection URI setting `mongodb: process.env.MONGODB_URI` to your local or remote MongoDB instance ( See [MongoDB Config Doc](docs/mongodb.md) for more information )
