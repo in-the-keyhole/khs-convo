@@ -211,8 +211,6 @@ var MessagingResponse = require('twilio').twiml.MessagingResponse;
 
 function post(req, res) {
     var body = req.body['Body'] || req.body['body'];
-    console.log('BODY');
-    console.dir(body);
 
     var result = {};
     result.phone = req.body.From.replace(/[\(\)\-\+]/g, "");
@@ -229,14 +227,10 @@ function post(req, res) {
     
     //var sub = body.match(/([a-zA-Z0-9\+\*\/\-\!\?'])+/gm);
     var sub = body.split(' ');
-    //console.log('SUB 1');
-    //console.dir(sub);
     for (var i = 0; i < sub.length; i++) {
         //sub[i] = sub[i].toLowerCase().trim();
         sub[i] = sub[i].trim();
     }
-    //console.log('SUB 2');
-    //console.dir(sub);
     // ************************************************************
 
     result.question = sub;

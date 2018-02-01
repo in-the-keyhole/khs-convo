@@ -280,6 +280,7 @@ class NotifyEmulator extends Component {
                 <div className="col-xs-6">{record.msg}</div>
             </div>
         );
+        const NoScheduledNotificationist = <div className="row row-striped"><div className="col-xs-12">There are currently no Scheduled Notifications</div></div>;
 
         return (
             <div>
@@ -308,11 +309,12 @@ class NotifyEmulator extends Component {
                         <i title="Schedule" className={"glyphicon clickable " + (this.state.scheduleHide ? 'glyphicon-plus' : 'glyphicon-minus')}  onClick={() => this.toggleScheduleHide()} /> <span>Scheduled Notifications ({this.state.scheduledNotifications.length})</span>
                     </div>
                 </div>
-                <div className={this.state.scheduleHide ? 'hidden' : ''}>
-                    <div className="row">
-                        <div className="col-xs-offset-1 col-xs-11">
-                        {this.state.scheduledNotifications.length > 0 ? ScheduledNotificationist : 'There are currently no Scheduled Notifications'}
+                <div className={this.state.scheduleHide ? 'hidden' : 'row'}>
+                    <div className="col-xs-offset-1 col-xs-11">
+                        <div className="row">
+                            <div className="col-xs-12 notificationsHeaderStyle"><span className="sub">Currently Scheduled Notifications</span></div>
                         </div>
+                        {this.state.scheduledNotifications.length > 0 ? ScheduledNotificationist : NoScheduledNotificationist}
                     </div>
                 </div>
 
@@ -368,12 +370,12 @@ class NotifyEmulator extends Component {
                         </div>
 
                         <div className="row">
-                            <div className="col-md-3 text-right"><strong>Date:</strong></div>
-                            <div className="col-md-9">{this.state.currentScheduledNotification ? this.formatScheduleDate(this.state.currentScheduledNotification.scheduleDate) : '' } </div>
+                            <div className="col-md-4 text-right"><strong>Scheduled date/time:</strong></div>
+                            <div className="col-md-8">{this.state.currentScheduledNotification ? this.formatScheduleDate(this.state.currentScheduledNotification.scheduleDate) : '' } </div>
                         </div> 
                         <div className="row">
-                            <div className="col-md-3 text-right"><strong>Message:</strong></div>
-                            <div className="col-md-9">{this.state.currentScheduledNotification ? this.state.currentScheduledNotification.msg : '' } </div>
+                            <div className="col-md-4 text-right"><strong>Message:</strong></div>
+                            <div className="col-md-8">{this.state.currentScheduledNotification ? this.state.currentScheduledNotification.msg : '' } </div>
                         </div> 
                     </Modal.Body>
 
@@ -394,7 +396,7 @@ class NotifyEmulator extends Component {
 
                     <Modal.Body>
                         <div className="row">
-                            <div className="col-md-3 text-right"><strong>Date:</strong></div>
+                            <div className="col-md-4 text-right"><strong>Scheduled date/time:</strong></div>
                             <div className="col-md-4">
                                 <input name="editScheduleDate" type="date" className="form-control emulator-input" defaultValue={this.state.currentScheduledNotification ? this.state.editScheduleDate : ''} onChange={this.handleInputChange} />
                             </div>
@@ -403,8 +405,8 @@ class NotifyEmulator extends Component {
                             </div>
                         </div> 
                         <div className="row">
-                            <div className="col-md-3 text-right"><strong>Message:</strong></div>
-                            <div className="col-md-9">
+                            <div className="col-md-4 text-right"><strong>Message:</strong></div>
+                            <div className="col-md-8">
                                 <input name="editMsg" type="text" className="form-control emulator-input" defaultValue={this.state.currentScheduledNotification ? this.state.editMsg : ''} onChange={this.handleInputChange} placeholder="Enter notification message here" />
                             </div>
                         </div> 
