@@ -1,7 +1,7 @@
 
-![](docs/images/ConvoLogo.png) *built by [Keyhole Software](https://keyholesoftware.com)*
+![](docs/images/ConvoLogo.png) *built by [Keyhole Labs](https://keyholelabs.com), the product arm of [Keyhole Software](https://keyholesoftware.com)*.
 
-KHS{Convo} is a Node.js-based platform for creating SMS and Web-based `conversational` experiences. 
+KHS{Convo} is a Node.js-based platform for creating SMS and Web-based `conversational` experiences. See its product page [here](https://keyholelabs.com/convo/khsconvo/). 
 
 ## Guides 
 
