@@ -16,7 +16,8 @@ limitations under the License.
 
 
 const log4js = require('log4js');
-const logger = log4js.getDefaultLogger();
+const logger = log4js.getLogger();
+logger.level = 'debug';
 const fs = require('fs');
 const config = require('../config');
 

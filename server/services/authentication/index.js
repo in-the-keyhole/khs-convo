@@ -16,10 +16,12 @@ limitations under the License.
 
 'use strict';
 
-var jwt = require('jsonwebtoken');
-var config = require('../../config');
-var logger = require('log4js').getDefaultLogger();
-var mongo = require('../mongo');
+const jwt = require('jsonwebtoken');
+const config = require('../../config');
+const log4js = require('log4js');
+const logger = log4js.getLogger();
+logger.level = 'debug';
+const mongo = require('../mongo');
 const crypto = require('crypto');
 const secret = config.passwordCrypto;
 
@@ -67,7 +69,7 @@ function auth(username, password) {
                                 user.token = token;
                                 user.apitoken = config.api_token;
                                 user.slackchannel = config.slack.channel;
-                                
+
                                 return resolve(user);
                             }
                             else{
@@ -122,12 +124,12 @@ function isAuthAdmin(req, res, next) {
             }else{
                 res.sendStatus(403);
             }
-            
+
         })
         .catch(function (err) {
             //logger.info(err);
                 res.sendStatus(403);
-            
+
         });
 }
 
@@ -147,12 +149,12 @@ function register(req, res) {
                 mongo.Update(
                     {uuid: req.body.uuid},
                     {uuid: req.body.uuid, password: encodePassword(req.body.Password)},
-                    'Passwords',                                
+                    'Passwords',
                     { upsert: true })
                 .then(function () {
 
-                    res.send('registered'); 
-                })       
+                    res.send('registered');
+                })
             });
 
 
@@ -171,6 +173,6 @@ module.exports = {
     auth: auth,
     isAuthAdmin: isAuthAdmin,
     register: register
-    
+
 }
 

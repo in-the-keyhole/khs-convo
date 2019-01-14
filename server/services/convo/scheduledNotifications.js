@@ -16,13 +16,14 @@ limitations under the License.
 
 'use strict';
 
-var log4js = require('log4js');
-var logger = log4js.getDefaultLogger();
-var mongo = require('../mongo');
-var notifyService = require('../notifyservice')
+const log4js = require('log4js');
+const logger = log4js.getLogger();
+logger.level = 'debug';
+const mongo = require('../mongo');
+const notifyService = require('../notifyservice');
 
 module.exports = {
-    config: { 
+    config: {
         timerName: 'Scheduled Notifications Timer',
         callbackDelay: 60000,
         callbackMaxRun: 0
@@ -34,7 +35,7 @@ module.exports = {
         mongo.Get({} , "ScheduledNotifications")
             .then(function(records) {
                 //console.log("SCHEDULEDNOTIFICATION");
-                
+
                 var now = new Date();
                 now.setSeconds(0);
                 //console.log('NOW: ' + now);
@@ -44,7 +45,7 @@ module.exports = {
                 for (var i = 0; i < records.length; i++) {
                     var record = records[i];
                     record.scheduleDate.setSeconds(0);
-                    //console.dir(record); 
+                    //console.dir(record);
                     //console.log('RECORD: ' + record.scheduleDate);
                     //console.log('RECORD: ' + record.scheduleDate.getTime());
                     //console.log('RECORD: ' + record.scheduleDate.toUTCString());
@@ -59,7 +60,7 @@ module.exports = {
                             .then(function (deleted) {
                                 console.log("DELETED: " + record._id);
                             });
-                    } 
+                    }
                 }
         });
     },

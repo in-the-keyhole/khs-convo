@@ -16,13 +16,14 @@ limitations under the License.
 
 'use strict';
 
-var config = require('../config');
-var log4js = require('log4js');
-var logger = log4js.getDefaultLogger();
-var http = require("http");
+const config = require('../config');
+const log4js = require('log4js');
+const logger = log4js.getLogger();
+logger.level = 'debug';
+const http = require("http");
 
 module.exports = {
-    config: { 
+    config: {
         timerName: 'Ping Timer',
         callbackDelay: 0,
         callbackMaxRun: 0

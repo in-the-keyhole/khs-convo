@@ -16,8 +16,9 @@ limitations under the License.
 
 'use strict';
 
-var AuthenticationService = require('../../services/authentication');
-var logger = require('log4js').getDefaultLogger();
+const AuthenticationService = require('../../services/authentication');
+const logger = require('log4js').getLogger();
+logger.level = 'debug';
 
 function login(req, res) {
     console.log(req.body);
@@ -39,7 +40,7 @@ function login(req, res) {
 }
 
 function register(req, res) {
-    
+
     AuthenticationService.register(req, res)
         .then(function (response) {
             res.send(response);

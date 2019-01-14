@@ -14,9 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-var log4js = require('log4js');
-var logger = log4js.getDefaultLogger();
-var fs = require('fs');
+const log4js = require('log4js');
+const logger = log4js.getLogger();
+logger.level = 'debug';
+const fs = require('fs');
 var config = require('../config');
 var path = require('path');
 
@@ -37,12 +38,12 @@ module.exports = {
                 logger.info('TimerEventLoader: Loading - scheduledNotifications.js');
                 module.exports.setupTimer(tmp2.process, tmp2.config);
             }
-        } 
+        }
         catch (err){
             console.log("NO SCHEDULE NOTIFICATIONS FILE");
         }
 
-        
+
 
         var filepath = config.timerevent_dir;
 
@@ -52,7 +53,7 @@ module.exports = {
                 logger.error(err);
                 return;
             }
-            
+
             if(filenames.length > 0) {
                 // Loop thru filenames
                 filenames.forEach(function (filename, index) {
@@ -100,15 +101,15 @@ module.exports = {
                     logger.info('Running: ' + timerName + ': ' + (runCallbackCount+1) + (callbackMaxRun > 0 ? ' of ' + callbackMaxRun : ''));
                     callback();
                     runCallbackCount++;
-                
+
                     // If there is a max number of calls, then evaluate and stop if necessary
                     if(callbackMaxRun > 1 && runCallbackCount >= callbackMaxRun) {
                         logger.info('* Stopping: ' + timerName);
                         clearInterval(si);
-                    } 
+                    }
                 }, callbackDelay);
             }
-        } 
+        }
         else {
             logger.error('No callback passed in');
         }
