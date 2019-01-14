@@ -267,7 +267,7 @@ class NotifyEmulator extends Component {
     }
 
     render() {
-        this.state.Body = "notify " + this.props.group.GroupName;
+        this.setState( {Body: `notify ${this.props.group.GroupName}`} );
 
         // Form list of Scheduled Notifications for group
         const ScheduledNotificationist = this.state.scheduledNotifications.map((record) =>
