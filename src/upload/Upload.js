@@ -270,8 +270,8 @@ class Upload extends Component {
         console.log("handleMouseOut  The state " + JSON.stringify(self.state.displayHover));
 
     }
-   
-    
+
+
     tooltipStyle = function (x) {
         var self = this;
        return  { display: (x !== undefined && self.state.displayHover === x) ? 'block' : 'none' }
@@ -281,7 +281,7 @@ class Upload extends Component {
     renderUploadFile() {
        var self = this;
         console.log("The self  state " +   JSON.stringify(self.state.displayHover) );
-    
+
         var dropZoneStyle = {
             width: '250px',
             height: '35px',
@@ -304,7 +304,7 @@ class Upload extends Component {
             display ="directory"+i;
             var words = [];
             for(var j=0;j<directoriesAndWordsObj.length;j++) {
-           
+
                 if (directories[i] === directoriesAndWordsObj[j].dataDirectory.currentDirectory) {
                     for(var k=0;k<directoriesAndWordsObj[j].dataDirectory.words.length;k++) {
                         words.push(directoriesAndWordsObj[j].dataDirectory.words[k])
@@ -315,7 +315,7 @@ class Upload extends Component {
                         description =   description +",  " + directoriesAndWordsObj[j].description +" ";
                     }
                 }
-            
+
             }
 
             directoryElements.push(<div>
@@ -338,9 +338,9 @@ class Upload extends Component {
                         </div>
                     </div>
                 </div>
-  
-                
-                
+
+
+
             </div>);
         }
 
@@ -369,22 +369,6 @@ class Upload extends Component {
     }
 
     render() {
-
-        var dropZoneStyle = {
-            width: '250px',
-            height: '30px',
-            borderWidth: '1px',
-            borderStyle: 'dashed',
-            textAlign: 'center',
-            marginBottom: '20px',
-            //lineHeight: '7',
-            verticalAlign: 'middle',
-            display: 'table'
-        }
-
-        var directoryInputStyle = {
-            width: '130px'
-        }
 
         return (
             <div className="container">
