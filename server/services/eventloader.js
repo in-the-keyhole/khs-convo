@@ -15,76 +15,76 @@ limitations under the License.
 */
 
 
-var fs = require('fs');
-var config = require('../config');
-const util = require('util');
+const log4js = require('log4js');
+const logger = log4js.getDefaultLogger();
+const fs = require('fs');
+const config = require('../config');
+
 
 function Loader() {
-   
 }
 
-Loader.prototype.loadevents = function (path,events) {
 
-    if (!path) {
-        path = config.event_dir;
-    }
+Loader.prototype.loadevents = function (pathArg, events) {
 
-    path.split(",").forEach(thePath => readDirectory(thePath, events));
-   
+    const path = pathArg || config.event_dir;
+
+    path.split(',').forEach(thePath => readDirectory(thePath, events));
+
     if (path && path.indexOf('upload...') > -1) {
-        var arr = path.split('...');
-        const convoEventPath = 'convoevents/' + arr[2];
+        const arr = path.split('...');
+        const convoEventPath = `convoevents/${arr[2]}`;
         try {
-            require('../'+ convoEventPath + '/' + arr[1])(events);
+            require(`../${convoEventPath}/${arr[1]}`)(events);
         } catch (e) {
-            console.log("Error Loading Single Event..." + arr[1]);
+            logger.error(`Error Loading Single Event...${arr[1]}`);
             throw(new Error(e.toString()));
         }
-        console.log("Loaded Single Event  - " + arr[1]);
+        logger.info(`Loaded Single Event  - ${arr[1]}`);
     }
-}
+};
 
-function readDirectory(path,events){
-    if(path){
-        path =path.trim();
+
+function readDirectory(path, events) {
+
+    if (path) {
+        path = path.trim();
     }
     fs.readdir(path, function (err, filenames) {
+
         if (err) {
-            console.log(err);
+            logger.error(err);
             return;
         }
         filenames.forEach(function (filename, index) {
-            fs.stat(path + '/' + filename, function (err, stats) {
 
-                if (stats.isDirectory()) {
-                    var l = new Loader();
+            fs.stat(`${path}/${filename}`, function (err, stats) {
 
+                    if (!stats.isDirectory()) {
+                        if (filename.indexOf('.js') > 0 && filename.indexOf('index.js') < 0) {
 
-                    l.loadevents(path + '/' + filename,events);
-                    return;
-                } else {
-                    if (filename.indexOf(".js") > 0 && filename.indexOf("index.js") < 0) {
-
-    
-                        try {
-                            require('../../'+path + '/' + filename)(events);
-                        } catch (e) {
-
-                            console.log("Error Loading Event..." + filename);
-                            console.log(e);
-                            return;
-
+                            try {
+                                require(`../../${path}/${filename}`)(events);
+                            } catch (e) {
+                                throw (new Error(`Error Loading Event...${filename}\n$({e}`));
+                            }
+                            events[(events.length - 1)].filename = filename;
+                            logger.info(`Loaded Event  - ${filename}`);
                         }
-                        events[(events.length-1)].filename = filename;     
-                        console.log("Loaded Event  - " + filename);
+                    } else {
+
+                        new Loader().loadevents(`${path}/${filename}`, events);
+                        return;
+
                     }
+
                 }
-            }
             );
         });
     });
- 
+
 }
+
 
 //module.exports = { loadevents: loadevents };
 module.exports = Loader;
