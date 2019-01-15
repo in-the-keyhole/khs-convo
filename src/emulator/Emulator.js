@@ -338,7 +338,7 @@ class Emulator extends Component {
         var editable =  false;
         if (window.sessionStorage.getItem('status')==='admin'){
             editable={
-                type: 'select', options: { values: ['enabled','disabled'] } 
+                type: 'select', options: { values: ['enabled','disabled'] }
             }
         }
         return (
@@ -348,7 +348,7 @@ class Emulator extends Component {
                     <div className="col-md-12"><h1>Emulator</h1></div>
                 </div>
                 <form encType="multipart/form-data" action="">
-                    <input type="file" name="fileName" defaultValue="fileName" id="upload" style={{display: 'none'}} onChange={this.uploadFile}/>
+                    <input type="file" name="fileName" id="upload" style={{display: 'none'}} onChange={this.uploadFile}/>
                 </form>
 
                 <div className="row">
