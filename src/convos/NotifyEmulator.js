@@ -114,7 +114,7 @@ class NotifyEmulator extends Component {
     }
     componentWillReceiveProps(nextProps) {
         if(nextProps.group !== this.props.group) {
-            this.props.group = nextProps.group;
+            this.setState( {group: nextProps.group} );
             this.fetchScheduledNotifications();
         }
     }
@@ -127,12 +127,12 @@ class NotifyEmulator extends Component {
         if(scheduleTimeExists) {
             requestScheduleTime = tmpTime;
         } else {
-            var now = new Date();
+            const now = new Date();
             requestScheduleTime = now.getHours() + ':' + now.getMinutes();
         }
 
-        var dateParts = requestScheduleDate.split('-');
-        var timeParts = requestScheduleTime.split(':');
+        const dateParts = requestScheduleDate.split('-');
+        const timeParts = requestScheduleTime.split(':');
 
         return new Date(dateParts[0], parseInt(dateParts[1], 10)-1, dateParts[2], timeParts[0], timeParts[1], 0);
     }
@@ -157,14 +157,14 @@ class NotifyEmulator extends Component {
         this.setState({ deleteScheduledNotificationModal: false });
     }
     deleteScheduledNotification() {
-        var self = this;
+        const self = this;
 
         ajax({
             method: 'delete',
             url:'/api/notify/schedulednotification',
             data: self.state.currentScheduledNotification
         }).then(function(res) {
-            var deletedFilteredOut = self.state.scheduledNotifications.filter(function(item) {
+            const deletedFilteredOut = self.state.scheduledNotifications.filter(function (item) {
                 return item._id !== self.state.currentScheduledNotification._id;
             });
             self.setState({
@@ -192,12 +192,12 @@ class NotifyEmulator extends Component {
         });
     }
     editScheduledNotification() {
-        let csn = this.state.currentScheduledNotification;
-        let csnDate = this.createScheduleDate(this.state.editScheduleDate, this.state.editScheduleTime);
+        const csn = this.state.currentScheduledNotification;
+        const csnDate = this.createScheduleDate(this.state.editScheduleDate, this.state.editScheduleTime);
         csn.scheduleDate = csnDate;
         csn.msg = this.state.editMsg;
 
-        var self = this;
+        const self = this;
         ajax({
             method: 'put',
             url:'/api/notify/schedulednotification',
@@ -217,7 +217,7 @@ class NotifyEmulator extends Component {
 
 
     validConfirmSend() {
-        var isValid = true;
+        let isValid = true;
 
         if(!this.state.msgtext) { isValid = false; }
         if(!this.props.group.checkSMS && !this.props.group.checkEmail && !this.props.group.checkSlack) { isValid = false; }
@@ -228,7 +228,7 @@ class NotifyEmulator extends Component {
         return isValid;
     }
      validEdit() {
-         var isValid = true;
+         let isValid = true;
 
          if(!this.state.editMsg) { isValid = false; }
          if(this.state.editScheduleDate && !this.state.editScheduleTime) { isValid = false; }
@@ -239,7 +239,7 @@ class NotifyEmulator extends Component {
 
 
     sendMediums() {
-        var str = "";
+        let str = "";
         if(this.props.group.checkSMS) {
             str = "SMS";
         }
