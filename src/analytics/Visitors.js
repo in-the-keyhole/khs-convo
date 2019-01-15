@@ -85,7 +85,7 @@ class Visitors extends React.Component {
                   } else if (b[sortName] > a[sortName]) {
                        return 1;
                   }
-                       return 0;
+                   return 0;
              });
         } else {
              _data.sort(function(a, b) {
@@ -94,7 +94,7 @@ class Visitors extends React.Component {
                   } else if (b[sortName] > a[sortName]) {
                       return -1;
                   }
-                      return 0;
+                  return 0;
              });
         }
 
@@ -102,13 +102,13 @@ class Visitors extends React.Component {
     }
 
     onPageChange(page, sizePerPage) {
-        var self = this;
+        const self = this;
         if (isNaN(page)) {
             page = self.state.convoCount / sizePerPage;
         }
-        var skipCount = (page * sizePerPage) - sizePerPage;
+        const skipCount = (page * sizePerPage) - sizePerPage;
         this.fetchConversationsByChunk(skipCount, sizePerPage);
-        this.props.sizePerPage = sizePerPage;
+        this.setState( {sizePerPage: sizePerPage});
     }
 
     onSizePerPageList(sizePerPage) {
