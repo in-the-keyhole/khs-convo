@@ -14,13 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
 const log4js = require('log4js');
 const logger = log4js.getLogger();
-logger.level = 'debug';
 const fs = require('fs');
 const config = require('../config');
 
+logger.level = 'debug';
 
 function Loader() {
 }
@@ -38,24 +37,23 @@ Loader.prototype.loadevents = function (pathArg, events) {
         try {
             require(`../${convoEventPath}/${arr[1]}`)(events);
         } catch (e) {
-            logger.error(`Error Loading Single Event...${arr[1]}`);
-            throw(new Error(e.toString()));
+            logger.error(`Error Loading Single Event ... ${arr[1]}`);
+            throw(new Error(e));
         }
-        logger.info(`Loaded Single Event  - ${arr[1]}`);
+        logger.info(`Loaded Single Event - ${arr[1]}`);
     }
 };
 
 
-function readDirectory(path, events) {
+function readDirectory(pathArg, events) {
 
-    if (path) {
-        path = path.trim();
-    }
+    const path = pathArg.trim();
+
     fs.readdir(path, function (err, filenames) {
 
         if (err) {
             logger.error(err);
-            return;
+            throw(new Error(err));
         }
         filenames.forEach(function (filename, index) {
 
@@ -65,16 +63,22 @@ function readDirectory(path, events) {
                         if (filename.indexOf('.js') > 0 && filename.indexOf('index.js') < 0) {
 
                             try {
-                                require(`../../${path}/${filename}`)(events);
-                            } catch (e) {
-                                throw (new Error(`Error Loading Event...${filename}\n$({e}`));
+                                const convoEvent = require(`../../${path}/${filename}`);
+                                if (typeof convoEvent === 'function') {
+                                    convoEvent(events);
+                                } else {
+                                    logger.error(`Not loaded: ${path}/${filename}. It is not a convo event.`)
+                                }
+                            } catch (err2) {
+                                throw (new Error(`Error Loading Event...${filename}\n${err2}`));
                             }
                             events[(events.length - 1)].filename = filename;
-                            logger.info(`Loaded Event  - ${filename}`);
+                            logger.debug(`Loaded Event  - ${path}/${filename}`);
                         }
                     } else {
 
                         new Loader().loadevents(`${path}/${filename}`, events);
+                        logger.debug(`Called loadevents of directory ${path}/${filename}`);
                         return;
 
                     }
@@ -86,6 +90,4 @@ function readDirectory(path, events) {
 
 }
 
-
-//module.exports = { loadevents: loadevents };
 module.exports = Loader;
