@@ -19,8 +19,9 @@ limitations under the License.
 const config = require('../config');
 const log4js = require('log4js');
 const logger = log4js.getLogger();
+const request = require('http-basic');
+
 logger.level = 'debug';
-const http = require("http");
 
 module.exports = {
     config: {
@@ -31,8 +32,12 @@ module.exports = {
 
     process: function() {
         if(config.ping_url) {
-            var res = http.get(config.ping_url, function(response) {
-                logger.info('   Timer Pinging Server: ' + response.statusCode + ' / ' + response.statusMessage);
+            request('GET', config.ping_url, {},  (err, res) => {
+                if (err){
+                    logger.info(`\tTimer ping of server ${err}`);
+                } else {
+                    logger.info(`\tTimer ping of server: ${res.statusCode}`);
+                }
             });
         }
     }
