@@ -378,7 +378,7 @@ class Upload extends Component {
                 </div>
 
                 <form encType="multipart/form-data" action="">
-                    <input type="file" name="fileName" defaultValue="fileName" id="upload" style={{display: 'none'}} onChange={this.uploadFile}/>
+                    <input type="file" name="fileName" placeholder="fileName" id="upload" style={{display: 'none'}} onChange={this.uploadFile}/>
                 </form>
 
                 <div className="row">
