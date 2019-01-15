@@ -27,7 +27,7 @@ class GroupQuestions extends React.Component {
             grpQuestions: [],
             convoQuestionsArr: [],
             filteredDataList: []
-        }
+        };
 
         this.componentWillMount = this.componentWillMount.bind(this);
     }
@@ -37,12 +37,12 @@ class GroupQuestions extends React.Component {
     }
 
     fetchAllConversations() {
-        var self = this;
+        const self = this;
 
-        var myData = {
-                    Body:"allcommands",
-                    To: "",//"+19132703506",
-                    From: ""//window.sessionStorage.getItem('phone')
+        const myData = {
+            Body: "allcommands",
+            To: "",//"+19132703506",
+            From: ""//window.sessionStorage.getItem('phone')
         };
 
         ajax({
@@ -50,10 +50,10 @@ class GroupQuestions extends React.Component {
             url:'/api/convo',
             data: myData
         }).then(function(res, me) {
-            let dataStr = res.data;
-            let message = dataStr.substring(dataStr.lastIndexOf("<Message>")+1, dataStr.lastIndexOf("</Message>"));
+            const dataStr = res.data;
+            const message = dataStr.substring(dataStr.lastIndexOf("<Message>")+1, dataStr.lastIndexOf("</Message>"));
             if (message != null) {
-                var commands = self.retrieveCommands(message);
+                const commands = self.retrieveCommands(message);
                 console.log('Got this list of commands back: ' + commands);
                 self.setState({ convoQuestionsArr: commands });
                 self.fetchGroupQuestions();
@@ -62,21 +62,21 @@ class GroupQuestions extends React.Component {
     }
 
     retrieveCommands(data) {
-        var self = this;
+        const self = this;
 
-        var matches = [];
-        var done = [];
+        const matches = [];
+        const done = [];
 
-        var pattern = /\((.*?)\)/g;
-        var match;
+        const pattern = /\((.*?)\)/g;
+        let match;
         while ((match = pattern.exec(data)) != null)
         {
           matches.push(match[1]);
         }
 
-        for(var i=0; i<matches.length; i++) {
-            let t = matches[i].split(" | ");
-            for(var k=0; k<t.length;k++) {
+        for(let i=0; i<matches.length; i++) {
+            const t = matches[i].split(" | ");
+            for(let k=0; k<t.length; k++) {
                 done.push(t[k])
             }
         }
@@ -85,8 +85,8 @@ class GroupQuestions extends React.Component {
     }
 
     cleanArray(actual) {
-      var newArray = [];
-      for (var i = 0; i < actual.length; i++) {
+        const newArray = [];
+        for (let i = 0; i < actual.length; i++) {
         if (actual[i]) {
           newArray.push(actual[i]);
         }
@@ -95,9 +95,9 @@ class GroupQuestions extends React.Component {
     }
 
     fetchGroupQuestions() {
-        var self = this;
-        let questionsArr = this.state.convoQuestionsArr;
-        ajax({ 
+        const self = this;
+        const questionsArr = this.state.convoQuestionsArr;
+        ajax({
             method:'POST',
             url:'../api/convo/groupquestion',
             data: questionsArr
@@ -107,12 +107,12 @@ class GroupQuestions extends React.Component {
         }).catch(function(err){console.log(err)});
     }
 
-    handleBarClick(element, id){ 
+    handleBarClick(element, id){
         console.log(`The bin ${element.text} with id ${id} was clicked`);
     }
 
     getRandomColor() {
-        let letters = '0123456789ABCDEF';
+        const letters = '0123456789ABCDEF';
         let color = '#';
         for (let i = 0; i < 6; i++) {
             color += letters[Math.floor(Math.random() * 16)];
@@ -129,9 +129,9 @@ class GroupQuestions extends React.Component {
     }
 
     render() {
-        var grpQuestions = [];
-        for(var i=0;i<this.state.grpQuestions.length;i++) {
-            var grpItem = {};
+        const grpQuestions = [];
+        for(let i=0; i<this.state.grpQuestions.length; i++) {
+            const grpItem = {};
             if (this.state.grpQuestions[i] !== undefined) {
                     grpItem.name = this.state.grpQuestions[i].text;
                     grpItem.count = this.state.grpQuestions[i].value;
@@ -148,19 +148,18 @@ class GroupQuestions extends React.Component {
                 label: React.string,
             },
             render() {
-                const { active } = this.props;
+                const { active, payload } = this.props;
 
                  if (active) {
-                      const { payload } = this.props;
                        return (
                             <div className="custom-tooltip">
                                  <p className="desc">Question - Count</p>
-                                 <p className="name">{`${payload[0].payload.name}`} - {`${payload[0].payload.count}`}</p>
+                                 <p className="name">{`${payload ? payload[0].payload.name : "Empty"}`} - {`${payload ? payload[0].payload.count : "0"}`}</p>
                             </div>
                        );
                  }
 
-                  return null;
+                return null;
             }
         });
 
@@ -182,12 +181,12 @@ class GroupQuestions extends React.Component {
             <div className="container">
                 <div className="row">
                     <div className="col-md-12"><h1>Analytics</h1></div>
-                </div>        
+                </div>
 
                 <div className="row">
                     <div className="col-md-12">Group By Question</div>
                 </div>
-                <div className="row"> 
+                <div className="row">
                     <div className="col-md-9">
                             <div  className="mainContent">
                                 <RadialBarChart width={500} height={500} cx={150} cy={150} innerRadius={20} barCategoryGap={10} outerRadius={140} barSize={20} data={grpQuestions}>
@@ -196,9 +195,9 @@ class GroupQuestions extends React.Component {
                                     <Tooltip content={<CustomTooltip/>}/>
                                 </RadialBarChart>
                             </div>
-                    </div>  
+                    </div>
                     <div className="col-md-3">
-                    </div>          
+                    </div>
                 </div>
             </div>
         );
