@@ -23,7 +23,6 @@ import '../styles/emulator.css';
 import { confirmAlert } from 'react-confirm-alert';
 import NotificationBar from '../common/NotificationBar';
 
-
 class Upload extends Component {
 
     constructor(props) {
@@ -69,10 +68,10 @@ class Upload extends Component {
 
     dynamicLinks(str) {
         if (typeof str !== 'string') { return str; }
-        var listSpace = str.split(' ')
+        const listSpace = str.split(' ');
         listSpace.forEach(function(valSpace, iSpace) {
             if (valSpace.includes('http')){
-                var listLine = valSpace.split('\n');
+                const listLine = valSpace.split('\n');
                 listLine.forEach(function(valLine, iLine){
                     if (valLine.includes('http')){
                         listLine[iLine] = '<a target="_blank" href="' + valLine + '">' + valLine + '</a>';
@@ -85,10 +84,10 @@ class Upload extends Component {
     }
 
     componentWillMount() {
-        var self = this;
+        const self = this;
 
-        var myData = {
-            Body:"availablecommands",
+        const myData = {
+            Body: "availablecommands",
             To: "+19132703506",
             From: window.sessionStorage.getItem('phone')
         };
@@ -113,20 +112,20 @@ class Upload extends Component {
     }
 
     retrieveDirectories() {
-        var self = this;
+        const self = this;
         ajax({
             url:'../api/admin/getDirectories',
             data: ''
         }).then(function(res, me) {
-            var result = res.data;
-            var directories = [];
-            for(var i=0;i<result.length;i++) {
+            const result = res.data;
+            const directories = [];
+            for(let i=0; i<result.length; i++) {
                 directories.push(result[i].dataDirectory.currentDirectory);
             }
 
-            var uniqueDirectories = directories.filter(function(elem, index, self) {
+            const uniqueDirectories = directories.filter(function (elem, index, self) {
                 return index === self.indexOf(elem);
-            })
+            });
 
             self.setState({
                 Directories: uniqueDirectories,
@@ -136,10 +135,10 @@ class Upload extends Component {
     }
 
     refreshAvailableCommandsList() {
-        var self = this;
+        const self = this;
 
-        var myData = {
-            Body:"availablecommands",
+        const myData = {
+            Body: "availablecommands",
             To: "+19132703506",
             From: window.sessionStorage.getItem('phone')
         };
@@ -149,17 +148,17 @@ class Upload extends Component {
             url:'/api/convo',
             data: myData
         }).then(function(res) {
-            var commandText = self.getCommandUploaded(self.state.CommandsCached, self.dynamicLinks(res.data));
-            var d = self.dynamicLinks(res.data);
-            var UpdatedCommands = d.replace(commandText, '<b>' + commandText + '</b>')
+            const commandText = self.getCommandUploaded(self.state.CommandsCached, self.dynamicLinks(res.data));
+            const d = self.dynamicLinks(res.data);
+            const UpdatedCommands = d.replace(commandText, '<b>' + commandText + '</b>');
             self.setState({ Commands: UpdatedCommands});
         }).catch(function(err){console.log(err)});
     }
 
     getCommandUploaded(a, b) {
-        var i = 0;
-        var j = 0;
-        var result = "";
+        let i = 0;
+        let j = 0;
+        let result = "";
 
         while (j < b.length)
         {
@@ -173,17 +172,17 @@ class Upload extends Component {
     }
 
     uploadFile(e) {
-         e.preventDefault();
-         var self = this;
+        e.preventDefault();
+        const self = this;
 
-         let reader = new FileReader();
-         let file = e.target.files[0];
-         var fullPath = document.getElementById('upload').value;
+        let reader = new FileReader();
+        let file = e.target.files[0];
+        const fullPath = document.getElementById('upload').value;
 
-         let originalName = fullPath.split(/(\\|\/)/g).pop();
+        let originalName = fullPath.split(/(\\|\/)/g).pop();
 
          reader.onloadend = () => {
-             let data = new FormData();
+             const data = new FormData();
              data.append('file', file, originalName);
 
              ajax({
@@ -202,8 +201,8 @@ class Upload extends Component {
     }
 
     uploadDroppedFile(file) {
-         var self = this;
-         let data = new FormData();
+        const self = this;
+        const data = new FormData();
          data.append('file', file[0]);
          data.append('override', 'true');
 
@@ -221,12 +220,12 @@ class Upload extends Component {
     }
 
     proceedWithUpload(data) {
-        var self = this;
+        const self = this;
         self.state.CommandsCached = self.state.Commands;
         let currentDirectory = self.state.CurrentDirectory;
 
 
-        var base = window.location.hostname;
+        let base = window.location.hostname;
         if (window.location.hostname === 'localhost'){
             base = 'http://localhost:3001'
         }
@@ -236,36 +235,36 @@ class Upload extends Component {
             .send(data)
             .end((ex, result) => {
                 if (result.text === "File is uploaded") {
-                    $('[name="' + currentDirectory + '"]').html('<p style="color: green;"><b>Event has been uploaded!<b></p>');
+                    $(`[name="${currentDirectory}"]`).html('<p style="color: green;"><b>Event has been uploaded!<b></p>');
                     self.refreshAvailableCommandsList();
                     self.retrieveDirectories();
                 } else {
-                    $('[name="' + currentDirectory + '"]').html('<p style="color: red;"><b>' + result.text + '<b></p>');
+                    $(`[name="${currentDirectory}"]`).html('<p style="color: red;"><b>' + result.text + '<b></p>');
                 }
             });
     }
 
     initiateUploadClick(e) {
-        var self = this;
+        const self = this;
         self.setState({ CurrentDirectory: e});
-        var ele = $('#upload');
+        const ele = $('#upload');
         ele.trigger('click');
     }
 
     setDropDirectory(e) {
-        var self = this;
+        const self = this;
         self.setState({ CurrentDirectory: e});
     }
 
     handleMouseIn(x) {
-        var self = this;
+        const self = this;
         self.setState({ displayHover: x });
         console.log("handleMouseIn The state " + JSON.stringify(self.state.displayHover));
 
     }
 
     handleMouseOut(x) {
-        var self = this;
+        const self = this;
         self.setState({ displayHover: "" });
         console.log("handleMouseOut  The state " + JSON.stringify(self.state.displayHover));
 
@@ -273,16 +272,16 @@ class Upload extends Component {
 
 
     tooltipStyle = function (x) {
-        var self = this;
-       return  { display: (x !== undefined && self.state.displayHover === x) ? 'block' : 'none' }
+        const self = this;
+        return  { display: (x !== undefined && self.state.displayHover === x) ? 'block' : 'none' }
     }
 
 
     renderUploadFile() {
-       var self = this;
+        const self = this;
         console.log("The self  state " +   JSON.stringify(self.state.displayHover) );
 
-        var dropZoneStyle = {
+        const dropZoneStyle = {
             width: '250px',
             height: '35px',
             borderWidth: '1px',
@@ -292,18 +291,18 @@ class Upload extends Component {
             //lineHeight: '7',
             verticalAlign: 'middle',
             display: 'table'
-        }
+        };
 
-        var directories = this.state.Directories;
-        var directoriesAndWordsObj = this.state.DirectoriesAndWords;
-        var directoryElements = [];
-        var description="";
-        var display;
+        const directories = this.state.Directories;
+        const directoriesAndWordsObj = this.state.DirectoriesAndWords;
+        const directoryElements = [];
+        let description="";
+        let display;
         for (var i=0;i<directories.length;i++) {
             description="";
             display ="directory"+i;
-            var words = [];
-            for(var j=0;j<directoriesAndWordsObj.length;j++) {
+            const words = [];
+            for(let j=0; j<directoriesAndWordsObj.length; j++) {
 
                 if (directories[i] === directoriesAndWordsObj[j].dataDirectory.currentDirectory) {
                     for(var k=0;k<directoriesAndWordsObj[j].dataDirectory.words.length;k++) {
