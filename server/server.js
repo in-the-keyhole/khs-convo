@@ -16,52 +16,46 @@ limitations under the License.
 
 'use strict';
 
-var http = require('http');
-var express = require('express');
-
+const http = require('http');
+const express = require('express');
 const log4js = require('log4js');
-var config = require('./config');
-var bodyParser = require('body-parser');
-var mongo = require('./services/mongo');
-var cors = require('cors')
-var fs = require('fs');
-var path = require('path');
-
-var request = require('request');
 const logger = log4js.getLogger();
+const config = require('./config');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const fs = require('fs');
+
 logger.level = 'debug';
-var app = express();
 
-var timerEventLoader = require('./services/timereventloader');
+const app = express();
 
+const timerEventLoader = require('./services/timereventloader');
 
-const util = require('util');
-
-//parse json bodies
+// parse json bodies
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use(cors());
 
-//log all requests to console for debugging
+// log all requests to console for debugging
 app.use('*', function (req, res, next) {
-    logger.info('request: ' + req.originalUrl);
+    logger.info(`request: ${req.originalUrl}`);
     next();
 });
 
 app.use(express.static('assets'));
 app.use(express.static('build'));
 
-//include all api's
+// include all api's
 require('./api')(app);
 
 app.use('/*', function(req, res){
     res.send(fs.readFileSync('./build/index.html', 'utf8'));
 });
 
-//listen on port in config || convo_port env
-http.createServer(app).listen(config.port, () => {
-    logger.info('App Listening on port: ' + config.port);
+// listen on port in config || convo_port env
+const port = config.port;
+http.createServer(app).listen(port, () => {
+    logger.info(`App Listening on port: ${port}`);
     timerEventLoader.load();
 });
-
