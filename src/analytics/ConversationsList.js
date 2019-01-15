@@ -113,13 +113,12 @@ class ConversationsList extends React.Component {
     }
 
     onPageChange(page, sizePerPage) {
-        var self = this;
         if (isNaN(page)) {
-            page = self.state.convoCount / sizePerPage;
+            page = this.state.convoCount / sizePerPage;
         }
-        var skipCount = (page * sizePerPage) - sizePerPage;
+        const skipCount = (page * sizePerPage) - sizePerPage;
         this.fetchConversationsByChunk(skipCount, sizePerPage);
-        this.setState( {sizePerPage, sizePerPage} );
+        this.setState( {sizePerPage: sizePerPage} );
     }
 
     onSizePerPageList(sizePerPage) {
