@@ -17,26 +17,26 @@ limitations under the License.
 'use strict';
 module.exports = function (events) {
 
-    var event = {};
+    const event = {};
     event.isAuth = false;
     event.description = "Add Visitor";
     event.words = [{
         word: 'visitor',
         value: 10
-    }]
+    }];
     event.run = function (request) {
         console.log(request);
         return new Promise(function (resolve, reject) {
             if (request.me) {
-                return resolve("You have been add " + request.me.FirstName + "!");
+                return resolve(`You have been added as ${request.me.FirstName}!`);
             } else {
-                return resolve("You have been added.");
+                return resolve(`You have been added.`);
             }
         })
     }
 
     events.push(event);
 
-}
+};
 
 
