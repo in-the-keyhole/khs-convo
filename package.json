@@ -65,6 +65,7 @@
     "superagent": "^3.6.0",
     "sync-request": "^4.1.0",
     "twilio": "^3.4.0",
+    "typeface-roboto": "0.0.54",
     "uuid": "^3.1.0"
   },
   "browserslist": [
