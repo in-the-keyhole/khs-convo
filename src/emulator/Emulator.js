@@ -403,10 +403,4 @@ class Emulator extends Component {
     }
 }
 
-
-
-
-
-
-
 export default Emulator
