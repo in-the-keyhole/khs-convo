@@ -14,18 +14,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React, { Component } from 'react';
+import React, {Component} from 'react';
+import {Footer} from "mdbreact";
 
-class Footer extends Component {
+class FooterPanel extends Component {
     render() {
         return (
+            <Footer >
+                <div className="footer-copyright text-center py-3">
+                    &copy; {new Date().getFullYear()} Copyright: KeyHole Software -
+                    <a target={"_blank"}
+                       href="https://keyholesoftware.com/company/creations/content-usage-guidelines/"> Content Usage
+                        Guidelines </a>
 
-            <div className="footer">
-                <p></p>
-                <p></p>
-                <p> @Keyhole software {(new Date().getFullYear())} +  <a href ="https://keyholesoftware.com/company/creations/content-usage-guidelines/"> Content Usage </a> Guidelines</p>
-            </div>
+                </div>
+            </Footer>
         )
     }
 }
-export default Footer
+
+export default FooterPanel
