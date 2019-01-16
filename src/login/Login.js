@@ -79,11 +79,11 @@ class Login extends Component {
             <Container>
                 <div className={"w-100 p-3"}>
                     <Row>
-                        <Col md={"12"}><h1>Login</h1></Col>
+                        <Col><h1>Login</h1></Col>
                     </Row>
 
                     <Row>
-                        <Col md={"12"}>
+                        <Col md={"4"} style={{marginLeft: '25%'}}>
 
                             <form onSubmit={this.handleSubmit}>
 
