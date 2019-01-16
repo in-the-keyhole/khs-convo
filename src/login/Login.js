@@ -14,17 +14,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import axios from 'axios';
+import {
+    Container,
+    Button,
+    Row,
+    Col,
+    Input
+} from 'mdbreact';
 
 class Login extends Component {
 
     constructor(props) {
-
-        super(props); 
-        this.state = { username: '', password: '', loginError: '' };
+        super(props);
+        // TODO use Redux
+        this.state = {username: '', password: '', loginError: ''};
         this.handleInputChange = this.handleInputChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);        
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     handleInputChange(ev) {
@@ -36,20 +43,20 @@ class Login extends Component {
     handleSubmit(ev) {
         console.log(this.state);
 
-        var base = '';
-        if (window.location.hostname === 'localhost') {
-            base = 'http://localhost:3001';
-        }
+        const base = (window.location.hostname === 'localhost') ? 'http://localhost:3001' : '';
 
         console.log('submit login');
-        var self = this;
-        axios({// using axios directly to avoid redirect interceptor
-            method:'post',
-            url:'/api/auth/login',
+
+        // TODO using axios in UI to avoid redirect interceptor, but let's fool the interceptor instead
+        axios({
+            method: 'post',
+            url: '/api/auth/login',
             baseURL: base,
             data: this.state
-        }).then(function(res) {
+
+        }).then(res => {
             console.log(res.data);
+            // TODO use Redux instead of HTML5 session
             window.sessionStorage.setItem('token', res.data.token);
             window.sessionStorage.setItem('firstName', res.data.FirstName);
             window.sessionStorage.setItem('lastName', res.data.LastName);
@@ -58,45 +65,59 @@ class Login extends Component {
             window.sessionStorage.setItem('apitoken', res.data.apitoken);
             window.sessionStorage.setItem('slackchannel', res.data.slackchannel);
             window.location = ('/emulator');
-        }).catch(function(err){
-            self.setState({loginError: 'Username or password incorrect. Please try again.'});
+        }).catch(err => {
+            this.setState({loginError: 'Username or password incorrect. Please try again.'});
         });
 
         ev.preventDefault();
-    }    
+    }
 
-        
+
     render() {
+        const inputPadding = {padding: '0.5rem'};
         return (
+            <Container>
+                <div className={"w-100 p-3"}>
+                    <Row>
+                        <Col md={"12"}><h1>Login</h1></Col>
+                    </Row>
 
-            <div className="container">
-                <div className="row">
-                    <div className="col-md-12"><h1>Login</h1></div>
-                </div>        
+                    <Row>
+                        <Col md={"12"}>
 
-                <div className="row">
-                    <div className="col-md-4 col-md-offset-4">
+                            <form onSubmit={this.handleSubmit}>
 
-                        <form className="form" onSubmit={this.handleSubmit}>
+                                <Input name={"username"}
+                                       id={"username"}
+                                       label={"User name"}
+                                       hint={"User name"}
+                                       type={"text"}
+                                       icon={"user"}
+                                       group
+                                       style={inputPadding}
+                                       value={this.state.username}
+                                       onChange={this.handleInputChange} placeholder="username"/>
 
-                            <div className="form-group">
-                                <label>Username:</label>
-                                <input name="username" id="username" className="form-control" type="text" value={this.state.username} onChange={this.handleInputChange} placeholder="username" />
-                            </div>
+                                <Input name={"password"}
+                                       id={"password"}
+                                       label={"Password"}
+                                       hint={"Password"}
+                                       type={"password"}
+                                       icon={"lock"}
+                                       group
+                                       style={inputPadding}
+                                       value={this.state.password}
+                                       onChange={this.handleInputChange} placeholder="password"/>
 
-                            <div className="form-group">
-                                <label>Password:</label>
-                                <input name="password" id="password" className="form-control" type="password" value={this.state.password} onChange={this.handleInputChange} placeholder="password" />
-                            </div>
+                                <Button type={"submit"} value={"Login"}  color={"primary"}>Login</Button>
+                            </form>
 
-                            <input className="btn btn-default" type="submit" value="Login" />
-                        </form>
-
-                        <div className="login-error">{this.state.loginError}</div>
-                    </div>
+                            <div className="login-error">{this.state.loginError}</div>
+                        </Col>
+                    </Row>
                 </div>
-            </div>
-        ) 
+            </Container>
+        )
     }
 
 }

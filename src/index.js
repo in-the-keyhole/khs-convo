@@ -14,17 +14,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import "font-awesome/css/font-awesome.min.css";
+import "bootstrap-css-only/css/bootstrap.min.css";
+import "mdbreact/dist/css/mdb.css";
+// import './styles/index.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import './styles/index.css';
 import Footer from './footer';
 
 const element = (
   <div id="wrapper">
     <div id="header"></div>
-    <div id="content"> <App /></div>
-    <div id="footer"> <Footer/></div>
+    <div id="content"><App /></div>
+    <div id="footer"><Footer/></div>
   </div>
 );
 ReactDOM.render(

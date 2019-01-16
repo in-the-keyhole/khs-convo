@@ -14,12 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 //import './App.css';
 import {
-  BrowserRouter,
-  Switch,
-  Route
+    BrowserRouter,
+    Switch,
+    Route
 } from 'react-router-dom'
 import Admin from './admin/Admin.js';
 import Analytics from './analytics/Analytics.js';
@@ -37,113 +37,143 @@ import Properties from './admin/Properties.js';
 import Upload from './upload/Upload.js';
 
 import {
-  Navbar, 
-  Nav, 
-  NavItem, 
-  NavDropdown,
-  MenuItem,
-  Button
-} from 'react-bootstrap';
+    Navbar,
+    NavbarBrand,
+    NavbarNav,
+    NavItem,
+    NavLink,
+    NavbarToggler,
+    Collapse,
+    FormInline,
+    Dropdown,
+    DropdownToggle,
+    DropdownMenu,
+    DropdownItem,
+} from "mdbreact";
+
+import {
+    Container,
+    Row,
+    Col,
+    Button
+} from 'mdbreact';
 
 
 class App extends Component {
 
-    logout(){
+    state = {
+        isOpen: false
+    };
+
+    toggleCollapse = this.setState({isOpen: !this.state.isOpen});
+
+    logout() {
         window.sessionStorage.clear();
         window.location.assign('/login');
     }
 
-    greeting(){
+    greeting() {
         var token = window.sessionStorage.getItem('token');
         var firstName = window.sessionStorage.getItem('firstName');
         var lastName = window.sessionStorage.getItem('lastName');
 
-        if(token){
+        if (token) {
             return <div className="logout">
-                        <i className="glyphicon glyphicon-user" />
-                        <span > {firstName} {lastName} </span> 
-                        <Button  onClick={ this.logout } >Logout</Button>
-                    </div>
-                    
-        }else{
-            return <Button  href="/Login" className="login">Login</Button>
+                <i className="glyphicon glyphicon-user"/>
+                <span> {firstName} {lastName} </span>
+                <Button onClick={this.logout}>Logout</Button>
+            </div>
+
+        } else {
+            return <Button href="/Login" className="login">Login</Button>
         }
 
-        
-    }    
 
-  render() {
- 
-    const Main = () => (
-    <main>
-    <Switch>
-      <Route exact path='/' component={Admin}/>
-      <Route path='/analytics/all' component={ConverstationsList}/>
-      <Route path='/analytics/groupquestion' component={GroupQuestions}/>
-      <Route path='/analytics/groupphone' component={GroupPhone}/>
-      <Route path='/analytics/visitors' component={Visitors}/>
-      <Route path='/analytics' component={Analytics}/>
-      <Route path='/emulator' component={Emulator}/>
-      <Route path='/upload' component={Upload}/>
-      <Route path='/convos/tailwater' component={Tailwater}/>
-      <Route path='/convos/notifications' component={NotificationGroups}/>
-      <Route path='/blacklist' component={Blacklist}/>
-      <Route path='/properties' component={Properties}/>
-      <Route path='/login' component={Login}/>
-      <Route path='/register' component={Registration}/>
-    </Switch>
-  </main> 
-   );    
-     
-    return (
-     <div>
-       <BrowserRouter>
-         <div>
-            <div>
-            <Navbar>
-                <Navbar.Header>
-                <Navbar.Brand>
-                    <a href="/">KHS&#123;Convo&#125;</a>
-                </Navbar.Brand>
-                </Navbar.Header>
-                <Nav>
-                    <NavDropdown eventKey={1} title="Admin" id="nav-dropdown">
-                      <MenuItem eventKey={1.1} href="/">Users</MenuItem>
-                      <MenuItem eventKey={1.2} href="/blacklist">Blacklist</MenuItem>
-                      <MenuItem eventKey={1.3} href="/properties">Properties</MenuItem>
-                    </NavDropdown>
-                    <NavDropdown eventKey={2} title="Analytics" id="nav-dropdown">
-                      <MenuItem eventKey={2.1} href="/analytics/all">Search All</MenuItem>
-                      <MenuItem eventKey={2.1} href="/analytics/groupquestion">Group By Question</MenuItem>
-                      <MenuItem eventKey={2.1} href="/analytics/groupphone">Group By Phone Number</MenuItem>
-                      <MenuItem eventKey={2.1} href="/analytics/visitors">Visitors</MenuItem>
-                    </NavDropdown>
-                    <NavDropdown eventKey={4} title="Convos" id="nav-dropdown">
-                      <MenuItem eventKey={4.2} href="/convos/notifications">Notifications</MenuItem>
+    }
 
-                      
-                    </NavDropdown>
-                    <NavItem eventKey={3} href="/emulator">Emulator</NavItem>
-                    <NavItem eventKey={5} href="/upload">Upload</NavItem>
-                </Nav>
-                {this.greeting()}
-            </Navbar>
-            </div>
-            <div className="container">
-              <div className="row">
-               
-                 <div>
-                    <Main />
-                  </div>
-          
-               </div>
-              </div>
-         </div>
-       </BrowserRouter>  
+    render() {
 
-     </div>  
-    );
-  }
+        const Main = () => (
+            <main>
+                <Switch>
+                    <Route exact path='/' component={Admin}/>
+                    <Route path='/analytics/all' component={ConverstationsList}/>
+                    <Route path='/analytics/groupquestion' component={GroupQuestions}/>
+                    <Route path='/analytics/groupphone' component={GroupPhone}/>
+                    <Route path='/analytics/visitors' component={Visitors}/>
+                    <Route path='/analytics' component={Analytics}/>
+                    <Route path='/emulator' component={Emulator}/>
+                    <Route path='/upload' component={Upload}/>
+                    <Route path='/convos/tailwater' component={Tailwater}/>
+                    <Route path='/convos/notifications' component={NotificationGroups}/>
+                    <Route path='/blacklist' component={Blacklist}/>
+                    <Route path='/properties' component={Properties}/>
+                    <Route path='/login' component={Login}/>
+                    <Route path='/register' component={Registration}/>
+                </Switch>
+            </main>
+        );
+
+        return (
+            <BrowserRouter>
+                <section>
+                    <Navbar expand={"md"}>
+                        <NavbarBrand><a href="/">KHS&#123;Convo&#125;</a></NavbarBrand>
+                        <NavbarToggler onClick={this.toggleCollapse}/>
+                        {/*<Collapse id="navbarCollapse" isOpen={this.state.isOpen}>*/}
+                        <NavbarNav>
+                            <Dropdown eventKey={1} id="nav-dropdown-1">
+                                <DropdownToggle nav caret>
+                                    <div className="d-none d-md-inline">Admin</div>
+                                </DropdownToggle>
+
+                                <DropdownItem eventKey={1.1} href="/">Users</DropdownItem>
+                                <DropdownItem eventKey={1.2} href="/blacklist">Blacklist</DropdownItem>
+                                <DropdownItem eventKey={1.3} href="/properties">Properties</DropdownItem>
+                            </Dropdown>
+
+                            <Dropdown eventKey={2} id="nav-dropdown-2">
+                                <DropdownToggle nav caret>
+                                    <div className="d-none d-md-inline">Analytics</div>
+                                </DropdownToggle>
+
+                                <DropdownItem eventKey={2.1} href="/analytics/all">Search All</DropdownItem>
+                                <DropdownItem eventKey={2.1} href="/analytics/groupquestion">Group By
+                                    Question</DropdownItem>
+                                <DropdownItem eventKey={2.1} href="/analytics/groupphone">Group By Phone
+                                    Number</DropdownItem>
+                                <DropdownItem eventKey={2.1} href="/analytics/visitors">Visitors</DropdownItem>
+                            </Dropdown>
+
+                            <Dropdown eventKey={4} id="nav-dropdown-3">
+                                <DropdownToggle nav caret>
+                                    <div className="d-none d-md-inline">Convos</div>
+                                </DropdownToggle>
+
+                                <DropdownItem eventKey={4.2}
+                                              href="/convos/notifications">Notifications</DropdownItem>
+                            </Dropdown>
+
+                            <NavLink eventKey={3} to="/emulator">Emulator</NavLink>
+                            <NavLink eventKey={5} to="/upload">Upload</NavLink>
+                        </NavbarNav>
+                        {this.greeting()}
+
+                        {/*</Collapse>*/}
+                    </Navbar>
+
+                    <Container>
+                        <Row>
+                            <Col>
+                                {Main()}
+                            </Col>
+                        </Row>
+                    </Container>
+
+                </section>
+            </BrowserRouter>
+        );
+    }
 }
 
 export default App;

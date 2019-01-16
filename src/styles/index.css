@@ -1,14 +1,26 @@
+
+
 input, select {margin:0 10px 10px 0 }
+
 .red{color:#bf0d3c}
+
 a.login{  float: right; margin-top: 10px;}
+
 div.login-error{color:#A94442; margin-top: 10px}
 div.logout{float:right; margin-top:10px}
+
 div.logout span{margin-right:5px}
+
 .clickable{cursor: pointer; margin-right:10px}
+
 .white-space{white-space: pre-line}
+
 h3.command{margin-top:0}
+
 div.emulator{margin-top: 20px;margin-bottom: 20px;}
+
 div.list-item{ padding: 5px}
+
 div.list{ margin-top: 30px;}
 
 .bar {
@@ -61,7 +73,7 @@ svg {
     padding-right: 0px;
     padding-top: 0px;
 }
- 
+
 
 .footer {
   /* position: fixed; */
