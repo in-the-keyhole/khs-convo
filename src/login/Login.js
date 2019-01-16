@@ -82,7 +82,6 @@ class Login extends Component {
 
         return (
             <Container>
-                <Row><Col><div style={{marginTop: "1rem"}}></div></Col></Row>
                 <Row>
                     <Col/>
                     <Col>

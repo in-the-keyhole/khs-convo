@@ -190,12 +190,8 @@ class App extends Component {
                         </Navbar>
 
 
-                        <Container>
-                            <Row>
-                                <Col>
-                                    {Main()}
-                                </Col>
-                            </Row>
+                        <Container style={{marginTop: "1.75rem"}}>
+                            <Row><Col>{Main()}</Col></Row>
                         </Container>
                     </header>
 
