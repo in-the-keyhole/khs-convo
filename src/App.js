@@ -17,7 +17,6 @@ limitations under the License.
 import React, {Component} from 'react';
 //import './App.css';
 import {
-    BrowserRouter,
     Switch,
     Route
 } from 'react-router-dom'
@@ -36,6 +35,7 @@ import Blacklist from './admin/Blacklist.js';
 import Properties from './admin/Properties.js';
 import Upload from './upload/Upload.js';
 
+import {BrowserRouter as Router} from 'react-router-dom';
 import {
     Navbar,
     NavbarBrand,
@@ -61,11 +61,17 @@ import {
 
 class App extends Component {
 
-    state = {
-        isOpen: false
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            collapse: false,
+        };
+        this.onClick = this.onClick.bind(this);
+    }
 
-    toggleCollapse = this.setState({isOpen: !this.state.isOpen});
+    onClick() {
+        this.setState({collapse: !this.state.collapse});
+    }
 
     logout() {
         window.sessionStorage.clear();
@@ -73,9 +79,10 @@ class App extends Component {
     }
 
     greeting() {
-        var token = window.sessionStorage.getItem('token');
-        var firstName = window.sessionStorage.getItem('firstName');
-        var lastName = window.sessionStorage.getItem('lastName');
+        // TODO Use Redux for global state
+        const token = window.sessionStorage.getItem('token');
+        const firstName = window.sessionStorage.getItem('firstName');
+        const lastName = window.sessionStorage.getItem('lastName');
 
         if (token) {
             return <div className="logout">
@@ -115,63 +122,84 @@ class App extends Component {
         );
 
         return (
-            <BrowserRouter>
-                <section>
-                    <Navbar expand={"md"}>
-                        <NavbarBrand><a href="/">KHS&#123;Convo&#125;</a></NavbarBrand>
-                        <NavbarToggler onClick={this.toggleCollapse}/>
-                        {/*<Collapse id="navbarCollapse" isOpen={this.state.isOpen}>*/}
-                        <NavbarNav>
-                            <Dropdown eventKey={1} id="nav-dropdown-1">
-                                <DropdownToggle nav caret>
-                                    <div className="d-none d-md-inline">Admin</div>
-                                </DropdownToggle>
+            <section>
+                <Router>
+                    <header>
+                        <Navbar expand="md" scrolling fixed="top">
+                            <NavbarBrand><a href="/">KHS&#123;Convo&#125;</a></NavbarBrand>
+                            <NavbarToggler onClick={this.onClick}/>
 
-                                <DropdownItem eventKey={1.1} href="/">Users</DropdownItem>
-                                <DropdownItem eventKey={1.2} href="/blacklist">Blacklist</DropdownItem>
-                                <DropdownItem eventKey={1.3} href="/properties">Properties</DropdownItem>
-                            </Dropdown>
+                            <Collapse isOpen={this.state.collapse} navbar>
 
-                            <Dropdown eventKey={2} id="nav-dropdown-2">
-                                <DropdownToggle nav caret>
-                                    <div className="d-none d-md-inline">Analytics</div>
-                                </DropdownToggle>
+                                <NavbarNav left>
+                                    <NavItem>
+                                        <Dropdown eventKey={1} id="nav-dropdown-1">
+                                            <DropdownToggle nav caret>
+                                                <div className="d-none d-md-inline">Admin</div>
+                                            </DropdownToggle>
+                                            <DropdownMenu>
+                                                <DropdownItem eventKey={1.1} href="/">Users</DropdownItem>
+                                                <DropdownItem eventKey={1.2} href="/blacklist">Blacklist</DropdownItem>
+                                                <DropdownItem eventKey={1.3}
+                                                              href="/properties">Properties</DropdownItem>
+                                            </DropdownMenu>
+                                        </Dropdown>
+                                    </NavItem>
 
-                                <DropdownItem eventKey={2.1} href="/analytics/all">Search All</DropdownItem>
-                                <DropdownItem eventKey={2.1} href="/analytics/groupquestion">Group By
-                                    Question</DropdownItem>
-                                <DropdownItem eventKey={2.1} href="/analytics/groupphone">Group By Phone
-                                    Number</DropdownItem>
-                                <DropdownItem eventKey={2.1} href="/analytics/visitors">Visitors</DropdownItem>
-                            </Dropdown>
+                                    <NavItem>
+                                        <Dropdown eventKey={2} id="nav-dropdown-2">
+                                            <DropdownToggle nav caret>
+                                                <div className="d-none d-md-inline">Analytics</div>
+                                            </DropdownToggle>
 
-                            <Dropdown eventKey={4} id="nav-dropdown-3">
-                                <DropdownToggle nav caret>
-                                    <div className="d-none d-md-inline">Convos</div>
-                                </DropdownToggle>
+                                            <DropdownMenu>
+                                                <DropdownItem eventKey={2.1} href="/analytics/all">Search
+                                                    All</DropdownItem>
+                                                <DropdownItem eventKey={2.1} href="/analytics/groupquestion">Group By
+                                                    Question</DropdownItem>
+                                                <DropdownItem eventKey={2.1} href="/analytics/groupphone">Group By Phone
+                                                    Number</DropdownItem>
+                                                <DropdownItem eventKey={2.1}
+                                                              href="/analytics/visitors">Visitors</DropdownItem>
+                                            </DropdownMenu>
+                                        </Dropdown>
+                                    </NavItem>
 
-                                <DropdownItem eventKey={4.2}
-                                              href="/convos/notifications">Notifications</DropdownItem>
-                            </Dropdown>
+                                    <NavItem>
+                                        <Dropdown eventKey={4} id="nav-dropdown-3">
+                                            <DropdownToggle nav caret>
+                                                <div className="d-none d-md-inline">Convos</div>
+                                            </DropdownToggle>
 
-                            <NavLink eventKey={3} to="/emulator">Emulator</NavLink>
-                            <NavLink eventKey={5} to="/upload">Upload</NavLink>
-                        </NavbarNav>
-                        {this.greeting()}
+                                            <DropdownMenu>
+                                                <DropdownItem eventKey={4.2}
+                                                              href="/convos/notifications">Notifications</DropdownItem>
+                                            </DropdownMenu>
+                                        </Dropdown>
+                                    </NavItem>
 
-                        {/*</Collapse>*/}
-                    </Navbar>
+                                    <NavItem active><NavLink eventKey={3} to="/emulator">Emulator</NavLink></NavItem>
+                                    <NavItem active><NavLink eventKey={5} to="/upload">Upload</NavLink></NavItem>
+                                </NavbarNav>
 
-                    <Container>
-                        <Row>
-                            <Col>
-                                {Main()}
-                            </Col>
-                        </Row>
-                    </Container>
+                            </Collapse>
 
-                </section>
-            </BrowserRouter>
+                            {this.greeting()}
+
+                        </Navbar>
+
+                    </header>
+
+                </Router>
+
+                <Container>
+                    <Row>
+                        <Col>
+                            {/*{Main()}*/}
+                        </Col>
+                    </Row>
+                </Container>
+            </section>
         );
     }
 }
