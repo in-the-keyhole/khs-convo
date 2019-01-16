@@ -125,7 +125,8 @@ class App extends Component {
             <section>
                 <Router>
                     <header>
-                        <Navbar expand="md" scrolling fixed="top">
+                        {/*<Navbar expand="md" scrolling fixed="top">*/}
+                        <Navbar expand="md">
                             <NavbarBrand><a href="/">KHS&#123;Convo&#125;</a></NavbarBrand>
                             <NavbarToggler onClick={this.onClick}/>
 
@@ -188,17 +189,17 @@ class App extends Component {
 
                         </Navbar>
 
+
+                        <Container>
+                            <Row>
+                                <Col>
+                                    {Main()}
+                                </Col>
+                            </Row>
+                        </Container>
                     </header>
 
                 </Router>
-
-                <Container>
-                    <Row>
-                        <Col>
-                            {/*{Main()}*/}
-                        </Col>
-                    </Row>
-                </Container>
             </section>
         );
     }
