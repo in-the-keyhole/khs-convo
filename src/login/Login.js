@@ -17,6 +17,9 @@ limitations under the License.
 import React, {Component} from 'react';
 import axios from 'axios';
 import {
+    Card,
+    CardBody,
+    CardTitle,
     Container,
     Button,
     Row,
@@ -75,47 +78,52 @@ class Login extends Component {
 
     render() {
         const inputPadding = {padding: '0.5rem'};
+        const cardLayout = {width: "26rem", padding: "3em"};
+
         return (
             <Container>
-                <div className={"w-100 p-3"}>
-                    <Row>
-                        <Col><h1>Login</h1></Col>
-                    </Row>
+                <Row><Col><div style={{marginTop: "1rem"}}></div></Col></Row>
+                <Row>
+                    <Col/>
+                    <Col>
+                        <Card style={cardLayout}>
+                            <CardBody>
+                                <CardTitle>Login</CardTitle>
 
-                    <Row>
-                        <Col md={"4"} style={{marginLeft: '25%'}}>
+                                <form onSubmit={this.handleSubmit}>
 
-                            <form onSubmit={this.handleSubmit}>
+                                    <Input name={"username"}
+                                           id={"username"}
+                                           label={"User name"}
+                                           hint={"User name"}
+                                           type={"text"}
+                                           icon={"user"}
+                                           group
+                                           style={inputPadding}
+                                           value={this.state.username}
+                                           onChange={this.handleInputChange} placeholder="username"/>
 
-                                <Input name={"username"}
-                                       id={"username"}
-                                       label={"User name"}
-                                       hint={"User name"}
-                                       type={"text"}
-                                       icon={"user"}
-                                       group
-                                       style={inputPadding}
-                                       value={this.state.username}
-                                       onChange={this.handleInputChange} placeholder="username"/>
+                                    <Input name={"password"}
+                                           id={"password"}
+                                           label={"Password"}
+                                           hint={"Password"}
+                                           type={"password"}
+                                           icon={"lock"}
+                                           group
+                                           style={inputPadding}
+                                           value={this.state.password}
+                                           onChange={this.handleInputChange} placeholder="password"/>
 
-                                <Input name={"password"}
-                                       id={"password"}
-                                       label={"Password"}
-                                       hint={"Password"}
-                                       type={"password"}
-                                       icon={"lock"}
-                                       group
-                                       style={inputPadding}
-                                       value={this.state.password}
-                                       onChange={this.handleInputChange} placeholder="password"/>
+                                    <Button type={"submit"} value={"Login"}>Login</Button>
+                                </form>
 
-                                <Button type={"submit"} value={"Login"}  color={"primary"}>Login</Button>
-                            </form>
+                                <div className="login-error">{this.state.loginError}</div>
+                            </CardBody>
+                        </Card>
+                    </Col>
 
-                            <div className="login-error">{this.state.loginError}</div>
-                        </Col>
-                    </Row>
-                </div>
+                    <Col/>
+                </Row>
             </Container>
         )
     }
