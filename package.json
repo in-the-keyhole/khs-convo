@@ -14,7 +14,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@material-ui/core": "^3.8.3",
     "@types/lodash": "^4.14.73",
     "acorn": "^6.0.5",
     "axios": "^0.16.2",
@@ -33,6 +32,7 @@
     "jsonwebtoken": "^8.4.0",
     "lodash": "^4.17.4",
     "log4js": "^3.0.6",
+    "mdbreact": "^4.8.7",
     "moment": "^2.18.1",
     "mongodb": "^2.2.29",
     "mongoose": "^4.11.1",
@@ -65,7 +65,6 @@
     "superagent": "^3.6.0",
     "sync-request": "^4.1.0",
     "twilio": "^3.4.0",
-    "typeface-roboto": "0.0.54",
     "uuid": "^3.1.0"
   },
   "browserslist": [
