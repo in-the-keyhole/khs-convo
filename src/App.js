@@ -44,7 +44,6 @@ import {
     NavLink,
     NavbarToggler,
     Collapse,
-    FormInline,
     Dropdown,
     DropdownToggle,
     DropdownMenu,
@@ -134,53 +133,53 @@ class App extends Component {
 
                                 <NavbarNav left>
                                     <NavItem>
-                                        <Dropdown eventKey={1} id="nav-dropdown-1">
+                                        <Dropdown eventkey={1} id="nav-dropdown-1">
                                             <DropdownToggle nav caret>
                                                 <div className="d-none d-md-inline">Admin</div>
                                             </DropdownToggle>
                                             <DropdownMenu>
-                                                <DropdownItem eventKey={1.1} href="/">Users</DropdownItem>
-                                                <DropdownItem eventKey={1.2} href="/blacklist">Blacklist</DropdownItem>
-                                                <DropdownItem eventKey={1.3}
+                                                <DropdownItem eventkey={1.1} href="/">Users</DropdownItem>
+                                                <DropdownItem eventkey={1.2} href="/blacklist">Blacklist</DropdownItem>
+                                                <DropdownItem eventkey={1.3}
                                                               href="/properties">Properties</DropdownItem>
                                             </DropdownMenu>
                                         </Dropdown>
                                     </NavItem>
 
                                     <NavItem>
-                                        <Dropdown eventKey={2} id="nav-dropdown-2">
+                                        <Dropdown eventkey={2} id="nav-dropdown-2">
                                             <DropdownToggle nav caret>
                                                 <div className="d-none d-md-inline">Analytics</div>
                                             </DropdownToggle>
 
                                             <DropdownMenu>
-                                                <DropdownItem eventKey={2.1} href="/analytics/all">Search
+                                                <DropdownItem eventkey={2.1} href="/analytics/all">Search
                                                     All</DropdownItem>
-                                                <DropdownItem eventKey={2.1} href="/analytics/groupquestion">Group By
+                                                <DropdownItem eventkey={2.1} href="/analytics/groupquestion">Group By
                                                     Question</DropdownItem>
-                                                <DropdownItem eventKey={2.1} href="/analytics/groupphone">Group By Phone
+                                                <DropdownItem eventkey={2.1} href="/analytics/groupphone">Group By Phone
                                                     Number</DropdownItem>
-                                                <DropdownItem eventKey={2.1}
+                                                <DropdownItem eventkey={2.1}
                                                               href="/analytics/visitors">Visitors</DropdownItem>
                                             </DropdownMenu>
                                         </Dropdown>
                                     </NavItem>
 
                                     <NavItem>
-                                        <Dropdown eventKey={4} id="nav-dropdown-3">
+                                        <Dropdown eventkey={4} id="nav-dropdown-3">
                                             <DropdownToggle nav caret>
                                                 <div className="d-none d-md-inline">Convos</div>
                                             </DropdownToggle>
 
                                             <DropdownMenu>
-                                                <DropdownItem eventKey={4.2}
+                                                <DropdownItem eventkey={4.2}
                                                               href="/convos/notifications">Notifications</DropdownItem>
                                             </DropdownMenu>
                                         </Dropdown>
                                     </NavItem>
 
-                                    <NavItem active><NavLink eventKey={3} to="/emulator">Emulator</NavLink></NavItem>
-                                    <NavItem active><NavLink eventKey={5} to="/upload">Upload</NavLink></NavItem>
+                                    <NavItem active><NavLink eventkey={3} to="/emulator">Emulator</NavLink></NavItem>
+                                    <NavItem active><NavLink eventkey={5} to="/upload">Upload</NavLink></NavItem>
                                 </NavbarNav>
 
                             </Collapse>
