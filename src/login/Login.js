@@ -113,10 +113,10 @@ class Login extends Component {
                                            value={this.state.password}
                                            onChange={this.handleInputChange} placeholder="password"/>
 
-                                    <Button type={"submit"} value={"Login"}>Login</Button>
+                                    <Button  size={"sm"} type={"submit"} value={"Login"}>Login</Button>
                                 </form>
 
-                                <div className="login-error">{this.state.loginError}</div>
+                                <div className={"login-error"}>{this.state.loginError}</div>
                             </CardBody>
                         </Card>
                     </Col>

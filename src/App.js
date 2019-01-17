@@ -54,7 +54,8 @@ import {
     Container,
     Row,
     Col,
-    Button
+    Button,
+    MDBIcon
 } from 'mdbreact';
 
 
@@ -83,18 +84,17 @@ class App extends Component {
         const firstName = window.sessionStorage.getItem('firstName');
         const lastName = window.sessionStorage.getItem('lastName');
 
-        if (token) {
-            return <div className="logout">
-                <i className="glyphicon glyphicon-user"/>
-                <span> {firstName} {lastName} </span>
-                <Button onClick={this.logout}>Logout</Button>
-            </div>
+        const logout = <span>
+                <MDBIcon icon="user" />&nbsp;{firstName}&nbsp;{lastName}&nbsp;
+                <Button size={"sm"} onClick={this.logout}>Logout</Button>
+            </span>;
 
-        } else {
-            return <Button href="/Login" className="login">Login</Button>
-        }
+        const login = <span>
+                <MDBIcon icon="user-o" />&nbsp;
+                <Button size={"sm"} href="/Login">Login</Button>
+            </span>;
 
-
+        return token ? logout : login;
     }
 
     render() {
