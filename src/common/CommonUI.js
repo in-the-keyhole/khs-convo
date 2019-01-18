@@ -20,6 +20,19 @@ import {MDBIcon} from 'mdbreact';
 
 class CommonUI {
 
+    // ------------------------------------------------------------------------
+    // Specify this static method name in 'sortCaret' option of
+    // react-bootstrap-table-next (aka react-bootstrap-table2) sortable
+    // column settings. E.g.
+    //
+    //         const columns = [{
+    //             dataField: 'id',
+    //             text: 'Product ID',
+    //             sort: true,
+    //             sortCaret: CommonUI.ColumnSortCaret  // <===
+    //         }, ...
+    //
+    // ------------------------------------------------------------------------
     static ColumnSortCaret(order) {
         const caretColor = {color: 'LightGray'};
         let caret;
