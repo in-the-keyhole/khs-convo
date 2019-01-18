@@ -16,9 +16,8 @@ limitations under the License.
 
 import React, { Component } from 'react';
 import ajax from '../util/ajax';
-import AddUser from './AddUser.js';
-import UserList from './UserList';
-import { Modal  } from 'mdbreact';
+// import AddUser from './AddUser.js';
+// import UserList from './UserList';
 import cellEditFactory from 'react-bootstrap-table2-editor';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import filterFactory, { textFilter, selectFilter } from 'react-bootstrap-table2-filter';
@@ -32,8 +31,14 @@ import {
     Button,
     Row,
     Col,
-    Input,
+    // Input,
     MDBIcon,
+} from 'mdbreact';
+import {
+    Modal,
+    ModalBody,
+    // ModalHeader,
+    // ModalFooter
 } from 'mdbreact';
 
 class Admin extends Component {
@@ -184,6 +189,7 @@ class Admin extends Component {
     }
 
     openCredentialsModal(user) {
+        console.log('openCredentialsModal');
         this.setState({
             currentUser: user,
             credentialsModal: true
@@ -191,6 +197,7 @@ class Admin extends Component {
     }
 
     closeCredentialsModal() {
+        console.log('closeCredentialsModal');
         this.setState({
             currentUser: '',
             credentialsModal: false
@@ -198,6 +205,7 @@ class Admin extends Component {
     }
 
     openDeleteModal(user) {
+        console.log('openDeleteModal');
         this.setState({
             currentUser: user,
             deleteModal: true
@@ -205,6 +213,7 @@ class Admin extends Component {
     }
 
     closeDeleteModal() {
+        console.log('closeDeleteModal');
         this.setState({
             currentUser: '',
             deleteModal: false
@@ -212,10 +221,12 @@ class Admin extends Component {
     }
 
     openAddUserModal() {
+        console.log('openAddUserModal');
         this.setState({addUserModal: true});
     }
 
     closeAddUserModal() {
+        console.log('closeAddUserModal');
         this.setState(
             {
                 addUserModal: false,
@@ -304,24 +315,24 @@ class Admin extends Component {
 
         };
 
-        // console.log(this.state.users);
 
         return (
-            <div>
+            <Col>
 
-  {/*              <Modal show={this.state.addUserModal} onHide={this.close}>
-                    <Modal.Body>
+                <Modal show={this.state.addUserModal} onHide={this.close}>
+
+                    <ModalBody>
                         <form className="form" onSubmit={this.addUser}>
 
-                            <div className="container">
+                            <Container>
 
-                                <div className="row">
-                                    <div className="col-md-12">
+                                <Row>
+                                    <Col md={"12"}>
                                         <p className="text-danger">{this.state.errorMsg}</p>
-                                    </div>
-                                </div>
-                                <div className="row">
-                                    <div className="col-md-3">
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col md={"3"}>
                                         <div className="form-group">
                                             <input
                                                 name="FirstName"
@@ -349,10 +360,10 @@ class Admin extends Component {
                                         <div className="form-group">
                                             <input name="Phone" id="Phone" className="form-control" type="text" required value={this.state.Phone} onChange={this.handleInputChange} placeholder="Phone Number" />
                                         </div>
-                                    </div>
+                                    </Col>
 
 
-                                    <div className="col-md-3">
+                                    <Col md={"3"}>
 
                                         <div className="form-group">
                                             <input name="Email" id="Email" className="form-control" type="email" required value={this.state.Email} onChange={this.handleInputChange} placeholder="Email" />
@@ -378,42 +389,42 @@ class Admin extends Component {
 
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div className="row">
-                                    <div className="col-md-1"> </div>
-                                    <div className="col-md-2"> <input className="btn btn-primary" type="submit" value="Add User" />  </div>
-                                    <div className="col-md-9"> <button className="btn btn-default" onClick={() => this.closeAddUserModal()}>Cancel</button> </div>
-                                </div>
-                            </div>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col md={"1"}> </Col>
+                                    <Col md={"2"}> <Button  type="submit">Add User</Button></Col>
+                                    <Col md={"9"}> <Button   onClick={()=> this.closeAddUserModal()}>Cancel</Button> </Col>
+                                </Row>
+                            </Container>
                         </form>
-                    </Modal.Body>
+                    </ModalBody>
                 </Modal>
 
                 <Modal show={this.state.credentialsModal} onHide={this.close}>
-                    <Modal.Body>
+                    <ModalBody>
                         <div className="form-group">
                             <input autoComplete="off" name="registrationEmail" id="registrationEmail" className="form-control" type="email" required="required" value={this.state.registrationEmail} onChange={this.handleInputChange} placeholder="Email" />
                         </div>
                         <div className="red">{this.state.errorMsg}</div>
 
-                        <button className="btn btn-primary"  onClick={() => this.sendRegistrationEmail()} >Send Registration Email</button>
-                        <button className="btn btn-default" onClick={() => this.closeCredentialsModal()}>cancel</button>
-                    </Modal.Body>
+                        <button className="btn btn-primary" onClick={() => this.sendRegistrationEmail()} >Send Registration Email</button>
+                        <button className="btn btn-default" onClick={() => this.closeCredentialsModal()} >Cancel</button>
+                    </ModalBody>
                 </Modal>
 
                 <Modal show={this.state.deleteModal} onHide={this.close}>
-                    <Modal.Body>
+                    <ModalBody>
                         <div className="form-group">
-                            <label>Are you sure you want to delete this?</label>
+                            <label>Delete?</label>
                         </div>
-                        <div className="row">
-                            <div className="col-md-3"> </div>
-                            <div className="col-md-4"> <button className="btn btn-danger"  onClick={() => this.deleteUser()} >Delete</button> </div>
-                            <div className="col-md-5"> <button className="btn btn-default" onClick={() => this.closeDeleteModal()}>Cancel</button>   </div>
-                        </div>
-                    </Modal.Body>
-                </Modal>*/}
+                        <Row>
+                            <Col md={"3"}> </Col>
+                            <Col md={"4"}> <button className="btn btn-danger"  onClick={() => this.deleteUser()} >Delete</button> </Col>
+                            <Col md={"5"}> <button className="btn btn-default" onClick={() => this.closeDeleteModal()}>Cancel</button>   </Col>
+                        </Row>
+                    </ModalBody>
+                </Modal>
 
                 <Card>
                     <CardBody>
@@ -423,7 +434,7 @@ class Admin extends Component {
                             <Col md={"9"}>
                                 <BootstrapTable
                                     bootstrap4
-                                    keyField={'id'}
+                                    keyField={'uuid'}
                                     data={ data.rows }
                                     columns={ data.columns }
                                     defaultSorted={ [{dataField: 'name', order: 'desc'}] }
@@ -440,8 +451,7 @@ class Admin extends Component {
                             </Col>
 
                             <Col>
-                                <Button size={"sm"} onClick={() => this.openAddUserModal()}>Add User</Button>
-
+                                <Button size={"sm"} onClick={() => this.openAddUserModal()}><MDBIcon icon="user-plus" />&nbsp;Add User</Button>
                             </Col>
                         </Row>
 
@@ -480,7 +490,7 @@ class Admin extends Component {
 
                     </CardBody>
                 </Card>
-            </div>
+            </Col>
         )
     }
 }
