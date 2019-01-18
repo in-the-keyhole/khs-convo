@@ -17,7 +17,7 @@ limitations under the License.
 import React, { Component } from 'react';
 import $ from "jquery";
 
-class UserList extends React.Component {
+class UserList extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -48,6 +48,7 @@ class UserList extends React.Component {
     deleteUser(id){
         console.log(id);
 
+        // TODO Use axios
         $.ajax({
           url: 'api/admin',
           type: 'DELETE',
@@ -56,7 +57,7 @@ class UserList extends React.Component {
           cache: false,
           success: function(data) {
             console.log('User Deleted');
-          }.bind(this),
+          },
           error: function(xhr, status, err) {
             console.log('delete ajax errr');
             console.error(this.props.url, status, err.toString());

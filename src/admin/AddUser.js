@@ -15,8 +15,8 @@ limitations under the License.
 */
 
 import React, { Component } from 'react';
-import $ from "jquery";
 import Admin from "./Admin"
+
 class AddUser extends Component {
 
   constructor(props) {
