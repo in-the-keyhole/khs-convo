@@ -86,13 +86,10 @@ class App extends Component {
 
         const logout = <span>
                 <MDBIcon icon="user" />&nbsp;{firstName}&nbsp;{lastName}&nbsp;
-                <Button size={"sm"} onClick={this.logout}>Logout</Button>
+                <Button size={"sm"} onClick={this.logout}><MDBIcon icon="lock" />&nbsp;Logout</Button>
             </span>;
 
-        const login = <span>
-                <MDBIcon icon="user-o" />&nbsp;
-                <Button size={"sm"} href="/Login">Login</Button>
-            </span>;
+        const login = <Button size={"sm"} href="/Login"><MDBIcon icon="unlock" />&nbsp;Login</Button>;
 
         return token ? logout : login;
     }
