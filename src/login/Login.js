@@ -107,13 +107,14 @@ class Login extends Component {
                                            label={"Password"}
                                            hint={"Password"}
                                            type={"password"}
-                                           icon={"lock"}
+                                           icon={"unlock"}
                                            group
                                            style={inputPadding}
                                            value={this.state.password}
                                            onChange={this.handleInputChange} placeholder="password"/>
 
                                     <Button  size={"sm"} type={"submit"} value={"Login"}>Login</Button>
+
                                 </form>
 
                                 <div className={"login-error"}>{this.state.loginError}</div>
