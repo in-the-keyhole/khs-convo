@@ -165,6 +165,7 @@ class Admin extends Component {
         );
     }
 
+
     deleteUser(){
         const user = this.state.currentUser;
         user.Status = 'removed';
@@ -180,6 +181,7 @@ class Admin extends Component {
 
     }
 
+
     handleInputChange(event) {
         const target = event.target;
         this.setState({
@@ -187,6 +189,7 @@ class Admin extends Component {
             errorMsg: ''
         });
     }
+
 
     openCredentialsModal(user) {
         console.log('openCredentialsModal');
@@ -196,6 +199,7 @@ class Admin extends Component {
         });
     }
 
+
     closeCredentialsModal() {
         console.log('closeCredentialsModal');
         this.setState({
@@ -203,6 +207,7 @@ class Admin extends Component {
             credentialsModal: false
         });
     }
+
 
     openDeleteModal(user) {
         console.log('openDeleteModal');
@@ -212,6 +217,7 @@ class Admin extends Component {
         });
     }
 
+
     closeDeleteModal() {
         console.log('closeDeleteModal');
         this.setState({
@@ -220,10 +226,12 @@ class Admin extends Component {
         });
     }
 
+
     openAddUserModal() {
         console.log('openAddUserModal');
         this.setState({addUserModal: true});
     }
+
 
     closeAddUserModal() {
         console.log('closeAddUserModal');
@@ -240,6 +248,7 @@ class Admin extends Component {
 
             });
     }
+
 
     userToolbar(cell, row) {
         const self = this;
@@ -319,7 +328,7 @@ class Admin extends Component {
         return (
             <Col>
 
-                <Modal show={this.state.addUserModal} onHide={this.close}>
+                <Modal isOpen={this.state.addUserModal} onHide={this.close}>
 
                     <ModalBody>
                         <form className="form" onSubmit={this.addUser}>
@@ -401,10 +410,17 @@ class Admin extends Component {
                     </ModalBody>
                 </Modal>
 
-                <Modal show={this.state.credentialsModal} onHide={this.close}>
+                <Modal isOpen={this.state.credentialsModal} onHide={this.close}>
                     <ModalBody>
                         <div className="form-group">
-                            <input autoComplete="off" name="registrationEmail" id="registrationEmail" className="form-control" type="email" required="required" value={this.state.registrationEmail} onChange={this.handleInputChange} placeholder="Email" />
+                            <input autoComplete="off"
+                                   name="registrationEmail"
+                                   id="registrationEmail"
+                                   className="form-control"
+                                   type="email"
+                                   required="required"
+                                   value={this.state.registrationEmail}
+                                   onChange={this.handleInputChange} placeholder="Email" />
                         </div>
                         <div className="red">{this.state.errorMsg}</div>
 
@@ -413,7 +429,7 @@ class Admin extends Component {
                     </ModalBody>
                 </Modal>
 
-                <Modal show={this.state.deleteModal} onHide={this.close}>
+                <Modal isOpen={this.state.deleteModal} onHide={this.close}>
                     <ModalBody>
                         <div className="form-group">
                             <label>Delete?</label>
