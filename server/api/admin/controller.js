@@ -49,31 +49,31 @@ let serverPath = '/convoevents/';
 let serverAdmin = '/api/admin';
 
 function get(req, res) {
-    
+
     mongo.GetSort({}, {LastName: 1, FirstName: 1}, 'Users')
         .then(function (users) {
-            
+
             var visible = _.filter(users, function(user) {
                 return user.Status !== 'removed';
             });
-            
-            res.send(visible); 
+
+            res.send(visible);
         })
 }
 
 function blacklistget(req, res) {
-    
+
     mongo.GetSort({}, {phone: 1}, 'Blacklist')
         .then(function (contacts) {
-            res.send(contacts); 
+            res.send(contacts);
         })
 }
 
 function contentget(req, res) {
-    
+
     mongo.Get({}, 'Content')
         .then(function (contacts) {
-            res.send(contacts); 
+            res.send(contacts);
         })
 }
 
@@ -81,31 +81,31 @@ function post(req, res) {
 
     req.body.uuid = uuid();
     if (req.body.Email != req.body.ConfirmEmail){
-         return res.send("your email addresses are not the same");
+         return res.send("The email address pair does not match");
     }
 
    mongo.Get({Username:req.body.Email, Status:{$ne:"removed"}}, "Users" )
    .then (function (response){
-  
+
        if (response.length> 0 ){
-           res.send("The email address you have entered is already registered") ;
+           res.send("The email address is previously registered") ;
        }else {
             mongo.Insert(req.body, 'Users')
-            .then(function (contact) { 
+            .then(function (contact) {
             });
-    
+
             req.body.RegistrationEmail = req.body.Email;
             return sendRegistrationEmail(req,res );
        }
    })
    .catch (function (error){
-        console.log(" duplication check error  "    + error) ;
-       
-   }); 
+        console.log(" Duplication check error  "    + error) ;
+
+   });
 }
 
 function blacklistpost(req, res) {
-    
+
     if (req.body.phone) {
         mongo.Insert(req.body, 'Blacklist')
             .then(function (contact) {
@@ -138,23 +138,23 @@ function put(req, res) {
     var data = _.omit(req.body, ['_id']);
 
     mongo.Update({uuid: req.body.uuid}, {$set: data},  'Users')
-    .then(function (response) {  
-        res.send(response); 
-    })  
+    .then(function (response) {
+        res.send(response);
+    })
 }
 
 function blacklistput(req, res) {
     mongo.Update({phone: req.body.phone}, req.body,  'Blacklist')
-    .then(function (response) {  
-        res.send(response); 
-    })  
+    .then(function (response) {
+        res.send(response);
+    })
 }
 
 function contentput(req, res) {
     mongo.Update({Name: req.body.Name}, req.body,  'Content')
-    .then(function (response) {  
-        res.send(response); 
-    })  
+    .then(function (response) {
+        res.send(response);
+    })
 }
 
 function contentpost(req, res) {
@@ -197,7 +197,7 @@ function fileExistsOnUpload(req, res) {
     let pathStr = [];
     let fileNames = [];
     let convoEventPath = '';
-    
+
     if (req.get('host').indexOf('localhost') > -1 && platform.startsWith('win')) {
         convoEventPath = hostPath + req.query.directory;
         pathStr.push(__dirname.replace(hostAdmin, ''));
@@ -284,8 +284,8 @@ function getDirectories(req, res) {
             let d = readStream.replace(/(\r\n|\n|\r)/gm,"");;
             let wordsArr = [];
             let words = d.toString().match(new RegExp("word: \\'" + "(.*?)" + "\\'", 'gm'));
-           
-           
+
+
             let eventDescription =  d.toString().match(new RegExp("event.description(.*?);", 'gm'));
             if (eventDescription) {
                 var description = eventDescription[0].replace("event.description", "");
@@ -314,8 +314,8 @@ function getDirectories(req, res) {
 
 function sendRegistrationEmailNonSmtp(req, res) {
     var msgBody =   '<a href="' + req.body.basePath +
-                    '/register?uuid=' + req.body.uuid + 
-                    '&registrationEmail=' + req.body.RegistrationEmail + 
+                    '/register?uuid=' + req.body.uuid +
+                    '&registrationEmail=' + req.body.RegistrationEmail +
                     '">Click this link to register for Convo.</a>';
     sendmail({
         from: 'no-reply@convo.com',
@@ -375,7 +375,7 @@ var schema = buildSchema(`
   type User {
       FirstName: String
       LastName: String
-      
+
   }
 `);
 
