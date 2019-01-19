@@ -33,12 +33,10 @@ import {
     Col,
     // Input,
     MDBIcon,
-} from 'mdbreact';
-import {
     Modal,
     ModalBody,
-    // ModalHeader,
-    // ModalFooter
+    ModalHeader,
+    ModalFooter
 } from 'mdbreact';
 
 class Admin extends Component {
@@ -78,11 +76,11 @@ class Admin extends Component {
             data: add
         }).then( (res) => {
 
-            if (res.data && res.data === 'The email address is already registered') {
+            if (res && res.data && res.data === 'The email address is already registered') {
                 this.setState({
                     errorMsg: 'The email address is already registered.'
                 })
-            } else if (res.data && res.data === 'The email addresses do not match') {
+            } else if (res && res.data && res.data === 'The email addresses do not match') {
                 this.setState({
                     errorMsg: 'The email addresses do not match'
                 })
@@ -135,7 +133,7 @@ class Admin extends Component {
         ajax({
             method: 'post',
             url: '/api/admin/sendRegistrationEmail',
-            data: creds,
+            data: creds
         }).then((res) => {
             console.log(res);
             if (res) {
@@ -265,6 +263,133 @@ class Admin extends Component {
     }
 
 
+    modalAddUser() {
+        return (
+            <Modal isOpen={this.state.addUserModal} onHide={this.close}>
+
+                <ModalBody>
+                    <form className="form" onSubmit={this.addUser}>
+
+                        <Container>
+
+                            <Row>
+                                <Col md={"12"}>
+                                    <p className="text-danger">{this.state.errorMsg}</p>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col md={"3"}>
+                                    <div className="form-group">
+                                        <input
+                                            name="FirstName"
+                                            id="FirstName"
+                                            className="form-control"
+                                            type="text"
+                                            required
+                                            value={this.state.FirstName}
+                                            onChange={this.handleInputChange}
+                                            placeholder="First Name" />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <input
+                                            name="LastName"
+                                            id="LastName"
+                                            className="form-control"
+                                            type="text"
+                                            required
+                                            value={this.state.LastName}
+                                            onChange={this.handleInputChange}
+                                            placeholder="Last Name" />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <input name="Phone" id="Phone" className="form-control" type="text" required value={this.state.Phone} onChange={this.handleInputChange} placeholder="Phone Number" />
+                                    </div>
+                                </Col>
+
+
+                                <Col md={"3"}>
+
+                                    <div className="form-group">
+                                        <input name="Email" id="Email" className="form-control" type="email" required value={this.state.Email} onChange={this.handleInputChange} placeholder="Email" />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <input name="ConfirmEmail" id="ConfirmEmail" className="form-control" type="email" required="required"   value={this.state.ConfirmEmail} onChange={this.handleInputChange} placeholder="Confirm Email" />
+                                    </div>
+
+                                    <div className="form-group">
+
+                                        <div className="row">
+                                            <div className="col-md-4">
+                                                <label> <h5>User Type</h5></label>
+                                            </div>
+                                            <div className="col-md-8">
+
+                                                <select id="addStatus"    className="form-control" name="Status" value={this.state.Status} onChange={this.handleInputChange}>
+                                                    <option   value="active">active</option>
+                                                    <option   value="admin">admin</option>
+                                                </select>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col md={"1"}> </Col>
+                                <Col md={"2"}> <Button  type="submit">Add User</Button></Col>
+                                <Col md={"9"}> <Button   onClick={()=> this.closeAddUserModal()}>Cancel</Button> </Col>
+                            </Row>
+                        </Container>
+                    </form>
+                </ModalBody>
+            </Modal>
+        );
+    }
+
+    modalCredentials() {
+        return (
+            <Modal isOpen={this.state.credentialsModal} onHide={this.close}>
+                <ModalBody>
+                    <div className="form-group">
+                        <input autoComplete="off"
+                               name="registrationEmail"
+                               id="registrationEmail"
+                               className="form-control"
+                               type="email"
+                               required="required"
+                               value={this.state.registrationEmail}
+                               onChange={this.handleInputChange} placeholder="Email" />
+                    </div>
+                    <div className="red">{this.state.errorMsg}</div>
+
+                    <button className="btn btn-primary" onClick={() => this.sendRegistrationEmail()} >Send Registration Email</button>
+                    <button className="btn btn-default" onClick={() => this.closeCredentialsModal()} >Cancel</button>
+                </ModalBody>
+            </Modal>
+        );
+    }
+
+    modalDelete() {
+        return (
+            <Modal isOpen={this.state.deleteModal} onHide={this.close}>
+                <ModalBody>
+                    <div className="form-group">
+                        <label>Delete?</label>
+                    </div>
+                    <Row>
+                        <Col md={"3"}> </Col>
+                        <Col md={"4"}> <button className="btn btn-danger"  onClick={() => this.deleteUser()} >Delete</button> </Col>
+                        <Col md={"5"}> <button className="btn btn-default" onClick={() => this.closeDeleteModal()}>Cancel</button>   </Col>
+                    </Row>
+                </ModalBody>
+            </Modal>
+        );
+    }
+
+
     render() {
 
         const data = {
@@ -327,120 +452,9 @@ class Admin extends Component {
 
         return (
             <Col>
-
-                <Modal isOpen={this.state.addUserModal} onHide={this.close}>
-
-                    <ModalBody>
-                        <form className="form" onSubmit={this.addUser}>
-
-                            <Container>
-
-                                <Row>
-                                    <Col md={"12"}>
-                                        <p className="text-danger">{this.state.errorMsg}</p>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col md={"3"}>
-                                        <div className="form-group">
-                                            <input
-                                                name="FirstName"
-                                                id="FirstName"
-                                                className="form-control"
-                                                type="text"
-                                                required
-                                                value={this.state.FirstName}
-                                                onChange={this.handleInputChange}
-                                                placeholder="First Name" />
-                                        </div>
-
-                                        <div className="form-group">
-                                            <input
-                                                name="LastName"
-                                                id="LastName"
-                                                className="form-control"
-                                                type="text"
-                                                required
-                                                value={this.state.LastName}
-                                                onChange={this.handleInputChange}
-                                                placeholder="Last Name" />
-                                        </div>
-
-                                        <div className="form-group">
-                                            <input name="Phone" id="Phone" className="form-control" type="text" required value={this.state.Phone} onChange={this.handleInputChange} placeholder="Phone Number" />
-                                        </div>
-                                    </Col>
-
-
-                                    <Col md={"3"}>
-
-                                        <div className="form-group">
-                                            <input name="Email" id="Email" className="form-control" type="email" required value={this.state.Email} onChange={this.handleInputChange} placeholder="Email" />
-                                        </div>
-
-                                        <div className="form-group">
-                                            <input name="ConfirmEmail" id="ConfirmEmail" className="form-control" type="email" required="required"   value={this.state.ConfirmEmail} onChange={this.handleInputChange} placeholder="Confirm Email" />
-                                        </div>
-
-                                        <div className="form-group">
-
-                                            <div className="row">
-                                                <div className="col-md-4">
-                                                    <label> <h5>User Type</h5></label>
-                                                </div>
-                                                <div className="col-md-8">
-
-                                                    <select id="addStatus"    className="form-control" name="Status" value={this.state.Status} onChange={this.handleInputChange}>
-                                                        <option   value="active">active</option>
-                                                        <option   value="admin">admin</option>
-                                                    </select>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col md={"1"}> </Col>
-                                    <Col md={"2"}> <Button  type="submit">Add User</Button></Col>
-                                    <Col md={"9"}> <Button   onClick={()=> this.closeAddUserModal()}>Cancel</Button> </Col>
-                                </Row>
-                            </Container>
-                        </form>
-                    </ModalBody>
-                </Modal>
-
-                <Modal isOpen={this.state.credentialsModal} onHide={this.close}>
-                    <ModalBody>
-                        <div className="form-group">
-                            <input autoComplete="off"
-                                   name="registrationEmail"
-                                   id="registrationEmail"
-                                   className="form-control"
-                                   type="email"
-                                   required="required"
-                                   value={this.state.registrationEmail}
-                                   onChange={this.handleInputChange} placeholder="Email" />
-                        </div>
-                        <div className="red">{this.state.errorMsg}</div>
-
-                        <button className="btn btn-primary" onClick={() => this.sendRegistrationEmail()} >Send Registration Email</button>
-                        <button className="btn btn-default" onClick={() => this.closeCredentialsModal()} >Cancel</button>
-                    </ModalBody>
-                </Modal>
-
-                <Modal isOpen={this.state.deleteModal} onHide={this.close}>
-                    <ModalBody>
-                        <div className="form-group">
-                            <label>Delete?</label>
-                        </div>
-                        <Row>
-                            <Col md={"3"}> </Col>
-                            <Col md={"4"}> <button className="btn btn-danger"  onClick={() => this.deleteUser()} >Delete</button> </Col>
-                            <Col md={"5"}> <button className="btn btn-default" onClick={() => this.closeDeleteModal()}>Cancel</button>   </Col>
-                        </Row>
-                    </ModalBody>
-                </Modal>
+                { this.modalAddUser() }
+                { this.modalCredentials() }
+                { this.modalDelete() }
 
                 <Card>
                     <CardBody>
@@ -467,7 +481,7 @@ class Admin extends Component {
                             </Col>
 
                             <Col>
-                                <Button size={"sm"} onClick={() => this.openAddUserModal()}><MDBIcon icon="user-plus" />&nbsp;Add User</Button>
+                                <Button size={"sm"} onClick={() => this.openAddUserModal()}><MDBIcon icon="user-plus" />&nbsp;New User</Button>
                             </Col>
                         </Row>
 
