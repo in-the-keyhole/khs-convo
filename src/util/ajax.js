@@ -16,14 +16,11 @@ limitations under the License.
 
 import axios from 'axios';
 
-var base = ''
-if (window.location.hostname === 'localhost'){
-    base = 'http://localhost:3001'
-}
+const base = window.location.hostname === 'localhost' ? 'http://localhost:3001' : '';
 
-var ajax = axios.create({
-  baseURL: base,
-  headers: {"token": window.sessionStorage.getItem('token')}
+const ajax = axios.create({
+    baseURL: base,
+    headers: {"token": window.sessionStorage.getItem('token')}
 });
 
 
@@ -31,12 +28,12 @@ ajax.interceptors.response.use(function (response) {
     // Do something with response data
     console.log(response);
     return response;
-  }, function (error) {
+}, function (error) {
 
-    if (error.response.status === 403){
+    if (error.response.status === 403) {
         window.location.assign('/login');
     }
 
-  });
+});
 
 export default ajax
