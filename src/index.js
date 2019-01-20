@@ -22,14 +22,17 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import FooterPanel from './footer';
+import { Provider } from 'react-redux';
+import configureStore from './configureStore';
 
 const element = (
-  <div id="wrapper">
-    <div id="header"></div>
-    <div id="content"><App /></div>
-    <div id="footer"><FooterPanel/></div>
-  </div>
+    <Provider id="wrapper" store={configureStore()}>
+        <div id="header"></div>
+        <div id="content"><App/></div>
+        <div id="footer"><FooterPanel/></div>
+    </Provider>
 );
+
 ReactDOM.render(
   element,
   document.getElementById('root')

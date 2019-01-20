@@ -24,8 +24,10 @@ import {
     Button,
     Row,
     Col,
-    Input
+    Input,
+    MDBIcon
 } from 'mdbreact';
+import {setCredentials} from '../actions';
 
 class Login extends Component {
 
@@ -44,13 +46,14 @@ class Login extends Component {
     }
 
     handleSubmit(ev) {
+        ev.preventDefault();
         console.log(this.state);
 
         const base = (window.location.hostname === 'localhost') ? 'http://localhost:3001' : '';
 
         console.log('submit login');
 
-        // TODO using axios in UI to avoid redirect interceptor, but let's fool the interceptor instead
+        // TODO now using axios in UI to avoid redirect interceptor, but let's plan to fool the interceptor instead
         axios({
             method: 'post',
             url: '/api/auth/login',
@@ -58,7 +61,7 @@ class Login extends Component {
             data: this.state
 
         }).then(res => {
-            console.log(res.data);
+            console.log(`post-login`, res.data);
             // TODO use Redux instead of HTML5 session
             window.sessionStorage.setItem('token', res.data.token);
             window.sessionStorage.setItem('firstName', res.data.FirstName);
@@ -68,15 +71,32 @@ class Login extends Component {
             window.sessionStorage.setItem('apitoken', res.data.apitoken);
             window.sessionStorage.setItem('slackchannel', res.data.slackchannel);
             window.location = ('/emulator');
+
+            const authUser = {
+                username: null,
+                password: null,
+                loginError: '',
+                token: res.data.token,
+                firstName: res.data.FirstName,
+                lastName: res.data.LastName,
+                phone: res.data.Phone,
+                status: res.data.Status,
+                apitoken: res.data.token,
+                slackchannel: null
+            };
+
+            console.log(`setCredentials`, setCredentials);
+            setCredentials(authUser);
+
         }).catch(err => {
             this.setState({loginError: 'Username or password incorrect. Please try again.'});
         });
 
-        ev.preventDefault();
     }
 
 
     render() {
+
         const inputPadding = {padding: '0.5rem'};
         const cardLayout = {width: "26rem", padding: "3em"};
 
@@ -107,13 +127,13 @@ class Login extends Component {
                                            label={"Password"}
                                            hint={"Password"}
                                            type={"password"}
-                                           icon={"unlock"}
+                                           icon={"lock"}
                                            group
                                            style={inputPadding}
                                            value={this.state.password}
                                            onChange={this.handleInputChange} placeholder="password"/>
 
-                                    <Button  size={"sm"} type={"submit"} value={"Login"}>Login</Button>
+                                    <Button  size={"sm"} type={"submit"} value={"Login"}><MDBIcon icon={"lock"}/>&nbsp;Login</Button>
 
                                 </form>
 

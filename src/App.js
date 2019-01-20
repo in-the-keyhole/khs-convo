@@ -34,7 +34,6 @@ import NotificationGroups from './convos/NotificationGroups.js';
 import Blacklist from './admin/Blacklist.js';
 import Properties from './admin/Properties.js';
 import Upload from './upload/Upload.js';
-
 import {BrowserRouter as Router} from 'react-router-dom';
 import {
     Navbar,
@@ -48,16 +47,13 @@ import {
     DropdownToggle,
     DropdownMenu,
     DropdownItem,
-} from "mdbreact";
-
-import {
     Container,
     Row,
     Col,
     Button,
     MDBIcon
 } from 'mdbreact';
-
+import { /*setCredentials,*/ resetCredentials} from './actions';
 
 class App extends Component {
 
@@ -73,10 +69,15 @@ class App extends Component {
         this.setState({collapse: !this.state.collapse});
     }
 
+
     logout() {
+
+        resetCredentials();
+
         window.sessionStorage.clear();
         window.location.assign('/login');
     }
+
 
     greeting() {
         // TODO Use Redux for global state
@@ -185,12 +186,11 @@ class App extends Component {
 
                         </Navbar>
 
-
                         <Container style={{marginTop: "1.75rem"}}>
                             <Row><Col>{Main()}</Col></Row>
                         </Container>
-                    </header>
 
+                    </header>
                 </Router>
             </section>
         );

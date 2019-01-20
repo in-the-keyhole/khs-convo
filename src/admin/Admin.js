@@ -20,7 +20,7 @@ import ajax from '../util/ajax';
 // import UserList from './UserList';
 import cellEditFactory from 'react-bootstrap-table2-editor';
 import paginationFactory from 'react-bootstrap-table2-paginator';
-import filterFactory, { textFilter, selectFilter } from 'react-bootstrap-table2-filter';
+import filterFactory /*, { textFilter, selectFilter }*/ from 'react-bootstrap-table2-filter';
 import BootstrapTable from 'react-bootstrap-table-next';
 import CommonUI from '../common/CommonUI';
 import {
@@ -35,8 +35,8 @@ import {
     MDBIcon,
     Modal,
     ModalBody,
-    ModalHeader,
-    ModalFooter
+    // ModalHeader,
+    // ModalFooter
 } from 'mdbreact';
 
 class Admin extends Component {
@@ -391,7 +391,7 @@ class Admin extends Component {
 
 
     render() {
-
+        // Note: textFilter commented-out. It results in a confusing grid without much value added. My opinion. @lem
         const data = {
             columns: [
                 {
@@ -401,7 +401,7 @@ class Admin extends Component {
                 },
                 {
                     text: 'First Name',
-                    filter: textFilter({ caseSensitive: true }),
+                    // filter: textFilter({ caseSensitive: true }),
                     dataField: 'FirstName',
                     sort: true,
                     sortCaret: CommonUI.ColumnSortCaret
@@ -409,14 +409,14 @@ class Admin extends Component {
                 {
                     text: 'Last Name',
                     dataField: 'LastName',
-                    filter: textFilter({ caseSensitive: true }),
+                    // filter: textFilter({ caseSensitive: true }),
                     sort: true,
                     sortCaret: CommonUI.ColumnSortCaret
                 },
                 {
                     text: 'Phone',
                     dataField: 'Phone',
-                    filter: textFilter(),
+                    // filter: textFilter(),
                     sort: true,
                     sortCaret: CommonUI.ColumnSortCaret
                 },
@@ -424,14 +424,14 @@ class Admin extends Component {
                     text: 'Status',
                     dataField: 'Status',
                     attrs: { width: '100px'},
-                    filter: selectFilter( {options: {'active': 'active', 'admin': 'admin'} } ),
+                    // filter: selectFilter( {options: {'active': 'active', 'admin': 'admin'} } ),
                     sort: true,
                     sortCaret: CommonUI.ColumnSortCaret
                 },
                 {
                     text: 'Username',
                     dataField: 'Username',
-                    filter: textFilter({ caseSensitive: true }),
+                    // filter: textFilter({ caseSensitive: true }),
                     sort: true,
                     sortCaret: CommonUI.ColumnSortCaret
                 },
