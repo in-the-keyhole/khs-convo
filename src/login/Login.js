@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 import React, {Component} from 'react';
+// import ajax from '../util/ajax';
 import axios from 'axios';
 import {
     Card,
@@ -27,19 +28,30 @@ import {
     Input,
     MDBIcon
 } from 'mdbreact';
-import {setCredentials} from '../actions';
+import { resetCredentials, setCredentials } from '../actions';
+import { store } from '../configureStore';
+import { connect } from 'react-redux';
+
 
 class Login extends Component {
 
     constructor(props) {
         super(props);
-        // TODO use Redux
-        this.state = {username: '', password: '', loginError: ''};
+        console.log("Login LOADED");
+        store.dispatch(resetCredentials);
+
+        this.state = {
+            loginError: '',
+            firstName: '',
+            lastName: ''
+        };
+
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     handleInputChange(ev) {
+        ev.preventDefault();
         const target = ev.target;
         this.setState({[target.name]: target.value});
         this.setState({error: ''});
@@ -47,7 +59,7 @@ class Login extends Component {
 
     handleSubmit(ev) {
         ev.preventDefault();
-        console.log(this.state);
+        store.dispatch(resetCredentials());
 
         const base = (window.location.hostname === 'localhost') ? 'http://localhost:3001' : '';
 
@@ -70,26 +82,37 @@ class Login extends Component {
             window.sessionStorage.setItem('status', res.data.Status);
             window.sessionStorage.setItem('apitoken', res.data.apitoken);
             window.sessionStorage.setItem('slackchannel', res.data.slackchannel);
-            window.location = ('/emulator');
 
-            const authUser = {
-                username: null,
-                password: null,
+            // Local state in case of .. what ..?
+            this.setState({
                 loginError: '',
+                firstName: res.data.FirstName,
+                lastName: res.data.LastName
+            });
+
+            // Login? Login? We don't need no stinkin' Login .
+            // Give a shout-out that we have an authenticated user who is ready to roll.
+            const credentials = {
+                apitoken: res.data.apitoken,
                 token: res.data.token,
                 firstName: res.data.FirstName,
                 lastName: res.data.LastName,
-                phone: res.data.Phone,
+                phone: res.data.Phone || '',
                 status: res.data.Status,
-                apitoken: res.data.token,
-                slackchannel: null
+                slackchannel: res.data.slackchannel
             };
 
-            console.log(`setCredentials`, setCredentials);
-            setCredentials(authUser);
+            console.log(`creds`, credentials)
+            store.dispatch(setCredentials( credentials ));
+
 
         }).catch(err => {
-            this.setState({loginError: 'Username or password incorrect. Please try again.'});
+            store.dispatch(resetCredentials());
+            this.setState({
+                loginError: 'Username or password incorrect. Please try again.',
+                firstName: '',
+                lastName: ''
+            });
         });
 
     }
@@ -127,13 +150,13 @@ class Login extends Component {
                                            label={"Password"}
                                            hint={"Password"}
                                            type={"password"}
-                                           icon={"lock"}
+                                           icon={"unlock"}
                                            group
                                            style={inputPadding}
                                            value={this.state.password}
                                            onChange={this.handleInputChange} placeholder="password"/>
 
-                                    <Button  size={"sm"} type={"submit"} value={"Login"}><MDBIcon icon={"lock"}/>&nbsp;Login</Button>
+                                    <Button  size={"medium"} type={"submit"} value={"Login"}><MDBIcon icon={"sign-in"}/>&nbsp;Login</Button>
 
                                 </form>
 
@@ -150,4 +173,7 @@ class Login extends Component {
 
 }
 
-export default Login
+
+const mapStateToProps = state => ( { credentials: state.credentials } );
+export default connect(mapStateToProps)(Login);
+
