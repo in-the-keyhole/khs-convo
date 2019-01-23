@@ -14,13 +14,10 @@
  * limitations under the License.
  */
 
-import {
-    RESET_CREDENTIALS,
-    SET_CREDENTIALS
-} from '../constants/ActionTypes';
+import { createAction } from 'redux-starter-kit';
 
-export const resetCredentials = () =>  dispatch =>  ( dispatch( { type: RESET_CREDENTIALS } ) ) ;
-
-export const setCredentials = credentials => dispatch => ( dispatch( { type: SET_CREDENTIALS, credentials } ) );
-
-
+// Use Redux starter kit createAction to code  action creators that
+// return an action object having the type param value and a payload
+// Eg. { type: <param>, payload: {} }
+export const resetCredentials =  createAction( 'resetCredentials' );
+export const setCredentials =  createAction( 'setCredentials' );
