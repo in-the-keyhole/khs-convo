@@ -14,16 +14,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React, { Component } from 'react';
+import React from 'react';
 import ajax from '../util/ajax';
 import '../styles/emulator.css';
 import NotificationBar from '../common/NotificationBar';
 
 import '../styles/data-table.css';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
+import {checkCredentials} from "../common/checkCredentials";
+import BaseComponent from '../BaseComponent';
 
 
-class Emulator extends Component {
+class Emulator extends BaseComponent {
 
     constructor(props) {
         super(props);
@@ -46,7 +48,7 @@ class Emulator extends Component {
             CommandSubTitle: "",
             CommandLink: "",
             EventArray:[]
-        }
+        };
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -66,10 +68,10 @@ class Emulator extends Component {
 
     dynamicLinks(str) {
         if (typeof str !== 'string') { return str; }
-        var listSpace = str.split(' ')
+        const listSpace = str.split(' ');
         listSpace.forEach(function(valSpace, iSpace) {
             if (valSpace.includes('http')){
-                var listLine = valSpace.split('\n');
+                const listLine = valSpace.split('\n');
                 listLine.forEach(function(valLine, iLine){
                     if (valLine.includes('http')){
                         if (valLine.indexOf('</Message></Response>') > -1 ){
@@ -83,8 +85,9 @@ class Emulator extends Component {
         });
         return listSpace.join(' ');
     }
+
     onConversationKeypress(ev) {
-        var key = ev.keyCode || ev.which;
+        const key = ev.keyCode || ev.which;
         if (key === 13) { // enter key
             this.handleSubmit(ev);
         }
@@ -94,7 +97,7 @@ class Emulator extends Component {
 
     determineEventCommand(command) {
         //console.log ("command  passedin   "   + command) ;
-        var enabled = 'enabled';
+        let enabled = 'enabled';
         this.state.EventArray.forEach(function (item, index) {
             //console.log ("item eventStatus  "   + item.eventStatus) ;
             var re = /\((.*)\)/g;
@@ -114,14 +117,14 @@ class Emulator extends Component {
     }
 
     handleSubmit(ev) {
-        var eventyStatus =this.determineEventCommand(this.state.Body);
-        var self = this;
-        var payload = {
+        const eventyStatus = this.determineEventCommand(this.state.Body);
+        const self = this;
+        const payload = {
             Body: this.state.Body,
             From: this.state.From,
             Status: this.state.Status,
             To: this.state.To
-        }
+        };
         if (eventyStatus === 'enabled'){
             ajax({
                 method:'POST',
@@ -137,14 +140,13 @@ class Emulator extends Component {
                 console.log(err)}
             );
         }else {
-            console.log('command is not  enabled');
-            var newConvo = [];
+            console.log('command is not enabled');
             ajax({
                 method:'POST',
                 url:'/api/convo/inactivecommand',
                 data: payload
             }).then(function(res) {
-                newConvo =   res.data.concat(self.state.Conversation);
+                const newConvo =   res.data.concat(self.state.Conversation);
                 self.setState({ Body: "" });
                 self.setState({
                     Conversation: newConvo
@@ -156,15 +158,19 @@ class Emulator extends Component {
         }
         ev.preventDefault();
     }
+
     componentWillMount() {
-        var self = this;
+        if (!super.componentWillMount()) {
+            return;
+        }
+        const self = this;
 
 
-       var commandArray=[];
-       var eventStatus = [];
-       var eventArray = [];
+        let commandArray = [];
+        let eventStatus = [];
+        const eventArray = [];
 
-        var myData = {
+        const myData = {
             Body: "availablecommands",
             To: "+19132703506",
             From: window.sessionStorage.getItem('phone')
@@ -176,8 +182,8 @@ class Emulator extends Component {
             data: myData,
             headers: {"token": window.sessionStorage.getItem('apitoken') }
         }).then(function (res) {
-            var re = /(.*)[\n\r]/g;
-            var tempString = res.data;
+            const re = /(.*)[\n\r]/g;
+            let tempString = res.data;
             tempString = tempString + '\n';
             tempString = self.dynamicLinks(tempString);
             commandArray = tempString.match(re);
@@ -188,7 +194,7 @@ class Emulator extends Component {
                     CommandSubTitle: commandArray[0].replace('<?xml version="1.0" encoding="UTF-8"?><Response><Message>', ''),
                     CommandLink: commandArray[commandArray.length - 1]
                 }
-            )
+            );
 
             commandArray.splice(0, 1);
             commandArray.splice(commandArray.length - 1, 1);
@@ -204,9 +210,7 @@ class Emulator extends Component {
             }
 
 
-            var eventData = {
-                events: commandArray
-            };
+            const eventData = {events: commandArray};
 
             ajax({
                 method: 'POST',
@@ -256,19 +260,19 @@ class Emulator extends Component {
     }
 
     loadMoreMessages() {
-        var skip = this.state.Conversation.length;
+        const skip = this.state.Conversation.length;
         this.getConversationsForPhone(skip);
     }
 
     getConversationsForPhone(skip) {
-        var self = this;
+        const self = this;
 
-        var phoneFrom = window.sessionStorage.getItem('phone');
-        var getConvoData = {
+        const phoneFrom = window.sessionStorage.getItem('phone');
+        const getConvoData = {
             To: "+19132703506",
             From: phoneFrom
         };
-        var skipCount = skip ? skip : 0;
+        const skipCount = skip ? skip : 0;
 
         ajax({
             method: 'GET',
@@ -287,20 +291,23 @@ class Emulator extends Component {
     renderConversation() {
         const convo = this.state.Conversation;
         if (convo.length > 0) {
-            var elements = [];
+            const elements = [];
             for (var i = 0; i < convo.length; i++) {
-                var input = convo[i];
-                var dynamicAnswer = this.dynamicLinks(input.answer);
-                var questionElement = (
-                    <div className="conversation__message-container conversation__message-question" key={'question_' + i}>
-                        <div className="conversation__message-content white-space" dangerouslySetInnerHTML={{__html: input.question}}></div>
+                const input = convo[i];
+                const dynamicAnswer = this.dynamicLinks(input.answer);
+                const questionElement = (
+                    <div className="conversation__message-container conversation__message-question"
+                         key={'question_' + i}>
+                        <div className="conversation__message-content white-space"
+                             dangerouslySetInnerHTML={{__html: input.question}}></div>
                     </div>
                 );
-                var answerElement = (
+                const answerElement = (
                     <div className="conversation__message-container conversation__message-answer" key={'answer_' + i}>
-                        <div className="conversation__message-content white-space" dangerouslySetInnerHTML={{__html: dynamicAnswer}}></div>
+                        <div className="conversation__message-content white-space"
+                             dangerouslySetInnerHTML={{__html: dynamicAnswer}}></div>
                     </div>
-                )
+                );
                 elements.push(answerElement);
                 elements.push(questionElement);
             }
@@ -313,12 +320,12 @@ class Emulator extends Component {
 
     onAfterSaveCell(row, cellName, cellValue) {
 
-        var update = {
+        const update = {
             event: {
                 key: row.key,
-                status:row.eventStatus
+                status: row.eventStatus
             }
-        }
+        };
         ajax({
             method:'post',
             url:'../api/convo/disableevent',
@@ -334,8 +341,11 @@ class Emulator extends Component {
 
 
     render() {
-        var conversationElements = this.renderConversation();
-        var editable =  false;
+        if (!checkCredentials()){
+            return '';
+        }
+        const conversationElements = this.renderConversation();
+        let editable = false;
         if (window.sessionStorage.getItem('status')==='admin'){
             editable={
                 type: 'select', options: { values: ['enabled','disabled'] }

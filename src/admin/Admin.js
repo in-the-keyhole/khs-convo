@@ -38,8 +38,9 @@ import {
     // ModalHeader,
     // ModalFooter
 } from 'mdbreact';
+import BaseComponent from '../BaseComponent';
 
-class Admin extends Component {
+class Admin extends BaseComponent {
 
     constructor(props) {
         super(props);
@@ -49,7 +50,7 @@ class Admin extends Component {
             registrationEmail: '',
             currentUser: '',
             errorMsg: ''
-        }
+        };
 
         this.componentWillMount = this.componentWillMount.bind(this);
         this.addUser = this.addUser.bind(this);
@@ -57,6 +58,7 @@ class Admin extends Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.userToolbar = this.userToolbar.bind(this);
     }
+
 
     addUser(event) {
         const add = {
@@ -121,7 +123,11 @@ class Admin extends Component {
         });
     }
 
-    componentWillMount() { this.fetchUsers(); }
+    componentWillMount() {
+        if (super.componentWillMount()) {
+            this.fetchUsers();
+        }
+    }
 
     sendRegistrationEmail() {
         const creds = {

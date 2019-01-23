@@ -14,10 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React, { Component } from 'react';
+import React from 'react';
 import $ from "jquery";
+import BaseComponent from '../BaseComponent';
 
-class UserList extends Component {
+class UserList extends BaseComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -27,7 +28,7 @@ class UserList extends Component {
         this.deleteUser = this.deleteUser.bind(this);
     }
 
-    componentWillMount() {
+    componentWillMountAux() {
 
         var url = 'api/admin';
         fetch(url)
@@ -44,6 +45,7 @@ class UserList extends Component {
                 });
             });
     }
+
 
     deleteUser(id){
         console.log(id);
