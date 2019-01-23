@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-import {
-    RESET_CREDENTIALS,
-    SET_CREDENTIALS
-} from '../constants/ActionTypes';
+
+import { createReducer } from 'redux-starter-kit';
+import { resetCredentials, setCredentials} from '../actions';
 
 const noUser = {
     username: null,
@@ -33,17 +32,10 @@ const noUser = {
 };
 
 
-const credentials = (state = noUser, action) => {
-
-    switch (action.type) {
-        case RESET_CREDENTIALS:
-            return noUser;
-        case SET_CREDENTIALS:
-            return state;
-        default:
-            return noUser;
-    }
-};
+const credentials = createReducer(noUser, {
+    [resetCredentials]: (state, action) => noUser,
+    [setCredentials]:   (state = noUser, action) => action.payload
+});
 
 
 export default credentials;
