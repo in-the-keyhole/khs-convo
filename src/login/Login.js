@@ -31,7 +31,7 @@ import {
 import { resetCredentials, setCredentials } from '../actions';
 import { store } from '../configureStore';
 import { connect } from 'react-redux';
-
+import { pathDefaultContent } from '../constants';
 
 class Login extends Component {
 
@@ -48,6 +48,7 @@ class Login extends Component {
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.redirectToContent = this.redirectToContent.bind(this);
     }
 
     handleInputChange(ev) {
@@ -55,6 +56,11 @@ class Login extends Component {
         const target = ev.target;
         this.setState({[target.name]: target.value});
         this.setState({error: ''});
+    }
+
+    redirectToContent(){
+        this.props.history.push(pathDefaultContent);
+        console.log(`this.props.history.push(${pathDefaultContent})`)
     }
 
     handleSubmit(ev) {
@@ -102,8 +108,8 @@ class Login extends Component {
                 slackchannel: res.data.slackchannel
             };
 
-            console.log(`creds`, credentials)
             store.dispatch(setCredentials( credentials ));
+            this.redirectToContent();
 
 
         }).catch(err => {

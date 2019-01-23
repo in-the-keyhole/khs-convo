@@ -16,13 +16,13 @@ limitations under the License.
 
 import React from 'react';
 import ajax from '../util/ajax';
-import { Modal  } from 'react-bootstrap';        
+import { Modal  } from 'react-bootstrap';
 import '../styles/data-table.css';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
-
+import BaseComponent from '../BaseComponent';
 import '../styles/index.css';
 
-class Properties extends React.Component {
+class Properties extends BaseComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -40,13 +40,14 @@ class Properties extends React.Component {
     }
 
     componentWillMount() {
+        super.componentWillMount();
         this.fetchContents();
     }
 
     fetchContents() {
         var self = this;
-        ajax({ 
-            url:'../api/admin/content', 
+        ajax({
+            url:'../api/admin/content',
             data: this.state
         }).then(function(res, me) {
 
@@ -55,7 +56,7 @@ class Properties extends React.Component {
             }) });
         }).catch(function(err){console.log(err)});
     }
- 
+
 
     handleContentDelete(remove) {
         ajax({
@@ -70,9 +71,9 @@ class Properties extends React.Component {
     deleteProperty() {
         var itemId = this.state.currentProperty;
         var remove = {
-            Name: itemId.Name 
+            Name: itemId.Name
         };
-        
+
         ajax({
             method:'delete',
             url:'../api/admin/content',
@@ -83,7 +84,7 @@ class Properties extends React.Component {
 
         this.fetchContents();
         this.setState ({
-            deleteModal: false 
+            deleteModal: false
         })
     }
 
@@ -92,15 +93,15 @@ class Properties extends React.Component {
             Name: row.Name,
             Content:row.Content
         }
- 
-        ajax({ 
+
+        ajax({
             method:'put',
-            url:'../api/admin/content', 
+            url:'../api/admin/content',
             data: update,
         }).then(function(res, me) {
             console.log(me);
         }).catch(function(err){console.log(err)});
-    } 
+    }
 
 
     handleContentInsert(insert) {
@@ -141,21 +142,21 @@ class Properties extends React.Component {
         return (
                 <div className="adminIcons">
                     <i title="delete" className="glyphicon glyphicon-remove-sign text-danger clickable"  onClick={() => this.openDeleteModal(row)}  />
-                </div>  
+                </div>
         )
     }
-   
 
-    openDeleteModal(property){ this.setState( { 
+
+    openDeleteModal(property){ this.setState( {
         currentProperty: property,
         deleteModal: true
     })}
 
-    closeDeleteModal(){ this.setState({ 
-        currentProperty: null,        
-        deleteModal: false 
+    closeDeleteModal(){ this.setState({
+        currentProperty: null,
+        deleteModal: false
     })}
-  
+
 
     render() {
         return (
@@ -165,10 +166,10 @@ class Properties extends React.Component {
                 </div>
                 <div className="row">
                     <div className="col-md-2">
-                        <input name="insertName"id="insertName" className="form-control" type="text" value={this.state.insertName} onChange={this.handleInputChange} placeholder="Name" />
+                        <input name="insertName"id="insertName" className="form-control" type="text" value={this.state.insertName || ''} onChange={this.handleInputChange} placeholder="Name" />
                     </div>
                     <div className="col-md-4">
-                        <input name="insertContent"id="insertContent" className="form-control" type="text" value={this.state.insertContent} onChange={this.handleInputChange} placeholder="Content" />
+                        <input name="insertContent"id="insertContent" className="form-control" type="text" value={this.state.insertContent || ''} onChange={this.handleInputChange} placeholder="Content" />
                     </div>
                     <div className="col-md-1 text-success glyphicon glyphicon-floppy-save clickable" onClick={ this.handleInsertItem }/>
                     <div className="col-md-2 text-danger">{this.state.insertError}</div>
@@ -183,14 +184,14 @@ class Properties extends React.Component {
                         <div className="row">
                              <div className="col-md-3"> </div>
                              <div className="col-md-4"> <button className="btn btn-danger"  onClick={() => this.deleteProperty()} >Delete</button> </div>
-                             <div className="col-md-5"> <button className="btn btn-default" onClick={() => this.closeDeleteModal()}>Cancel</button>   </div>                 
-                        </div> 
+                             <div className="col-md-5"> <button className="btn btn-default" onClick={() => this.closeDeleteModal()}>Cancel</button>   </div>
+                        </div>
                     </Modal.Body>
                 </Modal>
                 <div className="col-md-12 list">
                     <div className="row">
-                        <BootstrapTable 
-                            data={ this.state.contents } 
+                        <BootstrapTable
+                            data={ this.state.contents }
                             pagination
                             cellEdit={ {
                                 mode: 'click',
@@ -200,10 +201,10 @@ class Properties extends React.Component {
                             <TableHeaderColumn dataField='_id' isKey hidden>ID</TableHeaderColumn>
                             <TableHeaderColumn dataField='Name' editable={ false } >Property</TableHeaderColumn>
                             <TableHeaderColumn dataField='Content' >Value</TableHeaderColumn>
-                            <TableHeaderColumn width="60" editable={ false } dataFormat={this.propertyToolbar}></TableHeaderColumn>
+                            <TableHeaderColumn width="60" editable={ false } dataFormat={this.propertyToolbar}> </TableHeaderColumn>
                         </BootstrapTable>
                     </div>
-                </div>  
+                </div>
             </div>
         );
     }

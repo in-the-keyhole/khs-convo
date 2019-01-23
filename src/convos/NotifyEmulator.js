@@ -14,13 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React, { Component } from 'react';
+import React from 'react';
 import ajax from '../util/ajax';
 import '../styles/emulator.css';
 import { Modal  } from 'react-bootstrap';
-var moment = require('moment');
+import BaseComponent from '../BaseComponent';
 
-class NotifyEmulator extends Component {
+const moment = require('moment');
+
+class NotifyEmulator extends BaseComponent {
 
     constructor(props) {
         super(props);
@@ -110,9 +112,11 @@ class NotifyEmulator extends Component {
     }
 
     componentWillMount() {
+        super.componentWillMount();
         this.fetchScheduledNotifications();
     }
     componentWillReceiveProps(nextProps) {
+        super.componentWillReceiveProps(nextProps);
         if(nextProps.group !== this.props.group) {
             this.setState( {group: nextProps.group} );
             this.fetchScheduledNotifications();

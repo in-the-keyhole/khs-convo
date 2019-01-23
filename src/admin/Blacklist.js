@@ -19,8 +19,9 @@ import ajax from '../util/ajax';
 import '../styles/data-table.css';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import { Modal  } from 'react-bootstrap';
+import BaseComponent from '../BaseComponent';
 
-class Blacklist extends React.Component {
+class Blacklist extends BaseComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -38,6 +39,7 @@ class Blacklist extends React.Component {
     }
 
     componentWillMount() {
+        super.componentWillMount();
         this.fetchBlacklist();
     }
 
@@ -155,10 +157,10 @@ class Blacklist extends React.Component {
                 </div>
                 <div className="row">
                     <div className="col-md-2">
-                        <input name="insertNumber"id="insertNumber" className="form-control" type="text" value={this.state.insertNumber} onChange={this.handleInputChange} placeholder="Phone" />
+                        <input name="insertNumber"id="insertNumber" className="form-control" type="text" value={this.state.insertNumber || ''} onChange={this.handleInputChange} placeholder="Phone" />
                     </div>
                     <div className="col-md-4">
-                        <input name="insertNotes"id="insertNotes" className="form-control" type="text" value={this.state.insertNotes} onChange={this.handleInputChange} placeholder="Notes" />
+                        <input name="insertNotes"id="insertNotes" className="form-control" type="text" value={this.state.insertNotes || ''} onChange={this.handleInputChange} placeholder="Notes" />
                     </div>
                     <div className="col-md-1 text-success glyphicon glyphicon-floppy-save clickable" onClick={ this.handleInsertItem }/>
                     <div className="col-md-2 text-danger">{this.state.insertError}</div>
@@ -196,8 +198,8 @@ class Blacklist extends React.Component {
                             <div className="row">
                                 <div className="col-md-3"></div>
                                 <div className="col-md-4"> <button className="btn btn-danger"  onClick={() => this.deleteItem()} >Delete</button> </div>
-                                <div className="col-md-5"> <button className="btn btn-default" onClick={() => this.closeDeleteModal()}>Cancel</button>  </div>                 
-                            </div> 
+                                <div className="col-md-5"> <button className="btn btn-default" onClick={() => this.closeDeleteModal()}>Cancel</button>  </div>
+                            </div>
                         </Modal.Body>
                     </Modal>
 

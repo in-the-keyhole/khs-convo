@@ -14,13 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React, { Component } from 'react';
+import React from 'react';
 import _ from "lodash";
 import ajax from '../util/ajax';
 import NotifyEmulator from './NotifyEmulator';
 import { Checkbox } from 'react-bootstrap';
+import BaseComponent from '../BaseComponent';
 
-class GroupUserList extends Component {
+class GroupUserList extends BaseComponent {
     constructor(props){
         super(props);
 
@@ -29,7 +30,7 @@ class GroupUserList extends Component {
             mailingList: this.props.group.Users,
             groupName: this.props.group.GroupName
         }
-        
+
         this.componentWillMount = this.componentWillMount.bind(this);
         this.componentWillReceiveProps = this.componentWillReceiveProps.bind(this);
         this.addUser = this.addUser.bind(this);
@@ -41,9 +42,9 @@ class GroupUserList extends Component {
 
         var self = this;
 
-        ajax({ 
+        ajax({
             method:'put',
-            url:'/api/notify/group', 
+            url:'/api/notify/group',
             data: group,
         }).then(function(res) {
             if(reloadUsers) {
@@ -57,11 +58,11 @@ class GroupUserList extends Component {
 
     fetchUsers(){
         var self = this;
-        ajax({ 
-            url:'/api/admin', 
+        ajax({
+            url:'/api/admin',
             data: this.state
         }).then(function(res) {
-            self.setState({ 
+            self.setState({
                 availableUsers: res.data
             });
         }).catch(function(err){console.log(err)});
@@ -93,7 +94,7 @@ class GroupUserList extends Component {
     addAllUsers(event) {
         let group = this.props.group;
         group.Users = _.map(this.state.availableUsers, _.partialRight(_.pick, ['uuid', 'Name', 'Username']));
-        
+
         this.putGroup(group)
     }
 
@@ -104,14 +105,14 @@ class GroupUserList extends Component {
         _.pullAllBy(list, [{ 'uuid': userId }], 'uuid');
 
         _.map(list, 'uuid');
-        
+
         group.Users = list;
 
         this.putGroup(group)
     }
 
 
-    componentWillMount() { 
+    componentWillMount() {
         this.fetchUsers();
      }
      componentWillReceiveProps(){

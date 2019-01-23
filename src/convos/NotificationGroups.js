@@ -14,19 +14,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React, { Component } from 'react';
+import React from 'react';
 import ajax from '../util/ajax';
 
-import { Modal  } from 'react-bootstrap';        
+import { Modal  } from 'react-bootstrap';
 import '../styles/data-table.css';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import GroupUserList from './GroupUserList';
+import BaseComponent from '../BaseComponent';
 
 
-class NotificationGroups extends Component {
+class NotificationGroups extends BaseComponent {
 
     constructor(props) {
-        super(props); 
+        super(props);
 
         this.state = {
             users: [],
@@ -41,11 +42,11 @@ class NotificationGroups extends Component {
         }
 
         this.componentWillMount = this.componentWillMount.bind(this);
-        this.addGroup = this.addGroup.bind(this);   
+        this.addGroup = this.addGroup.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.groupToolbar = this.groupToolbar.bind(this);
         //this.deleteUser = this.deleteUser.bind(this);
-        
+
     }
 
     addGroup(event) {
@@ -60,9 +61,9 @@ class NotificationGroups extends Component {
         }
 
         var self = this;
-        ajax({ 
+        ajax({
             method:'post',
-            url:'/api/notify/group', 
+            url:'/api/notify/group',
             data: add
         }).then(function(res) {
 
@@ -70,21 +71,21 @@ class NotificationGroups extends Component {
             self.closeAddGroupModal();
             self.fetchGroups();
 
-            
+
         }).catch(function(err){console.log(err)});
 
         event.preventDefault();
-    }    
-    
+    }
+
     fetchGroups(){
         var self = this;
-        ajax({ 
+        ajax({
             method: 'get',
-            url:'/api/notify/group', 
+            url:'/api/notify/group',
             data: this.state
         }).then(function(res) {
 
-            self.setState({ 
+            self.setState({
                 users: res.data,
              });
 
@@ -98,12 +99,12 @@ class NotificationGroups extends Component {
             [cellName]: cellValue
         }
         var self = this;
-        ajax({ 
+        ajax({
             method:'put',
-            url:'/api/notify/group', 
+            url:'/api/notify/group',
             data: update,
         }).then(function(res) {
-            
+
             self.fetchGroups();
         }).catch(function(err){console.log(err)});
     }
@@ -113,9 +114,9 @@ class NotificationGroups extends Component {
         console.log(this.state.currentGroup);
         var self = this;
 
-        ajax({ 
+        ajax({
             method: 'delete',
-            url:'/api/notify/group', 
+            url:'/api/notify/group',
             data: this.state.currentGroup
         }).then(function(res) {
 
@@ -124,13 +125,16 @@ class NotificationGroups extends Component {
             self.fetchGroups();
 
         }).catch(function(err){console.log(err)});
-        
-    }   
+
+    }
 
 
 
-    componentWillMount() { this.fetchGroups(); }
-        
+    componentWillMount() {
+        super.componentWillMount();
+        this.fetchGroups();
+    }
+
 
     handleInputChange(event) {
         const target = event.target;
@@ -149,13 +153,13 @@ class NotificationGroups extends Component {
 
         });
     }
-    openDeleteModal(group){ this.setState( { 
+    openDeleteModal(group){ this.setState( {
         currentGroup: group,
         deleteModal: true
     })}
-    
-    closeDeleteModal(){ this.setState({     
-        deleteModal: false 
+
+    closeDeleteModal(){ this.setState({
+        deleteModal: false
     })}
 
     openAddGroupModal(){ this.setState( { addGroupModal: true })  }
@@ -167,16 +171,16 @@ class NotificationGroups extends Component {
                 <div className="adminIcons">
                     <i title="View Group" className="glyphicon glyphicon-cog clickable"  onClick={() => this.showGroupUsers(row)}  />
                     <i title="Delete Group" className="glyphicon glyphicon-remove-sign text-danger clickable"  onClick={() => this.openDeleteModal(row)}  />
-                </div>  
+                </div>
         )
     }
 
     groupUsers(cell, row) {
         return (
-            <div className="groupListUserCount">{row.Users.length}</div>  
+            <div className="groupListUserCount">{row.Users.length}</div>
         )
     }
-    
+
 
     render() {
 
@@ -186,28 +190,28 @@ class NotificationGroups extends Component {
                 <Modal show={this.state.addGroupModal} onHide={this.close}>
                     <Modal.Body>
                         <form className="form" onSubmit={this.addGroup}>
-                    
+
                             <div className="container">
                                 <div className="row">
-                                
+
                                     <div className="col-md-3">
                                         <div className="form-group">
-                                            <input 
+                                            <input
                                                 name="GroupName"
-                                                id="GroupName" 
-                                                className="form-control" 
-                                                type="text" 
+                                                id="GroupName"
+                                                className="form-control"
+                                                type="text"
                                                 required="required"
-                                                value={this.state.GroupName} 
-                                                onChange={this.handleInputChange} 
+                                                value={this.state.GroupName}
+                                                onChange={this.handleInputChange}
                                                 placeholder="Group Name" />
                                         </div>
                                     </div>
                                 </div>
-                                <div className="row">     
-                                    <div className="col-md-12">         
+                                <div className="row">
+                                    <div className="col-md-12">
                                         <input className="btn btn-primary" type="submit" value="Add Group" />
-                                        <button className="btn btn-default" onClick={() => this.closeAddGroupModal()}>Cancel</button>                
+                                        <button className="btn btn-default" onClick={() => this.closeAddGroupModal()}>Cancel</button>
                                     </div>
                                 </div>
                             </div>
@@ -223,8 +227,8 @@ class NotificationGroups extends Component {
                         <div className="row">
                             <div className="col-md-3"> </div>
                             <div className="col-md-4"> <button className="btn btn-danger"  onClick={() => this.deleteGroup()} >Delete</button> </div>
-                            <div className="col-md-5">  <button className="btn btn-default" onClick={() => this.closeDeleteModal()}>Cancel</button> </div>                 
-                        </div> 
+                            <div className="col-md-5">  <button className="btn btn-default" onClick={() => this.closeDeleteModal()}>Cancel</button> </div>
+                        </div>
                     </Modal.Body>
                 </Modal>
 
@@ -233,19 +237,19 @@ class NotificationGroups extends Component {
 
                         <div className="row">
                             <div className="col-md-12"><h1>Groups</h1></div>
-                        </div>     
+                        </div>
 
                         <div className="row">
-                            <div className="col-md-2 ">              
-                                <button className="btn btn-primary" onClick={() => this.openAddGroupModal()}>Add Group</button>                
+                            <div className="col-md-2 ">
+                                <button className="btn btn-primary" onClick={() => this.openAddGroupModal()}>Add Group</button>
                             </div>
-                        </div>     
+                        </div>
 
                         <div className="row list">
-                            <BootstrapTable 
-                                data={ this.state.users } 
+                            <BootstrapTable
+                                data={ this.state.users }
                                 //insertRow={ true }
-                                
+
                                 cellEdit={ {
                                     mode: 'click',
                                     blurToSave: true,
@@ -257,16 +261,16 @@ class NotificationGroups extends Component {
                                 <TableHeaderColumn width="20%" dataAlign="center" editable={ false } dataFormat={this.groupToolbar}></TableHeaderColumn>
                             </BootstrapTable>
                         </div>
-                    </div>      
+                    </div>
 
-                    
+
 
                     <div className="col-md-offset-1 col-md-7">
                         <GroupUserList group={this.state.currentGroup}  />
                     </div>
                 </div>
             </div>
-        ) 
+        )
     }
 }
 

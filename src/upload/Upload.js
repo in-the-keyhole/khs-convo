@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React, { Component } from 'react';
+import React from 'react';
 import ajax from '../util/ajax';
 import superagent from 'superagent';
 import Dropzone from 'react-dropzone';
@@ -22,8 +22,9 @@ import $ from 'jquery';
 import '../styles/emulator.css';
 import { confirmAlert } from 'react-confirm-alert';
 import NotificationBar from '../common/NotificationBar';
+import BaseComponent from '../BaseComponent';
 
-class Upload extends Component {
+class Upload extends BaseComponent {
 
     constructor(props) {
         super(props);
@@ -84,6 +85,10 @@ class Upload extends Component {
     }
 
     componentWillMount() {
+        if (!super.componentWillMount()){
+            return false;
+        }
+
         const self = this;
 
         const myData = {

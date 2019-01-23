@@ -26,13 +26,14 @@ const ajax = axios.create({
 
 ajax.interceptors.response.use(function (response) {
     // Do something with response data
-    console.log(response);
+    // console.log(response);
     return response;
 }, function (error) {
 
-    if (error.response.status === 403) {
-        window.location.assign('/login');
-    }
+    // No. This reloads the entire SPA bundle
+    // if (error.response.status === 403) {
+    //     window.location.assign('/login');
+    // }
 
 });
 

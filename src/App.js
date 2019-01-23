@@ -95,7 +95,7 @@ class App extends Component {
 
             <span>
                 <MDBIcon icon="user"/>&nbsp;{firstName}&nbsp;{lastName}&nbsp;
-                <Button size={"medium"} onClick={this.onClickLogout}><MDBIcon icon="sign-out"/>&nbsp;Logout</Button>
+                <Button size={"sm"} onClick={this.onClickLogout}><MDBIcon icon="sign-out"/>&nbsp;Logout</Button>
             </span>
         );
 
@@ -202,11 +202,10 @@ class App extends Component {
                     {privateNav}
                 </Navbar>
 
+                {/*This is the working content panel. The rest is really header / nabvar.*/}
                 <Container style={{marginTop: "1.75rem"}}>
                     <Row><Col>{main}</Col></Row>
                 </Container>
-
-                <Link to={"/emulator"}>Emulator</Link>
 
             </header>
         );

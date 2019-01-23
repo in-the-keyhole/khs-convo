@@ -16,9 +16,10 @@ limitations under the License.
 
 import React from 'react';
 import ajax from '../util/ajax';
-import { Modal  } from 'react-bootstrap';  
+import { Modal  } from 'react-bootstrap';
+import BaseComponent from '../BaseComponent';
 
-class Tailwater extends React.Component {
+class Tailwater extends BaseComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -43,13 +44,14 @@ class Tailwater extends React.Component {
     }
 
     componentWillMount() {
+        super.componentWillMount();
         this.fetchTailwaters();
     }
 
     fetchTailwaters() {
         var self = this;
-        ajax({ 
-            url:'../api/tailwater', 
+        ajax({
+            url:'../api/tailwater',
             data: this.state,
             cache: false
         }).then(function(res, me) {
@@ -61,7 +63,7 @@ class Tailwater extends React.Component {
         var that = this;
         ajax({
             method:'post',
-            url:'../api/tailwater/insert', 
+            url:'../api/tailwater/insert',
             data: insert,
         }).then(function(res, me) {
             that.fetchTailwaters();
@@ -80,7 +82,7 @@ class Tailwater extends React.Component {
         var that = this;
         ajax({
             method:'post',
-            url:'../api/tailwater/update', 
+            url:'../api/tailwater/update',
             data: update,
         }).then(function(res, me) {
             that.fetchTailwaters();
@@ -92,9 +94,9 @@ class Tailwater extends React.Component {
 
     handleTailwaterDelete(remove) {
         var that = this;
-        ajax({ 
+        ajax({
             method:'delete',
-            url:'../api/tailwater', 
+            url:'../api/tailwater',
             data: remove,
         }).then(function(res, me) {
             that.closeDeleteModal();
@@ -154,7 +156,7 @@ class Tailwater extends React.Component {
         name: this.refs[ `name_${ itemId }` ].value
         });
     }
-    
+
     handleInputChange(event) {
         const target = event.target;
         this.setState({[target.name]: target.value});
@@ -165,7 +167,7 @@ class Tailwater extends React.Component {
     }
 
     openDeleteModal(){
-        this.setState( { deleteModal: true }) 
+        this.setState( { deleteModal: true })
     }
 
     renderItemOrEditField(loc) {
@@ -229,8 +231,8 @@ class Tailwater extends React.Component {
                                 <div className="row">
                                     <div className="col-md-3"> </div>
                                     <div className="col-md-4">  <button className="btn btn-danger"  onClick={() => this.handleDeleteItem()} >Delete</button> </div>
-                                    <div className="col-md-5">  <button className="btn btn-default" onClick={() => this.closeDeleteModal()}>Cancel</button></div>                 
-                                </div> 
+                                    <div className="col-md-5">  <button className="btn btn-default" onClick={() => this.closeDeleteModal()}>Cancel</button></div>
+                                </div>
                             </Modal.Body>
                         </Modal>
                 </div>;
@@ -253,7 +255,7 @@ class Tailwater extends React.Component {
             <div className="container">
                 <div className="row">
                     <div className="col-md-12"><h1>Tailwaters</h1></div>
-                </div> 
+                </div>
                 <div className="row">
                     <div className="col-md-2">
                         <input name="insertID"id="insertID" className="form-control" type="text" value={this.state.insertID} onChange={this.handleInputChange} placeholder="ID" />
@@ -275,7 +277,7 @@ class Tailwater extends React.Component {
                     </div>
                     <div className="col-md-1 text-success glyphicon glyphicon-floppy-save clickable" onClick={ this.handleInsertItem }/>
                     <div className="col-md-2 text-danger">{this.state.insertError}</div>
-                </div>       
+                </div>
                 <div className="col-md-12">
                     <div className="row">
                         <div className="col-md-2"><b>Id</b></div>
