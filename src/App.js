@@ -15,26 +15,26 @@ limitations under the License.
 */
 
 import React, {Component} from 'react';
-//import './App.css';
 import {
     Switch,
-    Route
+    Route,
+    Link,
+    withRouter
 } from 'react-router-dom'
-import Admin from './admin/Admin.js';
-import Analytics from './analytics/Analytics.js';
-import ConverstationsList from './analytics/ConversationsList.js';
-import GroupQuestions from './analytics/GroupQuestions.js';
-import GroupPhone from './analytics/GroupPhone.js';
-import Visitors from './analytics/Visitors.js';
+import Admin from './admin/Admin';
+import Analytics from './analytics/Analytics';
+import ConverstationsList from './analytics/ConversationsList';
+import GroupQuestions from './analytics/GroupQuestions';
+import GroupPhone from './analytics/GroupPhone';
+import Visitors from './analytics/Visitors';
 import Emulator from './emulator/Emulator'
-import Login from './login/Login.js';
-import Registration from './login/Registration.js';
-import Tailwater from './convos/Tailwater.js';
-import NotificationGroups from './convos/NotificationGroups.js';
-import Blacklist from './admin/Blacklist.js';
-import Properties from './admin/Properties.js';
-import Upload from './upload/Upload.js';
-import {BrowserRouter as Router} from 'react-router-dom';
+import Login from './login/Login';
+import Registration from './login/Registration';
+import Tailwater from './convos/Tailwater';
+import NotificationGroups from './convos/NotificationGroups';
+import Blacklist from './admin/Blacklist';
+import Properties from './admin/Properties';
+import Upload from './upload/Upload';
 import {
     Navbar,
     NavbarBrand,
@@ -53,7 +53,9 @@ import {
     Button,
     MDBIcon
 } from 'mdbreact';
-import { /*setCredentials,*/ resetCredentials} from './actions';
+import {resetCredentials} from './actions';
+import {store} from './configureStore';
+import {checkCredentials} from './common/checkCredentials';
 
 class App extends Component {
 
@@ -62,42 +64,49 @@ class App extends Component {
         this.state = {
             collapse: false,
         };
+
         this.onClick = this.onClick.bind(this);
+        this.onClickLogout = this.onClickLogout.bind(this);
     }
 
-    onClick() {
+
+    onClick(ev) {
+        ev.preventDefault();
         this.setState({collapse: !this.state.collapse});
     }
 
+    onClickLogout(ev) {
+        ev.preventDefault();
+        store.dispatch(resetCredentials());
 
-    logout() {
-
-        resetCredentials();
-
-        window.sessionStorage.clear();
-        window.location.assign('/login');
+        const path = '/login';
+        this.props.history.push(path);
+        console.log(`this.props.history.push(${path})`)
     }
 
 
-    greeting() {
+    getLogoutFragment() {
         // TODO Use Redux for global state
         const token = window.sessionStorage.getItem('token');
         const firstName = window.sessionStorage.getItem('firstName');
         const lastName = window.sessionStorage.getItem('lastName');
 
-        const logout = <span>
-                <MDBIcon icon="user" />&nbsp;{firstName}&nbsp;{lastName}&nbsp;
-                <Button size={"sm"} onClick={this.logout}><MDBIcon icon="lock" />&nbsp;Logout</Button>
-            </span>;
+        const logout = (
 
-        const login = <Button size={"sm"} href="/Login"><MDBIcon icon="unlock" />&nbsp;Login</Button>;
+            <span>
+                <MDBIcon icon="user"/>&nbsp;{firstName}&nbsp;{lastName}&nbsp;
+                <Button size={"medium"} onClick={this.onClickLogout}><MDBIcon icon="sign-out"/>&nbsp;Logout</Button>
+            </span>
+        );
 
-        return token ? logout : login;
+        return token ? logout : '';
     }
+
 
     render() {
 
-        const Main = () => (
+        // BrowserRouter's route switch:
+        const main = (
             <main>
                 <Switch>
                     <Route exact path='/' component={Admin}/>
@@ -118,83 +127,91 @@ class App extends Component {
             </main>
         );
 
+        // Show most of the navbar only for authenticated users
+        const privateNav = checkCredentials() ?
+            (
+                <Collapse isOpen={this.state.collapse} navbar>
+
+                    <NavbarNav left>
+                        <NavItem>
+                            <Dropdown eventkey={1} id="nav-dropdown-1">
+                                <DropdownToggle nav caret>
+                                    <div className="d-none d-md-inline">Admin</div>
+                                </DropdownToggle>
+                                <DropdownMenu>
+                                    <DropdownItem eventkey={1.1}><Link to={"/"}>Users</Link></DropdownItem>
+                                    <DropdownItem eventkey={1.2}><Link to={"/blacklist"}>Blacklist</Link></DropdownItem>
+                                    <DropdownItem eventkey={1.3}><Link
+                                        to={"/properties"}>Properties</Link></DropdownItem>
+                                </DropdownMenu>
+                            </Dropdown>
+                        </NavItem>
+
+                        <NavItem>
+                            <Dropdown eventkey={2} id="nav-dropdown-2">
+                                <DropdownToggle nav caret>
+                                    <div className="d-none d-md-inline">Analytics</div>
+                                </DropdownToggle>
+
+                                <DropdownMenu>
+                                    <DropdownItem eventkey={2.1}><Link to={"/analytics/all"}>Search
+                                        All</Link></DropdownItem>
+                                    <DropdownItem eventkey={2.1}><Link to={"/analytics/groupquestion"}>Group By
+                                        Question</Link></DropdownItem>
+                                    <DropdownItem eventkey={2.1}><Link to={"/analytics/groupphone"}>Group By Phone
+                                        Number</Link></DropdownItem>
+                                    <DropdownItem eventkey={2.1}><Link
+                                        to={"/analytics/visitors"}>Visitors</Link></DropdownItem>
+                                </DropdownMenu>
+                            </Dropdown>
+                        </NavItem>
+
+                        <NavItem>
+                            <Dropdown eventkey={4} id="nav-dropdown-3">
+                                <DropdownToggle nav caret>
+                                    <div className="d-none d-md-inline">Convos</div>
+                                </DropdownToggle>
+
+                                <DropdownMenu>
+                                    <DropdownItem eventkey={4.2}><Link to={"/convos/notifications"}>Notifications</Link></DropdownItem>
+                                </DropdownMenu>
+                            </Dropdown>
+                        </NavItem>
+
+                        <NavItem active><NavLink eventkey={3} to="/emulator">Emulator</NavLink></NavItem>
+                        <NavItem active><NavLink eventkey={5} to="/upload">Upload</NavLink></NavItem>
+
+                    </NavbarNav>
+
+                    {/* User name and logout button : pull right */}
+                    <NavbarNav right>
+                        <NavItem>
+                            {this.getLogoutFragment()}
+                        </NavItem>
+                    </NavbarNav>
+
+                </Collapse>
+            ) : (<span/>);
+
         return (
-            <section>
-                <Router>
-                    <header>
-                        {/*<Navbar expand="md" scrolling fixed="top">*/}
-                        <Navbar expand="md">
-                            <NavbarBrand><a href="/">KHS&#123;Convo&#125;</a></NavbarBrand>
-                            <NavbarToggler onClick={this.onClick}/>
+            <header>
+                {/*<Navbar expand="md" scrolling fixed="top">*/}
+                <Navbar expand="md">
+                    <NavbarBrand><Link to={"/"}>KHS&#123;Convo&#125;</Link></NavbarBrand>
+                    <NavbarToggler onClick={this.onClick}/>
+                    {privateNav}
+                </Navbar>
 
-                            <Collapse isOpen={this.state.collapse} navbar>
+                <Container style={{marginTop: "1.75rem"}}>
+                    <Row><Col>{main}</Col></Row>
+                </Container>
 
-                                <NavbarNav left>
-                                    <NavItem>
-                                        <Dropdown eventkey={1} id="nav-dropdown-1">
-                                            <DropdownToggle nav caret>
-                                                <div className="d-none d-md-inline">Admin</div>
-                                            </DropdownToggle>
-                                            <DropdownMenu>
-                                                <DropdownItem eventkey={1.1} href="/">Users</DropdownItem>
-                                                <DropdownItem eventkey={1.2} href="/blacklist">Blacklist</DropdownItem>
-                                                <DropdownItem eventkey={1.3}
-                                                              href="/properties">Properties</DropdownItem>
-                                            </DropdownMenu>
-                                        </Dropdown>
-                                    </NavItem>
+                <Link to={"/emulator"}>Emulator</Link>
 
-                                    <NavItem>
-                                        <Dropdown eventkey={2} id="nav-dropdown-2">
-                                            <DropdownToggle nav caret>
-                                                <div className="d-none d-md-inline">Analytics</div>
-                                            </DropdownToggle>
-
-                                            <DropdownMenu>
-                                                <DropdownItem eventkey={2.1} href="/analytics/all">Search
-                                                    All</DropdownItem>
-                                                <DropdownItem eventkey={2.1} href="/analytics/groupquestion">Group By
-                                                    Question</DropdownItem>
-                                                <DropdownItem eventkey={2.1} href="/analytics/groupphone">Group By Phone
-                                                    Number</DropdownItem>
-                                                <DropdownItem eventkey={2.1}
-                                                              href="/analytics/visitors">Visitors</DropdownItem>
-                                            </DropdownMenu>
-                                        </Dropdown>
-                                    </NavItem>
-
-                                    <NavItem>
-                                        <Dropdown eventkey={4} id="nav-dropdown-3">
-                                            <DropdownToggle nav caret>
-                                                <div className="d-none d-md-inline">Convos</div>
-                                            </DropdownToggle>
-
-                                            <DropdownMenu>
-                                                <DropdownItem eventkey={4.2}
-                                                              href="/convos/notifications">Notifications</DropdownItem>
-                                            </DropdownMenu>
-                                        </Dropdown>
-                                    </NavItem>
-
-                                    <NavItem active><NavLink eventkey={3} to="/emulator">Emulator</NavLink></NavItem>
-                                    <NavItem active><NavLink eventkey={5} to="/upload">Upload</NavLink></NavItem>
-                                </NavbarNav>
-
-                            </Collapse>
-
-                            {this.greeting()}
-
-                        </Navbar>
-
-                        <Container style={{marginTop: "1.75rem"}}>
-                            <Row><Col>{Main()}</Col></Row>
-                        </Container>
-
-                    </header>
-                </Router>
-            </section>
+            </header>
         );
     }
 }
 
-export default App;
+export default withRouter(App);
+
