@@ -361,7 +361,7 @@ class Upload extends BaseComponent {
         if (this.state.Status === 'admin') {
             return (<div>{directoryElements}</div>);
         } else {
-            return <div></div>;
+            return <div> </div>;
         }
     }
 
