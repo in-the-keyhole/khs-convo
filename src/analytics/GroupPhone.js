@@ -15,18 +15,18 @@ limitations under the License.
 */
 
 import React from 'react';
-import ajax from '../util/ajax';
+import restAPI from '../service/restAPI';
 import { RadialBarChart, RadialBar, Legend, Tooltip} from 'recharts';
 import '../styles/index.css';
 
-var createReactClass = require('create-react-class');
+const createReactClass = require('create-react-class');
 
 class GroupPhone extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             grpPhone: []
-        }
+        };
 
         this.componentWillMount = this.componentWillMount.bind(this);
     }
@@ -36,9 +36,9 @@ class GroupPhone extends React.Component {
     }
 
     fetchGroupPhones() {
-        var self = this;
-        ajax({ 
-            url:'../api/convo/groupphone', 
+        const self = this;
+        restAPI({
+            url:'../api/convo/groupphone',
             data: this.state
         }).then(function(res, me) {
             console.log(me);
@@ -46,11 +46,11 @@ class GroupPhone extends React.Component {
         }).catch(function(err){console.log(err)});
     }
 
-    handleBarClick(element, id){ 
+    static handleBarClick(element, id){
         console.log(`The bin ${element.text} with id ${id} was clicked`);
     }
 
-    getRandomColor() {
+    static getRandomColor() {
         let letters = '0123456789ABCDEF';
         let color = '#';
         for (let i = 0; i < 6; i++) {
@@ -59,7 +59,7 @@ class GroupPhone extends React.Component {
         return color;
     }
 
-    compare(a,b) {
+    static compare(a, b) {
         if (a.count < b.count)
             return 1;
         if (a.count > b.count)
@@ -68,17 +68,17 @@ class GroupPhone extends React.Component {
     }
 
     render() {
-        var grpPhones = [];
-        for(var i=0;i<this.state.grpPhone.length;i++) {
-            var grpItem = {};
+        const grpPhones = [];
+        for(let i=0; i<this.state.grpPhone.length; i++) {
+            const grpItem = {};
             if (this.state.grpPhone[i] !== undefined) {
                 grpItem.name = this.state.grpPhone[i].text;
                 grpItem.count = this.state.grpPhone[i].value;
-                grpItem.fill = this.getRandomColor();
+                grpItem.fill = GroupPhone.getRandomColor();
                 grpPhones.push(grpItem);
             }
         }
-        grpPhones.sort(this.compare);
+        grpPhones.sort(GroupPhone.compare);
 
         const CustomTooltip = createReactClass({
             propTypes: {
@@ -110,12 +110,12 @@ class GroupPhone extends React.Component {
                 <ul style={{listStyle: 'none', width: 200, marginTop: -50, marginLeft: 400}}><b>Phone Number- Count</b>
                 {
                     payload.map((entry, index) => (
-                        <li key={`item-${index}`}><div style={{width: '18%', height: '20px', float: 'left', backgroundColor: entry.payload.fill}}></div><div style={{ width: '80%', float: 'right'}}>{entry.value} - {entry.payload.count}</div></li>
+                        <li key={`item-${index}`}><div style={{width: '18%', height: '20px', float: 'left', backgroundColor: entry.payload.fill}}/><div style={{ width: '80%', float: 'right'}}>{entry.value} - {entry.payload.count}</div></li>
                     ))
                 }
                 </ul>
             );
-        }
+        };
 
         return (
             <div className="container">

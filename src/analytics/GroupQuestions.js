@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import React from 'react';
-import ajax from '../util/ajax';
+import restAPI from '../service/restAPI';
 import { RadialBarChart, RadialBar, Legend, Tooltip} from 'recharts';
 
 var createReactClass = require('create-react-class');
@@ -45,7 +45,7 @@ class GroupQuestions extends React.Component {
             From: ""//window.sessionStorage.getItem('phone')
         };
 
-        ajax({
+        restAPI({
             method:'POST',
             url:'/api/convo',
             data: myData
@@ -97,7 +97,7 @@ class GroupQuestions extends React.Component {
     fetchGroupQuestions() {
         const self = this;
         const questionsArr = this.state.convoQuestionsArr;
-        ajax({
+        restAPI({
             method:'POST',
             url:'../api/convo/groupquestion',
             data: questionsArr

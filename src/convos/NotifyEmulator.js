@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import React from 'react';
-import ajax from '../util/ajax';
+import restAPI from '../service/restAPI';
 import '../styles/emulator.css';
 import { Modal  } from 'react-bootstrap';
 import BaseComponent from '../BaseComponent';
@@ -74,7 +74,7 @@ class NotifyEmulator extends BaseComponent {
         }
 
         var self = this;
-        ajax({
+        restAPI({
             method:'POST',
             url:'/api/convo',
             data: payload,
@@ -98,7 +98,7 @@ class NotifyEmulator extends BaseComponent {
 
     fetchScheduledNotifications(){
         var self = this;
-        ajax({
+        restAPI({
             method: 'get',
             url:'/api/notify/schedulednotification',
             params: {'group': self.props.group.GroupName}
@@ -163,7 +163,7 @@ class NotifyEmulator extends BaseComponent {
     deleteScheduledNotification() {
         const self = this;
 
-        ajax({
+        restAPI({
             method: 'delete',
             url:'/api/notify/schedulednotification',
             data: self.state.currentScheduledNotification
@@ -202,7 +202,7 @@ class NotifyEmulator extends BaseComponent {
         csn.msg = this.state.editMsg;
 
         const self = this;
-        ajax({
+        restAPI({
             method: 'put',
             url:'/api/notify/schedulednotification',
             data: csn

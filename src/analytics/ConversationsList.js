@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import React from 'react';
-import ajax from '../util/ajax';
+import restAPI from '../service/restAPI';
 // import {Table, Column} from 'fixed-data-table';
 import '../styles/data-table.css';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
@@ -52,7 +52,7 @@ class ConversationsList extends React.Component {
 
     fetchAllConversations() {
         var self = this;
-        ajax({
+        restAPI({
             url:'../api/convo/all',
             data: this.state
         }).then(function(res, me) {
@@ -65,7 +65,7 @@ class ConversationsList extends React.Component {
             var self = this;
             if (skipCount !== undefined) self.state.skipCount = skipCount;
             if (limitCount !== undefined) self.state.limitCount = limitCount;
-            ajax({
+            restAPI({
                 url:'../api/convo/getconvochunk?skipCount=' + self.state.skipCount + '&limitCount=' + self.state.limitCount,
                 data: this.state
             }).then(function(res, me) {
@@ -78,7 +78,7 @@ class ConversationsList extends React.Component {
 
     fetchConversationCount() {
             var self = this;
-            ajax({
+            restAPI({
                 url:'../api/convo/getconvocount',
                 data: this.state
             }).then(function(res, me) {

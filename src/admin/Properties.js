@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import React from 'react';
-import ajax from '../util/ajax';
+import restAPI from '../service/restAPI';
 import { Modal  } from 'react-bootstrap';
 import '../styles/data-table.css';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
@@ -30,7 +30,7 @@ class Properties extends BaseComponent {
             insertName: null,
             insertContent: null,
             currentProperty:null
-        }
+        };
 
         this.componentWillMount = this.componentWillMount.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -46,7 +46,7 @@ class Properties extends BaseComponent {
 
     fetchContents() {
         var self = this;
-        ajax({
+        restAPI({
             url:'../api/admin/content',
             data: this.state
         }).then(function(res, me) {
@@ -59,7 +59,7 @@ class Properties extends BaseComponent {
 
 
     handleContentDelete(remove) {
-        ajax({
+        restAPI({
             method:'delete',
             url:'../api/admin/content',
             data: remove,
@@ -74,7 +74,7 @@ class Properties extends BaseComponent {
             Name: itemId.Name
         };
 
-        ajax({
+        restAPI({
             method:'delete',
             url:'../api/admin/content',
             data: remove,
@@ -94,7 +94,7 @@ class Properties extends BaseComponent {
             Content:row.Content
         }
 
-        ajax({
+        restAPI({
             method:'put',
             url:'../api/admin/content',
             data: update,
@@ -105,7 +105,7 @@ class Properties extends BaseComponent {
 
 
     handleContentInsert(insert) {
-            ajax({
+            restAPI({
                 method:'post',
                 url:'../api/admin/content',
                 data: insert,

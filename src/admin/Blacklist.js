@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import React from 'react';
-import ajax from '../util/ajax';
+import restAPI from '../service/restAPI';
 import '../styles/data-table.css';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import { Modal  } from 'react-bootstrap';
@@ -45,7 +45,7 @@ class Blacklist extends BaseComponent {
 
     fetchBlacklist() {
         var self = this;
-        ajax({
+        restAPI({
             url:'../api/admin/blacklist',
             data: this.state
         }).then(function(res, me) {
@@ -57,7 +57,7 @@ class Blacklist extends BaseComponent {
     }
 
     handleBlacklistInsert(insert) {
-        ajax({
+        restAPI({
             method:'post',
             url:'../api/admin/blacklist',
             data: insert,
@@ -106,7 +106,7 @@ class Blacklist extends BaseComponent {
             [cellName]: cellValue
         }
 
-        ajax({
+        restAPI({
             method:'put',
             url:'../api/admin/blacklist',
             data: update,
@@ -121,8 +121,9 @@ class Blacklist extends BaseComponent {
        phone: item.phone,
        notes: item.notes
 
-     }
-    ajax({
+     };
+
+    restAPI({
         method:'delete',
         url:'../api/admin/blacklist',
         data: remove,

@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import React from 'react';
-import ajax from '../util/ajax';
+import restAPI from '../service/restAPI';
 
 import { Modal  } from 'react-bootstrap';
 import '../styles/data-table.css';
@@ -61,7 +61,7 @@ class NotificationGroups extends BaseComponent {
         }
 
         var self = this;
-        ajax({
+        restAPI({
             method:'post',
             url:'/api/notify/group',
             data: add
@@ -79,7 +79,7 @@ class NotificationGroups extends BaseComponent {
 
     fetchGroups(){
         var self = this;
-        ajax({
+        restAPI({
             method: 'get',
             url:'/api/notify/group',
             data: this.state
@@ -99,7 +99,7 @@ class NotificationGroups extends BaseComponent {
             [cellName]: cellValue
         }
         var self = this;
-        ajax({
+        restAPI({
             method:'put',
             url:'/api/notify/group',
             data: update,
@@ -114,7 +114,7 @@ class NotificationGroups extends BaseComponent {
         console.log(this.state.currentGroup);
         var self = this;
 
-        ajax({
+        restAPI({
             method: 'delete',
             url:'/api/notify/group',
             data: this.state.currentGroup

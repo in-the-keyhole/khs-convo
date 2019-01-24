@@ -15,12 +15,12 @@ limitations under the License.
 */
 
 import React from 'react';
-import ajax from '../util/ajax';
+import restAPI from '../service/restAPI';
 import superagent from 'superagent';
 import Dropzone from 'react-dropzone';
 import $ from 'jquery';
 import '../styles/emulator.css';
-import { confirmAlert } from 'react-confirm-alert';
+import {confirmAlert} from 'react-confirm-alert';
 import NotificationBar from '../common/NotificationBar';
 import BaseComponent from '../BaseComponent';
 import {serverPort} from "../constants";
@@ -31,25 +31,25 @@ class Upload extends BaseComponent {
         super(props);
 
         this.state = {
-            FromZip: "",
-            FromState: "",
-            FromCity: "",
-            Body:"",
-            FromCountry: "",
-            To: "9132703506",
-            From:  window.sessionStorage.getItem('phone'),
-            Answer: "",
-            Commands: "",
-            CommandsCached: "",
-            CachedCommands: "false",
-            File: "",
+            FromZip: '',
+            FromState: '',
+            FromCity: '',
+            Body: '',
+            FromCountry: '',
+            To: '9132703506',
+            From: window.sessionStorage.getItem('phone'),
+            Answer: '',
+            Commands: '',
+            CommandsCached: '',
+            CachedCommands: 'false',
+            File: '',
             Status: window.sessionStorage.getItem('status'),
             Conversation: [],
             Directories: [],
-            displayHover: "",
+            displayHover: '',
             DirectoriesAndWords: [],
-            CurrentDirectory: "",
-            DirectoryInputValue: ""
+            CurrentDirectory: '',
+            DirectoryInputValue: ''
         };
 
         this.componentWillMount = this.componentWillMount.bind(this);
@@ -69,13 +69,15 @@ class Upload extends BaseComponent {
     }
 
     dynamicLinks(str) {
-        if (typeof str !== 'string') { return str; }
+        if (typeof str !== 'string') {
+            return str;
+        }
         const listSpace = str.split(' ');
-        listSpace.forEach(function(valSpace, iSpace) {
-            if (valSpace.includes('http')){
+        listSpace.forEach(function (valSpace, iSpace) {
+            if (valSpace.includes('http')) {
                 const listLine = valSpace.split('\n');
-                listLine.forEach(function(valLine, iLine){
-                    if (valLine.includes('http')){
+                listLine.forEach(function (valLine, iLine) {
+                    if (valLine.includes('http')) {
                         listLine[iLine] = '<a target="_blank" href="' + valLine + '"/' + valLine + '>';
                         listSpace[iSpace] = listLine.join('\n');
                     }
@@ -86,7 +88,7 @@ class Upload extends BaseComponent {
     }
 
     componentWillMount() {
-        if (!super.componentWillMount()){
+        if (!super.componentWillMount()) {
             return false;
         }
 
@@ -98,11 +100,11 @@ class Upload extends BaseComponent {
             From: window.sessionStorage.getItem('phone')
         };
 
-        ajax({
-            method:'POST',
-            url:'/api/convo',
+        restAPI({
+            method: 'POST',
+            url: '/api/convo',
             data: myData
-        }).then(function(res) {
+        }).then( res => {
             self.setState({
                 Commands: self.dynamicLinks(res.data)
             });
@@ -111,27 +113,28 @@ class Upload extends BaseComponent {
                     CommandsCached: self.dynamicLinks(res.data),
                     CachedCommands: "true"
                 });
-                console.log('It has been cached!!');
+                console.log('Convo is cached!!');
             }
             self.retrieveDirectories();
-        }).catch(function(err){console.log(err)});
+        }).catch(function (err) {
+            console.log(err)
+        });
     }
 
     retrieveDirectories() {
         const self = this;
-        ajax({
-            url:'/api/admin/getDirectories',
+
+        restAPI({
+            url: '../api/admin/getDirectories',
             data: ''
-        }).then(function(res) {
+        }).then((res) => {
             const result = res.data;
             const directories = [];
-            for(let i=0; i<result.length; i++) {
+            for (let i = 0; i < result.length; i++) {
                 directories.push(result[i].dataDirectory.currentDirectory);
             }
 
-            const uniqueDirectories = directories.filter(function (elem, index, self) {
-                return index === self.indexOf(elem);
-            });
+            const uniqueDirectories = directories.filter((elem, index, self) => index === self.indexOf(elem));
 
             self.setState({
                 Directories: uniqueDirectories,
@@ -149,22 +152,22 @@ class Upload extends BaseComponent {
             From: window.sessionStorage.getItem('phone')
         };
 
-        ajax({
-            method:'POST',
-            url:'/api/convo',
+        restAPI({
+            method: 'POST',
+            url: '/api/convo',
             data: myData
-        }).then(function(res) {
+        }).then(res => {
             const commandText = Upload.getCommandUploaded(self.state.CommandsCached, self.dynamicLinks(res.data));
             const d = self.dynamicLinks(res.data);
             const UpdatedCommands = d.replace(commandText, `<b>${commandText}</b>`);
-            self.setState({ Commands: UpdatedCommands});
-        }).catch(function(err){console.log(err)});
+            self.setState({Commands: UpdatedCommands});
+        }).catch(err => console.log(err));
     }
 
     static getCommandUploaded(a, b) {
         let i = 0;
         let j = 0;
-        let result = "";
+        let result = '';
 
         while (j < b.length) {
             if (a[i] !== b[j] || i === a.length)
@@ -186,42 +189,42 @@ class Upload extends BaseComponent {
 
         let originalName = fullPath.split(/([\\/])/g).pop();
 
-         reader.onloadend = () => {
-             const data = new FormData();
-             data.append('file', file, originalName);
+        reader.onloadend = () => {
+            const data = new FormData();
+            data.append('file', file, originalName);
 
-             ajax({
-                  url:'../api/admin/fileExistsOnUpload?name=' + originalName + '&directory=' + self.state.CurrentDirectory,
-                  data: originalName
-             }).then(function(res) {
-                  if (res.data === 'exists') {
-                       self.renderConfirmDialog(data);
-                  }  else {
-                       self.proceedWithUpload(data);
-                  }
-             })
-         };
+            restAPI({
+                url: '../api/admin/fileExistsOnUpload?name=' + originalName + '&directory=' + self.state.CurrentDirectory,
+                data: originalName
+            }).then(function (res) {
+                if (res.data === 'exists') {
+                    self.renderConfirmDialog(data);
+                } else {
+                    self.proceedWithUpload(data);
+                }
+            })
+        };
 
-         reader.readAsDataURL(file);
+        reader.readAsDataURL(file);
     }
 
     uploadDroppedFile(file) {
         const self = this;
         const data = new FormData();
-         data.append('file', file[0]);
-         data.append('override', 'true');
+        data.append('file', file[0]);
+        data.append('override', 'true');
 
-         ajax({
-              method:'POST',
-              url:'../api/admin/fileExistsOnUploadPost?directory=' + self.state.CurrentDirectory,
-              data: data
-         }).then(function(res) {
-              if (res.data === 'exists') {
-                   self.renderConfirmDialog(data);
-              }  else {
-                   self.proceedWithUpload(data);
-              }
-         })
+        restAPI({
+            method: 'POST',
+            url: '../api/admin/fileExistsOnUploadPost?directory=' + self.state.CurrentDirectory,
+            data: data
+        }).then(function (res) {
+            if (res.data === 'exists') {
+                self.renderConfirmDialog(data);
+            } else {
+                self.proceedWithUpload(data);
+            }
+        })
     }
 
     proceedWithUpload(data) {
@@ -237,8 +240,8 @@ class Upload extends BaseComponent {
         const base = `http://${window.location.hostname}:${serverPort}`;
 
         superagent
-            .post(base+ '/api/admin/fileupload')
-            .query({ directory: currentDirectory })
+            .post(base + '/api/admin/fileupload')
+            .query({directory: currentDirectory})
             .send(data)
             .end((ex, result) => {
                 if (result.text === "File is uploaded") {
@@ -253,26 +256,26 @@ class Upload extends BaseComponent {
 
     initiateUploadClick(e) {
         const self = this;
-        self.setState({ CurrentDirectory: e});
+        self.setState({CurrentDirectory: e});
         const ele = $('#upload');
         ele.trigger('click');
     }
 
     setDropDirectory(e) {
         const self = this;
-        self.setState({ CurrentDirectory: e});
+        self.setState({CurrentDirectory: e});
     }
 
     handleMouseIn(x) {
         const self = this;
-        self.setState({ displayHover: x });
+        self.setState({displayHover: x});
         console.log("handleMouseIn The state " + JSON.stringify(self.state.displayHover));
 
     }
 
     handleMouseOut() {
         const self = this;
-        self.setState({ displayHover: "" });
+        self.setState({displayHover: ""});
         console.log("handleMouseOut  The state " + JSON.stringify(self.state.displayHover));
 
     }
@@ -280,13 +283,13 @@ class Upload extends BaseComponent {
 
     tooltipStyle = function (x) {
         const self = this;
-        return  { display: (x !== undefined && self.state.displayHover === x) ? 'block' : 'none' }
+        return {display: (x !== undefined && self.state.displayHover === x) ? 'block' : 'none'}
     };
 
 
     renderUploadFile() {
         const self = this;
-        console.log("The self  state " +   JSON.stringify(self.state.displayHover) );
+        console.log("The self  state " + JSON.stringify(self.state.displayHover));
 
         const dropZoneStyle = {
             width: '250px',
@@ -303,57 +306,62 @@ class Upload extends BaseComponent {
         const directories = this.state.Directories;
         const directoriesAndWordsObj = this.state.DirectoriesAndWords;
         const directoryElements = [];
-        let description="";
+        let description = "";
         let display;
-        for (let i=0; i<directories.length; i++) {
-            description="";
-            display ="directory"+i;
+        for (let i = 0; i < directories.length; i++) {
+            description = "";
+            display = "directory" + i;
             const words = [];
-            for(let j=0; j<directoriesAndWordsObj.length; j++) {
+            for (let j = 0; j < directoriesAndWordsObj.length; j++) {
 
                 if (directories[i] === directoriesAndWordsObj[j].dataDirectory.currentDirectory) {
-                    for(let k=0; k<directoriesAndWordsObj[j].dataDirectory.words.length; k++) {
+                    for (let k = 0; k < directoriesAndWordsObj[j].dataDirectory.words.length; k++) {
                         words.push(directoriesAndWordsObj[j].dataDirectory.words[k])
                     }
                     if (description === "") {
-                        description  =  directoriesAndWordsObj[j].description;
-                    }else {
-                        description =   description +",  " + directoriesAndWordsObj[j].description +" ";
+                        description = directoriesAndWordsObj[j].description;
+                    } else {
+                        description = description + ",  " + directoriesAndWordsObj[j].description + " ";
                     }
                 }
 
             }
 
             directoryElements.push(<div>
-                <div className="row" >
-                    <div className="col-md-2" >
+                <div className="row">
+                    <div className="col-md-2">
                         <h5><b>{directories[i]}</b></h5>
                     </div>
                     <div className="col-md-2">
-                        <button className="btn btn-default" type="button" onClick={this.initiateUploadClick.bind(this, directories[i])}>Upload File</button>
+                        <button className="btn btn-default" type="button"
+                                onClick={this.initiateUploadClick.bind(this, directories[i])}>Upload File
+                        </button>
                     </div>
                     <div className="col-md-3">
-                        <Dropzone style={{ dropZoneStyle }} disableClick ={true} multiple={false} onDragOver={this.setDropDirectory.bind(this, directories[i])} onDrop={this.uploadDroppedFile}>
-                            <div id="dropZoneText" name={directories[i]} style={ dropZoneStyle }>Drop file here</div>
+                        <Dropzone style={{dropZoneStyle}} disableClick={true} multiple={false}
+                                  onDragOver={this.setDropDirectory.bind(this, directories[i])}
+                                  onDrop={this.uploadDroppedFile}>
+                            <div id="dropZoneText" name={directories[i]} style={dropZoneStyle}>Drop file here</div>
                         </Dropzone>
                     </div>
                     <div className="col-md-5">
                         <div>
-                        <p><b onMouseOver={this.handleMouseIn.bind(this,display)} onMouseOut={this.handleMouseOut.bind(this,display)}>Commands:</b> {words.map(t => <span>{t}</span>).reduce((prev, curr) => [prev, ', ', curr])}</p>
-                            <div style= {this.tooltipStyle(display)}> {description}</div>
+                            <p><b onMouseOver={this.handleMouseIn.bind(this, display)}
+                                  onMouseOut={this.handleMouseOut.bind(this, display)}>Commands:</b> {words.map(t =>
+                                <span>{t}</span>).reduce((prev, curr) => [prev, ', ', curr])}</p>
+                            <div style={this.tooltipStyle(display)}> {description}</div>
                         </div>
                     </div>
                 </div>
 
 
-
             </div>);
         }
 
-        if ( this.state.Status === 'admin' ) {
-             return (<div>{directoryElements}</div>);
+        if (this.state.Status === 'admin') {
+            return (<div>{directoryElements}</div>);
         } else {
-            return <div> </div>;
+            return <div></div>;
         }
     }
 
@@ -378,13 +386,14 @@ class Upload extends BaseComponent {
 
         return (
             <div className="container">
-                <NotificationBar />
+                <NotificationBar/>
                 <div className="row">
                     <div className="col-md-12"><h1>Convo Event Upload</h1></div>
                 </div>
 
                 <form encType="multipart/form-data" action="">
-                    <input type="file" name="fileName" placeholder="fileName" id="upload" style={{display: 'none'}} onChange={this.uploadFile}/>
+                    <input type="file" name="fileName" placeholder="fileName" id="upload" style={{display: 'none'}}
+                           onChange={this.uploadFile}/>
                 </form>
 
                 <div className="row">

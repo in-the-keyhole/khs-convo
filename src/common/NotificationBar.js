@@ -15,7 +15,8 @@ limitations under the License.
 */
 
 import React, { Component } from 'react';
-import ajax from '../util/ajax';
+import restAPI from '../service/restAPI';
+
 class NotificationBar extends Component {
 
     constructor(props) {
@@ -23,10 +24,10 @@ class NotificationBar extends Component {
 
         this.state = {
             duplicates: []
-        }
+        };
 
-        let self = this;
-        ajax({
+        const self = this;
+        restAPI({
             method:'GET',
             url:'/api/convo/duplicates'
         }).then(function(res) {

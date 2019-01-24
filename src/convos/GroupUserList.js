@@ -16,7 +16,7 @@ limitations under the License.
 
 import React from 'react';
 import _ from "lodash";
-import ajax from '../util/ajax';
+import restAPI from '../service/restAPI';
 import NotifyEmulator from './NotifyEmulator';
 import { Checkbox } from 'react-bootstrap';
 import BaseComponent from '../BaseComponent';
@@ -42,7 +42,7 @@ class GroupUserList extends BaseComponent {
 
         var self = this;
 
-        ajax({
+        restAPI({
             method:'put',
             url:'/api/notify/group',
             data: group,
@@ -58,7 +58,7 @@ class GroupUserList extends BaseComponent {
 
     fetchUsers(){
         var self = this;
-        ajax({
+        restAPI({
             url:'/api/admin',
             data: this.state
         }).then(function(res) {

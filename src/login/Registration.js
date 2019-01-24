@@ -16,8 +16,8 @@ limitations under the License.
 
 import React, { Component } from 'react';
 import * as _ from 'lodash';
-import axios from 'axios';
-import {serverPort} from "../constants";
+import {restLogin} from '../service/restAPI';
+import {base} from "../service/restHelpers";
 
 class Registration extends Component {
 
@@ -57,14 +57,7 @@ class Registration extends Component {
 
         console.log(creds);
 
-        // var base = '';
-        // if (window.location.hostname === 'localhost') {
-        //     base = 'http://localhost:3001';
-        // }
-        const base = `http://${window.location.hostname}:${serverPort}`;
-
-
-        axios({// using axios directly to avoid redirect interceptor
+        restLogin({
             method:'post',
             url:'/api/auth/register',
             baseURL: base,
@@ -73,6 +66,7 @@ class Registration extends Component {
             window.location = ('/login');
         }).catch(function(err){
             //self.setState({loginError: 'Username or password incorrect. Please try again.'});
+            console.log(`Registration API issue`, err)
         });
 
     }

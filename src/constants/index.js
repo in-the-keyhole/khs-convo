@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export const pathDefaultContent = '/';
+export const pathDefaultContent = '/emulator';
 export const pathLogin = '/login';
 export const serverLocal = 'localhost';
 export const serverPort = '3001';

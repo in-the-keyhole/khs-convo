@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import React from 'react';
-import ajax from '../util/ajax';
+import restAPI from '../service/restAPI';
 import '../styles/emulator.css';
 import NotificationBar from '../common/NotificationBar';
 
@@ -126,7 +126,7 @@ class Emulator extends BaseComponent {
             To: this.state.To
         };
         if (eventyStatus === 'enabled'){
-            ajax({
+            restAPI({
                 method:'POST',
                 url:'/api/convo',
                 data: payload,
@@ -141,7 +141,7 @@ class Emulator extends BaseComponent {
             );
         }else {
             console.log('command is not enabled');
-            ajax({
+            restAPI({
                 method:'POST',
                 url:'/api/convo/inactivecommand',
                 data: payload
@@ -176,7 +176,7 @@ class Emulator extends BaseComponent {
             From: window.sessionStorage.getItem('phone')
         };
 
-        ajax({
+        restAPI({
             method: 'POST',
             url: '/api/convo',
             data: myData,
@@ -212,7 +212,7 @@ class Emulator extends BaseComponent {
 
             const eventData = {events: commandArray};
 
-            ajax({
+            restAPI({
                 method: 'POST',
                 url: '/api/convo/geteventstatus',
                 data: eventData
@@ -274,7 +274,7 @@ class Emulator extends BaseComponent {
         };
         const skipCount = skip ? skip : 0;
 
-        ajax({
+        restAPI({
             method: 'GET',
             url: '../api/convo/getconvoforphone?phone=' + phoneFrom + '&skip=' + skipCount,
             data: getConvoData
@@ -326,7 +326,7 @@ class Emulator extends BaseComponent {
                 status: row.eventStatus
             }
         };
-        ajax({
+        restAPI({
             method:'post',
             url:'../api/convo/disableevent',
             data: update,

@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import React  from 'react';
-import ajax from '../util/ajax';
+import restAPI from '../service/restAPI';
 // import AddUser from './AddUser.js';
 // import UserList from './UserList';
 import cellEditFactory from 'react-bootstrap-table2-editor';
@@ -72,7 +72,7 @@ class Admin extends BaseComponent {
             basePath: window.location.origin
         };
 
-        ajax({
+        restAPI({
             method:'post',
             url:'/api/admin',
             data: add
@@ -102,7 +102,7 @@ class Admin extends BaseComponent {
 
 
     fetchUsers(){
-        ajax({
+        restAPI({
             url:'/api/admin',
             data: this.state
         }).then( (res) => {
@@ -136,7 +136,7 @@ class Admin extends BaseComponent {
             basePath: window.location.origin
         };
 
-        ajax({
+        restAPI({
             method: 'post',
             url: '/api/admin/sendRegistrationEmail',
             data: creds
@@ -159,7 +159,7 @@ class Admin extends BaseComponent {
             [cellName]: cellValue
         };
 
-        ajax({
+        restAPI({
             method: 'put',
             url: '../api/admin',
             data: update,
@@ -174,7 +174,7 @@ class Admin extends BaseComponent {
         const user = this.state.currentUser;
         user.Status = 'removed';
 
-        ajax({
+        restAPI({
             method:'put',
             url:'/api/admin',
             data: user

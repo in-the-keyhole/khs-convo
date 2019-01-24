@@ -15,8 +15,7 @@ limitations under the License.
 */
 
 import React, {Component} from 'react';
-import ajax from '../util/ajax';
-// import axios from 'axios';
+import {restLogin} from '../service/restAPI';
 import {
     Card,
     CardBody,
@@ -32,6 +31,7 @@ import { resetCredentials, setCredentials } from '../actions';
 import { store } from '../configureStore';
 import { connect } from 'react-redux';
 import { pathDefaultContent, serverLocal,  serverPort } from '../constants';
+import {base} from '../service/restHelpers';
 
 
 class Login extends Component {
@@ -68,12 +68,9 @@ class Login extends Component {
         ev.preventDefault();
         store.dispatch(resetCredentials());
 
-        // const base = (window.location.hostname === serverLocal) ? `http://${serverLocal}:${serverPort}` : '';
-        const base = `http://${window.location.hostname}:${serverPort}`;
-
         console.log('submit login');
 
-        ajax({
+        restLogin({
             method: 'post',
             url: '/api/auth/login',
             baseURL: base,

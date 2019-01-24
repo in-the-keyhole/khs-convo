@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import React from 'react';
-import ajax from '../util/ajax';
+import restAPI from '../service/restAPI';
 import { Modal  } from 'react-bootstrap';
 import BaseComponent from '../BaseComponent';
 
@@ -50,7 +50,7 @@ class Tailwater extends BaseComponent {
 
     fetchTailwaters() {
         var self = this;
-        ajax({
+        restAPI({
             url:'../api/tailwater',
             data: this.state,
             cache: false
@@ -61,7 +61,7 @@ class Tailwater extends BaseComponent {
 
     handleTailwaterInsert(insert) {
         var that = this;
-        ajax({
+        restAPI({
             method:'post',
             url:'../api/tailwater/insert',
             data: insert,
@@ -80,7 +80,7 @@ class Tailwater extends BaseComponent {
 
     handleTailwaterUpdate(update) {
         var that = this;
-        ajax({
+        restAPI({
             method:'post',
             url:'../api/tailwater/update',
             data: update,
@@ -94,7 +94,7 @@ class Tailwater extends BaseComponent {
 
     handleTailwaterDelete(remove) {
         var that = this;
-        ajax({
+        restAPI({
             method:'delete',
             url:'../api/tailwater',
             data: remove,
