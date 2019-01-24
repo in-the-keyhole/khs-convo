@@ -35,10 +35,10 @@ class Emulator extends BaseComponent {
             FromZip: "",
             FromState: "",
             FromCity: "",
-            Body:"",
+            Body: "",
             FromCountry: "",
             To: "9132703506",
-            From:  props.credentials.phone,
+            From: props.credentials.phone,
             Answer: "",
             Commands: "",
             CommandsCached: "",
@@ -48,7 +48,7 @@ class Emulator extends BaseComponent {
             Conversation: [],
             CommandSubTitle: "",
             CommandLink: "",
-            EventArray:[]
+            EventArray: []
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -68,15 +68,17 @@ class Emulator extends BaseComponent {
     }
 
     dynamicLinks(str) {
-        if (typeof str !== 'string') { return str; }
+        if (typeof str !== 'string') {
+            return str;
+        }
         const listSpace = str.split(' ');
-        listSpace.forEach(function(valSpace, iSpace) {
-            if (valSpace.includes('http')){
+        listSpace.forEach(function (valSpace, iSpace) {
+            if (valSpace.includes('http')) {
                 const listLine = valSpace.split('\n');
-                listLine.forEach(function(valLine, iLine){
-                    if (valLine.includes('http')){
-                        if (valLine.indexOf('</Message></Response>') > -1 ){
-                            valLine = valLine.replace ('</Message></Response>', '');
+                listLine.forEach(function (valLine, iLine) {
+                    if (valLine.includes('http')) {
+                        if (valLine.indexOf('</Message></Response>') > -1) {
+                            valLine = valLine.replace('</Message></Response>', '');
                         }
                         listLine[iLine] = '<a target="_blank" href="' + valLine + '"/' + valLine + '>';
                         listSpace[iSpace] = listLine.join('\n');
@@ -99,14 +101,14 @@ class Emulator extends BaseComponent {
     determineEventCommand(command) {
         //console.log ("command  passedin   "   + command) ;
         let enabled = 'enabled';
-        this.state.EventArray.forEach( item =>{
+        this.state.EventArray.forEach(item => {
             //console.log ("item eventStatus  "   + item.eventStatus) ;
             const re = /\((.*)\)/g;
             const commandArray = item.key.match(re);
             //should be only one record like   (hellotest | hi)
             commandArray[0] = commandArray[0].replace('(', '').replace(')', '');
             const commands = commandArray[0].split('|');
-            commands.forEach( commandItem => {
+            commands.forEach(commandItem => {
                 //console.log ("commandItem   "   + commandItem.trim()) ;
                 if (commandItem.trim() === command && item.eventStatus === 'disabled') {
                     enabled = 'disabled'
@@ -126,40 +128,38 @@ class Emulator extends BaseComponent {
             Status: this.state.Status,
             To: this.state.To
         };
-        if (eventyStatus === 'enabled'){
+        if (eventyStatus === 'enabled') {
             restAPI({
-                method:'POST',
-                url:'/api/convo',
+                method: 'POST',
+                url: '/api/convo',
                 data: payload,
-                headers: {"token": this.props.credentials.apitoken }
-            }).then( () => {
+                headers: {"token": this.props.credentials.apitoken}
+            }).then(() => {
 
-                self.setState({ Body: "" });
+                self.setState({Body: ""});
                 self.getConversationsForPhone();
 
-            }).catch( err => console.log(err));
-        }else {
+            }).catch(err => console.log(err));
+        } else {
             console.log('command is not enabled');
             restAPI({
-                method:'POST',
-                url:'/api/convo/inactivecommand',
+                method: 'POST',
+                url: '/api/convo/inactivecommand',
                 data: payload
-            }).then( res => {
-                const newConvo =   res.data.concat(self.state.Conversation);
-                self.setState({ Body: "" });
+            }).then(res => {
+                const newConvo = res.data.concat(self.state.Conversation);
+                self.setState({Body: ""});
                 self.setState({
                     Conversation: newConvo
                 });
 
-            }).catch( err => console.log(err));
+            }).catch(err => console.log(err));
         }
         ev.preventDefault();
     }
 
     componentWillMount() {
-        if (true || !super.componentWillMount()) {
-            return;
-        }
+        super.componentWillMount();
         const self = this;
 
         let commandArray = [];
@@ -176,7 +176,7 @@ class Emulator extends BaseComponent {
             method: 'POST',
             url: '/api/convo',
             data: myData,
-            headers: {"token": this.props.credentials.apitoken }
+            headers: {"token": this.props.credentials.apitoken}
         }).then(function (res) {
             const re = /(.*)[\n\r]/g;
             let tempString = res.data;
@@ -184,7 +184,7 @@ class Emulator extends BaseComponent {
             tempString = self.dynamicLinks(tempString);
             commandArray = tempString.match(re);
 
-            commandArray = commandArray.map(command=> command.replace('\n', '').replace('\r',''));
+            commandArray = commandArray.map(command => command.replace('\n', '').replace('\r', ''));
             self.setState(
                 {
                     CommandSubTitle: commandArray[0].replace('<?xml version="1.0" encoding="UTF-8"?><Response><Message>', ''),
@@ -215,15 +215,15 @@ class Emulator extends BaseComponent {
             }).then(function (events) {
 
                 eventStatus = events.data;
-                commandArray.forEach(function (item,index){
-                    eventArray.push({key:item, eventStatus:"enabled"});
+                commandArray.forEach(function (item, index) {
+                    eventArray.push({key: item, eventStatus: "enabled"});
                     eventStatus.forEach(event => {
 
-                        if (item === event.name ){
+                        if (item === event.name) {
 
                             eventArray[index] = {
-                                key:item,
-                                eventStatus:"disabled"
+                                key: item,
+                                eventStatus: "disabled"
                             }
                         }
                     });
@@ -241,7 +241,7 @@ class Emulator extends BaseComponent {
                 function (err) {
                     console.log(err)
                 }
-                );
+            );
         }).catch(
             function (err) {
                 console.log(err)
@@ -274,14 +274,16 @@ class Emulator extends BaseComponent {
             method: 'GET',
             url: '../api/convo/getconvoforphone?phone=' + phoneFrom + '&skip=' + skipCount,
             data: getConvoData
-        }).then(function(res) {
+        }).then(function (res) {
             var newConvo = (skipCount === 0) ? res.data : self.state.Conversation.concat(res.data);
             self.setState({
                 Conversation: newConvo
             });
             Emulator.scrollConversationToBottom();
             self.forceUpdate();
-        }).catch(function(err){ console.log(err) });
+        }).catch(function (err) {
+            console.log(err)
+        });
     }
 
     renderConversation() {
@@ -296,14 +298,14 @@ class Emulator extends BaseComponent {
                     <div className="conversation__message-container conversation__message-question"
                          key={'question_' + i}>
                         <div className="conversation__message-content white-space"
-                             dangerouslySetInnerHTML={{__html: input.question}}></div>
+                             dangerouslySetInnerHTML={{__html: input.question}}/>
                     </div>
                 );
 
                 const answerElement = (
                     <div className="conversation__message-container conversation__message-answer" key={'answer_' + i}>
                         <div className="conversation__message-content white-space"
-                             dangerouslySetInnerHTML={{__html: dynamicAnswer}}></div>
+                             dangerouslySetInnerHTML={{__html: dynamicAnswer}}/>
                     </div>
                 );
 
@@ -326,38 +328,38 @@ class Emulator extends BaseComponent {
             }
         };
         restAPI({
-            method:'post',
-            url:'../api/convo/disableevent',
+            method: 'post',
+            url: '../api/convo/disableevent',
             data: update,
-        }).then(function (result){
+        }).then(function (result) {
 
-        }).catch(function(err){
+        }).catch(function (err) {
             console.log(err)
         });
 
     }
 
 
-
     render() {
-        if (!checkCredentials()){
+        if (!checkCredentials()) {
             return '';
         }
         const conversationElements = this.renderConversation();
         let editable = false;
-        if (this.props.credentials.status ==='admin'){
-            editable={
-                type: 'select', options: { values: ['enabled','disabled'] }
+        if (this.props.credentials.status === 'admin') {
+            editable = {
+                type: 'select', options: {values: ['enabled', 'disabled']}
             }
         }
         return (
             <div className="container">
-                <NotificationBar  />
+                <NotificationBar/>
                 <div className="row">
                     <div className="col-md-12"><h1>Emulator</h1></div>
                 </div>
                 <form encType="multipart/form-data" action="">
-                    <input type="file" name="fileName" id="upload" style={{display: 'none'}} onChange={this.uploadFile}/>
+                    <input type="file" name="fileName" id="upload" style={{display: 'none'}}
+                           onChange={this.uploadFile}/>
                 </form>
 
                 <div className="row">
@@ -365,24 +367,29 @@ class Emulator extends BaseComponent {
                         <div className="emulator-container">
                             <div className="row">
                                 <div className="emulator__message-list" id="emulator__conversation-thread">
-                                    { conversationElements }
+                                    {conversationElements}
                                 </div>
                             </div>
                             <div className="row">
                                 <div className="col-md-10">
-                                    <input name="Body" type="text" className="form-control emulator-input" autoFocus value={this.state.Body} onChange={this.handleInputChange} onKeyPress={this.onConversationKeypress} placeholder="Type any of the available commands..." />
+                                    <input name="Body" type="text" className="form-control emulator-input" autoFocus
+                                           value={this.state.Body} onChange={this.handleInputChange}
+                                           onKeyPress={this.onConversationKeypress}
+                                           placeholder="Type any of the available commands..."/>
                                 </div>
                                 <div className="col-md-2">
                                     <button className="btn btn-default" onClick={this.handleSubmit}>Send</button>
                                 </div>
                                 <div className="col-md-4">
-                                    <input name="From" className="form-control" type="tel" value={this.state.From} onChange={this.handleInputChange} placeholder="Phone Number" />
+                                    <input name="From" className="form-control" type="tel" value={this.state.From}
+                                           onChange={this.handleInputChange} placeholder="Phone Number"/>
                                 </div>
                                 <div className="col-md-3">
-                                    <button className="btn btn-primary" onClick={this.loadMoreMessages}>Load More</button>
+                                    <button className="btn btn-primary" onClick={this.loadMoreMessages}>Load More
+                                    </button>
                                 </div>
                                 <div className="col-md-3">
-                                    <span>{ this.state.Conversation.length } Showing</span>
+                                    <span>{this.state.Conversation.length} Showing</span>
                                 </div>
                             </div>
                         </div>
@@ -391,20 +398,22 @@ class Emulator extends BaseComponent {
                     <div className="col-md-6">
 
                         <div>
-                        <h3 className="command">Available Convo Commands</h3>
-                        <BootstrapTable
-                            data={ this.state.EventArray }
-                            pagination
-                            cellEdit={ {
-                                mode: 'click',
-                                blurToSave: true,
-                                afterSaveCell: this.onAfterSaveCell
-                            }}>
-                          <TableHeaderColumn dataField='key' isKey  width ="75%">{this.state.CommandSubTitle}</TableHeaderColumn>
-                          <TableHeaderColumn dataField='eventStatus' width="25%"  editable={ editable  }> Status</TableHeaderColumn>
-                        </BootstrapTable>
+                            <h3 className="command">Available Convo Commands</h3>
+                            <BootstrapTable
+                                data={this.state.EventArray}
+                                pagination
+                                cellEdit={{
+                                    mode: 'click',
+                                    blurToSave: true,
+                                    afterSaveCell: this.onAfterSaveCell
+                                }}>
+                                <TableHeaderColumn dataField='key' isKey
+                                                   width="75%">{this.state.CommandSubTitle}</TableHeaderColumn>
+                                <TableHeaderColumn dataField='eventStatus' width="25%"
+                                                   editable={editable}> Status</TableHeaderColumn>
+                            </BootstrapTable>
                         </div>
-                        <div className="white-space" dangerouslySetInnerHTML={{__html: this.state.CommandLink}}></div>
+                        <div className="white-space" dangerouslySetInnerHTML={{__html: this.state.CommandLink}}/>
                     </div>
                 </div>
             </div>
