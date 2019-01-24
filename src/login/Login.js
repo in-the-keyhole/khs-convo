@@ -59,7 +59,7 @@ class Login extends Component {
         this.setState({error: ''});
     }
 
-    // Call this after a login success returned from server
+    // Call this after a login success from server
     // Redirects to the default protected content
     redirectToContent() {
         this.props.history.push(pathDefaultContent);
@@ -71,8 +71,6 @@ class Login extends Component {
         store.dispatch(resetCredentials());
         setRestToken(null);
 
-        console.log('submit login');
-
         restLogin({
             method: 'post',
             url: '/api/auth/login',
@@ -80,12 +78,11 @@ class Login extends Component {
             data: this.state
 
         }).then(res => {
-            console.log(`post-login`, res.data);
 
-            // Login? Login? We don't need no stinkin' Login .
+            // Login? Login? We don't need no stinkin' Login.
             // Give a shout-out that we have an authenticated user who is ready to roll.
             const credentials = {
-                apitoken: res.data.token,
+                apitoken: res.data.apitoken,
                 token: res.data.token,
                 firstName: res.data.FirstName,
                 lastName: res.data.LastName,
@@ -148,7 +145,7 @@ class Login extends Component {
                                            value={this.state.password}
                                            onChange={this.handleInputChange} placeholder="password"/>
 
-                                    <Button size={"medium"} type={"submit"} value={"Login"}><MDBIcon
+                                    <Button size={"sm"} type={"submit"} value={"Login"}><MDBIcon
                                         icon={"sign-in"}/>&nbsp;Login</Button>
 
                                 </form>
