@@ -18,17 +18,18 @@ import React from 'react';
 import restAPI from '../service/restAPI';
 import '../styles/emulator.css';
 import NotificationBar from '../common/NotificationBar';
-
 import '../styles/data-table.css';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import {checkCredentials} from "../common/checkCredentials";
 import BaseComponent from '../BaseComponent';
+import {connect} from "react-redux";
 
 
 class Emulator extends BaseComponent {
 
     constructor(props) {
         super(props);
+        console.log('Emulator credentials', props.credentials);
 
         this.state = {
             FromZip: "",
@@ -37,13 +38,13 @@ class Emulator extends BaseComponent {
             Body:"",
             FromCountry: "",
             To: "9132703506",
-            From:  window.sessionStorage.getItem('phone'),
+            From:  props.credentials.phone,
             Answer: "",
             Commands: "",
             CommandsCached: "",
             CachedCommands: "false",
             File: "",
-            Status: window.sessionStorage.getItem('status'),
+            Status: props.credentials.status,
             Conversation: [],
             CommandSubTitle: "",
             CommandLink: "",
@@ -77,7 +78,7 @@ class Emulator extends BaseComponent {
                         if (valLine.indexOf('</Message></Response>') > -1 ){
                             valLine = valLine.replace ('</Message></Response>', '');
                         }
-                        listLine[iLine] = '<a target="_blank" href="' + valLine + '">' + valLine + '</a>';
+                        listLine[iLine] = '<a target="_blank" href="' + valLine + '"/' + valLine + '>';
                         listSpace[iSpace] = listLine.join('\n');
                     }
                 });
@@ -98,14 +99,14 @@ class Emulator extends BaseComponent {
     determineEventCommand(command) {
         //console.log ("command  passedin   "   + command) ;
         let enabled = 'enabled';
-        this.state.EventArray.forEach(function (item, index) {
+        this.state.EventArray.forEach( item =>{
             //console.log ("item eventStatus  "   + item.eventStatus) ;
-            var re = /\((.*)\)/g;
-            var commandArray = item.key.match(re);
+            const re = /\((.*)\)/g;
+            const commandArray = item.key.match(re);
             //should be only one record like   (hellotest | hi)
             commandArray[0] = commandArray[0].replace('(', '').replace(')', '');
-            var commands = commandArray[0].split('|');
-            commands.forEach(function (commandItem, commandIndex) {
+            const commands = commandArray[0].split('|');
+            commands.forEach( commandItem => {
                 //console.log ("commandItem   "   + commandItem.trim()) ;
                 if (commandItem.trim() === command && item.eventStatus === 'disabled') {
                     enabled = 'disabled'
@@ -130,41 +131,36 @@ class Emulator extends BaseComponent {
                 method:'POST',
                 url:'/api/convo',
                 data: payload,
-                headers: {"token": window.sessionStorage.getItem('apitoken') }
-            }).then(function(res) {
+                headers: {"token": this.props.credentials.apitoken }
+            }).then( () => {
 
                 self.setState({ Body: "" });
                 self.getConversationsForPhone();
 
-            }).catch(function(err){
-                console.log(err)}
-            );
+            }).catch( err => console.log(err));
         }else {
             console.log('command is not enabled');
             restAPI({
                 method:'POST',
                 url:'/api/convo/inactivecommand',
                 data: payload
-            }).then(function(res) {
+            }).then( res => {
                 const newConvo =   res.data.concat(self.state.Conversation);
                 self.setState({ Body: "" });
                 self.setState({
                     Conversation: newConvo
                 });
 
-            }).catch(function(err){
-                console.log(err)}
-            );
+            }).catch( err => console.log(err));
         }
         ev.preventDefault();
     }
 
     componentWillMount() {
-        if (!super.componentWillMount()) {
+        if (true || !super.componentWillMount()) {
             return;
         }
         const self = this;
-
 
         let commandArray = [];
         let eventStatus = [];
@@ -173,14 +169,14 @@ class Emulator extends BaseComponent {
         const myData = {
             Body: "availablecommands",
             To: "+19132703506",
-            From: window.sessionStorage.getItem('phone')
+            From: this.props.credentials.phone
         };
 
         restAPI({
             method: 'POST',
             url: '/api/convo',
             data: myData,
-            headers: {"token": window.sessionStorage.getItem('apitoken') }
+            headers: {"token": this.props.credentials.apitoken }
         }).then(function (res) {
             const re = /(.*)[\n\r]/g;
             let tempString = res.data;
@@ -221,7 +217,7 @@ class Emulator extends BaseComponent {
                 eventStatus = events.data;
                 commandArray.forEach(function (item,index){
                     eventArray.push({key:item, eventStatus:"enabled"});
-                    eventStatus.forEach(function( event, eventIndex){
+                    eventStatus.forEach(event => {
 
                         if (item === event.name ){
 
@@ -254,7 +250,7 @@ class Emulator extends BaseComponent {
         this.getConversationsForPhone();
     }
 
-    scrollConversationToBottom() {
+    static scrollConversationToBottom() {
         const el = document.getElementById('emulator__conversation-thread');
         el.scrollTop = el.scrollHeight;
     }
@@ -267,7 +263,7 @@ class Emulator extends BaseComponent {
     getConversationsForPhone(skip) {
         const self = this;
 
-        const phoneFrom = window.sessionStorage.getItem('phone');
+        const phoneFrom = this.props.credentials.phone;
         const getConvoData = {
             To: "+19132703506",
             From: phoneFrom
@@ -283,7 +279,7 @@ class Emulator extends BaseComponent {
             self.setState({
                 Conversation: newConvo
             });
-            self.scrollConversationToBottom();
+            Emulator.scrollConversationToBottom();
             self.forceUpdate();
         }).catch(function(err){ console.log(err) });
     }
@@ -295,6 +291,7 @@ class Emulator extends BaseComponent {
             for (var i = 0; i < convo.length; i++) {
                 const input = convo[i];
                 const dynamicAnswer = this.dynamicLinks(input.answer);
+
                 const questionElement = (
                     <div className="conversation__message-container conversation__message-question"
                          key={'question_' + i}>
@@ -302,12 +299,14 @@ class Emulator extends BaseComponent {
                              dangerouslySetInnerHTML={{__html: input.question}}></div>
                     </div>
                 );
+
                 const answerElement = (
                     <div className="conversation__message-container conversation__message-answer" key={'answer_' + i}>
                         <div className="conversation__message-content white-space"
                              dangerouslySetInnerHTML={{__html: dynamicAnswer}}></div>
                     </div>
                 );
+
                 elements.push(answerElement);
                 elements.push(questionElement);
             }
@@ -318,7 +317,7 @@ class Emulator extends BaseComponent {
     }
 
 
-    onAfterSaveCell(row, cellName, cellValue) {
+    onAfterSaveCell(row) {
 
         const update = {
             event: {
@@ -346,7 +345,7 @@ class Emulator extends BaseComponent {
         }
         const conversationElements = this.renderConversation();
         let editable = false;
-        if (window.sessionStorage.getItem('status')==='admin'){
+        if (this.props.credentials.status ==='admin'){
             editable={
                 type: 'select', options: { values: ['enabled','disabled'] }
             }
@@ -413,4 +412,5 @@ class Emulator extends BaseComponent {
     }
 }
 
-export default Emulator
+const mapStateToProps = state => ({credentials: state.credentials});
+export default connect(mapStateToProps)(Emulator);

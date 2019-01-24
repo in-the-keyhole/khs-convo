@@ -56,19 +56,31 @@ import {
 import {resetCredentials} from './actions';
 import {store} from './configureStore';
 import {checkCredentials} from './common/checkCredentials';
+import { connect } from 'react-redux';
 
 class App extends Component {
 
     constructor(props) {
         super(props);
+        console.log('App props', props);
+
         this.state = {
             collapse: false,
+            hasError: false
         };
 
         this.onClick = this.onClick.bind(this);
         this.onClickLogout = this.onClickLogout.bind(this);
     }
 
+    static getDerivedStateFromError(error) {
+        // Update state so the next render will show the fallback UI.
+        return { hasError: true };
+    }
+
+    componentDidCatch(error, info) {
+        console.log(error, info);
+    }
 
     onClick(ev) {
         ev.preventDefault();
@@ -86,10 +98,10 @@ class App extends Component {
 
 
     getLogoutFragment() {
-        // TODO Use Redux for global state
-        const token = window.sessionStorage.getItem('token');
-        const firstName = window.sessionStorage.getItem('firstName');
-        const lastName = window.sessionStorage.getItem('lastName');
+        //  Sent-via Redux props.credentials
+        const token = this.props.credentials.token;
+        const firstName = this.props.credentials.firstName;
+        const lastName = this.props.credentials.lastName;
 
         const logout = (
 
@@ -193,6 +205,10 @@ class App extends Component {
                 </Collapse>
             ) : (<span/>);
 
+        if (this.state.hasError) {
+            return <h1>Something is wrong in the view.</h1>;
+        }
+
         return (
             <header>
                 {/*<Navbar expand="md" scrolling fixed="top">*/}
@@ -212,5 +228,7 @@ class App extends Component {
     }
 }
 
-export default withRouter(App);
 
+const mapStateToProps = state => ({credentials: state.credentials});
+
+export default withRouter(connect(mapStateToProps)(App));

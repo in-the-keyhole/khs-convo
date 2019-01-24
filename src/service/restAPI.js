@@ -18,26 +18,29 @@ import axios from 'axios';
 import {pathLogin} from '../constants';
 import {base} from './restHelpers';
 
-
-// This is a vanilla NON-intercepted REST call
+// A vanilla NON-intercepted REST call having no token header. Used for public api calls.
 export const restLogin = axios.create({
-    baseURL: base,
-    headers: {"token": window.sessionStorage.getItem(pathLogin)}
+    baseURL: base
 });
 
+
+// An intercept-filtered REST call. It ignores HTTP status codes not listed in ignoreStatus (eg 403 - not auth)
 export const restAPI = axios.create({
     baseURL: base,
-    headers: {"token": window.sessionStorage.getItem(pathLogin)}
+    headers: {'token': null}
 });
 
 
-// This is an intercept-filtered REST call. It ignores HTTP status codes not listed in excludeStatus
-const excludeStatus = new Set([403]);
+// After authentication, Login component would invoke this function to set the token into the restAPI
+export const setRestToken = tok => restAPI.defaults.headers = {'token': tok};
+
+const ignoreStatus = new Set([403]);
+
 restAPI.interceptors.response.use(response => {
     return response;
 }, error => {
 
-    if (!excludeStatus.has(error.response.status)) {
+    if (!ignoreStatus.has(error.response.status)) {
         // Warning: The following reloads the entire app - so .. flash, repaint
         window.location.assign(pathLogin);
     }

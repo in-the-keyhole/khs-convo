@@ -19,6 +19,7 @@ import restAPI from '../service/restAPI';
 import '../styles/emulator.css';
 import { Modal  } from 'react-bootstrap';
 import BaseComponent from '../BaseComponent';
+import {connect} from "react-redux";
 
 const moment = require('moment');
 
@@ -26,6 +27,7 @@ class NotifyEmulator extends BaseComponent {
 
     constructor(props) {
         super(props);
+        console.log('NotifyEmulator credentials', props.credentials);
 
         this.state = {
             scheduledNotifications: [],
@@ -33,7 +35,7 @@ class NotifyEmulator extends BaseComponent {
             sentMsg: "",
             Body: "notify " + props.group.GroupName + " ",
             To: "9132703506",
-            From:  window.sessionStorage.getItem('phone'),
+            From:  props.phone,
             confirmSendModal: false,
             scheduleHide: true,
             newScheduleDate: '',
@@ -63,22 +65,22 @@ class NotifyEmulator extends BaseComponent {
     }
 
     handleSubmit(ev) {
-        var tmpScheduleDate = this.createScheduleDate(this.state.newScheduleDate, this.state.newScheduleTime);
-        var sentMsgText = !isNaN(tmpScheduleDate) ? 'Message Scheduled' : 'Message Sent';
+        const tmpScheduleDate = this.createScheduleDate(this.state.newScheduleDate, this.state.newScheduleTime);
+        const sentMsgText = !isNaN(tmpScheduleDate) ? 'Message Scheduled' : 'Message Sent';
 
-        var payload = {
+        const payload = {
             Body: "notify " + this.props.group.GroupName + ' ' + this.state.msgtext,
             From: this.state.From,
             To: this.state.To,
             scheduleDate: tmpScheduleDate
-        }
+        };
 
-        var self = this;
+        const self = this;
         restAPI({
             method:'POST',
             url:'/api/convo',
             data: payload,
-            headers: {"token": window.sessionStorage.getItem('apitoken') }
+            headers: {"token": this.props.credentials.apitoken }
         }).then(function(res) {
             self.setState({
                 msgtext: "",
@@ -97,7 +99,7 @@ class NotifyEmulator extends BaseComponent {
     }
 
     fetchScheduledNotifications(){
-        var self = this;
+        const self = this;
         restAPI({
             method: 'get',
             url:'/api/notify/schedulednotification',
@@ -108,7 +110,7 @@ class NotifyEmulator extends BaseComponent {
                 scheduledNotifications: res.data,
              });
 
-        }).catch(function(err){console.log(err)});
+        }).catch(err => console.log(err));
     }
 
     componentWillMount() {
@@ -432,4 +434,5 @@ class NotifyEmulator extends BaseComponent {
     }
 }
 
-export default NotifyEmulator
+const mapStateToProps = state => ({credentials: state.credentials});
+export default connect(mapStateToProps)(NotifyEmulator);

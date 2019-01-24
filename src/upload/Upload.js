@@ -23,12 +23,14 @@ import '../styles/emulator.css';
 import {confirmAlert} from 'react-confirm-alert';
 import NotificationBar from '../common/NotificationBar';
 import BaseComponent from '../BaseComponent';
-import {serverPort} from "../constants";
+import {connect} from "react-redux";
+import {base} from '../service/restHelpers'
 
 class Upload extends BaseComponent {
 
     constructor(props) {
         super(props);
+        console.log('Upload credentials', props.credentials);
 
         this.state = {
             FromZip: '',
@@ -37,13 +39,13 @@ class Upload extends BaseComponent {
             Body: '',
             FromCountry: '',
             To: '9132703506',
-            From: window.sessionStorage.getItem('phone'),
+            From: props.credentials.phone,
             Answer: '',
             Commands: '',
             CommandsCached: '',
             CachedCommands: 'false',
             File: '',
-            Status: window.sessionStorage.getItem('status'),
+            Status: props.credentials.status,
             Conversation: [],
             Directories: [],
             displayHover: '',
@@ -97,7 +99,7 @@ class Upload extends BaseComponent {
         const myData = {
             Body: "availablecommands",
             To: "+19132703506",
-            From: window.sessionStorage.getItem('phone')
+            From: this.props.credentials.phone
         };
 
         restAPI({
@@ -149,7 +151,7 @@ class Upload extends BaseComponent {
         const myData = {
             Body: "availablecommands",
             To: "+19132703506",
-            From: window.sessionStorage.getItem('phone')
+            From: this.props.credentials.phone
         };
 
         restAPI({
@@ -231,13 +233,6 @@ class Upload extends BaseComponent {
         const self = this;
         self.state.CommandsCached = self.state.Commands;
         let currentDirectory = self.state.CurrentDirectory;
-
-
-        // let base = window.location.hostname;
-        // if (window.location.hostname === 'localhost'){
-        //     base = 'http://localhost:3001'
-        // }
-        const base = `http://${window.location.hostname}:${serverPort}`;
 
         superagent
             .post(base + '/api/admin/fileupload')
@@ -406,4 +401,5 @@ class Upload extends BaseComponent {
     }
 }
 
-export default Upload;
+const mapStateToProps = state => ({credentials: state.credentials});
+export default connect(mapStateToProps)(Upload);

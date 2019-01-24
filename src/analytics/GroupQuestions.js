@@ -17,12 +17,13 @@ limitations under the License.
 import React from 'react';
 import restAPI from '../service/restAPI';
 import { RadialBarChart, RadialBar, Legend, Tooltip} from 'recharts';
-
-var createReactClass = require('create-react-class');
+import {connect} from "react-redux";
+const createReactClass = require('create-react-class');
 
 class GroupQuestions extends React.Component {
     constructor(props) {
         super(props);
+        console.log('GroupQuestions credentials', props.credentials);
         this.state = {
             grpQuestions: [],
             convoQuestionsArr: [],
@@ -42,7 +43,7 @@ class GroupQuestions extends React.Component {
         const myData = {
             Body: "allcommands",
             To: "",//"+19132703506",
-            From: ""//window.sessionStorage.getItem('phone')
+            From: ""//this.props.credentials.phone
         };
 
         restAPI({
@@ -204,4 +205,5 @@ class GroupQuestions extends React.Component {
     }
 }
 
-export default GroupQuestions;
+const mapStateToProps = state => ({credentials: state.credentials});
+export default connect(mapStateToProps)(GroupQuestions);

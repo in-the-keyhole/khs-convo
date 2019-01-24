@@ -14,35 +14,38 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React, { Component } from 'react';
+import React from 'react';
 import restAPI from '../service/restAPI';
+import BaseComponent from '../BaseComponent';
+import {connect} from "react-redux";
 
-class NotificationBar extends Component {
+class NotificationBar extends BaseComponent {
 
     constructor(props) {
         super(props);
+        console.log('NotificationBar', props.credentials);
 
         this.state = {
             duplicates: []
         };
 
-        const self = this;
         restAPI({
             method:'GET',
             url:'/api/convo/duplicates'
-        }).then(function(res) {
-            self.setState({
+        }).then( res => {
+            this.setState({
                 duplicates: res.data
             })
-        }).catch(function(err){console.log(err)});
+        }).catch( err => console.log(err) );
     }
 
     render() {
 
-        const Notifications = this.state.duplicates.map((dupe) =>
-        <div className="alert alert-warning">
-            Warning: Duplicate convo event for the word <strong>&#39;{dupe.term}&#39; </strong> found in  <strong>{dupe.filenames}</strong>
-        </div>
+        const Notifications = this.state.duplicates.map(dupe =>
+            <div className="alert alert-warning">
+                Warning: Duplicate convo event for the word <strong>&#39;{dupe.term}&#39; </strong> found
+                in <strong>{dupe.filenames}</strong>
+            </div>
         );
 
         return (
@@ -52,4 +55,6 @@ class NotificationBar extends Component {
         )
     }
 }
-export default NotificationBar
+
+const mapStateToProps = state => ({credentials: state.credentials});
+export default connect(mapStateToProps)(NotificationBar);

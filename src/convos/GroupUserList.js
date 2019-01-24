@@ -20,10 +20,12 @@ import restAPI from '../service/restAPI';
 import NotifyEmulator from './NotifyEmulator';
 import { Checkbox } from 'react-bootstrap';
 import BaseComponent from '../BaseComponent';
+import {connect} from "react-redux";
 
 class GroupUserList extends BaseComponent {
     constructor(props){
         super(props);
+        console.log('GroupUserList credentials', props.credentials);
 
         this.state = {
             availableUsers: [],
@@ -162,7 +164,7 @@ class GroupUserList extends BaseComponent {
                         <Checkbox name="checkEmail" checked={this.props.group.checkEmail} onChange={this.handleChange}>Email</Checkbox>
                     </div>
                     <div className="col-md-3">
-                        <Checkbox name="checkSlack" checked={this.props.group.checkSlack} onChange={this.handleChange}>Slack ({window.sessionStorage.getItem('slackchannel')})</Checkbox>
+                        <Checkbox name="checkSlack" checked={this.props.group.checkSlack} onChange={this.handleChange}>Slack ({this.props.credentials.slackchannel})</Checkbox>
                     </div>
                 </div>
 
@@ -195,4 +197,5 @@ class GroupUserList extends BaseComponent {
       }
 }
 
-export default GroupUserList
+const mapStateToProps = state => ({credentials: state.credentials});
+export default connect(mapStateToProps)(GroupUserList);

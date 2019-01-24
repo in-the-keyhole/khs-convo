@@ -16,8 +16,6 @@ limitations under the License.
 
 import React  from 'react';
 import restAPI from '../service/restAPI';
-// import AddUser from './AddUser.js';
-// import UserList from './UserList';
 import cellEditFactory from 'react-bootstrap-table2-editor';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import filterFactory /*, { textFilter, selectFilter }*/ from 'react-bootstrap-table2-filter';
@@ -39,11 +37,13 @@ import {
     // ModalFooter
 } from 'mdbreact';
 import BaseComponent from '../BaseComponent';
+import {connect} from "react-redux";
 
 class Admin extends BaseComponent {
 
     constructor(props) {
         super(props);
+        console.log('Admin credentials', props.credentials);
 
         this.state = {
             users: [],
@@ -90,7 +90,7 @@ class Admin extends BaseComponent {
                 this.setState({
                     errorMsg: ''
                 });
-                this.closeAddUserModal()
+                this.closeAddUserModal();
                 this.fetchUsers();
             }
 
@@ -102,6 +102,7 @@ class Admin extends BaseComponent {
 
 
     fetchUsers(){
+
         restAPI({
             url:'/api/admin',
             data: this.state
@@ -178,7 +179,7 @@ class Admin extends BaseComponent {
             method:'put',
             url:'/api/admin',
             data: user
-        }).then( (res) => {
+        }).then( () => {
             this.fetchUsers();
             this.closeDeleteModal();
         }).catch(function(err){console.log(err)});
@@ -531,4 +532,5 @@ class Admin extends BaseComponent {
     }
 }
 
-export default Admin;
+const mapStateToProps = state => ({credentials: state.credentials});
+export default connect(mapStateToProps)(Admin);

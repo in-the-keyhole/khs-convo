@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import React, {Component} from 'react';
-import {restLogin} from '../service/restAPI';
+import {restLogin, setRestToken} from '../service/restAPI';
 import {
     Card,
     CardBody,
@@ -27,10 +27,10 @@ import {
     Input,
     MDBIcon
 } from 'mdbreact';
-import { resetCredentials, setCredentials } from '../actions';
-import { store } from '../configureStore';
-import { connect } from 'react-redux';
-import { pathDefaultContent, serverLocal,  serverPort } from '../constants';
+import {resetCredentials, setCredentials} from '../actions';
+import {store} from '../configureStore';
+import {connect} from 'react-redux';
+import {pathDefaultContent} from '../constants';
 import {base} from '../service/restHelpers';
 
 
@@ -38,7 +38,7 @@ class Login extends Component {
 
     constructor(props) {
         super(props);
-        console.log("Login LOADED");
+        console.log('Login credentials', props.credentials);
         store.dispatch(resetCredentials);
 
         this.state = {
@@ -59,7 +59,9 @@ class Login extends Component {
         this.setState({error: ''});
     }
 
-    redirectToContent(){
+    // Call this after a login success returned from server
+    // Redirects to the default protected content
+    redirectToContent() {
         this.props.history.push(pathDefaultContent);
         console.log(`this.props.history.push(${pathDefaultContent})`)
     }
@@ -67,6 +69,7 @@ class Login extends Component {
     handleSubmit(ev) {
         ev.preventDefault();
         store.dispatch(resetCredentials());
+        setRestToken(null);
 
         console.log('submit login');
 
@@ -78,26 +81,11 @@ class Login extends Component {
 
         }).then(res => {
             console.log(`post-login`, res.data);
-            // TODO use Redux instead of HTML5 session
-            window.sessionStorage.setItem('token', res.data.token);
-            window.sessionStorage.setItem('firstName', res.data.FirstName);
-            window.sessionStorage.setItem('lastName', res.data.LastName);
-            window.sessionStorage.setItem('phone', res.data.Phone);
-            window.sessionStorage.setItem('status', res.data.Status);
-            window.sessionStorage.setItem('apitoken', res.data.apitoken);
-            window.sessionStorage.setItem('slackchannel', res.data.slackchannel);
-
-            // Local state in case of .. what ..?
-            this.setState({
-                loginError: '',
-                firstName: res.data.FirstName,
-                lastName: res.data.LastName
-            });
 
             // Login? Login? We don't need no stinkin' Login .
             // Give a shout-out that we have an authenticated user who is ready to roll.
             const credentials = {
-                apitoken: res.data.apitoken,
+                apitoken: res.data.token,
                 token: res.data.token,
                 firstName: res.data.FirstName,
                 lastName: res.data.LastName,
@@ -106,9 +94,9 @@ class Login extends Component {
                 slackchannel: res.data.slackchannel
             };
 
-            store.dispatch(setCredentials( credentials ));
+            setRestToken(credentials.token);
+            store.dispatch(setCredentials(credentials));
             this.redirectToContent();
-
 
         }).catch(err => {
             store.dispatch(resetCredentials());
@@ -160,7 +148,8 @@ class Login extends Component {
                                            value={this.state.password}
                                            onChange={this.handleInputChange} placeholder="password"/>
 
-                                    <Button  size={"medium"} type={"submit"} value={"Login"}><MDBIcon icon={"sign-in"}/>&nbsp;Login</Button>
+                                    <Button size={"medium"} type={"submit"} value={"Login"}><MDBIcon
+                                        icon={"sign-in"}/>&nbsp;Login</Button>
 
                                 </form>
 
@@ -178,6 +167,6 @@ class Login extends Component {
 }
 
 
-const mapStateToProps = state => ( { credentials: state.credentials } );
+const mapStateToProps = state => ({credentials: state.credentials});
 export default connect(mapStateToProps)(Login);
 
