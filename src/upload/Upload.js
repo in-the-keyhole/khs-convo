@@ -50,7 +50,7 @@ class Upload extends BaseComponent {
             DirectoriesAndWords: [],
             CurrentDirectory: "",
             DirectoryInputValue: ""
-        }
+        };
 
         this.componentWillMount = this.componentWillMount.bind(this);
         this.uploadDroppedFile = this.uploadDroppedFile.bind(this);
@@ -76,7 +76,7 @@ class Upload extends BaseComponent {
                 const listLine = valSpace.split('\n');
                 listLine.forEach(function(valLine, iLine){
                     if (valLine.includes('http')){
-                        listLine[iLine] = '<a target="_blank" href="' + valLine + '">' + valLine + '</a>';
+                        listLine[iLine] = '<a target="_blank" href="' + valLine + '"/' + valLine + '>';
                         listSpace[iSpace] = listLine.join('\n');
                     }
                 });
@@ -122,7 +122,7 @@ class Upload extends BaseComponent {
         ajax({
             url:'/api/admin/getDirectories',
             data: ''
-        }).then(function(res, me) {
+        }).then(function(res) {
             const result = res.data;
             const directories = [];
             for(let i=0; i<result.length; i++) {
@@ -154,20 +154,19 @@ class Upload extends BaseComponent {
             url:'/api/convo',
             data: myData
         }).then(function(res) {
-            const commandText = self.getCommandUploaded(self.state.CommandsCached, self.dynamicLinks(res.data));
+            const commandText = Upload.getCommandUploaded(self.state.CommandsCached, self.dynamicLinks(res.data));
             const d = self.dynamicLinks(res.data);
-            const UpdatedCommands = d.replace(commandText, '<b>' + commandText + '</b>');
+            const UpdatedCommands = d.replace(commandText, `<b>${commandText}</b>`);
             self.setState({ Commands: UpdatedCommands});
         }).catch(function(err){console.log(err)});
     }
 
-    getCommandUploaded(a, b) {
+    static getCommandUploaded(a, b) {
         let i = 0;
         let j = 0;
         let result = "";
 
-        while (j < b.length)
-        {
+        while (j < b.length) {
             if (a[i] !== b[j] || i === a.length)
                 result += b[j];
             else
@@ -185,7 +184,7 @@ class Upload extends BaseComponent {
         let file = e.target.files[0];
         const fullPath = document.getElementById('upload').value;
 
-        let originalName = fullPath.split(/(\\|\/)/g).pop();
+        let originalName = fullPath.split(/([\\/])/g).pop();
 
          reader.onloadend = () => {
              const data = new FormData();
@@ -194,14 +193,14 @@ class Upload extends BaseComponent {
              ajax({
                   url:'../api/admin/fileExistsOnUpload?name=' + originalName + '&directory=' + self.state.CurrentDirectory,
                   data: originalName
-             }).then(function(res, me) {
+             }).then(function(res) {
                   if (res.data === 'exists') {
                        self.renderConfirmDialog(data);
                   }  else {
                        self.proceedWithUpload(data);
                   }
              })
-         }
+         };
 
          reader.readAsDataURL(file);
     }
@@ -216,7 +215,7 @@ class Upload extends BaseComponent {
               method:'POST',
               url:'../api/admin/fileExistsOnUploadPost?directory=' + self.state.CurrentDirectory,
               data: data
-         }).then(function(res, me) {
+         }).then(function(res) {
               if (res.data === 'exists') {
                    self.renderConfirmDialog(data);
               }  else {
@@ -271,7 +270,7 @@ class Upload extends BaseComponent {
 
     }
 
-    handleMouseOut(x) {
+    handleMouseOut() {
         const self = this;
         self.setState({ displayHover: "" });
         console.log("handleMouseOut  The state " + JSON.stringify(self.state.displayHover));
@@ -282,7 +281,7 @@ class Upload extends BaseComponent {
     tooltipStyle = function (x) {
         const self = this;
         return  { display: (x !== undefined && self.state.displayHover === x) ? 'block' : 'none' }
-    }
+    };
 
 
     renderUploadFile() {
@@ -306,14 +305,14 @@ class Upload extends BaseComponent {
         const directoryElements = [];
         let description="";
         let display;
-        for (var i=0;i<directories.length;i++) {
+        for (let i=0; i<directories.length; i++) {
             description="";
             display ="directory"+i;
             const words = [];
             for(let j=0; j<directoriesAndWordsObj.length; j++) {
 
                 if (directories[i] === directoriesAndWordsObj[j].dataDirectory.currentDirectory) {
-                    for(var k=0;k<directoriesAndWordsObj[j].dataDirectory.words.length;k++) {
+                    for(let k=0; k<directoriesAndWordsObj[j].dataDirectory.words.length; k++) {
                         words.push(directoriesAndWordsObj[j].dataDirectory.words[k])
                     }
                     if (description === "") {
@@ -354,7 +353,7 @@ class Upload extends BaseComponent {
         if ( this.state.Status === 'admin' ) {
              return (<div>{directoryElements}</div>);
         } else {
-            return <div></div>;
+            return <div> </div>;
         }
     }
 
@@ -398,4 +397,4 @@ class Upload extends BaseComponent {
     }
 }
 
-export default Upload
+export default Upload;
