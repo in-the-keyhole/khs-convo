@@ -17,18 +17,19 @@ limitations under the License.
 import React, { Component } from 'react';
 import * as _ from 'lodash';
 import axios from 'axios';
+import {serverPort} from "../constants";
 
 class Registration extends Component {
 
     constructor(props) {
-        super(props); 
+        super(props);
         this.state = {
             newPassword: '',
             repeatPassword: '',
             error: ''
-        }
+        };
 
-        this.handleInputChange = this.handleInputChange.bind(this); 
+        this.handleInputChange = this.handleInputChange.bind(this);
     }
 
     handleInputChange(event) {
@@ -39,31 +40,33 @@ class Registration extends Component {
 
     registerCreds(){
 
-        var urlParams = _.chain(window.location.search)
+        const urlParams = _.chain(window.location.search)
             .replace('?', '') // a=b454&c=dhjjh&f=g6hksdfjlksd
             .split('&') // ["a=b454","c=dhjjh","f=g6hksdfjlksd"]
             .map(_.ary(_.partial(_.split, _, '='), 1)) // [["a","b454"],["c","dhjjh"],["f","g6hksdfjlksd"]]
             .fromPairs() // {"a":"b454","c":"dhjjh","f":"g6hksdfjlksd"}
-            .value()
-            
+            .value();
+
         console.log(urlParams);
-        
-        var creds = {
+
+        const creds = {
             uuid: urlParams.uuid,
             Username: urlParams.registrationEmail,
             Password: this.state.newPassword
-        }        
+        };
 
-       console.log(creds);
+        console.log(creds);
 
-        var base = '';
-        if (window.location.hostname === 'localhost') {
-            base = 'http://localhost:3001';
-        }
+        // var base = '';
+        // if (window.location.hostname === 'localhost') {
+        //     base = 'http://localhost:3001';
+        // }
+        const base = `http://${window.location.hostname}:${serverPort}`;
+
 
         axios({// using axios directly to avoid redirect interceptor
             method:'post',
-            url:'/api/auth/register', 
+            url:'/api/auth/register',
             baseURL: base,
             data: creds
         }).then(function(res) {
@@ -76,7 +79,7 @@ class Registration extends Component {
 
     checkPasswordMatch(){
         if (this.state.newPassword === this.state.repeatPassword){
-            this.registerCreds();       
+            this.registerCreds();
         } else {
             this.setState({error: 'Passwords do not match'});
         }
@@ -85,26 +88,26 @@ class Registration extends Component {
     render() {
         return (
             <div className="container">
-                
+
                 <div className="row">
                     <div className="col-md-12"><h1>Register</h1></div>
-                </div>        
+                </div>
 
-                <div className="col-md-3">                        
+                <div className="col-md-3">
                     <div className="red">{this.state.error}</div>
 
                     <label for="newPassword">Password</label>
                     <input autoComplete="off" name="newPassword" id="newPassword" className="form-control" type="password" required="required" value={this.state.newPassword} onChange={this.handleInputChange} placeholder="Password" />
-                    
+
                     <label for="repeatPassword">Repeat Password</label>
                     <input autoComplete="off" name="repeatPassword" id="repeatPassword" className="form-control" type="password" required="required" value={this.state.repeatPassword} onChange={this.handleInputChange} placeholder="Repeat Password" />
-                
-                    
-                    <button className="btn btn-primary" onClick={() => this.checkPasswordMatch()}>Register</button>                
+
+
+                    <button className="btn btn-primary" onClick={() => this.checkPasswordMatch()}>Register</button>
                 </div>
 
             </div>
-        ); 
+        );
     }
 
 }

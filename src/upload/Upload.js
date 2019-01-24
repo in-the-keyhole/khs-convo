@@ -23,6 +23,7 @@ import '../styles/emulator.css';
 import { confirmAlert } from 'react-confirm-alert';
 import NotificationBar from '../common/NotificationBar';
 import BaseComponent from '../BaseComponent';
+import {serverPort} from "../constants";
 
 class Upload extends BaseComponent {
 
@@ -119,7 +120,7 @@ class Upload extends BaseComponent {
     retrieveDirectories() {
         const self = this;
         ajax({
-            url:'../api/admin/getDirectories',
+            url:'/api/admin/getDirectories',
             data: ''
         }).then(function(res, me) {
             const result = res.data;
@@ -230,10 +231,12 @@ class Upload extends BaseComponent {
         let currentDirectory = self.state.CurrentDirectory;
 
 
-        let base = window.location.hostname;
-        if (window.location.hostname === 'localhost'){
-            base = 'http://localhost:3001'
-        }
+        // let base = window.location.hostname;
+        // if (window.location.hostname === 'localhost'){
+        //     base = 'http://localhost:3001'
+        // }
+        const base = `http://${window.location.hostname}:${serverPort}`;
+
         superagent
             .post(base+ '/api/admin/fileupload')
             .query({ directory: currentDirectory })
