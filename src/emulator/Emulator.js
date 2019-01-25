@@ -23,6 +23,7 @@ import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import {checkCredentials} from "../common/checkCredentials";
 import BaseComponent from '../BaseComponent';
 import {connect} from "react-redux";
+// noinspection ES6CheckImport
 import {
     Row,
     Col,
