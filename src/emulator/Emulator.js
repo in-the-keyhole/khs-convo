@@ -353,6 +353,7 @@ class Emulator extends BaseComponent {
         // TODO Stop injecting HTML from the API. See help.js for its own TODO
         const  CommandLink = ({value}) => ( <div dangerouslySetInnerHTML={{__html: value}}/> );
 
+        const buttonAligment = {marginTop: '2rem'};
         const conversationElements = this.renderConversation();
         const editable = this.props.credentials.status === 'admin'
             ? {type: 'select', options: {values: ['enabled', 'disabled']}} : false;
@@ -395,7 +396,9 @@ class Emulator extends BaseComponent {
                                                    hint={"Convo command"}/>
                                         </Col>
                                         <Col md={"2"}>
-                                            <Button size={"sm"} onClick={this.handleSubmit}>Send</Button>
+                                            <Button size={"sm"}
+                                                    onClick={this.handleSubmit}
+                                                    style={buttonAligment}>Send</Button>
                                         </Col>
                                     </Row>
                                     <Row>
@@ -409,7 +412,9 @@ class Emulator extends BaseComponent {
                                                    hint={"Phone number"}/>
                                         </Col>
                                         <Col md={"2"}>
-                                            <Button size={"sm"} color={"primary"}
+                                            <Button size={"sm"}
+                                                    color={"primary"}
+                                                    style={buttonAligment}
                                                     onClick={this.loadMoreMessages}>Load&nbsp;More</Button>
                                         </Col>
                                     </Row>
