@@ -14,16 +14,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import '../styles/data-table.css';
+import '../styles/emulator.css';
 import React from 'react';
 import restAPI from '../service/restAPI';
-import '../styles/emulator.css';
 import NotificationBar from '../common/NotificationBar';
-import '../styles/data-table.css';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import {checkCredentials} from "../common/checkCredentials";
 import BaseComponent from '../BaseComponent';
 import {connect} from "react-redux";
-
+import {
+    Row,
+    Col,
+    Button,
+    Card,
+    CardBody,
+    CardTitle,
+    Input
+} from 'mdbreact';
 
 class Emulator extends BaseComponent {
 
@@ -32,22 +40,22 @@ class Emulator extends BaseComponent {
         console.log('Emulator credentials', props.credentials);
 
         this.state = {
-            FromZip: "",
-            FromState: "",
-            FromCity: "",
-            Body: "",
-            FromCountry: "",
-            To: "9132703506",
+            FromZip: '',
+            FromState: '',
+            FromCity: '',
+            Body: '',
+            FromCountry: '',
+            To: '9132703506',
             From: props.credentials.phone,
-            Answer: "",
-            Commands: "",
-            CommandsCached: "",
-            CachedCommands: "false",
-            File: "",
+            Answer: '',
+            Commands: '',
+            CommandsCached: '',
+            CachedCommands: 'false',
+            File: '',
             Status: props.credentials.status,
             Conversation: [],
-            CommandSubTitle: "",
-            CommandLink: "",
+            CommandSubTitle: '',
+            CommandLink: '',
             EventArray: []
         };
 
@@ -58,8 +66,6 @@ class Emulator extends BaseComponent {
         this.renderConversation = this.renderConversation.bind(this);
         this.loadMoreMessages = this.loadMoreMessages.bind(this);
         this.onConversationKeypress = this.onConversationKeypress.bind(this);
-
-
     }
 
     handleInputChange(event) {
@@ -71,11 +77,15 @@ class Emulator extends BaseComponent {
         if (typeof str !== 'string') {
             return str;
         }
+
         const listSpace = str.split(' ');
-        listSpace.forEach(function (valSpace, iSpace) {
+        listSpace.forEach( (valSpace, iSpace) => {
+
             if (valSpace.includes('http')) {
                 const listLine = valSpace.split('\n');
-                listLine.forEach(function (valLine, iLine) {
+
+                listLine.forEach( (valLine, iLine) => {
+
                     if (valLine.includes('http')) {
                         if (valLine.indexOf('</Message></Response>') > -1) {
                             valLine = valLine.replace('</Message></Response>', '');
@@ -99,17 +109,17 @@ class Emulator extends BaseComponent {
 
 
     determineEventCommand(command) {
-        //console.log ("command  passedin   "   + command) ;
         let enabled = 'enabled';
+
         this.state.EventArray.forEach(item => {
-            //console.log ("item eventStatus  "   + item.eventStatus) ;
             const re = /\((.*)\)/g;
             const commandArray = item.key.match(re);
-            //should be only one record like   (hellotest | hi)
+
+            // should be only one record like   (hellotest | hi)
             commandArray[0] = commandArray[0].replace('(', '').replace(')', '');
             const commands = commandArray[0].split('|');
+
             commands.forEach(commandItem => {
-                //console.log ("commandItem   "   + commandItem.trim()) ;
                 if (commandItem.trim() === command && item.eventStatus === 'disabled') {
                     enabled = 'disabled'
                 }
@@ -120,6 +130,7 @@ class Emulator extends BaseComponent {
     }
 
     handleSubmit(ev) {
+        ev.preventDefault();
         const eventyStatus = this.determineEventCommand(this.state.Body);
         const self = this;
         const payload = {
@@ -133,10 +144,10 @@ class Emulator extends BaseComponent {
                 method: 'POST',
                 url: '/api/convo',
                 data: payload,
-                headers: {"token": this.props.credentials.apitoken}
+                headers: {'token': this.props.credentials.apitoken}
             }).then(() => {
 
-                self.setState({Body: ""});
+                self.setState({Body: ''});
                 self.getConversationsForPhone();
 
             }).catch(err => console.log(err));
@@ -149,13 +160,10 @@ class Emulator extends BaseComponent {
             }).then(res => {
                 const newConvo = res.data.concat(self.state.Conversation);
                 self.setState({Body: ""});
-                self.setState({
-                    Conversation: newConvo
-                });
+                self.setState({Conversation: newConvo});
 
             }).catch(err => console.log(err));
         }
-        ev.preventDefault();
     }
 
     componentWillMount() {
@@ -275,7 +283,7 @@ class Emulator extends BaseComponent {
             url: '../api/convo/getconvoforphone?phone=' + phoneFrom + '&skip=' + skipCount,
             data: getConvoData
         }).then(function (res) {
-            var newConvo = (skipCount === 0) ? res.data : self.state.Conversation.concat(res.data);
+            const newConvo = (skipCount === 0) ? res.data : self.state.Conversation.concat(res.data);
             self.setState({
                 Conversation: newConvo
             });
@@ -288,34 +296,30 @@ class Emulator extends BaseComponent {
 
     renderConversation() {
         const convo = this.state.Conversation;
-        if (convo.length > 0) {
-            const elements = [];
-            for (var i = 0; i < convo.length; i++) {
-                const input = convo[i];
-                const dynamicAnswer = this.dynamicLinks(input.answer);
-
-                const questionElement = (
-                    <div className="conversation__message-container conversation__message-question"
-                         key={'question_' + i}>
-                        <div className="conversation__message-content white-space"
-                             dangerouslySetInnerHTML={{__html: input.question}}/>
+        const elements = [];
+        convo.forEach((input, i) => {
+            const dynamicAnswer = this.dynamicLinks(input.answer);
+            const questionElement = (
+                <div className="conversation__message-container conversation__message-question"
+                     key={`question_${i}`}>
+                    <div className="conversation__message-content white-space">
+                        {input.question}
                     </div>
-                );
+                </div>
+            );
 
-                const answerElement = (
-                    <div className="conversation__message-container conversation__message-answer" key={'answer_' + i}>
-                        <div className="conversation__message-content white-space"
-                             dangerouslySetInnerHTML={{__html: dynamicAnswer}}/>
+            const answerElement = (
+                <div className="conversation__message-container conversation__message-answer" key={`answer_${i}`}>
+                    <div className="conversation__message-content white-space">
+                        {dynamicAnswer}
                     </div>
-                );
+                </div>
+            );
 
-                elements.push(answerElement);
-                elements.push(questionElement);
-            }
-            return elements.reverse();
-        } else {
-            return [];
-        }
+            elements.push(answerElement);
+            elements.push(questionElement);
+        });
+        return elements.reverse();
     }
 
 
@@ -344,79 +348,111 @@ class Emulator extends BaseComponent {
         if (!checkCredentials()) {
             return '';
         }
+        // console.log(`Emulator render()`);
+
         const conversationElements = this.renderConversation();
-        let editable = false;
-        if (this.props.credentials.status === 'admin') {
-            editable = {
-                type: 'select', options: {values: ['enabled', 'disabled']}
-            }
-        }
+        const editable = this.props.credentials.status === 'admin'
+            ? {type: 'select', options: {values: ['enabled', 'disabled']}} : false;
+
         return (
-            <div className="container">
-                <NotificationBar/>
-                <div className="row">
-                    <div className="col-md-12"><h1>Emulator</h1></div>
-                </div>
-                <form encType="multipart/form-data" action="">
-                    <input type="file" name="fileName" id="upload" style={{display: 'none'}}
-                           onChange={this.uploadFile}/>
-                </form>
+            <Card>
+                <CardBody>
+                    <NotificationBar/>
+                    <CardTitle>Command Emulator</CardTitle>
 
-                <div className="row">
-                    <div className="col-md-6">
-                        <div className="emulator-container">
-                            <div className="row">
-                                <div className="emulator__message-list" id="emulator__conversation-thread">
-                                    {conversationElements}
-                                </div>
-                            </div>
-                            <div className="row">
-                                <div className="col-md-10">
-                                    <input name="Body" type="text" className="form-control emulator-input" autoFocus
-                                           value={this.state.Body} onChange={this.handleInputChange}
-                                           onKeyPress={this.onConversationKeypress}
-                                           placeholder="Type any of the available commands..."/>
-                                </div>
-                                <div className="col-md-2">
-                                    <button className="btn btn-default" onClick={this.handleSubmit}>Send</button>
-                                </div>
-                                <div className="col-md-4">
-                                    <input name="From" className="form-control" type="tel" value={this.state.From}
-                                           onChange={this.handleInputChange} placeholder="Phone Number"/>
-                                </div>
-                                <div className="col-md-3">
-                                    <button className="btn btn-primary" onClick={this.loadMoreMessages}>Load More
-                                    </button>
-                                </div>
-                                <div className="col-md-3">
-                                    <span>{this.state.Conversation.length} Showing</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <form encType="multipart/form-data" action="">
+                        <Input type="file" name="fileName" id="upload" style={{display: 'none'}}
+                               onChange={this.uploadFile}/>
+                    </form>
 
-                    <div className="col-md-6">
+                    <Row>
+                        <Col md={"6"}>
+                            <Card>
+                                <CardBody>
+                                    <CardTitle>Sending Center</CardTitle>
+                                    <Row>
+                                        <Col>
+                                            <span>{`${this.state.Conversation.length || 'no'} commands sent:`}</span>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col className="emulator__message-list" id="emulator__conversation-thread">
+                                            {conversationElements}
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col md={"9"}>
+                                            <Input name="Body"
+                                                   type="text"
+                                                   autoFocus
+                                                   value={this.state.Body || ''}
+                                                   onChange={this.handleInputChange}
+                                                   onKeyPress={this.onConversationKeypress}
+                                                   label={"Input"}
+                                                   hint={"Convo command"}/>
+                                        </Col>
+                                        <Col md={"2"}>
+                                            <Button size={"sm"} onClick={this.handleSubmit}>Send</Button>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col md={"4"}>
+                                            <Input name="From"
+                                                   type="tel"
+                                                   validate
+                                                   value={this.state.From || ''}
+                                                   onChange={this.handleInputChange}
+                                                   label={"Destination"}
+                                                   hint={"Phone number"}/>
+                                        </Col>
+                                        <Col md={"2"}>
+                                            <Button size={"sm"} color={"primary"}
+                                                    onClick={this.loadMoreMessages}>Load&nbsp;More</Button>
+                                        </Col>
+                                    </Row>
 
-                        <div>
-                            <h3 className="command">Available Convo Commands</h3>
-                            <BootstrapTable
-                                data={this.state.EventArray}
-                                pagination
-                                cellEdit={{
-                                    mode: 'click',
-                                    blurToSave: true,
-                                    afterSaveCell: this.onAfterSaveCell
-                                }}>
-                                <TableHeaderColumn dataField='key' isKey
-                                                   width="75%">{this.state.CommandSubTitle}</TableHeaderColumn>
-                                <TableHeaderColumn dataField='eventStatus' width="25%"
-                                                   editable={editable}> Status</TableHeaderColumn>
-                            </BootstrapTable>
-                        </div>
-                        <div className="white-space" dangerouslySetInnerHTML={{__html: this.state.CommandLink}}/>
-                    </div>
-                </div>
-            </div>
+
+                                </CardBody>
+                            </Card>
+                        </Col>
+
+                        <Col md={"6"}>
+                            <Card>
+                                <CardBody>
+                                    <CardTitle>Available Commands</CardTitle>
+                                    <Row>
+                                        <Col>
+                                            <BootstrapTable
+                                                data={this.state.EventArray}
+                                                pagination
+                                                cellEdit={{
+                                                    mode: 'click',
+                                                    blurToSave: true,
+                                                    afterSaveCell: this.onAfterSaveCell
+                                                }}>
+                                                <TableHeaderColumn
+                                                    dataField='key'
+                                                    isKey
+                                                    width="75%">{this.state.CommandSubTitle}</TableHeaderColumn>
+                                                <TableHeaderColumn
+                                                    dataField='eventStatus'
+                                                    width="25%"
+                                                    editable={editable}> Status</TableHeaderColumn>
+                                            </BootstrapTable>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col>
+                                            <div className="white-space"
+                                                 dangerouslySetInnerHTML={{__html: this.state.CommandLink}}/>
+                                        </Col>
+                                    </Row>
+                                </CardBody>
+                            </Card>
+                        </Col>
+                    </Row>
+                </CardBody>
+            </Card>
         )
     }
 }

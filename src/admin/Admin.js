@@ -398,7 +398,7 @@ class Admin extends BaseComponent {
 
 
     render() {
-        // Note: textFilter commented-out. It results in a confusing grid without much value added. My opinion. @lem
+        // Note: textFilter searching commented-out. It results in a confusing grid giving not much value added. Mauget's pinion.
         const data = {
             columns: [
                 {
@@ -486,44 +486,11 @@ class Admin extends BaseComponent {
                                 />
 
                             </Col>
-
                             <Col>
                                 <Button size={"sm"} onClick={() => this.openAddUserModal()}><MDBIcon icon="user-plus" />&nbsp;New User</Button>
                             </Col>
                         </Row>
 
-                        {/*<Row>
-                            <Col>
-                                <hr />
-                                <BootstrapTable
-                                    data={this.state.users}
-                                    //insertRow={ true }
-                                    pagination
-                                    cellEdit={{
-                                        mode: 'click',
-                                        blurToSave: true,
-                                        afterSaveCell: this.onAfterSaveCell
-                                    }}>
-                                    <TableHeaderColumn dataField='uuid' isKey hidden>ID</TableHeaderColumn>
-                                    <TableHeaderColumn dataField='FirstName' dataSort={true} filter={{type: 'TextFilter'}}>First
-                                        Name</TableHeaderColumn>
-                                    <TableHeaderColumn dataField='LastName' dataSort={true} filter={{type: 'TextFilter'}}>Last
-                                        Name</TableHeaderColumn>
-                                    <TableHeaderColumn dataField='Phone' dataSort={true}
-                                                       filter={{type: 'TextFilter'}}>Phone</TableHeaderColumn>
-                                    <TableHeaderColumn width="120" dataField='Status'
-                                                       filter={{type: 'TextFilter'}}
-                                                       dataSort={true}
-                                                       editable={{type: 'select', options: {values: ['active', 'admin']}}}
-                                    >Status</TableHeaderColumn>
-                                    <TableHeaderColumn width="300" dataField='Username' dataSort={true}
-                                                       filter={{type: 'TextFilter'}}>Username</TableHeaderColumn>
-                                    <TableHeaderColumn width="60" editable={false}
-                                                       dataFormat={this.userToolbar}></TableHeaderColumn>
-
-                                </BootstrapTable>
-                            </Col>
-                        </Row>*/}
 
                     </CardBody>
                 </Card>

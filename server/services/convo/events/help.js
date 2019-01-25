@@ -16,16 +16,15 @@ limitations under the License.
 
 'use strict';
 
-var events = require('../events');
-var mongo = require("../../mongo");
-var config = require('../../../config');
-var pug = require('pug');
+const mongo = require("../../mongo");
+const config = require('../../../config');
+const pug = require('pug');
 
-var host_url = config.url;
+const host_url = config.url;
 
 
 module.exports = function (events) {
-    var event = {};
+    const event = {};
     event.isAuth = false;
     event.description = "Command Help";
     event.words = [{
@@ -35,52 +34,51 @@ module.exports = function (events) {
     {
         word: 'command',
         value: 10
-    }]
+    }];
     event.threash = 10;
     event.run = function (result) {
 
-        return new Promise(function (resolve, reject) {
+        return new Promise( (resolve) => {
 
             mongo.Get({ Name: "commandsintro" }, 'Content')
-                .then(function (comIntro) {
+                .then( (comIntro) => {
                     console.log(comIntro);
-                    mongo.Get({ Name: "commandsend" }, 'Content')
-                        .then(function (comEnd) {
-                            //console.log(comEnd);
 
-                            //console.log(comIntro[0].Content + "  " + comEnd[0].Content);
-                            var help = '';
-                            if (comIntro != null && comIntro[0] != null) {
+                    mongo.Get({ Name: "commandsend" }, 'Content')
+                        .then( (comEnd) => {
+
+                            let help = '';
+                            if (comIntro && comIntro.length) {
                                 help = comIntro[0].Content + "\n";
                             } else {
-                                help = "Keyhole SMS commands\n";
+                                help = 'Keyhole SMS commands\n';
                             }
 
-                            for (var i = 0; i < events.length; i++) {
+                            for (let i = 0; i < events.length; i++) {
                                 let event = events[i];
                                 console.log(event);
+
                                 help = help + event.description + " (";
-                                for (var j = 0; j < event.words.length; j++) {
+                                for (let j = 0; j < event.words.length; j++) {
                                     if (event.words.length > 1) {
-                                        if (j == 0) {
-                                            help = help + event.words[j].word;
+                                        if (j === 0) {
+                                            help += event.words[j].word;
                                         } else {
-                                            help = help + " | " + event.words[j].word;
+                                            help += ( " | " + event.words[j].word );
                                         }
                                     } else if (event.words.length === 1) {
                                         help = help + event.words[j].word;
-                                        continue;
                                     } else {
                                         break;
                                     }
                                 }
-                                help = help + ")\n";
+                                help += ')\n';
                             }
 
-                            if (comEnd != null && comEnd[0] != null) {
+                            if (comEnd && comEnd.length) {
                                 help = help + comEnd[0].Content;
                             } else {
-                                help = help + "Here's a link for more info https://public.grokola.com/#grok/6a3fdc54-d830-4720-a275-9b5f19f1ea70";
+                                help = help + 'Link to details: https://public.grokola.com/#grok/6a3fdc54-d830-4720-a275-9b5f19f1ea70';
                             }
 
                             mongo.Update({ phone: result.phone, event: 'commands' }, { phone: result.phone, event: 'commands', html: compileHtml(events) }, "ui", { upsert: true });
@@ -94,14 +92,14 @@ module.exports = function (events) {
                         });
                 });
         })
-    }
+    };
 
     var compileHtml = function (events) {
         var compiledFunction = pug.compileFile('templates/help.pug');
         console.log(events);
         return compiledFunction({ url: host_url, convos: events });
-    }
+    };
 
     events.push(event);
 
-}
+};
