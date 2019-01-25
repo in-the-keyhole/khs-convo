@@ -31,21 +31,21 @@ module.exports = function (events) {
         word: 'commands',
         value: 10
     },
-    {
-        word: 'command',
-        value: 10
-    }];
+        {
+            word: 'command',
+            value: 10
+        }];
     event.threash = 10;
     event.run = function (result) {
 
-        return new Promise( (resolve) => {
+        return new Promise((resolve) => {
 
-            mongo.Get({ Name: "commandsintro" }, 'Content')
-                .then( (comIntro) => {
+            mongo.Get({Name: "commandsintro"}, 'Content')
+                .then((comIntro) => {
                     console.log(comIntro);
 
-                    mongo.Get({ Name: "commandsend" }, 'Content')
-                        .then( (comEnd) => {
+                    mongo.Get({Name: "commandsend"}, 'Content')
+                        .then((comEnd) => {
 
                             let help = '';
                             if (comIntro && comIntro.length) {
@@ -64,7 +64,7 @@ module.exports = function (events) {
                                         if (j === 0) {
                                             help += event.words[j].word;
                                         } else {
-                                            help += ( " | " + event.words[j].word );
+                                            help += (" | " + event.words[j].word);
                                         }
                                     } else if (event.words.length === 1) {
                                         help = help + event.words[j].word;
@@ -76,14 +76,18 @@ module.exports = function (events) {
                             }
 
                             if (comEnd && comEnd.length) {
-                                help = help + comEnd[0].Content;
+                                help += comEnd[0].Content;
                             } else {
-                                help = help + 'Link to details: https://public.grokola.com/#grok/6a3fdc54-d830-4720-a275-9b5f19f1ea70';
+                                help += 'https://public.grokola.com/#grok/6a3fdc54-d830-4720-a275-9b5f19f1ea70';
                             }
+// TODO Stop injecting HTML from the API
+                            mongo.Update({phone: result.phone, event: 'commands'}, {
+                                phone: result.phone,
+                                event: 'commands',
+                                html: compileHtml(events)
+                            }, "ui", {upsert: true});
 
-                            mongo.Update({ phone: result.phone, event: 'commands' }, { phone: result.phone, event: 'commands', html: compileHtml(events) }, "ui", { upsert: true });
-
-                            help += ' Link to UI: ' + host_url + 'api/public/html/' + result.phone + '/commands';
+                            help += ` Information: ${host_url}api/public/html/${result.phone || '9132700360'}/commands`;
 
 
                             console.log(help);
@@ -97,7 +101,7 @@ module.exports = function (events) {
     var compileHtml = function (events) {
         var compiledFunction = pug.compileFile('templates/help.pug');
         console.log(events);
-        return compiledFunction({ url: host_url, convos: events });
+        return compiledFunction({url: host_url, convos: events});
     };
 
     events.push(event);

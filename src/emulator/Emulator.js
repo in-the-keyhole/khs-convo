@@ -34,6 +34,7 @@ import {
     Input
 } from 'mdbreact';
 
+
 class Emulator extends BaseComponent {
 
     constructor(props) {
@@ -349,7 +350,8 @@ class Emulator extends BaseComponent {
         if (!checkCredentials()) {
             return '';
         }
-        // console.log(`Emulator render()`);
+        // TODO Stop injecting HTML from the API. See help.js for its own TODO
+        const  CommandLink = ({value}) => ( <div dangerouslySetInnerHTML={{__html: value}}/> );
 
         const conversationElements = this.renderConversation();
         const editable = this.props.credentials.status === 'admin'
@@ -444,8 +446,7 @@ class Emulator extends BaseComponent {
                                     </Row>
                                     <Row>
                                         <Col>
-                                            <div className="white-space"
-                                                 dangerouslySetInnerHTML={{__html: this.state.CommandLink}}/>
+                                            <CommandLink value={this.state.CommandLink}/>
                                         </Col>
                                     </Row>
                                 </CardBody>
