@@ -21,6 +21,7 @@ import paginationFactory from 'react-bootstrap-table2-paginator';
 import filterFactory /*, { textFilter, selectFilter }*/ from 'react-bootstrap-table2-filter';
 import BootstrapTable from 'react-bootstrap-table-next';
 import CommonUI from '../common/CommonUI';
+// noinspection ES6CheckImport
 import {
     Card,
     CardBody,
@@ -29,12 +30,9 @@ import {
     Button,
     Row,
     Col,
-    // Input,
     MDBIcon,
     Modal,
-    ModalBody,
-    // ModalHeader,
-    // ModalFooter
+    ModalBody
 } from 'mdbreact';
 import BaseComponent from '../BaseComponent';
 import {connect} from "react-redux";
