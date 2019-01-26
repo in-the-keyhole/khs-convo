@@ -338,18 +338,11 @@ class Emulator extends BaseComponent {
      */
     onAfterSaveCell(row , cellName, cellValue) {
 
-        // const update = {
-        //     event: {
-        //         key: row.key,
-        //         status: row.eventStatus
-        //     }
-        // };
         restAPI({
             method: 'post',
             url: '../api/convo/disableevent',
             data: cellValue,
         }).then(result => console.log(`onAfterSaveCell`, result)).catch(err => console.log(err));
-
     }
 
 
@@ -367,13 +360,13 @@ class Emulator extends BaseComponent {
         const columns = [
             {
                 hidden: true,
-                dataField: '_id',
-                isKey: true
+                dataField: '_id'
             },
             {
                 text: 'Keyhole SMS Commands',
                 dataField: 'key',
                 width: "75%",
+                isKey: true
             },
             {
                 text: 'Status',
@@ -386,6 +379,17 @@ class Emulator extends BaseComponent {
                 }
             }
         ];
+
+        const customTotal = ((from, to, size) => (
+            <span className="react-bootstrap-table-pagination-total">
+                {from} - {to} of {size}
+            </span>
+        ));
+
+        const pageinationOptions = {
+            showTotal: true,
+            paginationTotalRenderer: customTotal
+        };
 
         return (
             <Card>
@@ -464,7 +468,7 @@ class Emulator extends BaseComponent {
                                                 data={this.state.EventArray}
                                                 columns={columns}
                                                 keyField={'key'}
-                                                pagination={paginationFactory({showTotal: true})}
+                                                pagination={paginationFactory( pageinationOptions )}
                                                 cellEdit={cellEditFactory({
                                                     mode: 'click',
                                                     blurToSave: true,
