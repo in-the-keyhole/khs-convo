@@ -258,7 +258,7 @@ class Admin extends BaseComponent {
         return (
             <div className="btn-group" role="toolbar" aria-label="management">
                 <div onClick={() => self.openCredentialsModal(row)}>
-                    <MDBIcon style={{marginRight: '0.5rem', color: 'gray'}} size={'lg'} icon={"lock"}/>
+                    <MDBIcon style={{marginRight: '0.5rem', color: 'gray'}} size={'lg'} icon={"envelope"}/>
                 </div>
                 <div onClick={() => self.openDeleteModal(row)}>
                     <MDBIcon style={{marginLeft: '0.5rem', color: 'red'}} size={'lg'} icon={"ban"}/>
