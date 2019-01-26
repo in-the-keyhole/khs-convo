@@ -19,7 +19,9 @@ import '../styles/emulator.css';
 import React from 'react';
 import restAPI from '../service/restAPI';
 import NotificationBar from '../common/NotificationBar';
-import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
+import paginationFactory from 'react-bootstrap-table2-paginator';
+import cellEditFactory from 'react-bootstrap-table2-editor';
+import BootstrapTable from 'react-bootstrap-table-next';
 import {checkCredentials} from "../common/checkCredentials";
 import BaseComponent from '../BaseComponent';
 import {connect} from "react-redux";
@@ -81,12 +83,12 @@ class Emulator extends BaseComponent {
         }
 
         const listSpace = str.split(' ');
-        listSpace.forEach( (valSpace, iSpace) => {
+        listSpace.forEach((valSpace, iSpace) => {
 
             if (valSpace.includes('http')) {
                 const listLine = valSpace.split('\n');
 
-                listLine.forEach( (valLine, iLine) => {
+                listLine.forEach((valLine, iLine) => {
 
                     if (valLine.includes('http')) {
                         if (valLine.indexOf('</Message></Response>') > -1) {
@@ -351,12 +353,26 @@ class Emulator extends BaseComponent {
             return '';
         }
         // TODO Stop injecting HTML from the API. See help.js for its own TODO
-        const  CommandLink = ({value}) => ( <div dangerouslySetInnerHTML={{__html: value}}/> );
+        const CommandLink = ({value}) => (<div dangerouslySetInnerHTML={{__html: value}}/>);
 
         const buttonAligment = {marginTop: '2rem'};
         const conversationElements = this.renderConversation();
-        const editable = this.props.credentials.status === 'admin'
-            ? {type: 'select', options: {values: ['enabled', 'disabled']}} : false;
+        const editable = this.props.credentials.status === 'admin';
+        // ? {type: 'select', options: {values: ['enabled', 'disabled']}} : false;  //<==  @lem
+
+        const columns = [
+            {
+                text: 'Keyhole SMS Commands',
+                dataField: 'key',
+                width: "75%"
+            },
+            {
+                text: 'Status',
+                dataField: 'eventStatus',
+                width: "25%",
+                editable: true //editable
+            }
+        ];
 
         return (
             <Card>
@@ -393,7 +409,7 @@ class Emulator extends BaseComponent {
                                                    onChange={this.handleInputChange}
                                                    onKeyPress={this.onConversationKeypress}
                                                    label={"Enter command"}
-                                               />
+                                            />
                                         </Col>
                                         <Col md={"2"}>
                                             <Button size={"sm"}
@@ -431,22 +447,17 @@ class Emulator extends BaseComponent {
                                     <Row>
                                         <Col>
                                             <BootstrapTable
+                                                bootstrap4
                                                 data={this.state.EventArray}
-                                                pagination
-                                                cellEdit={{
+                                                columns={columns}
+                                                keyField={'key'}
+                                                pagination={paginationFactory({showTotal: true})}
+                                                cellEdit={cellEditFactory({
                                                     mode: 'click',
                                                     blurToSave: true,
                                                     afterSaveCell: this.onAfterSaveCell
-                                                }}>
-                                                <TableHeaderColumn
-                                                    dataField='key'
-                                                    isKey
-                                                    width="75%">{this.state.CommandSubTitle}</TableHeaderColumn>
-                                                <TableHeaderColumn
-                                                    dataField='eventStatus'
-                                                    width="25%"
-                                                    editable={editable}> Status</TableHeaderColumn>
-                                            </BootstrapTable>
+                                                })}
+                                            />
                                         </Col>
                                     </Row>
                                     <Row>
