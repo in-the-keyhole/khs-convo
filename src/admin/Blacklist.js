@@ -170,7 +170,7 @@ class Blacklist extends BaseComponent {
     }
 
 
-    blackListToolbar(cell, row) {;
+    blackListToolbar(cell, row) {
         return (
             <div className="btn-group" role="toolbar" aria-label="management">
                 <div onClick={() => this.openDeleteModal(row)}>
