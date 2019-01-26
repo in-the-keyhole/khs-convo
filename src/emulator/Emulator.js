@@ -20,7 +20,7 @@ import React from 'react';
 import restAPI from '../service/restAPI';
 import NotificationBar from '../common/NotificationBar';
 import paginationFactory from 'react-bootstrap-table2-paginator';
-import cellEditFactory from 'react-bootstrap-table2-editor';
+import cellEditFactory, {Type} from 'react-bootstrap-table2-editor';
 import BootstrapTable from 'react-bootstrap-table-next';
 import {checkCredentials} from "../common/checkCredentials";
 import BaseComponent from '../BaseComponent';
@@ -174,8 +174,8 @@ class Emulator extends BaseComponent {
         super.componentWillMount();
         const self = this;
 
-        let commandArray = [];
-        let eventStatus = [];
+        let commandArray;
+        let eventStatus;
         const eventArray = [];
 
         const myData = {
@@ -227,6 +227,7 @@ class Emulator extends BaseComponent {
             }).then(function (events) {
 
                 eventStatus = events.data;
+                console.log('events.data', eventStatus);
                 commandArray.forEach(function (item, index) {
                     eventArray.push({key: item, eventStatus: "enabled"});
                     eventStatus.forEach(event => {
@@ -234,6 +235,7 @@ class Emulator extends BaseComponent {
                         if (item === event.name) {
 
                             eventArray[index] = {
+                                _id: event._id,
                                 key: item,
                                 eventStatus: "disabled"
                             }
@@ -327,23 +329,26 @@ class Emulator extends BaseComponent {
     }
 
 
-    onAfterSaveCell(row) {
+    /**
+     * Saves to Mongodb. Called by onBlur event tied to editable table cells. Specifically, the method
+     * sends the cellValue to the API to modify the document according to eventStatus enabled/disabled.
+     * @param row
+     * @param cellName
+     * @param cellValue -- an object of all fields of the row's document
+     */
+    onAfterSaveCell(row , cellName, cellValue) {
 
-        const update = {
-            event: {
-                key: row.key,
-                status: row.eventStatus
-            }
-        };
+        // const update = {
+        //     event: {
+        //         key: row.key,
+        //         status: row.eventStatus
+        //     }
+        // };
         restAPI({
             method: 'post',
             url: '../api/convo/disableevent',
-            data: update,
-        }).then(function (result) {
-
-        }).catch(function (err) {
-            console.log(err)
-        });
+            data: cellValue,
+        }).then(result => console.log(`onAfterSaveCell`, result)).catch(err => console.log(err));
 
     }
 
@@ -357,20 +362,28 @@ class Emulator extends BaseComponent {
 
         const buttonAligment = {marginTop: '2rem'};
         const conversationElements = this.renderConversation();
-        const editable = this.props.credentials.status === 'admin';
-        // ? {type: 'select', options: {values: ['enabled', 'disabled']}} : false;  //<==  @lem
+        const isAdmin = this.props.credentials.status === 'admin';
 
         const columns = [
             {
+                hidden: true,
+                dataField: '_id',
+                isKey: true
+            },
+            {
                 text: 'Keyhole SMS Commands',
                 dataField: 'key',
-                width: "75%"
+                width: "75%",
             },
             {
                 text: 'Status',
                 dataField: 'eventStatus',
                 width: "25%",
-                editable: true //editable
+                editable: isAdmin,
+                editor: {
+                    type: Type.CHECKBOX,
+                    value: 'enabled:disabled'
+                }
             }
         ];
 
@@ -443,7 +456,7 @@ class Emulator extends BaseComponent {
                         <Col md={"6"}>
                             <Card>
                                 <CardBody>
-                                    <CardTitle>Available Commands</CardTitle>
+                                    <CardTitle>Installed Commands</CardTitle>
                                     <Row>
                                         <Col>
                                             <BootstrapTable

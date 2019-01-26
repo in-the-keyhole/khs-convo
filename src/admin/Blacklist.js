@@ -134,8 +134,10 @@ class Blacklist extends BaseComponent {
      * CellValue is, a Blackist record, including _id. This methods  updates any of its fields except _id.
      * eg. PUT a bookstrap table cell edit's "cellValue". The API will update its copy.
      *
-     * Params row, cellName are unused placeholders here.
-     * */
+     * @param row
+     * @param cellName
+     * @param cellValue
+     */
     onAfterSaveCell(row, cellName, cellValue) {
 
         restAPI({
