@@ -15,29 +15,30 @@ limitations under the License.
 */
 
 'use strict';
-var express = require('express');
+// var express = require('express');
 var mongo = require('../../services/mongo');
+var ObjectId = require('mongodb').ObjectID
 var sendmail = require('sendmail')({silent: false})
 var nodemailer = require('nodemailer');
 
 var config = require('../../config');
 var mongoose = require('mongoose');
-var Schema = mongoose.Schema
+// var Schema = mongoose.Schema
 var graphql = require('graphql')
-var GraphQLObjectType = graphql.GraphQLObjectType
-var GraphQLBoolean = graphql.GraphQLBoolean
-var GraphQLID = graphql.GraphQLID
-var GraphQLString = graphql.GraphQLString
-var GraphQLList = graphql.GraphQLList
-var GraphQLNonNull = graphql.GraphQLNonNull
-var GraphQLSchema = graphql.GraphQLSchema
+// var GraphQLObjectType = graphql.GraphQLObjectType
+// var GraphQLBoolean = graphql.GraphQLBoolean
+// var GraphQLID = graphql.GraphQLID
+// var GraphQLString = graphql.GraphQLString
+// var GraphQLList = graphql.GraphQLList
+// var GraphQLNonNull = graphql.GraphQLNonNull
+// var GraphQLSchema = graphql.GraphQLSchema
 var uuid = require('uuid');
 var _ = require('lodash');
 var Loader = require('../../services/eventloader');
 var fs = require('fs');
 
 const path = require('path');
-const util = require('util');
+// const util = require('util');
 var events = require('../../services/convo/events');
 const emailConfig = config.email;
 
@@ -144,8 +145,16 @@ function put(req, res) {
     })
 }
 
+/**
+ * Given, a Blackist record, including _id, update any or all of its fields except _id
+ * eg. PUT a bookstrap table cell edit's "cellValue". Mongo will update its copy.
+ * */
 function blacklistput(req, res) {
-    mongo.Update({phone: req.body.phone}, req.body,  'Blacklist')
+    const r = req.body;
+    const query = {_id: ObjectId(r._id)};
+    const data = {phone: r.phone, notes: r.notes};
+
+    mongo.Update(query, data,  'Blacklist')
     .then(function (response) {
         res.send(response);
     })

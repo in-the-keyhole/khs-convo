@@ -17,7 +17,7 @@ limitations under the License.
 import '../styles/data-table.css';
 import React from 'react';
 import restAPI from '../service/restAPI';
-// import cellEditFactory from 'react-bootstrap-table2-editor';
+import cellEditFactory from 'react-bootstrap-table2-editor';
 // import filterFactory /*, { textFilter, selectFilter }*/ from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import BootstrapTable from 'react-bootstrap-table-next';
@@ -54,6 +54,7 @@ class Blacklist extends BaseComponent {
         this.blackListToolbar = this.blackListToolbar.bind(this);
         this.openDeleteModal = this.openDeleteModal.bind(this);
         this.closeDeleteModal = this.closeDeleteModal.bind(this);
+        this.onAfterSaveCell = this.onAfterSaveCell.bind(this);
     }
 
     componentWillMount() {
@@ -129,26 +130,26 @@ class Blacklist extends BaseComponent {
         })
     }
 
+    /**
+     * CellValue is, a Blackist record, including _id. This methods  updates any of its fields except _id.
+     * eg. PUT a bookstrap table cell edit's "cellValue". The API will update its copy.
+     *
+     * Params row, cellName are unused placeholders here.
+     * */
     onAfterSaveCell(row, cellName, cellValue) {
-        const update = {
-            phone: row.phone,
-            [cellName]: cellValue
-        };
 
         restAPI({
             method: 'put',
             url: '../api/admin/blacklist',
-            data: update,
-        }).then((res, me) => {
-            console.log(me);
-        }).catch((err) => {
-            console.log(err)
-        });
+            data: cellValue,
+        }).then((res) => {
+            console.log(res);
+        }).catch((err) => console.log(err));
     }
 
     deleteItem() {
         const item = this.state.currentItem;
-        // Omit Id. we want to remove all copies of the input phone number.
+        // Omit _id. we want to remove all copies of the input phone number.
         const record = {};
         record.phone = item.phone;
         record.notes = item.notes;
@@ -193,14 +194,15 @@ class Blacklist extends BaseComponent {
                 dataField: 'phone',
                 sort: true,
                 width: '5%',
-                sortCaret: CommonUI.ColumnSortCaret
+                sortCaret: CommonUI.ColumnSortCaret,
+                editable: true
             },
             {
                 text: 'Notes',
                 dataField: 'notes',
                 sort: true,
-                // width: '70%',
-                sortCaret: CommonUI.ColumnSortCaret
+                sortCaret: CommonUI.ColumnSortCaret,
+                editable: true
             },
             {
                 text: 'Manage',
@@ -261,11 +263,11 @@ class Blacklist extends BaseComponent {
                                     keyField={'_id'}
                                     insertRow={true}
                                     pagination={paginationFactory({showTotal: true})}
-                                  /*  cellEdit={{
+                                    cellEdit={ cellEditFactory({
                                         mode: 'click',
                                         blurToSave: true,
                                         afterSaveCell: this.onAfterSaveCell
-                                    }}*/
+                                    })}
                                 />
                             </Col>
                         </Row>
