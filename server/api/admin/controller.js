@@ -127,6 +127,7 @@ function remove(req, res) {
 }
 
 function blacklistremove(req, res) {
+    console.log(`blacklistremove`, req);
     mongo.Delete(req.body, 'Blacklist')
         .then(function (contact) {
             res.send(contact);
@@ -135,7 +136,7 @@ function blacklistremove(req, res) {
 
 function put(req, res) {
 
-    var data = _.omit(req.body, ['_id']);
+    const data = _.omit(req.body, ['_id']);
 
     mongo.Update({uuid: req.body.uuid}, {$set: data},  'Users')
     .then(function (response) {
