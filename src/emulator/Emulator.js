@@ -392,8 +392,8 @@ class Emulator extends BaseComponent {
                                                    value={this.state.Body || ''}
                                                    onChange={this.handleInputChange}
                                                    onKeyPress={this.onConversationKeypress}
-                                                   label={"Input"}
-                                                   hint={"Convo command"}/>
+                                                   label={"Enter command"}
+                                               />
                                         </Col>
                                         <Col md={"2"}>
                                             <Button size={"sm"}
@@ -408,8 +408,8 @@ class Emulator extends BaseComponent {
                                                    validate
                                                    value={this.state.From || ''}
                                                    onChange={this.handleInputChange}
-                                                   label={"Destination"}
-                                                   hint={"Phone number"}/>
+                                                   label={"Enter phone"}
+                                            />
                                         </Col>
                                         <Col md={"2"}>
                                             <Button size={"sm"}
