@@ -22,8 +22,8 @@ logger.level = 'debug';
 
 function login(req, res) {
     console.log(req.body);
-    var username = req.body['username'] || '';
-    var password = req.body['password'] || '';
+    const username = req.body['username'] || '';
+    const password = req.body['password'] || '';
     if (username === '' || password === '') {
         res.sendStatus(403);
     }
@@ -33,7 +33,7 @@ function login(req, res) {
 
             res.send(response);
         })
-        .catch(function (err) {
+        .catch( () => {
             res.sendStatus(403);
         });
 
@@ -45,7 +45,7 @@ function register(req, res) {
         .then(function (response) {
             res.send(response);
         })
-        .catch(function (err) {
+        .catch( () => {
             res.sendStatus(403);
         });
 
@@ -56,5 +56,5 @@ function register(req, res) {
 module.exports = {
     login: login,
     register: register
-}
+};
 
