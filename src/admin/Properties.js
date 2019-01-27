@@ -248,7 +248,7 @@ class Properties extends BaseComponent {
                                         onClick={this.handleInsertItem}
                                         disabled={!this.state.insertName || !this.state.insertContent}
                                         style={{marginTop: "1.5rem"}}>
-                                    <MDBIcon icon="plus"/>&nbsp;Add Property</Button>
+                                    <MDBIcon icon="plus"/>&nbsp;Add</Button>
                             </Col>
                             <Col md={"2"} className="text-danger">
                                 {this.state.insertError}>

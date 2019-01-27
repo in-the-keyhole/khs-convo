@@ -124,3 +124,8 @@ body {
 .groupListUserCount {
   text-align: center !important;
 }
+
+.pagination-totals {
+    font-weight: 300;
+    font-size: 0.9rem;
+}

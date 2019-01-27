@@ -456,6 +456,8 @@ class Admin extends BaseComponent {
         };
 
 
+        // TODO enable add button per inputs;  clear inputs after add
+
         return (
             <Col>
                 { this.modalAddUser() }
@@ -486,7 +488,7 @@ class Admin extends BaseComponent {
 
                             </Col>
                             <Col>
-                                <Button size={"sm"} onClick={() => this.openAddUserModal()}><MDBIcon icon="user-plus" />&nbsp;New User</Button>
+                                <Button size={"sm"} onClick={() => this.openAddUserModal()}><MDBIcon icon="plus" />&nbsp;Add</Button>
                             </Col>
                         </Row>
 

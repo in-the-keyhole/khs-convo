@@ -14,13 +14,20 @@
  * limitations under the License.
  */
 
+
 import React from "react";
 
+
 const customTotal = ((from, to, size) => (
-    <span className="react-bootstrap-table-pagination-total">{from} - {to} of {size}</span>
+    <span className={"pagination-totals"}>{from}&minus;{to}&nbsp;of&nbsp;{size}</span>
 ));
 
+/**
+ * Use these for BootstrapTable2 this: pagination={paginationFactory(pageinationOptions)}
+ * @type {{showTotal: boolean, paginationTotalRenderer: (function(*, *, *): *)}}
+ */
 export const pageinationOptions = {
     showTotal: true,
+    // pageListRenderer: pageListRenderer,
     paginationTotalRenderer: customTotal
 };
