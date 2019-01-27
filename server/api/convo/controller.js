@@ -265,7 +265,6 @@ function timesheetnotification(req, res) {
     const notificationText = req.query.text;
 
     // noinspection JSUnresolvedVariable
-    // noinspection JSUnresolvedVariable
     request({
         url: config.timesheet.url + '/sherpa/service/convo/latesttimeentries',
         method: 'GET'
