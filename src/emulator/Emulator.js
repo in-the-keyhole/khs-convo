@@ -25,6 +25,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import {checkCredentials} from "../common/checkCredentials";
 import BaseComponent from '../BaseComponent';
 import {connect} from "react-redux";
+import {pageinationOptions} from "../common/pageinationOptions";
 // noinspection ES6CheckImport
 import {
     Row,
@@ -380,16 +381,6 @@ class Emulator extends BaseComponent {
             }
         ];
 
-        const customTotal = ((from, to, size) => (
-            <span className="react-bootstrap-table-pagination-total">
-                {from} - {to} of {size}
-            </span>
-        ));
-
-        const pageinationOptions = {
-            showTotal: true,
-            paginationTotalRenderer: customTotal
-        };
 
         return (
             <Card>

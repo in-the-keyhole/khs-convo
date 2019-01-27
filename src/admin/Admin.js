@@ -21,6 +21,7 @@ import paginationFactory from 'react-bootstrap-table2-paginator';
 import filterFactory /*, { textFilter, selectFilter }*/ from 'react-bootstrap-table2-filter';
 import BootstrapTable from 'react-bootstrap-table-next';
 import CommonUI from '../common/CommonUI';
+import {pageinationOptions} from "../common/pageinationOptions";
 // noinspection ES6CheckImport
 import {
     Card,
@@ -474,7 +475,7 @@ class Admin extends BaseComponent {
                                     columns={ data.columns }
                                     defaultSorted={ [{dataField: 'name', order: 'desc'}] }
                                     noDataIndication="No matching users"
-                                    pagination={ paginationFactory( { showTotal: true } ) }
+                                    pagination={ paginationFactory( pageinationOptions ) }
                                     filter={ filterFactory() }
                                     cellEdit={ cellEditFactory({
                                         mode: 'click',

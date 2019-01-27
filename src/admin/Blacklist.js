@@ -22,7 +22,9 @@ import cellEditFactory from 'react-bootstrap-table2-editor';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import BootstrapTable from 'react-bootstrap-table-next';
 import BaseComponent from '../BaseComponent';
-import {connect} from "react-redux";// noinspection ES6CheckImport
+import {connect} from "react-redux";
+import {pageinationOptions} from "../common/pageinationOptions";
+// noinspection ES6CheckImport
 import {
     Row,
     Col,
@@ -264,7 +266,7 @@ class Blacklist extends BaseComponent {
                                     columns={columns}
                                     keyField={'_id'}
                                     insertRow={true}
-                                    pagination={paginationFactory({showTotal: true})}
+                                    pagination={paginationFactory(pageinationOptions)}
                                     cellEdit={ cellEditFactory({
                                         mode: 'click',
                                         blurToSave: true,
