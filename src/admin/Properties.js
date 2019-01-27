@@ -38,6 +38,7 @@ import {
     MDBIcon,
     Button
 } from 'mdbreact';
+import {connect} from "react-redux";
 
 class Properties extends BaseComponent {
     constructor(props) {
@@ -79,9 +80,9 @@ class Properties extends BaseComponent {
             method: 'delete',
             url: '../api/admin/content',
             data: remove,
-        }).then(function (res, me) {
-            console.log(me);
-        }).catch(function (err) {
+        }).then( (res) => {
+            console.log(res);
+        }).catch( (err) => {
             console.log(err)
         });
     }
@@ -96,16 +97,19 @@ class Properties extends BaseComponent {
             method: 'delete',
             url: '../api/admin/content',
             data: remove,
-        }).then(function (res, me) {
-            console.log(me);
-        }).catch(function (err) {
+        }).then( (res) => {
+            console.log(res);
+
+            this.fetchContents();
+
+        }).catch( (err) => {
             console.log(err)
         });
 
-        this.fetchContents();
         this.setState({
             deleteModal: false
         })
+
     }
 
     onAfterSaveCell(row /*, cellName, cellValue*/) {
@@ -133,7 +137,7 @@ class Properties extends BaseComponent {
             data: insert,
         }).then(res => {
             console.log(res);
-            this.setState( {insertName: null, insertContent: null} );
+            this.setState({insertName: null, insertContent: null});
         }).catch(err => {
             console.log(err)
         });
@@ -163,11 +167,17 @@ class Properties extends BaseComponent {
         this.setState({[target.name]: target.value});
     }
 
+// {/*<div className="adminIcons">
+//                 <i title="delete" className="glyphicon glyphicon-remove-sign text-danger clickable"
+//                    onClick={() => this.openDeleteModal(row)}/>
+//             </div>*/
+// }
     propertyToolbar(cell, row) {
         return (
-            <div className="adminIcons">
-                <i title="delete" className="glyphicon glyphicon-remove-sign text-danger clickable"
-                   onClick={() => this.openDeleteModal(row)}/>
+            <div className="btn-group" role="toolbar" aria-label="management">
+                <div onClick={() => this.openDeleteModal(row)}>
+                    <MDBIcon style={{marginLeft: '0.5rem', color: 'red'}} size={'lg'} icon={"ban"}/>
+                </div>
             </div>
         )
     }
@@ -220,7 +230,6 @@ class Properties extends BaseComponent {
                 align: 'center'
             }
         ];
-
 
         return (
             <div>
@@ -288,7 +297,7 @@ class Properties extends BaseComponent {
                                 </Button>
                             </Col>
                             <Col md={"5"}>
-                                <Button onClick={this.closeDeleteModal}>Cancel</Button>
+                                <Button onClick={() => this.closeDeleteModal()}>Cancel</Button>
                             </Col>
                         </Row>
                     </MDBModalBody>
@@ -298,4 +307,6 @@ class Properties extends BaseComponent {
     }
 }
 
-export default Properties;
+const mapStateToProps = state => ({credentials: state.credentials});
+export default connect(mapStateToProps)(Properties);
+
