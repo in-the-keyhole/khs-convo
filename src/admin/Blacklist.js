@@ -231,8 +231,6 @@ class Blacklist extends BaseComponent {
 
         const data = this.state.numbers;
 
-        // TODO enable add button per inputs;  clear inputs after add
-
         return (
             <div>
                 <Card>
@@ -253,8 +251,10 @@ class Blacklist extends BaseComponent {
                                           label={"Enter Notes"}/>
                             </Col>
                             <Col md={"2"}>
-                                <Button size={"sm"} onClick={() => this.handleInsertItem()}><MDBIcon
-                                    icon="plus"/>&nbsp;Add</Button>
+                                <Button size={"sm"}
+                                        onClick={() => this.handleInsertItem()}
+                                        disabled={!this.state.insertNumber || !this.state.insertNotes}
+                                ><MDBIcon icon="plus"/>&nbsp;Add</Button>
                             </Col>
                             <Col md={"2"} className="text-danger">
                                 <span>{this.state.insertError}</span>
