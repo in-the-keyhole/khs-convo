@@ -17,9 +17,7 @@
 import React from "react";
 
 const customTotal = ((from, to, size) => (
-    <span className="react-bootstrap-table-pagination-total">
-                {from} - {to} of {size}
-            </span>
+    <span className="react-bootstrap-table-pagination-total">{from} - {to} of {size}</span>
 ));
 
 export const pageinationOptions = {
