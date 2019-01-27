@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React  from 'react';
+import React from 'react';
 import restAPI from '../service/restAPI';
 import cellEditFactory from 'react-bootstrap-table2-editor';
 import paginationFactory from 'react-bootstrap-table2-paginator';
@@ -72,10 +72,10 @@ class Admin extends BaseComponent {
         };
 
         restAPI({
-            method:'post',
-            url:'/api/admin',
+            method: 'post',
+            url: '/api/admin',
             data: add
-        }).then( (res) => {
+        }).then((res) => {
 
             if (res && res.data && res.data === 'The email address is already registered') {
                 this.setState({
@@ -94,31 +94,32 @@ class Admin extends BaseComponent {
             }
 
 
-        }).catch(function(err){
-            console.log(err)});
-            event.preventDefault();
-        }
+        }).catch(function (err) {
+            console.log(err)
+        });
+        event.preventDefault();
+    }
 
 
-    fetchUsers(){
+    fetchUsers() {
 
         restAPI({
-            url:'/api/admin',
+            url: '/api/admin',
             data: this.state
-        }).then( (res) => {
+        }).then((res) => {
             this.setState({
-                users: res.data.sort(function(a,b){
-                    return   (a.FirstName.toLowerCase() > b.FirstName.toLowerCase()) ? 1 : -1;
+                users: res.data.sort(function (a, b) {
+                    return (a.FirstName.toLowerCase() > b.FirstName.toLowerCase()) ? 1 : -1;
                 }),
                 FirstName: '',
                 LastName: '',
                 Phone: '',
-                Email:'',
-                ConfirmEmail:'',
+                Email: '',
+                ConfirmEmail: '',
                 Status: 'active'
-             });
+            });
 
-        }).catch(function(err){
+        }).catch(function (err) {
             console.log(err);
         });
     }
@@ -170,18 +171,20 @@ class Admin extends BaseComponent {
     }
 
 
-    deleteUser(){
+    deleteUser() {
         const user = this.state.currentUser;
         user.Status = 'removed';
 
         restAPI({
-            method:'put',
-            url:'/api/admin',
+            method: 'put',
+            url: '/api/admin',
             data: user
-        }).then( () => {
+        }).then(() => {
             this.fetchUsers();
             this.closeDeleteModal();
-        }).catch(function(err){console.log(err)});
+        }).catch(function (err) {
+            console.log(err)
+        });
 
     }
 
@@ -294,7 +297,7 @@ class Admin extends BaseComponent {
                                             required
                                             value={this.state.FirstName}
                                             onChange={this.handleInputChange}
-                                            placeholder="First Name" />
+                                            placeholder="First Name"/>
                                     </div>
 
                                     <div className="form-group">
@@ -306,11 +309,13 @@ class Admin extends BaseComponent {
                                             required
                                             value={this.state.LastName}
                                             onChange={this.handleInputChange}
-                                            placeholder="Last Name" />
+                                            placeholder="Last Name"/>
                                     </div>
 
                                     <div className="form-group">
-                                        <input name="Phone" id="Phone" className="form-control" type="text" required value={this.state.Phone} onChange={this.handleInputChange} placeholder="Phone Number" />
+                                        <input name="Phone" id="Phone" className="form-control" type="text" required
+                                               value={this.state.Phone} onChange={this.handleInputChange}
+                                               placeholder="Phone Number"/>
                                     </div>
                                 </Col>
 
@@ -318,24 +323,29 @@ class Admin extends BaseComponent {
                                 <Col md={"3"}>
 
                                     <div className="form-group">
-                                        <input name="Email" id="Email" className="form-control" type="email" required value={this.state.Email} onChange={this.handleInputChange} placeholder="Email" />
+                                        <input name="Email" id="Email" className="form-control" type="email" required
+                                               value={this.state.Email} onChange={this.handleInputChange}
+                                               placeholder="Email"/>
                                     </div>
 
                                     <div className="form-group">
-                                        <input name="ConfirmEmail" id="ConfirmEmail" className="form-control" type="email" required="required"   value={this.state.ConfirmEmail} onChange={this.handleInputChange} placeholder="Confirm Email" />
+                                        <input name="ConfirmEmail" id="ConfirmEmail" className="form-control"
+                                               type="email" required="required" value={this.state.ConfirmEmail}
+                                               onChange={this.handleInputChange} placeholder="Confirm Email"/>
                                     </div>
 
                                     <div className="form-group">
 
                                         <div className="row">
                                             <div className="col-md-4">
-                                                <label> <h5>User Type</h5></label>
+                                                <label><h5>User Type</h5></label>
                                             </div>
                                             <div className="col-md-8">
 
-                                                <select id="addStatus"    className="form-control" name="Status" value={this.state.Status} onChange={this.handleInputChange}>
-                                                    <option   value="active">active</option>
-                                                    <option   value="admin">admin</option>
+                                                <select id="addStatus" className="form-control" name="Status"
+                                                        value={this.state.Status} onChange={this.handleInputChange}>
+                                                    <option value="active">active</option>
+                                                    <option value="admin">admin</option>
                                                 </select>
                                             </div>
 
@@ -345,8 +355,8 @@ class Admin extends BaseComponent {
                             </Row>
                             <Row>
                                 <Col md={"1"}> </Col>
-                                <Col md={"2"}> <Button  type="submit">Add User</Button></Col>
-                                <Col md={"9"}> <Button   onClick={()=> this.closeAddUserModal()}>Cancel</Button> </Col>
+                                <Col md={"2"}> <Button type="submit">Add User</Button></Col>
+                                <Col md={"9"}> <Button onClick={() => this.closeAddUserModal()}>Cancel</Button> </Col>
                             </Row>
                         </Container>
                     </form>
@@ -367,12 +377,14 @@ class Admin extends BaseComponent {
                                type="email"
                                required="required"
                                value={this.state.registrationEmail}
-                               onChange={this.handleInputChange} placeholder="Email" />
+                               onChange={this.handleInputChange} placeholder="Email"/>
                     </div>
                     <div className="red">{this.state.errorMsg}</div>
 
-                    <button className="btn btn-primary" onClick={() => this.sendRegistrationEmail()} >Send Registration Email</button>
-                    <button className="btn btn-default" onClick={() => this.closeCredentialsModal()} >Cancel</button>
+                    <button className="btn btn-primary" onClick={() => this.sendRegistrationEmail()}>Send Registration
+                        Email
+                    </button>
+                    <button className="btn btn-default" onClick={() => this.closeCredentialsModal()}>Cancel</button>
                 </ModalBody>
             </Modal>
         );
@@ -387,8 +399,12 @@ class Admin extends BaseComponent {
                     </div>
                     <Row>
                         <Col md={"3"}> </Col>
-                        <Col md={"4"}> <button className="btn btn-danger"  onClick={() => this.deleteUser()} >Delete</button> </Col>
-                        <Col md={"5"}> <button className="btn btn-default" onClick={() => this.closeDeleteModal()}>Cancel</button>   </Col>
+                        <Col md={"4"}>
+                            <button className="btn btn-danger" onClick={() => this.deleteUser()}>Delete</button>
+                        </Col>
+                        <Col md={"5"}>
+                            <button className="btn btn-default" onClick={() => this.closeDeleteModal()}>Cancel</button>
+                        </Col>
                     </Row>
                 </ModalBody>
             </Modal>
@@ -429,7 +445,7 @@ class Admin extends BaseComponent {
                 {
                     text: 'Status',
                     dataField: 'Status',
-                    attrs: { width: '100px'},
+                    attrs: {width: '100px'},
                     // filter: selectFilter( {options: {'active': 'active', 'admin': 'admin'} } ),
                     sort: true,
                     sortCaret: CommonUI.ColumnSortCaret
@@ -460,9 +476,9 @@ class Admin extends BaseComponent {
 
         return (
             <Col>
-                { this.modalAddUser() }
-                { this.modalCredentials() }
-                { this.modalDelete() }
+                {this.modalAddUser()}
+                {this.modalCredentials()}
+                {this.modalDelete()}
 
                 <Card>
                     <CardBody>
@@ -473,22 +489,26 @@ class Admin extends BaseComponent {
                                 <BootstrapTable
                                     bootstrap4
                                     keyField={'uuid'}
-                                    data={ data.rows }
-                                    columns={ data.columns }
-                                    defaultSorted={ [{dataField: 'name', order: 'desc'}] }
+                                    data={data.rows}
+                                    columns={data.columns}
+                                    defaultSorted={[{dataField: 'name', order: 'desc'}]}
                                     noDataIndication="No matching users"
-                                    pagination={ paginationFactory( pageinationOptions ) }
-                                    filter={ filterFactory() }
-                                    cellEdit={ cellEditFactory({
+                                    pagination={paginationFactory(pageinationOptions)}
+                                    filter={filterFactory()}
+                                    cellEdit={cellEditFactory({
                                         mode: 'click',
                                         blurToSave: true,
                                         afterSaveCell: this.onAfterSaveCell
-                                    }) }
+                                    })}
                                 />
 
                             </Col>
                             <Col>
-                                <Button size={"sm"} onClick={() => this.openAddUserModal()}><MDBIcon icon="plus" />&nbsp;Add</Button>
+                                <Button
+                                    size={"sm"}
+                                    disabled={!this.state.insertName || !this.state.insertContent}  // TODO
+                                    onClick={() => this.openAddUserModal()}
+                                ><MDBIcon icon="plus"/>&nbsp;Add</Button>
                             </Col>
                         </Row>
 

@@ -162,16 +162,13 @@ class Properties extends BaseComponent {
         this.fetchContents();
     }
 
+
     handleInputChange(event) {
         const target = event.target;
         this.setState({[target.name]: target.value});
     }
 
-// {/*<div className="adminIcons">
-//                 <i title="delete" className="glyphicon glyphicon-remove-sign text-danger clickable"
-//                    onClick={() => this.openDeleteModal(row)}/>
-//             </div>*/
-// }
+
     propertyToolbar(cell, row) {
         return (
             <div className="btn-group" role="toolbar" aria-label="management">
