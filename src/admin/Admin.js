@@ -22,7 +22,7 @@ import filterFactory /*, { textFilter, selectFilter }*/ from 'react-bootstrap-ta
 import BootstrapTable from 'react-bootstrap-table-next';
 import CommonUI from '../common/CommonUI';
 import {pageinationOptions} from "../common/pageinationOptions";
-// noinspection ES6CheckImport
+// ZZnoinspection ES6CheckImport
 import {
     Card,
     CardBody,
@@ -32,8 +32,11 @@ import {
     Row,
     Col,
     MDBIcon,
+    MDBInput,
     Modal,
-    ModalBody
+    ModalBody,
+    ModalHeader,
+    ModalFooter,
 } from 'mdbreact';
 import BaseComponent from '../BaseComponent';
 import {connect} from "react-redux";
@@ -52,14 +55,16 @@ class Admin extends BaseComponent {
         };
 
         this.componentWillMount = this.componentWillMount.bind(this);
-        this.addUser = this.addUser.bind(this);
+        this.addUserHandler = this.addUserHandler.bind(this);
         this.deleteUser = this.deleteUser.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.userToolbar = this.userToolbar.bind(this);
     }
 
 
-    addUser(event) {
+    addUserHandler(event) {
+        event.preventDefault();
+
         const add = {
             FirstName: this.state.FirstName,
             LastName: this.state.LastName,
@@ -67,7 +72,7 @@ class Admin extends BaseComponent {
             Email: this.state.Email,
             ConfirmEmail: this.state.ConfirmEmail,
             Status: this.state.Status,
-            Name: this.state.FirstName + ' ' + this.state.LastName,
+            Name: `${this.state.FirstName} ${this.state.LastName}`,
             basePath: window.location.origin
         };
 
@@ -75,7 +80,7 @@ class Admin extends BaseComponent {
             method: 'post',
             url: '/api/admin',
             data: add
-        }).then((res) => {
+        }).then(res => {
 
             if (res && res.data && res.data === 'The email address is already registered') {
                 this.setState({
@@ -93,11 +98,7 @@ class Admin extends BaseComponent {
                 this.fetchUsers();
             }
 
-
-        }).catch(function (err) {
-            console.log(err)
-        });
-        event.preventDefault();
+        }).catch( err => console.log(err));
     }
 
 
@@ -274,95 +275,86 @@ class Admin extends BaseComponent {
 
     modalAddUser() {
         return (
-            <Modal isOpen={this.state.addUserModal} onHide={this.close}>
-
-                <ModalBody>
-                    <form className="form" onSubmit={this.addUser}>
-
+            <Modal size={"lg"} isOpen={this.state.addUserModal} onHide={this.close}>
+                <form onSubmit={this.addUserHandler}>
+                    <ModalBody>
+                        <ModalHeader>Add User</ModalHeader>
                         <Container>
-
                             <Row>
-                                <Col md={"12"}>
+                                <Col>
                                     <p className="text-danger">{this.state.errorMsg}</p>
                                 </Col>
                             </Row>
                             <Row>
-                                <Col md={"3"}>
-                                    <div className="form-group">
-                                        <input
-                                            name="FirstName"
-                                            id="FirstName"
-                                            className="form-control"
-                                            type="text"
-                                            required
-                                            value={this.state.FirstName}
-                                            onChange={this.handleInputChange}
-                                            placeholder="First Name"/>
-                                    </div>
-
-                                    <div className="form-group">
-                                        <input
-                                            name="LastName"
-                                            id="LastName"
-                                            className="form-control"
-                                            type="text"
-                                            required
-                                            value={this.state.LastName}
-                                            onChange={this.handleInputChange}
-                                            placeholder="Last Name"/>
-                                    </div>
-
-                                    <div className="form-group">
-                                        <input name="Phone" id="Phone" className="form-control" type="text" required
-                                               value={this.state.Phone} onChange={this.handleInputChange}
-                                               placeholder="Phone Number"/>
-                                    </div>
+                                <Col md={"4"}>
+                                    <MDBInput
+                                        name="FirstName"
+                                        id="FirstName"
+                                        className="form-control"
+                                        type="text"
+                                        required
+                                        value={this.state.FirstName}
+                                        onChange={this.handleInputChange}
+                                        label="First Name"/>
                                 </Col>
-
-
+                                <Col md={"5"}>
+                                    <MDBInput
+                                        name="LastName"
+                                        id="LastName"
+                                        className="form-control"
+                                        type="text"
+                                        required
+                                        value={this.state.LastName}
+                                        onChange={this.handleInputChange}
+                                        label="Last Name"/>
+                                </Col>
                                 <Col md={"3"}>
-
-                                    <div className="form-group">
-                                        <input name="Email" id="Email" className="form-control" type="email" required
-                                               value={this.state.Email} onChange={this.handleInputChange}
-                                               placeholder="Email"/>
-                                    </div>
-
-                                    <div className="form-group">
-                                        <input name="ConfirmEmail" id="ConfirmEmail" className="form-control"
-                                               type="email" required="required" value={this.state.ConfirmEmail}
-                                               onChange={this.handleInputChange} placeholder="Confirm Email"/>
-                                    </div>
-
-                                    <div className="form-group">
-
-                                        <div className="row">
-                                            <div className="col-md-4">
-                                                <label><h5>User Type</h5></label>
-                                            </div>
-                                            <div className="col-md-8">
-
-                                                <select id="addStatus" className="form-control" name="Status"
-                                                        value={this.state.Status} onChange={this.handleInputChange}>
-                                                    <option value="active">active</option>
-                                                    <option value="admin">admin</option>
-                                                </select>
-                                            </div>
-
-                                        </div>
-                                    </div>
+                                    <MDBInput name="Phone" id="Phone" className="form-control" type="text" required
+                                              value={this.state.Phone} onChange={this.handleInputChange}
+                                              label="Phone Number"/>
                                 </Col>
                             </Row>
                             <Row>
-                                <Col md={"1"}> </Col>
-                                <Col md={"2"}> <Button type="submit">Add User</Button></Col>
-                                <Col md={"9"}> <Button onClick={() => this.closeAddUserModal()}>Cancel</Button> </Col>
+                                <Col md={"6"}>
+
+                                    <MDBInput name="Email" id="Email" className="form-control" type="email" required
+                                              value={this.state.Email} onChange={this.handleInputChange}
+                                              label="Email"/>
+                                </Col>
+                                <Col md={"6"}>
+                                    <MDBInput name="ConfirmEmail" id="ConfirmEmail" className="form-control"
+                                              type="email" required="required" value={this.state.ConfirmEmail}
+                                              onChange={this.handleInputChange} label="Confirm Email"/>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col md={"3"}>
+                                    <label style={{marginTop: '0.2rem', fontWeight: '300'}} htmlFor="addStatus">User
+                                        Type:</label>
+                                </Col>
+                                <Col md={"3"}>
+                                    <select id="addStatus" className="form-control" name="Status"
+                                            style={{fontWeight: '300', fontFamily: "Roboto, sans-serif"}}
+                                            value={this.state.Status} onChange={this.handleInputChange}>
+                                        <option value={"active"}>active</option>
+                                        <option value={"admin"}>admin</option>
+                                    </select>
+                                </Col>
                             </Row>
                         </Container>
-                    </form>
-                </ModalBody>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button
+                            size={"sm"}
+                            color={"primary"}
+                            type={"submit"}
+                        ><MDBIcon icon="plus"/>&nbsp;Add&nbsp;User</Button>
+                        <Button size={"sm"} onClick={() => this.closeAddUserModal()}>Cancel</Button>
+                    </ModalFooter>
+                </form>
             </Modal>
-        );
+        )
+            ;
     }
 
     modalCredentials() {
@@ -370,21 +362,21 @@ class Admin extends BaseComponent {
             <Modal isOpen={this.state.credentialsModal} onHide={this.close}>
                 <ModalBody>
                     <div className="form-group">
-                        <input autoComplete="off"
-                               name="registrationEmail"
-                               id="registrationEmail"
-                               className="form-control"
-                               type="email"
-                               required="required"
-                               value={this.state.registrationEmail}
-                               onChange={this.handleInputChange} placeholder="Email"/>
+                        <MDBInput autoComplete="off"
+                                  name="registrationEmail"
+                                  id="registrationEmail"
+                                  type="email"
+                                  required="required"
+                                  value={this.state.registrationEmail || ''}
+                                  onChange={this.handleInputChange}
+                                  label="Email"/>
                     </div>
                     <div className="red">{this.state.errorMsg}</div>
 
-                    <button className="btn btn-primary" onClick={() => this.sendRegistrationEmail()}>Send Registration
+                    <Button color={"primary"} onClick={() => this.sendRegistrationEmail()}>Send Registration
                         Email
-                    </button>
-                    <button className="btn btn-default" onClick={() => this.closeCredentialsModal()}>Cancel</button>
+                    </Button>
+                    <Button onClick={() => this.closeCredentialsModal()}>Cancel</Button>
                 </ModalBody>
             </Modal>
         );
@@ -400,10 +392,10 @@ class Admin extends BaseComponent {
                     <Row>
                         <Col md={"3"}> </Col>
                         <Col md={"4"}>
-                            <button className="btn btn-danger" onClick={() => this.deleteUser()}>Delete</button>
+                            <Button color={"danger"} onClick={() => this.deleteUser()}>Delete</Button>
                         </Col>
                         <Col md={"5"}>
-                            <button className="btn btn-default" onClick={() => this.closeDeleteModal()}>Cancel</button>
+                            <Button onClick={() => this.closeDeleteModal()}>Cancel</Button>
                         </Col>
                     </Row>
                 </ModalBody>
@@ -504,15 +496,10 @@ class Admin extends BaseComponent {
 
                             </Col>
                             <Col>
-                                <Button
-                                    size={"sm"}
-                                    disabled={!this.state.insertName || !this.state.insertContent}  // TODO
-                                    onClick={() => this.openAddUserModal()}
+                                <Button size={"sm"} onClick={() => this.openAddUserModal()}
                                 ><MDBIcon icon="plus"/>&nbsp;Add</Button>
                             </Col>
                         </Row>
-
-
                     </CardBody>
                 </Card>
             </Col>
