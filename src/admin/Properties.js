@@ -34,6 +34,8 @@ import {
     CardTitle,
     MDBModal,
     MDBModalBody,
+    MDBModalHeader,
+    MDBModalFooter,
     MDBInput,
     MDBIcon,
     Button
@@ -80,9 +82,9 @@ class Properties extends BaseComponent {
             method: 'delete',
             url: '../api/admin/content',
             data: remove,
-        }).then( (res) => {
+        }).then((res) => {
             console.log(res);
-        }).catch( (err) => {
+        }).catch((err) => {
             console.log(err)
         });
     }
@@ -97,12 +99,12 @@ class Properties extends BaseComponent {
             method: 'delete',
             url: '../api/admin/content',
             data: remove,
-        }).then( (res) => {
+        }).then((res) => {
             console.log(res);
 
             this.fetchContents();
 
-        }).catch( (err) => {
+        }).catch((err) => {
             console.log(err)
         });
 
@@ -180,9 +182,11 @@ class Properties extends BaseComponent {
     }
 
 
-    openDeleteModal(property) {
+    openDeleteModal(row) {
+        console.log(`openDeleteModal`, row);
         this.setState({
-            currentProperty: property,
+            name: row.Name,
+            currentProperty: row,
             deleteModal: true
         })
     }
@@ -284,19 +288,12 @@ class Properties extends BaseComponent {
 
                 <MDBModal isOpen={this.state.deleteModal} onHide={this.close}>
                     <MDBModalBody>
-                        <div className="form-group">
-                            <label>Delete property?</label>
-                        </div>
-                        <Row className="row">
-                            <Col md={"3"}> </Col>
-                            <Col md={"4"}>
-                                <Button color="danger" onClick={() => this.deleteProperty()}>Delete
-                                </Button>
-                            </Col>
-                            <Col md={"5"}>
-                                <Button onClick={() => this.closeDeleteModal()}>Cancel</Button>
-                            </Col>
-                        </Row>
+                        <MDBModalHeader>Delete property</MDBModalHeader>
+                        <Row><Col sm={"1"}>&nbsp;</Col><Col>{this.state.name || ''}</Col></Row>
+                        <MDBModalFooter>
+                            <Button color="danger" onClick={() => this.deleteProperty()}>Delete</Button>
+                            <Button onClick={() => this.closeDeleteModal()}>Cancel</Button>
+                        </MDBModalFooter>
                     </MDBModalBody>
                 </MDBModal>
             </div>
