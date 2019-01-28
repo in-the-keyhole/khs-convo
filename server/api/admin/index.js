@@ -79,10 +79,8 @@ module.exports = function (app) {
     router.delete('/', auth.isAuthAdmin, controller.remove);
     router.post('/sendRegistrationEmail', auth.isAuthAdmin, controller.sendRegistrationEmail);
     router.get('/getDirectories', auth.isAuth, controller.getDirectories);
-    // router.post('/fileupload', upload.any(), controller.fileupload);
-    router.post('/fileupload', upload(), controller.fileupload);
+    router.post('/fileupload', upload.any(), controller.fileupload);
     router.get('/fileExistsOnUpload', auth.isAuth, controller.fileExistsOnUpload);
-    // router.post('/fileExistsOnUploadPost', fileNameCheck.any(), controller.fileExistsOnUploadPost);
-    router.post('/fileExistsOnUploadPost', fileNameCheck(), controller.fileExistsOnUploadPost);
+    router.post('/fileExistsOnUploadPost', fileNameCheck.any(), controller.fileExistsOnUploadPost);
     app.use('/api/admin', router);
 };

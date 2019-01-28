@@ -355,7 +355,8 @@ function sendRegistrationEmail(req, res) {
 
     transporter.sendMail(mailOptions, (error) => {
         if (error) {
-            res.status(500).send('bad email');
+            // res.status(500).send('bad email'); // <== This caused server and client issues
+            res.send('bad email');
         } else {
             res.send('email submitted');
         }
