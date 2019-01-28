@@ -33,6 +33,8 @@ import {
     CardTitle,
     MDBModal,
     MDBModalBody,
+    MDBModalHeader,
+    MDBModalFooter,
     MDBInput,
     MDBIcon,
     Button
@@ -101,7 +103,7 @@ class Blacklist extends BaseComponent {
                 phone: this.state.insertNumber,
                 notes: this.state.insertNotes
             });
-            this.setState( {insertNumber: null, insertNotes: null} );
+            this.setState({insertNumber: null, insertNotes: null});
         } else {
             this.setState({
                 insertError: "Phone number cannot be empty"
@@ -118,6 +120,7 @@ class Blacklist extends BaseComponent {
 
 
     openDeleteModal(item) {
+        console.log(`row`, item);
         this.setState({
             currentItem: item,
             deleteModal: true
@@ -179,7 +182,6 @@ class Blacklist extends BaseComponent {
         return (
             <div className="btn-group" role="toolbar" aria-label="management">
                 <div onClick={() => this.openDeleteModal(row)}>
-                {/*<div onClick={() => alert(row._id)}>*/}
                     <MDBIcon style={{marginLeft: '0.5rem', color: 'red'}} size={'lg'} icon={"ban"}/>
                 </div>
             </div>
@@ -269,7 +271,7 @@ class Blacklist extends BaseComponent {
                                     keyField={'_id'}
                                     insertRow={true}
                                     pagination={paginationFactory(pageinationOptions)}
-                                    cellEdit={ cellEditFactory({
+                                    cellEdit={cellEditFactory({
                                         mode: 'click',
                                         blurToSave: true,
                                         afterSaveCell: this.onAfterSaveCell
@@ -280,20 +282,15 @@ class Blacklist extends BaseComponent {
                     </CardBody>
                 </Card>
 
-                <MDBModal isOpen={this.state.deleteModal} onHide={this.close}>
+                <MDBModal size={"sm"} isOpen={this.state.deleteModal} onHide={this.close}>
                     <MDBModalBody>
-                        <Row>
-                            <Col><label>Delete the row?</label></Col>
-                        </Row>
-                        <Row>
-                            <Col md={"3"}> </Col>
-                            <Col md={"4"}>
-                                <Button size={"sm"}  color={"danger"} onClick={() => this.deleteItem()}>Delete</Button>
-                            </Col>
-                            <Col md={"5"}>
-                                <Button size={"sm"} onClick={() => this.closeDeleteModal()}>Cancel</Button>
-                            </Col>
-                        </Row>
+                        <MDBModalHeader>Delete Blacklist Item?</MDBModalHeader>
+                        <Row><Col sm={"1"}>&nbsp;</Col><Col>{this.state.currentItem
+                            ? `Phone: ${this.state.currentItem.phone}` : ''}</Col></Row>
+                        <MDBModalFooter>
+                            <Button size={"sm"} color={"danger"} onClick={() => this.deleteItem()}>Yes</Button>
+                            <Button size={"sm"} onClick={() => this.closeDeleteModal()}>No</Button>
+                        </MDBModalFooter>
                     </MDBModalBody>
                 </MDBModal>
             </div>
