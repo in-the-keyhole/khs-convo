@@ -98,7 +98,7 @@ class Admin extends BaseComponent {
                 this.fetchUsers();
             }
 
-        }).catch( err => console.log(err));
+        }).catch(err => console.log(err));
     }
 
 
@@ -217,10 +217,12 @@ class Admin extends BaseComponent {
     }
 
 
-    openDeleteModal(user) {
-        console.log('openDeleteModal');
+    openDeleteModal(row) {
+        console.log('openDeleteModal', row);
         this.setState({
-            currentUser: user,
+            currentUser: row,
+            firstName: row.FirstName,
+            lastName: row.LastName,
             deleteModal: true
         });
     }
@@ -353,26 +355,25 @@ class Admin extends BaseComponent {
                     </ModalFooter>
                 </form>
             </Modal>
-        )
-            ;
+        );
     }
 
     modalCredentials() {
         return (
             <Modal isOpen={this.state.credentialsModal} onHide={this.close}>
                 <ModalBody>
-                    <div className="form-group">
-                        <MDBInput autoComplete="off"
-                                  name="registrationEmail"
-                                  id="registrationEmail"
-                                  type="email"
-                                  required="required"
-                                  value={this.state.registrationEmail || ''}
-                                  onChange={this.handleInputChange}
-                                  label="Email"/>
-                    </div>
+                    <ModalHeader>Send Registration Email</ModalHeader>
+                    <MDBInput autoComplete="off"
+                              name="registrationEmail"
+                              id="registrationEmail"
+                              type="email"
+                              required="required"
+                              value={this.state.registrationEmail || ''}
+                              onChange={this.handleInputChange}
+                              label="Email"/>
                     <div className="red">{this.state.errorMsg}</div>
 
+                    <ModalFooter/>
                     <Button color={"primary"} onClick={() => this.sendRegistrationEmail()}>Send Registration
                         Email
                     </Button>
@@ -386,23 +387,16 @@ class Admin extends BaseComponent {
         return (
             <Modal isOpen={this.state.deleteModal} onHide={this.close}>
                 <ModalBody>
-                    <div className="form-group">
-                        <label>Delete?</label>
-                    </div>
-                    <Row>
-                        <Col md={"3"}> </Col>
-                        <Col md={"4"}>
-                            <Button color={"danger"} onClick={() => this.deleteUser()}>Delete</Button>
-                        </Col>
-                        <Col md={"5"}>
-                            <Button onClick={() => this.closeDeleteModal()}>Cancel</Button>
-                        </Col>
-                    </Row>
+                    <ModalHeader> Delete User?</ModalHeader>
+                    <Row><Col md={"1"}>&nbsp;</Col><Col>{this.state.firstName}&nbsp;{this.state.lastName}</Col></Row>
+                    <ModalFooter>
+                        <Button color={"danger"} onClick={() => this.deleteUser()}>Yes</Button>
+                        <Button onClick={() => this.closeDeleteModal()}>No</Button>
+                    </ModalFooter>
                 </ModalBody>
             </Modal>
         );
     }
-
 
     render() {
         // Note: textFilter searching commented-out. It results in a confusing grid giving not much value added. Mauget's pinion.
