@@ -21,8 +21,8 @@ import paginationFactory from 'react-bootstrap-table2-paginator';
 import filterFactory /*, { textFilter, selectFilter }*/ from 'react-bootstrap-table2-filter';
 import BootstrapTable from 'react-bootstrap-table-next';
 import CommonUI from '../common/CommonUI';
-import {pageinationOptions} from "../common/pageinationOptions";
-// ZZnoinspection ES6CheckImport
+import {pageinationOptions} from '../common/pageinationOptions';
+// noinspection ES6CheckImport
 import {
     Card,
     CardBody,
@@ -449,7 +449,8 @@ class Admin extends BaseComponent {
                     isDummyField: true,
                     formatter: this.userToolbar,
                     editable: false,
-                    align: 'center'
+                    align: 'center',
+                    headerAlign: 'center'
                 }
             ],
 

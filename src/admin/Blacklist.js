@@ -217,7 +217,8 @@ class Blacklist extends BaseComponent {
                 width: '5%',
                 formatter: this.blackListToolbar,
                 editable: false,
-                align: 'center'
+                align: 'center',
+                headerAlign: 'center'
             }
         ];
 

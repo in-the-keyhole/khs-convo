@@ -228,7 +228,8 @@ class Properties extends BaseComponent {
                 width: '5%',
                 formatter: this.propertyToolbar,
                 editable: false,
-                align: 'center'
+                align: 'center',
+                headerAlign: 'center'
             }
         ];
 
