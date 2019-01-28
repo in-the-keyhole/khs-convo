@@ -242,6 +242,7 @@ class Properties extends BaseComponent {
                             <Col md={"2"}>
                                 <MDBInput name="insertName" id="insertName"
                                           type="text"
+                                          autoFocus
                                           value={this.state.insertName || ''}
                                           label={"Name"}
                                           onChange={this.handleInputChange}/>
