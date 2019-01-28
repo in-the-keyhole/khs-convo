@@ -23,19 +23,11 @@ import CommonUI from '../common/CommonUI';
 import '../styles/data-table.css';
 // noinspection ES6CheckImport
 import {
-    Button,
-    Card,
-    CardBody,
-    CardTitle,
+    MDBCard,
+    MDBCardBody,
+    MDBCardTitle,
     Col,
-    Container,
-    MDBIcon,
-    MDBInput,
-    Modal,
-    ModalBody,
-    ModalFooter,
-    ModalHeader,
-    Row,
+    Row
 } from 'mdbreact';
 import BaseComponent from '../BaseComponent';
 import {connect} from "react-redux";
@@ -229,9 +221,9 @@ class ConversationsList extends BaseComponent {
         ];
 
         return (
-            <Card>
-                <CardBody>
-                    <CardTitle>Analytics</CardTitle>
+            <MDBCard>
+                <MDBCardBody>
+                    <MDBCardTitle>Analytics</MDBCardTitle>
                     <Row><Col>Conversations</Col></Row>
                     <Row>
                         <Col>
@@ -259,8 +251,8 @@ class ConversationsList extends BaseComponent {
                             />
                         </Col>
                     </Row>
-                </CardBody>
-            </Card>
+                </MDBCardBody>
+            </MDBCard>
         );
     }
 }
