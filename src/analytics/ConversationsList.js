@@ -40,6 +40,8 @@ class ConversationsList extends BaseComponent {
             limitCount: 10,
             currentPage: 1,
             sizePerPage: 10,
+            currSizePerPage: 10,
+            paginationSize: 10,
             totalDataSize: 0,
             showTotal: true
         };
@@ -59,12 +61,15 @@ class ConversationsList extends BaseComponent {
         opts.onPageChange = this.onPageChange;
         opts.onSizePerPageList = this.onSizePerPageList;
         // opts.onSortChange = this.onSortChange;
-        opts.alwaysShowAllBtns = true;
+        opts.alwaysShowAllBtns = false;
         opts.withFirstAndLast = true;
         opts.page = this.state.currentPage;
         opts.sizePerPage = this.state.sizePerPage;
+        opts.currSizePerPage = this.state.currSizePerPage;
+        opts.paginationSize = this.state.paginationSize;
         opts.totalSize = this.state.totalDataSize;
         opts.showTotal = this.state.showTotal;
+        opts.sizePerPageList = [10, 15, 25, 50];
 
         return Object.assign({}, opts, baseOptions);
     }
@@ -178,8 +183,7 @@ class ConversationsList extends BaseComponent {
     static answerFormatter(cell) {
         const maxLen = 75;
         const val = cell ? cell.toString() : '';
-        const len = val.length;
-        return len > maxLen ? `${val.slice(0, maxLen)} ...` : val;
+        return val.length > maxLen ? `${ConversationsList._slicer(val, maxLen)} ...` : val;
     }
 
 
@@ -285,6 +289,7 @@ class ConversationsList extends BaseComponent {
                                 fetchInfo={{dataTotalSize: this.totalDataSize}}
                                 pagination={paginationFactory(IS_REMOTE_SCROLLING
                                     ? this.mergedPaginationOptions : pageinationOptions)}
+                                currSizePerPage={this.state.currSizePerPage}
 
                                 // options={{
                                 //     sizePerPage: this.props.sizePerPage,
