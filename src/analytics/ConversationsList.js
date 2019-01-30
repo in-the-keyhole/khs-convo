@@ -208,8 +208,8 @@ class ConversationsList extends BaseComponent {
      *           newValue
      *   }
      *
-     * @param type
-     * @parmm newState
+     * @param type as listed above
+     * @param newState next React state to be set
      */
     onTableChange(type, newState) {
         // const types = ['filter', 'pagination', 'sort', 'cellEdit'];
