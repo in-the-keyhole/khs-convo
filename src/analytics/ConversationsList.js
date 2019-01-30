@@ -22,85 +22,87 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import CommonUI from '../common/CommonUI';
 import '../styles/data-table.css';
 // noinspection ES6CheckImport
-import {
-    MDBCard,
-    MDBCardBody,
-    MDBCardTitle,
-    Col,
-    Row
-} from 'mdbreact';
+import {Card, CardBody, CardTitle, Col, Row} from 'mdbreact';
 import BaseComponent from '../BaseComponent';
 import {connect} from "react-redux";
+
+const IS_REMOTE_SCROLLING = false;
 
 class ConversationsList extends BaseComponent {
     constructor(props) {
         super(props);
         this.state = {
-            convos: [],
+            convoCount: 0,
             filteredDataList: [],
-            sortBy: 'id',
+            sortBy: '_id',
             sortDir: null,
             skipCount: 0,
             limitCount: 10,
-            convoCount: 0,
             currentPage: 1,
             sizePerPage: 10,
             totalDataSize: 0,
+            showTotal: true
         };
 
-        console.log(`props`, props);
+        console.log(`ConversationsList props`, props);
 
         this.componentWillMount = this.componentWillMount.bind(this);
         this.onPageChange = this.onPageChange.bind(this);
         this.onSizePerPageList = this.onSizePerPageList.bind(this);
         this.onSortChange = this.onSortChange.bind(this);
         this.getPaginationOptions = this.getPaginationOptions.bind(this);
+        this.onTableChange = this.onTableChange.bind(this);
     }
 
-    getPaginationOptions(baseOptions){
-        const opts = baseOptions;
-        opts.currSizePerPage = this.state.sizePerPage;
-        opts.totalSize = this.state.totalDataSize;
-            // alwaysShowAllBtns: true,
-            // withFirstAndLast: false,
+    getPaginationOptions(baseOptions) {
+        const opts = {};
         opts.onPageChange = this.onPageChange;
-        opts.currPage = this.currentPage;
         opts.onSizePerPageList = this.onSizePerPageList;
-        opts.onSortChange = this.onSortChange;
-        return opts;
+        // opts.onSortChange = this.onSortChange;
+        opts.alwaysShowAllBtns = true;
+        opts.withFirstAndLast = true;
+        opts.page = this.state.currentPage;
+        opts.sizePerPage = this.state.sizePerPage;
+        opts.totalSize = this.state.totalDataSize;
+        opts.showTotal = this.state.showTotal;
+
+        return Object.assign({}, opts, baseOptions);
     }
 
 
     componentWillMount() {
         super.componentWillMount();
         this.fetchConversationCount();
-        // this.fetchConversationsByChunk();
-        this.fetchAllConversations();
+        IS_REMOTE_SCROLLING ? this.fetchConversationsByChunk() : this.fetchAllConversations();
     }
 
 
+    /**
+     * Used only for local scrolling option
+     */
     fetchAllConversations() {
-        const self = this;
         restAPI({
             url: '../api/convo/all',
             data: this.state
-        }).then( res => {
+        }).then(res => {
             console.log(res);
-            self.setState({filteredDataList: res.data});
+            this.setState({filteredDataList: res.data});
         }).catch(function (err) {
             console.log(err)
         });
     }
 
+    /**
+     * Used only for remote scrolling option
+     */
     fetchConversationsByChunk(skipCount, limitCount) {
-        const self = this;
-        if (skipCount !== undefined) self.state.skipCount = skipCount;
-        if (limitCount !== undefined) self.state.limitCount = limitCount;
+        if (skipCount) this.state.skipCount = skipCount;
+        if (limitCount) this.state.limitCount = limitCount;
         restAPI({
-            url: '../api/convo/getconvochunk?skipCount=' + self.state.skipCount + '&limitCount=' + self.state.limitCount,
+            url: `../api/convo/getconvochunk?skipCount=${this.state.skipCount}&limitCount=${this.state.limitCount}`,
             data: this.state
         }).then(res => {
-            self.setState({
+            this.setState({
                 filteredDataList: res.data,
                 sizePerPage: limitCount,
                 limitCount: limitCount
@@ -109,12 +111,11 @@ class ConversationsList extends BaseComponent {
     }
 
     fetchConversationCount() {
-        const self = this;
         restAPI({
             url: '../api/convo/getconvocount',
             data: this.state
         }).then(res => {
-            self.setState({
+            this.setState({
                 convoCount: res.data,
                 totalDataSize: res.data
             });
@@ -151,7 +152,7 @@ class ConversationsList extends BaseComponent {
 
         const skipCount = (page * sizePerPage) - sizePerPage;
         this.fetchConversationsByChunk(skipCount, sizePerPage);
-        this.setState({sizePerPage: sizePerPage});
+        this.setState( {page: page, sizePerPage: sizePerPage} );
     }
 
     onSizePerPageList(sizePerPage) {
@@ -162,22 +163,65 @@ class ConversationsList extends BaseComponent {
         });
     }
 
-    static phoneNumberFormatter(cell){
-        return cell ? cell.toString().slice(0, 20) : '';
+    static _slicer(cell, maxLen){
+        return cell ? cell.toString().slice(0, maxLen) : '';
     }
 
-    static questionFormatter(cell){
-        return cell ? cell.toString().slice(0, 26) : '';
+    static phoneNumberFormatter(cell) {
+        return ConversationsList._slicer(cell, 20);
     }
 
-    static answerFormatter(cell){
+    static questionFormatter(cell) {
+        return ConversationsList._slicer(cell, 26);
+    }
+
+    static answerFormatter(cell) {
         const maxLen = 75;
-        const val = cell.toString();
+        const val = cell ? cell.toString() : '';
         const len = val.length;
         return len > maxLen ? `${val.slice(0, maxLen)} ...` : val;
     }
 
+
+    /**
+     * See https://react-bootstrap-table.github.io/react-bootstrap-table2/docs/table-props.html#ontablechange-function
+     * Specify the onTableChange prop on a React BootStrap Table 2
+     *
+     * Allowed values of type, a key to newState
+     *      - filter
+     *      - pagination
+     *      - sort
+     *      - cellEdit
+     *
+     *  Shape of newSate
+     *
+     *   {
+     *       page,  // newest page
+     *       sizePerPage,  // newest sizePerPage
+     *       sortField,  // newest sort field
+     *       sortOrder,  // newest sort order
+     *       filters, // an object which have current filter status per column
+     *       data, // when you enable remote sort, you may need to base on data to sort if data is filtered/searched
+     *       cellEdit: {  // You can only see this prop when type is cellEdit
+     *           rowId,
+     *           dataField,
+     *           newValue
+     *   }
+     *
+     * @param type
+     * @parmm newState
+     */
+    onTableChange(type, newState) {
+        // const types = ['filter', 'pagination', 'sort', 'cellEdit'];
+        if (type === 'pagination') {
+            console.log(`newState`, newState);
+            this.setState({page: newState.page, sizePerPage: newState.sizePerPage});
+        }
+    }
+
+
     render() {
+        this.mergedPaginationOptions = this.getPaginationOptions(pageinationOptions);
 
         const columns = [
             {
@@ -189,28 +233,28 @@ class ConversationsList extends BaseComponent {
             {
                 text: 'Date',
                 dataField: 'date',
-                // sort: true,
+                sort: true,
                 sortCaret: CommonUI.ColumnSortCaret
             },
             {
                 text: 'Phone',
                 dataField: 'phone',
                 formatter: (ConversationsList.phoneNumberFormatter),
-                // sort: true,
+                sort: true,
                 sortCaret: CommonUI.ColumnSortCaret
             },
             {
                 text: 'Question',
                 dataField: 'question',
                 formatter: (ConversationsList.questionFormatter),
-                // sort: true,
+                sort: true,
                 sortCaret: CommonUI.ColumnSortCaret
             },
             {
                 text: 'Answer',
                 dataField: 'answer',
                 formatter: (ConversationsList.answerFormatter),
-                // sort: true,
+                sort: true,
                 sortCaret: CommonUI.ColumnSortCaret
             },
             {
@@ -221,9 +265,9 @@ class ConversationsList extends BaseComponent {
         ];
 
         return (
-            <MDBCard>
-                <MDBCardBody>
-                    <MDBCardTitle>Analytics</MDBCardTitle>
+            <Card>
+                <CardBody>
+                    <CardTitle>Analytics</CardTitle>
                     <Row><Col>Conversations</Col></Row>
                     <Row>
                         <Col>
@@ -231,13 +275,17 @@ class ConversationsList extends BaseComponent {
                                 bootstrap4
                                 keyField={'_id'}
                                 columns={columns}
-                                // data={this.state.filteredDataList}
                                 data={this.state.filteredDataList}
-                                // defaultSorted={[{dataField: 'date', order: 'desc'}]}
+                                defaultSorted={[{dataField: 'date', order: 'desc'}]}
                                 noDataIndication="No conversations"
-                                remote={false}
-                                pagination={paginationFactory(pageinationOptions)}
-                                // fetchInfo={{dataTotalSize: this.totalDataSize}}
+                                remote={IS_REMOTE_SCROLLING}
+                                onTableChange={this.onTableChange}
+                                onSizePerPageList={this.onSizePerPageList}
+                                page={this.state.currentPage}
+                                fetchInfo={{dataTotalSize: this.totalDataSize}}
+                                pagination={paginationFactory(IS_REMOTE_SCROLLING
+                                    ? this.mergedPaginationOptions : pageinationOptions)}
+
                                 // options={{
                                 //     sizePerPage: this.props.sizePerPage,
                                 //     // alwaysShowAllBtns: true,
@@ -251,8 +299,8 @@ class ConversationsList extends BaseComponent {
                             />
                         </Col>
                     </Row>
-                </MDBCardBody>
-            </MDBCard>
+                </CardBody>
+            </Card>
         );
     }
 }
