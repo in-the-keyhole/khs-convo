@@ -25,37 +25,6 @@ import CommonUI from '../common/CommonUI';
 // noinspection ES6CheckImport
 import {Card, CardBody, CardTitle, Col, Row} from 'mdbreact';
 
-/*const columns = [{
-    dataField: 'id',
-    text: 'Product ID'
-}, {
-    dataField: 'name',
-    text: 'Product Name'
-}, {
-    dataField: 'price',
-    text: 'Product Price'
-}];
-
-const products = [
-    {id: '1', name: 'Product 1', price: '$123.45'},
-    {id: '2', name: 'Product 2', price: '$33.99'},
-    {id: '3', name: 'Product 3', price: `9.99`},
-    {id: '11', name: 'Product 11', price: '$123.45'},
-    {id: '21', name: 'Product 21', price: '$33.99'},
-    {id: '31', name: 'Product 12', price: `9.99`},
-    {id: '12', name: 'Product 12', price: '$123.45'},
-    {id: '22', name: 'Product 22', price: '$33.99'},
-    {id: '32', name: 'Product 32', price: `9.99`},
-    {id: '14', name: 'Product 14', price: '$123.45'},
-    {id: '44', name: 'Product 44', price: '$33.99'},
-    {id: '34', name: 'Product 34', price: `9.99`},
-    {id: '15', name: 'Product 15', price: '$123.45'},
-    {id: '25', name: 'Product 25', price: '$33.99'},
-    {id: '35', name: 'Product 35', price: `9.99`},
-    {id: '16', name: 'Product 16', price: '$123.45'},
-    {id: '26', name: 'Product 26', price: '$33.99'},
-    {id: '36', name: 'Product 36', price: `9.99`},
-];*/
 
 //====== Column formatting functions ============
 const _slicer = (arg, maxLen) => arg ? arg.toString().slice(0, maxLen) : '';
@@ -136,6 +105,9 @@ const RemotelyPaginatedTable = (
 );
 
 
+/**
+ * This component renders the converastoin list in remotely paged sections.
+ */
 class ConversionListChunked extends BaseComponent {
     constructor(props) {
         super(props);
@@ -151,16 +123,29 @@ class ConversionListChunked extends BaseComponent {
     }
 
 
+    /**
+     * All URL-driven components should call super here. Our Redux credential mechanism will
+     * kick us back to login if an aunathenticated user invokes the URL for this component.
+     * Initial data load if that succeeds.
+     */
     componentWillMount() {
         super.componentWillMount();
         this.fetchDataCount();
     }
 
+
+    /**
+     * This causes the initial remote data chunk to render after mounting.
+     */
     componentDidMount() {
-        // Kick in the first chunk
+        // Render the first chunk
         this.onTableChange('pagination', {page: 1, sizePerPage: this.state.sizePerPage})
     }
 
+
+    /**
+     * Asynchronously updates the total data (convo) record count: state.totalSize.
+     */
     fetchDataCount() {
         restAPI({
             url: '../api/convo/getconvocount',
@@ -173,6 +158,34 @@ class ConversionListChunked extends BaseComponent {
     }
 
 
+    /**
+     * See https://react-bootstrap-table.github.io/react-bootstrap-table2/docs/table-props.html#ontablechange-function
+     * Specify the onTableChange prop on a React BootStrap Table 2
+     *
+     * Allowed values of type, a key to newState
+     *      - filter
+     *      - pagination
+     *      - sort
+     *      - cellEdit
+     *
+     *  Shape of newSate
+     *
+     *   {
+     *       page,  // newest page
+     *       sizePerPage,  // newest sizePerPage
+     *       sortField,  // newest sort field
+     *       sortOrder,  // newest sort order
+     *       filters, // an object which have current filter status per column
+     *       data, // when you enable remote sort, you may need to base on data to sort if data is filtered/searched
+     *       cellEdit: {  // You can only see this prop when type is cellEdit
+     *           rowId,
+     *           dataField,
+     *           newValue
+     *   }
+     *
+     * @param type as listed above
+     * @param newState next React state to be set
+     */
     onTableChange = (type, {page, sizePerPage}) => {
         const currentIndex = (page - 1) * sizePerPage;
         restAPI({
@@ -189,6 +202,10 @@ class ConversionListChunked extends BaseComponent {
     };
 
 
+    /**
+     * A required override for a React class-based component. It ... renders
+     * @returns {*}
+     */
     render() {
         const {data, sizePerPage, page, totalSize, showTotal, onTableChange, paginationTotalRenderer} = this.state;
         return (
