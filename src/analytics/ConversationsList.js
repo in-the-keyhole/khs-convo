@@ -100,7 +100,7 @@ class ConversationsList extends BaseComponent {
     /**
      * Used only for remote scrolling option
      */
-    fetchConversationsByChunk(skipCount, limitCount) {
+    fetchConversationsByChunk(skipCount, limitCount, sortField, sortOrder) {
         if (skipCount) this.state.skipCount = skipCount;
         if (limitCount) this.state.limitCount = limitCount;
         restAPI({

@@ -53,11 +53,14 @@ function getvisitorscount(req, res) {
 }
 
 function getconvochunk(req, res) {
-    mongo.GetSortByChunk({}, { _id: -1 }, 'Convos', parseInt(req.query.limitCount), parseInt(req.query.skipCount))
+    const sortField = req.query.sortField ? req.query.sortField : '_id';
+    const sortOrder = req.query.sortOrder ? parseInt(req.query.sortOrder) : '-1';
+    mongo.GetSortByChunk({}, { [sortField]: sortOrder }, 'Convos', parseInt(req.query.limitCount), parseInt(req.query.skipCount))
         .then(function (contact) {
             res.send(contact);
         });
 }
+
 
 function getconvocount(req, res) {
     mongo.GetCount({}, 'Convos')

@@ -81,6 +81,11 @@ const columns = [
     }
 ];
 
+const defaultSorted = [{
+    dataField: 'date',
+    order: 'desc'
+}];
+
 const RemotelyPaginatedTable = (
     {data, page, sizePerPage, onTableChange, totalSize, showTotal, paginationTotalRenderer}) => (
     <Card>
@@ -94,6 +99,7 @@ const RemotelyPaginatedTable = (
                         keyField="_id"
                         data={data}
                         columns={columns}
+                        defaultSorted={ defaultSorted }
                         pagination={paginationFactory(
                             {page, sizePerPage, totalSize, showTotal, paginationTotalRenderer})}
                         onTableChange={onTableChange}
@@ -106,7 +112,7 @@ const RemotelyPaginatedTable = (
 
 
 /**
- * This component renders the converastoin list in remotely paged sections.
+ * This component renders the converastion list in remotely paged sections.
  */
 class ConversionListChunked extends BaseComponent {
     constructor(props) {
@@ -117,9 +123,12 @@ class ConversionListChunked extends BaseComponent {
             sizePerPage: 10,
             totalSize: 0,
             showTotal: true,
-            onTableChange: this.onTableChange,
-            paginationTotalRenderer: customTotal
+            paginationTotalRenderer: customTotal,
+            sortField: 0,
+            sortOrder: 'desc'
         };
+
+        this.onTableChange = this.onTableChange.bind(this);
     }
 
 
@@ -158,6 +167,43 @@ class ConversionListChunked extends BaseComponent {
     }
 
 
+    paginationHandler = ({page, sizePerPage}) => {
+
+        const currentIndex = (page - 1) * sizePerPage;
+        restAPI({
+            url: `../api/convo/getconvochunk?skipCount=${currentIndex}&limitCount=${sizePerPage}`,
+            data: this.state
+        }).then(res => {
+            this.setState(() => ({
+                page,
+                data: res.data,
+                sizePerPage
+            }));
+            console.log(`paginationHandler after`, this.state);
+        }).catch(err => console.log(err));
+    };
+
+
+    sortHandler = ( {page, sizePerPage, sortField, sortOrder} ) => {
+
+        // The table uses asc / desc. Mongo uses 1/-1
+        const mongoSortOrder =  sortOrder === 'asc' ? 1 : -1;
+        const currentIndex = (page - 1) * sizePerPage;
+        restAPI({
+            url: `../api/convo/getconvochunk?skipCount=${currentIndex}&limitCount=${sizePerPage}&sortField=${sortField}&sortOrder=${mongoSortOrder}`,
+            data: this.state
+        }).then(res => {
+            this.setState(() => ({
+                page,
+                data: res.data,
+                sizePerPage
+            }));
+            console.log(`sortHandler after`, this.state);
+        }).catch(err => console.log(err));
+
+    };
+
+
     /**
      * See https://react-bootstrap-table.github.io/react-bootstrap-table2/docs/table-props.html#ontablechange-function
      * Specify the onTableChange prop on a React BootStrap Table 2
@@ -186,19 +232,12 @@ class ConversionListChunked extends BaseComponent {
      * @param type as listed above
      * @param newState next React state to be set
      */
-    onTableChange = (type, {page, sizePerPage}) => {
-        const currentIndex = (page - 1) * sizePerPage;
-        restAPI({
-            url: `../api/convo/getconvochunk?skipCount=${currentIndex}&limitCount=${sizePerPage}`,
-            data: this.state
-        }).then(res => {
-            this.setState(() => ({
-                page,
-                data: res.data,
-                sizePerPage,
-            }));
-            console.log(`fetchConversationsByChunk after`, this.state);
-        }).catch(err => console.log(err));
+    onTableChange = (type, {page, sizePerPage, sortField, sortOrder, data}) => {
+        if (type === 'pagination'){
+            this.paginationHandler( {page, sizePerPage} );
+        } else if (type === 'sort'){
+            this.sortHandler( {page, sizePerPage, sortField, sortOrder, data} );
+        }
     };
 
 
@@ -207,7 +246,7 @@ class ConversionListChunked extends BaseComponent {
      * @returns {*}
      */
     render() {
-        const {data, sizePerPage, page, totalSize, showTotal, onTableChange, paginationTotalRenderer} = this.state;
+        const {data, sizePerPage, page, totalSize, showTotal, paginationTotalRenderer} = this.state;
         return (
             <RemotelyPaginatedTable
                 data={data}
@@ -215,7 +254,7 @@ class ConversionListChunked extends BaseComponent {
                 sizePerPage={sizePerPage}
                 totalSize={totalSize}
                 showTotal={showTotal}
-                onTableChange={onTableChange}
+                onTableChange={this.onTableChange}
                 paginationTotalRenderer={paginationTotalRenderer}
             />
         );
