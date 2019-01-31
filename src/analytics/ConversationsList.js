@@ -124,7 +124,7 @@ class ConversationsList extends BaseComponent {
             totalSize: 0,
             showTotal: true,
             paginationTotalRenderer: customTotal,
-            sortField: 0,
+            sortField: 'date',
             sortOrder: 'desc'
         };
 
@@ -166,12 +166,22 @@ class ConversationsList extends BaseComponent {
         }).catch(err => console.log(err));
     }
 
+    /**
+     * This delegate implements client interface to service-based sort and pagination.
+     * Each current has the same logic. so ... they use this common delegate.
+     * @param page
+     * @param sizePerPage
+     * @param sortField
+     * @param sortOrder
+     */
+    tableChangeHelper = ({page, sizePerPage, sortField, sortOrder}) => {
 
-    paginationHandler = ({page, sizePerPage}) => {
-
+        // Maintain whatever sortorder is in the state. If none, used date/-1 (descending)
+        // The table uses asc / desc. Mongo uses 1/-1
+        const mongoSortOrder =  sortOrder === 'asc' ? 1 : -1;
         const currentIndex = (page - 1) * sizePerPage;
         restAPI({
-            url: `../api/convo/getconvochunk?skipCount=${currentIndex}&limitCount=${sizePerPage}`,
+            url: `../api/convo/getconvochunk?skipCount=${currentIndex}&limitCount=${sizePerPage}&sortField=${sortField || 'date'}&sortOrder=${mongoSortOrder}`,
             data: this.state
         }).then(res => {
             this.setState(() => ({
@@ -183,25 +193,10 @@ class ConversationsList extends BaseComponent {
         }).catch(err => console.log(err));
     };
 
+    paginationHandler = ({page, sizePerPage, sortField, sortOrder}) => (this.tableChangeHelper({page, sizePerPage, sortField, sortOrder}));
 
-    sortHandler = ( {page, sizePerPage, sortField, sortOrder} ) => {
 
-        // The table uses asc / desc. Mongo uses 1/-1
-        const mongoSortOrder =  sortOrder === 'asc' ? 1 : -1;
-        const currentIndex = (page - 1) * sizePerPage;
-        restAPI({
-            url: `../api/convo/getconvochunk?skipCount=${currentIndex}&limitCount=${sizePerPage}&sortField=${sortField}&sortOrder=${mongoSortOrder}`,
-            data: this.state
-        }).then(res => {
-            this.setState(() => ({
-                page,
-                data: res.data,
-                sizePerPage
-            }));
-            console.log(`sortHandler after`, this.state);
-        }).catch(err => console.log(err));
-
-    };
+    sortHandler = ( {page, sizePerPage, sortField, sortOrder} ) => (this.tableChangeHelper({page, sizePerPage, sortField, sortOrder}));
 
 
     /**
@@ -232,11 +227,11 @@ class ConversationsList extends BaseComponent {
      * @param type as listed above
      * @param newState next React state to be set
      */
-    onTableChange = (type, {page, sizePerPage, sortField, sortOrder, data}) => {
+    onTableChange = (type, {page, sizePerPage, sortField, sortOrder}) => {
         if (type === 'pagination'){
-            this.paginationHandler( {page, sizePerPage} );
+            this.paginationHandler( {page, sizePerPage, sortField, sortOrder} );
         } else if (type === 'sort'){
-            this.sortHandler( {page, sizePerPage, sortField, sortOrder, data} );
+            this.sortHandler( {page, sizePerPage, sortField, sortOrder} );
         }
     };
 
