@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-
 import React from "react";
 
-
-const customTotal = ((from, to, size) => (
+export const customTotal = ((from, to, size) => (
     <span className={"pagination-totals"}>{from}&minus;{to}&nbsp;of&nbsp;{size}</span>
 ));
 

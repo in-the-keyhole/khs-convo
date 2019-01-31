@@ -23,7 +23,7 @@ import {
 } from 'react-router-dom'
 import Admin from './admin/Admin';
 import Analytics from './analytics/Analytics';
-import ConverstationsList from './analytics/ConversationsList';
+import ConversionListChunked from './analytics/ConversionListChunked';
 import GroupQuestions from './analytics/GroupQuestions';
 import GroupPhone from './analytics/GroupPhone';
 import Visitors from './analytics/Visitors';
@@ -122,7 +122,7 @@ class App extends Component {
             <main>
                 <Switch>
                     <Route exact path='/' component={Admin}/>
-                    <Route path='/analytics/all' component={ConverstationsList}/>
+                    <Route path='/analytics/all' component={ConversionListChunked}/>
                     <Route path='/analytics/groupquestion' component={GroupQuestions}/>
                     <Route path='/analytics/groupphone' component={GroupPhone}/>
                     <Route path='/analytics/visitors' component={Visitors}/>
