@@ -23,7 +23,7 @@ import {
 } from 'react-router-dom'
 import Admin from './admin/Admin';
 import Analytics from './analytics/Analytics';
-import ConversionListChunked from './analytics/ConversionListChunked';
+import ConversionListChunked from './analytics/ConversationsList';
 import GroupQuestions from './analytics/GroupQuestions';
 import GroupPhone from './analytics/GroupPhone';
 import Visitors from './analytics/Visitors';

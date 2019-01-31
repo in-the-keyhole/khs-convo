@@ -32,14 +32,18 @@ const client = require('twilio')(
 const util = require('util');
 
 function get(req, res) {
-    mongo.GetSort({}, { _id: -1 }, 'Convos')
+    const sortField = req.query.sortField ? req.query.sortField : '_id';
+    const sortOrder = req.query.sortOrder ? parseInt(req.query.sortOrder) : '-1';
+    mongo.GetSort({}, { [sortField]: sortOrder  }, 'Convos')
         .then(function (contact) {
             res.send(contact);
         });
 }
 
 function getvisitorschunk(req, res) {
-    mongo.GetSortByChunk({}, { _id: -1 }, 'Visitors', parseInt(req.query.limitCount), parseInt(req.query.skipCount))
+    const sortField = req.query.sortField ? req.query.sortField : '_id';
+    const sortOrder = req.query.sortOrder ? parseInt(req.query.sortOrder) : '-1';
+    mongo.GetSortByChunk({}, {  [sortField]: sortOrder  }, 'Visitors', parseInt(req.query.limitCount), parseInt(req.query.skipCount))
         .then(function (visitor) {
             res.send(visitor);
         });
