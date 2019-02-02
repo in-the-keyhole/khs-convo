@@ -29,11 +29,13 @@ const client = require('twilio')(
     config.twilio.accountSid,
     config.twilio.authToken);
 
-const util = require('util');
+const DEFAULT_SORTFIELD = '_id';
+const ORDER_DESC = '-1';
+const DEFAULT_SORTORDER = ORDER_DESC;
 
 function get(req, res) {
-    const sortField = req.query.sortField ? req.query.sortField : '_id';
-    const sortOrder = req.query.sortOrder ? parseInt(req.query.sortOrder) : '-1';
+    const sortField = req.query.sortField ? req.query.sortField : DEFAULT_SORTFIELD;
+    const sortOrder = req.query.sortOrder ? parseInt(req.query.sortOrder) : DEFAULT_SORTORDER;
     mongo.GetSort({}, { [sortField]: sortOrder  }, 'Convos')
         .then(function (contact) {
             res.send(contact);
@@ -41,8 +43,8 @@ function get(req, res) {
 }
 
 function getvisitorschunk(req, res) {
-    const sortField = req.query.sortField ? req.query.sortField : '_id';
-    const sortOrder = req.query.sortOrder ? parseInt(req.query.sortOrder) : '-1';
+    const sortField = req.query.sortField ? req.query.sortField : DEFAULT_SORTFIELD;
+    const sortOrder = req.query.sortOrder ? parseInt(req.query.sortOrder) : DEFAULT_SORTORDER;
     mongo.GetSortByChunk({}, {  [sortField]: sortOrder  }, 'Visitors', parseInt(req.query.limitCount), parseInt(req.query.skipCount))
         .then(function (visitor) {
             res.send(visitor);
@@ -57,8 +59,8 @@ function getvisitorscount(req, res) {
 }
 
 function getconvochunk(req, res) {
-    const sortField = req.query.sortField ? req.query.sortField : '_id';
-    const sortOrder = req.query.sortOrder ? parseInt(req.query.sortOrder) : '-1';
+    const sortField = req.query.sortField ? req.query.sortField : DEFAULT_SORTFIELD;
+    const sortOrder = req.query.sortOrder ? parseInt(req.query.sortOrder) : DEFAULT_SORTORDER;
     const filters = req.query.filters; // Implies companion filters param
     if (!filters) {
         mongo.GetSortByChunk({}, {[sortField]: sortOrder}, 'Convos',
@@ -76,18 +78,14 @@ function _getFilteredSortedPaginatedChuck({req, res, sortField, sortOrder, filte
 
     // 1. Create a MongoDB composite "AND query" from the filters. Use a regexp for each comparision constant
     const utf8 = Buffer.from(filters, 'base64').toString('utf8');
-    console.log(`query reconstituted to utf8 JSON:`, utf8);
-
     const qobj = JSON.parse(utf8);
-    console.log(`query as object:`, qobj);
 
     // Convert args to regexp
     for(const v in qobj){
         if (qobj.hasOwnProperty(v)){
-            qobj[v] = new RegExp(qobj[v]);
+            qobj[v] = new RegExp(qobj[v], 'i');
         }
     }
-    console.log(`query augmented to regxp 'LIKE' values:`, qobj);
 
     // 2. Query filtered, sorted chunked  result array. (Remember, it's only a page of it)
     const promise = mongo.GetSortByChunk(
@@ -129,8 +127,6 @@ function getconvocount(req, res) {
 }
 
 function getduplicates(req, res) {
-    //let dupes = ConvoService.duplicates();
-    //console.log(dupes);
     res.send(ConvoService.duplicates());
 }
 
@@ -332,7 +328,6 @@ function timesheetnotification(req, res) {
         for (k = 0; k < tsDueUsers.length; k++) {
             allLatestEntriesUserNames.push(tsDueUsers[k].userName);
         }
-        //console.log('All latest time entries: ' + util.inspect(tsDueUsers));
 
         for (k = 0; k < tsDueUsers.length; k++) {
             let entry = tsDueUsers[k].day.split("-");
@@ -341,7 +336,7 @@ function timesheetnotification(req, res) {
                 timesheetsDueUserNames.push(tsDueUsers[k].userName);
             }
         }
-        console.log('All DUE latest time entry usernames: ' + util.inspect(timesheetsDueUserNames));
+        // console.log('All DUE latest time entry usernames: ' + util.inspect(timesheetsDueUserNames));
 
         const phones = retrieveDueTimesheetPhones(allConvoUsers, allLatestEntriesUserNames, timesheetsDueUserNames);
 
@@ -350,8 +345,6 @@ function timesheetnotification(req, res) {
         });
 
         for (let i = 0; i < uniquePhones.length; i++) {
-            //console.log('SEND TEXT TO: +1'+uniquePhones[i]);
-
             client.messages.create({
                 from: '+' + config.twilio.phone,
                 to: '+1' + uniquePhones[i],
