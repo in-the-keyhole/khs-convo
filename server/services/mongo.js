@@ -101,7 +101,7 @@ function GetCount(query, collectionName) {
             }
 
             db.collection(collectionName).find(query).count().then(function (count) {
-                resolve(String(count));
+                resolve(String(count || 0));
             })
         });
     });
