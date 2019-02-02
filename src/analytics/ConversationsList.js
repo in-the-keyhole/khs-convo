@@ -17,28 +17,50 @@
 import React from 'react';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
-import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
+import filterFactory, { textFilter/*, dateFilter*/ } from 'react-bootstrap-table2-filter';
 import {customTotal} from '../common/pageinationOptions';
 import BaseComponent from '../BaseComponent';
 import {connect} from "react-redux";
 import restAPI from '../service/restAPI';
 import CommonUI from '../common/CommonUI';
+import moment from 'moment';
 // noinspection ES6CheckImport
-import {Card, CardBody, CardTitle, Col, Row} from 'mdbreact';
+import {Card, CardBody, CardTitle, Col, Row, Button} from 'mdbreact';
 
 
 //====== Column formatting functions ============
 const _slicer = (arg, maxLen) => arg ? arg.toString().slice(0, maxLen) : '';
 
+
 const phoneNumberFormatter =  arg => _slicer(arg, 12);
 
+
 const questionFormatter = arg => _slicer(arg, 24);
+
 
 const answerFormatter = arg => {
     const maxLen = 35; //75;
     const val = arg ? arg.toString() : '';
     return val.length > maxLen ? `${_slicer(val, maxLen)} ...` : val;
 };
+
+
+const dateFomatter = iso8601DateArg => {
+    return moment(iso8601DateArg).format('YYYY-MM-DD HH:mm:ss ZZ');
+};
+
+
+let phoneFilter;
+let questionFilter;
+let answerFilter;
+
+
+const clearFilters = () => {
+    phoneFilter('');
+    questionFilter('');
+    answerFilter('');
+};
+
 
 //====== Table declarations
 const columns = [
@@ -51,9 +73,10 @@ const columns = [
     {
         text: 'Date',
         dataField: 'date',
+        formatter: (dateFomatter),
         sort: true,
         sortCaret: CommonUI.ColumnSortCaret,
-        filter: textFilter()
+        // filter: textFilter()
     },
     {
         text: 'Phone',
@@ -61,7 +84,7 @@ const columns = [
         formatter: (phoneNumberFormatter),
         sort: true,
         sortCaret: CommonUI.ColumnSortCaret,
-        filter: textFilter()
+        filter: textFilter({ getFilter: filter => (phoneFilter = filter) })
     },
     {
         text: 'Question',
@@ -69,7 +92,7 @@ const columns = [
         formatter: (questionFormatter),
         sort: true,
         sortCaret: CommonUI.ColumnSortCaret,
-        filter: textFilter()
+        filter: textFilter({ getFilter: filter => (questionFilter = filter) })
     },
     {
         text: 'Answer',
@@ -77,7 +100,7 @@ const columns = [
         formatter: (answerFormatter),
         sort: true,
         sortCaret: CommonUI.ColumnSortCaret,
-        filter: textFilter()
+        filter: textFilter({ getFilter: filter => (answerFilter = filter) })
     },
     {
         text: 'word',
@@ -98,7 +121,10 @@ const RemotelyPaginatedTable = (
     <Card>
         <CardBody>
             <CardTitle>Analytics</CardTitle>
-            <Row><Col>Conversations</Col></Row>
+            <Row>
+                <Col md={"10"}>Conversations</Col>
+                <Col md={"2"}><Button size={"sm"} onClick={ clearFilters } style={{marginTop: "-1.25rem"}}>Clear filters</Button></Col>
+            </Row>
             <Row>
                 <Col>
                     <BootstrapTable
@@ -251,7 +277,7 @@ class ConversationsList extends BaseComponent {
                 data: v.data,
                 sizePerPage,
                 skipCount: v.skipCount,
-                limitCount: v.limitCounts,
+                limitCount: v.limitCount,
                 totalSize: v.totalSize
             }));
             console.log(`tableChangeHelper after`, this.state);
