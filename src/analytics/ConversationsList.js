@@ -17,6 +17,7 @@
 import React from 'react';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
+import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
 import {customTotal} from '../common/pageinationOptions';
 import BaseComponent from '../BaseComponent';
 import {connect} from "react-redux";
@@ -29,12 +30,12 @@ import {Card, CardBody, CardTitle, Col, Row} from 'mdbreact';
 //====== Column formatting functions ============
 const _slicer = (arg, maxLen) => arg ? arg.toString().slice(0, maxLen) : '';
 
-const phoneNumberFormatter =  arg => _slicer(arg, 20);
+const phoneNumberFormatter =  arg => _slicer(arg, 12);
 
-const questionFormatter = arg => _slicer(arg, 26);
+const questionFormatter = arg => _slicer(arg, 24);
 
 const answerFormatter = arg => {
-    const maxLen = 75;
+    const maxLen = 35; //75;
     const val = arg ? arg.toString() : '';
     return val.length > maxLen ? `${_slicer(val, maxLen)} ...` : val;
 };
@@ -51,28 +52,32 @@ const columns = [
         text: 'Date',
         dataField: 'date',
         sort: true,
-        sortCaret: CommonUI.ColumnSortCaret
+        sortCaret: CommonUI.ColumnSortCaret,
+        filter: textFilter()
     },
     {
         text: 'Phone',
         dataField: 'phone',
         formatter: (phoneNumberFormatter),
         sort: true,
-        sortCaret: CommonUI.ColumnSortCaret
+        sortCaret: CommonUI.ColumnSortCaret,
+        filter: textFilter()
     },
     {
         text: 'Question',
         dataField: 'question',
         formatter: (questionFormatter),
         sort: true,
-        sortCaret: CommonUI.ColumnSortCaret
+        sortCaret: CommonUI.ColumnSortCaret,
+        filter: textFilter()
     },
     {
         text: 'Answer',
         dataField: 'answer',
         formatter: (answerFormatter),
         sort: true,
-        sortCaret: CommonUI.ColumnSortCaret
+        sortCaret: CommonUI.ColumnSortCaret,
+        filter: textFilter()
     },
     {
         text: 'word',
@@ -81,10 +86,12 @@ const columns = [
     }
 ];
 
+
 const defaultSorted = [{
     dataField: 'date',
     order: 'desc'
 }];
+
 
 const RemotelyPaginatedTable = (
     {data, page, sizePerPage, onTableChange, totalSize, showTotal, paginationTotalRenderer}) => (
@@ -103,6 +110,7 @@ const RemotelyPaginatedTable = (
                         pagination={paginationFactory(
                             {page, sizePerPage, totalSize, showTotal, paginationTotalRenderer})}
                         onTableChange={onTableChange}
+                        filter={ filterFactory() }
                     />
                 </Col>
             </Row>
@@ -144,7 +152,7 @@ class ConversationsList extends BaseComponent {
 
 
     /**
-     * This causes the initial remote data chunk to render after mounting.
+     * Kicks the initial remote data chunk to render after mounting.
      */
     componentDidMount() {
         // Render the first chunk
@@ -165,6 +173,7 @@ class ConversationsList extends BaseComponent {
             });
         }).catch(err => console.log(err));
     }
+
 
     /**
      * This delegate implements client interface to service-based sort and pagination.
@@ -189,17 +198,97 @@ class ConversationsList extends BaseComponent {
                 data: res.data,
                 sizePerPage
             }));
-            console.log(`paginationHandler after`, this.state);
+            console.log(`tableChangeHelper after`, this.state);
         }).catch(err => console.log(err));
     };
+
 
     paginationHandler = ({page, sizePerPage, sortField, sortOrder}) => (this.tableChangeHelper({page, sizePerPage, sortField, sortOrder}));
 
 
-    sortHandler = ( {page, sizePerPage, sortField, sortOrder} ) => (this.tableChangeHelper({page, sizePerPage, sortField, sortOrder}));
+    sortHandler = ({page, sizePerPage, sortField, sortOrder}) => (this.tableChangeHelper({page, sizePerPage, sortField, sortOrder}));
+
+
+    filterHandler = ({page, sizePerPage, sortField, sortOrder, filters}) => {
+
+        // 1. Create a MongoDB composite "AND-"query from the filters -- encode to base 64.
+        const queryBase64 = (obj => {
+            const q = {};
+
+            for (const v in obj) {
+                if (obj.hasOwnProperty(v)) {
+                    q[v] = obj[v].filterVal;
+                }
+            }
+
+            console.log(`query:`, q);
+
+            const json = JSON.stringify(q);
+            const b64 =   Buffer.from(json).toString('base64');
+
+            console.log(`query in base64:`, b64);
+            return b64
+
+        })(filters);
+
+        // 2. Get the filtered data, maintaining sortorder and pagination.
+
+        // Maintain any sortorder found in the state. If none, default to field date with order-1 (descending)
+        // The table uses asc / desc. Mongo uses 1/-1
+        const mongoSortOrder =  sortOrder === 'asc' ? 1 : -1;
+        const currentIndex = (page - 1) * sizePerPage;
+        // Adds filters=${queryBase64}&
+        const url = `../api/convo/getconvochunk?filters=${queryBase64}&skipCount=${currentIndex}&limitCount=${sizePerPage}&sortField=${sortField || 'date'}&sortOrder=${mongoSortOrder}`;
+        console.log(url);
+
+        restAPI({
+            url: url,
+            data: this.state
+        }).then(res => {
+            const v = res.data;
+            this.setState(() => ({
+                page,
+                data: v.data,
+                sizePerPage,
+                skipCount: v.skipCount,
+                limitCount: v.limitCounts,
+                totalSize: v.totalSize
+            }));
+            console.log(`tableChangeHelper after`, this.state);
+        }).catch(err => console.log(err));
+
+    };
+
+
+/*    filterHandler = ({ filters }) => {
+        setTimeout(() => {
+            const result = products.filter((row) => {
+                let valid = true;
+                for (const dataField in filters) {
+                    const { filterVal, filterType, comparator } = filters[dataField];
+
+                    if (filterType === 'TEXT') {
+                        if (comparator === Comparator.LIKE) {
+                            valid = row[dataField].toString().indexOf(filterVal) > -1;
+                        } else {
+                            valid = row[dataField] === filterVal;
+                        }
+                    }
+                    if (!valid) break;
+                }
+                return valid;
+            });
+            this.setState(() => ({
+                data: result
+            }));
+        }, 2000);
+    };*/
 
 
     /**
+     * This is the Big Kahuna for table server-implemented page sorting, pagination, and filtering.
+     * It can route to cell edit code, as well, if implemented.
+     *
      * See https://react-bootstrap-table.github.io/react-bootstrap-table2/docs/table-props.html#ontablechange-function
      * Specify the onTableChange prop on a React BootStrap Table 2
      *
@@ -227,11 +316,22 @@ class ConversationsList extends BaseComponent {
      * @param type as listed above
      * @param newState next React state to be set
      */
-    onTableChange = (type, {page, sizePerPage, sortField, sortOrder}) => {
+    onTableChange = (type, {page, sizePerPage, sortField, sortOrder, filters}) => {
         if (type === 'pagination'){
             this.paginationHandler( {page, sizePerPage, sortField, sortOrder} );
         } else if (type === 'sort'){
             this.sortHandler( {page, sizePerPage, sortField, sortOrder} );
+        } else if (type === 'filter') {
+            console.log(`>>>>> We have  filters`, filters);
+            /*  Here's filter set. Each item should be AND clause. LIKE done by regex: /426/
+                {
+                    answer: {filterVal: "you", filterType: "TEXT", comparator: "LIKE", caseSensitive: false}
+                    date: {filterVal: "T17", filterType: "TEXT", comparator: "LIKE", caseSensitive: false}
+                    phone: {filterVal: "426", filterType: "TEXT", comparator: "LIKE", caseSensitive: false}
+                    question: {filterVal: "111", filterType: "TEXT", comparator: "LIKE", caseSensitive: false}
+                }
+            */
+            this.filterHandler( {page, sizePerPage, sortField, sortOrder, filters} );
         }
     };
 

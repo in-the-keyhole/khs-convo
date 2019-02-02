@@ -49,7 +49,7 @@ function Get(query, collectionName) {
     });
 }
 
-// Performs case insensite find
+// Carry out case-insensitive find
 function GetCI(query, sort, collectionName) {
     // noinspection ES6ModulesDependencies
     return new Promise(function (resolve, reject) {
@@ -100,7 +100,7 @@ function GetCount(query, collectionName) {
                 reject(MSG_CONNECTION_ERROR, err);
             }
 
-            db.collection(collectionName).count().then(function (count) {
+            db.collection(collectionName).find(query).count().then(function (count) {
                 resolve(String(count));
             })
         });

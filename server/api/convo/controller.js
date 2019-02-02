@@ -59,17 +59,72 @@ function getvisitorscount(req, res) {
 function getconvochunk(req, res) {
     const sortField = req.query.sortField ? req.query.sortField : '_id';
     const sortOrder = req.query.sortOrder ? parseInt(req.query.sortOrder) : '-1';
-    mongo.GetSortByChunk({}, { [sortField]: sortOrder }, 'Convos', parseInt(req.query.limitCount), parseInt(req.query.skipCount))
-        .then(function (contact) {
-            res.send(contact);
-        });
+    const filters = req.query.filters; // Implies companion filters param
+    if (!filters) {
+        mongo.GetSortByChunk({}, {[sortField]: sortOrder}, 'Convos',
+            parseInt(req.query.limitCount), parseInt(req.query.skipCount))
+
+            .then( data => res.send(data));
+    } else {
+        const collection = 'Convos';
+        _getFilteredSortedPaginatedChuck({req, res, sortField, sortOrder, filters, collection});
+    }
 }
 
+// Local-only helper augments any chunked, sorted, paginated collection to also have single-field filtering
+function _getFilteredSortedPaginatedChuck({req, res, sortField, sortOrder, filters, collection}) {
 
+    // 1. Create a MongoDB composite "AND query" from the filters. Use a regexp for each comparision constant
+    const utf8 = Buffer.from(filters, 'base64').toString('utf8');
+    console.log(`query reconstituted to utf8 JSON:`, utf8);
+
+    const qobj = JSON.parse(utf8);
+    console.log(`query as object:`, qobj);
+
+    // Convert args to regexp
+    for(const v in qobj){
+        if (qobj.hasOwnProperty(v)){
+            qobj[v] = new RegExp(qobj[v]);
+        }
+    }
+    console.log(`query augmented to regxp 'LIKE' values:`, qobj);
+
+    // 2. Query filtered, sorted chunked  result array. (Remember, it's only a page of it)
+    const promise = mongo.GetSortByChunk(
+        qobj,
+        {[sortField]: sortOrder},
+        collection,
+        parseInt(req.query.limitCount),
+        parseInt(req.query.skipCount));
+
+    // 3. Capture unchunked result size
+    promise.then( (data) => {
+        // return new Promise( resolve => resolve({data: data, size: data.length}) );
+        return  new Promise( resolve => {
+            mongo.GetCount(qobj, collection).then( count => {
+                resolve( {data: data, totalSize: count} )
+            });
+        })
+
+    }).then( dto => {
+        // 4. Keep a data chunk: (for first iteration) use skipCount of 0; use inbound limit
+        return new Promise( resolve => {
+            const v = Object.assign({}, dto);
+            v.skipCount = 0; // We'd like this to move across subsequent calls. How to manage?
+            v.limitCount = Math.min(req.query.limitCount, v.data.length);
+            v.data = v.data.slice(v.skipCount, v.limitCount);
+            resolve(res.send(v));
+        });
+    });
+
+}
+
+// Optional MongoDB query expression defaults to "all"
 function getconvocount(req, res) {
-    mongo.GetCount({}, 'Convos')
-        .then(function (contact) {
-            res.send(contact);
+    const query = req.query || {};
+    mongo.GetCount(query, 'Convos')
+        .then( data => {
+            res.send(data);
         });
 }
 
@@ -98,27 +153,8 @@ function getgroupquestion(req, res) {
 
     mongo.Aggregate([
         {
-            "$group": {
-                _id: { tag: '$question', lower: { $toLower: '$question' } },
-                //"count": { "$sum": 1 },
-                "count": {
-                    "$sum": {
-                        "$cond": [
-                            {
-                                "$anyElementTrue": {
-                                    "$map": {
-                                        "input": questionsArr,
-                                        "as": "el",
-                                        "in": { "$eq": ["$$el", "$question"] }
-                                    }
-                                }
-                            },
-                            1,
-                            0
-                        ]
-                    }
-                }
-            }
+            "$group": {_id: { tag: '$question', lower: { $toLower: '$question' } },//"count": { "$sum": 1 },
+                "count": {"$sum": {"$cond": [{"$anyElementTrue": {"$map": {"input": questionsArr, "as": "el", "in": { "$eq": ["$$el", "$question"] }}}}, 1, 0]}}}
         },
         {
             $project: {
