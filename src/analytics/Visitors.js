@@ -87,7 +87,7 @@ const RemotelyPaginatedTable = (
             <CardTitle>Analytics</CardTitle>
             <Row>
                 <Col md={"10"}>Visitors</Col>
-                <Col md={"2"}><Button size={"sm"} onClick={ clearFilters } style={{marginTop: "-1.25rem"}}>Clear filters</Button></Col>
+                <Col md={"2"}><Button size={"sm"} onClick={ clearFilters } style={{marginTop: "-1.25rem"}}>Clear filter</Button></Col>
             </Row>
             <Row>
                 <Col>
