@@ -180,7 +180,6 @@ class Visitors extends BaseComponent {
         const mongoSortOrder =  sortOrder === 'asc' ? 1 : -1;
         const currentIndex = (page - 1) * sizePerPage;
         restAPI({
-            // url:'../api/convo/getvisitorschunk?skipCount=' + this.state.skipCount + '&limitCount=' + this.state.limitCount,
             url: `../api/convo/getvisitorschunk?skipCount=${currentIndex}&limitCount=${sizePerPage}&sortField=${sortField || 'lastaccessdate'}&sortOrder=${mongoSortOrder}`,
             data: this.state
         }).then(res => {
