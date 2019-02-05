@@ -45,10 +45,16 @@ function get(req, res) {
 function getvisitorschunk(req, res) {
     const sortField = req.query.sortField ? req.query.sortField : DEFAULT_SORTFIELD;
     const sortOrder = req.query.sortOrder ? parseInt(req.query.sortOrder) : DEFAULT_SORTORDER;
-    mongo.GetSortByChunk({}, {  [sortField]: sortOrder  }, 'Visitors', parseInt(req.query.limitCount), parseInt(req.query.skipCount))
-        .then(function (visitor) {
-            res.send(visitor);
-        });
+    const filters = req.query.filters; // Implies companion filters param
+    if (!filters) {
+        mongo.GetSortByChunk({}, {[sortField]: sortOrder}, 'Visitors', parseInt(req.query.limitCount), parseInt(req.query.skipCount))
+            .then(function (visitor) {
+                res.send(visitor);
+            });
+    } else {
+        const collection = 'Visitors';
+        _getFilteredSortedPaginatedChuck({req, res, sortField, sortOrder, filters, collection});
+    }
 }
 
 function getvisitorscount(req, res) {
