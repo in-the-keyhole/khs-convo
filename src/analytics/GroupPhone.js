@@ -18,10 +18,15 @@ import React from 'react';
 import restAPI from '../service/restAPI';
 import { RadialBarChart, RadialBar, Legend, Tooltip} from 'recharts';
 import '../styles/index.css';
+import {compare, getRandomColor} from '../util';
+import {connect} from "react-redux";
+import BaseComponent from '../BaseComponent';
+import CustomTooltip from '../common/CustomTooltips';
+// noinspection ES6CheckImport
+import {Card, CardBody, CardTitle, Row, Col} from 'mdbreact';
 
-const createReactClass = require('create-react-class');
 
-class GroupPhone extends React.Component {
+class GroupPhone extends BaseComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -32,6 +37,7 @@ class GroupPhone extends React.Component {
     }
 
     componentWillMount() {
+        super.componentWillMount();
         this.fetchGroupPhones();
     }
 
@@ -40,8 +46,8 @@ class GroupPhone extends React.Component {
         restAPI({
             url:'../api/convo/groupphone',
             data: this.state
-        }).then(function(res, me) {
-            console.log(me);
+        }).then( res => {
+            console.log(res);
             self.setState({ grpPhone: res.data });
         }).catch(function(err){console.log(err)});
     }
@@ -50,22 +56,6 @@ class GroupPhone extends React.Component {
         console.log(`The bin ${element.text} with id ${id} was clicked`);
     }
 
-    static getRandomColor() {
-        let letters = '0123456789ABCDEF';
-        let color = '#';
-        for (let i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
-    }
-
-    static compare(a, b) {
-        if (a.count < b.count)
-            return 1;
-        if (a.count > b.count)
-            return -1;
-        return 0;
-    }
 
     render() {
         const grpPhones = [];
@@ -74,34 +64,12 @@ class GroupPhone extends React.Component {
             if (this.state.grpPhone[i] !== undefined) {
                 grpItem.name = this.state.grpPhone[i].text;
                 grpItem.count = this.state.grpPhone[i].value;
-                grpItem.fill = GroupPhone.getRandomColor();
+                grpItem.fill = getRandomColor();
                 grpPhones.push(grpItem);
             }
         }
-        grpPhones.sort(GroupPhone.compare);
+        grpPhones.sort(compare);
 
-        const CustomTooltip = createReactClass({
-            propTypes: {
-                type: React.string,
-                payload: React.array,
-                label: React.string,
-            },
-            render() {
-                const { active } = this.props;
-
-                if (active) {
-                    const { payload } = this.props;
-                    return (
-                        <div className="custom-tooltip">
-                            <p className="desc">xxx Phone Number - Count</p>
-                            <p className="name">{`${payload[0].payload.name}`} - {`${payload[0].payload.count}`}</p>
-                        </div>
-                    );
-                }
-
-                return null;
-            }
-        });
 
         const renderLegend = (props) => {
             const { payload } = props;
@@ -118,30 +86,35 @@ class GroupPhone extends React.Component {
         };
 
         return (
-            <div className="container">
-                <div className="row">
-                    <div className="col-md-12"><h1>Analytics</h1></div>
-                </div>
-                <div className="row">
-                    <div className="col-md-12">Group By Phone</div>
-                </div>
-                <div className="row">
-                    <div className="col-md-9">
-                        <div  className="mainContent">
-                            <RadialBarChart width={500} height={500} cx={150} cy={150} innerRadius={20} barCategoryGap={10} outerRadius={140} barSize={20} data={grpPhones}>
-                                <RadialBar minAngle={15} background clockWise={true} dataKey='count'/>
-                                <Legend wrapperStyle={{ top: 25, right: 0, left: 0, bottom: 0 }} iconSize={10} top={10} layout='vertical' content={renderLegend}/>
-                                <Tooltip content={<CustomTooltip/>}/>
-                            </RadialBarChart>
-                        </div>
-                    </div>
-                    <div className="col-md-3">
-                    </div>
 
-                </div>
-            </div>
+            <Card>
+                <CardBody>
+                    <CardTitle>Analytics</CardTitle>
+                    <Row>
+                        <Col>Group By Phone Number - Hoverchart</Col>
+                    </Row>
+                    <Row>
+                        <Col md={"9"}>
+                            <div className="mainContent">
+                                <RadialBarChart width={500} height={500} cx={150} cy={150} innerRadius={20}
+                                                barCategoryGap={10} outerRadius={140} barSize={20} data={grpPhones}>
+                                    <RadialBar minAngle={15} background clockWise={true} dataKey='count'/>
+                                    <Legend wrapperStyle={{top: 25, right: 0, left: 0, bottom: 0}} iconSize={10}
+                                            top={10} layout='vertical' content={renderLegend}/>
+                                    <Tooltip content={<CustomTooltip desc={"xxx Phone Number - Count"}/>}/>
+                                </RadialBarChart>
+                            </div>
+                        </Col>
+                        <Col md={"3"}>
+                        </Col>
+
+                    </Row>
+                </CardBody>
+            </Card>
         );
     }
 }
 
-export default GroupPhone;
+
+const mapStateToProps = state => ({credentials: state.credentials});
+export default connect(mapStateToProps)(GroupPhone);
