@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import "../styles/index.css";
 import React from 'react';
 import restAPI from '../service/restAPI';
 import superagent from 'superagent';
@@ -24,7 +25,9 @@ import {confirmAlert} from 'react-confirm-alert';
 import NotificationBar from '../common/NotificationBar';
 import BaseComponent from '../BaseComponent';
 import {connect} from "react-redux";
-import {base} from '../service/restHelpers'
+import {base} from '../service/restHelpers';
+// noinspection ES6CheckImport
+import {Card, CardBody, CardTitle, Col, Row, Button, Input} from 'mdbreact';
 
 class Upload extends BaseComponent {
 
@@ -106,7 +109,7 @@ class Upload extends BaseComponent {
             method: 'POST',
             url: '/api/convo',
             data: myData
-        }).then( res => {
+        }).then(res => {
             self.setState({
                 Commands: self.dynamicLinks(res.data)
             });
@@ -287,13 +290,12 @@ class Upload extends BaseComponent {
         console.log("The self  state " + JSON.stringify(self.state.displayHover));
 
         const dropZoneStyle = {
-            width: '250px',
-            height: '35px',
+            padding: '0.5rem',
             borderWidth: '1px',
             borderStyle: 'dashed',
             textAlign: 'center',
-            marginBottom: '20px',
-            //lineHeight: '7',
+            marginBottom: '0.5rem',
+            marginLeft: '1.0rem',
             verticalAlign: 'middle',
             display: 'table'
         };
@@ -322,42 +324,36 @@ class Upload extends BaseComponent {
 
             }
 
-            directoryElements.push(<div>
-                <div className="row">
-                    <div className="col-md-2">
-                        <h5><b>{directories[i]}</b></h5>
-                    </div>
-                    <div className="col-md-2">
-                        <button className="btn btn-default" type="button"
-                                onClick={this.initiateUploadClick.bind(this, directories[i])}>Upload File
-                        </button>
-                    </div>
-                    <div className="col-md-3">
-                        <Dropzone style={{dropZoneStyle}} disableClick={true} multiple={false}
-                                  onDragOver={this.setDropDirectory.bind(this, directories[i])}
-                                  onDrop={this.uploadDroppedFile}>
-                            <div id="dropZoneText" name={directories[i]} style={dropZoneStyle}>Drop file here</div>
-                        </Dropzone>
-                    </div>
-                    <div className="col-md-5">
-                        <div>
-                            <p><b onMouseOver={this.handleMouseIn.bind(this, display)}
-                                  onMouseOut={this.handleMouseOut.bind(this, display)}>Commands:</b> {words.map(t =>
-                                <span>{t}</span>).reduce((prev, curr) => [prev, ', ', curr])}</p>
-                            <div style={this.tooltipStyle(display)}> {description}</div>
-                        </div>
-                    </div>
-                </div>
+            directoryElements.push(
+                <div>
+                    <Row>
+                        <Col md={"2"}>
+                            <p >{directories[i]}</p>
+                        </Col>
+                        <Col md={"1"}>
+                            <Button size={"sm"}  onClick={this.initiateUploadClick.bind(this, directories[i])}>Upload</Button>
+                        </Col>
+                        <Col md={"2"}>
+                            <Dropzone style={{dropZoneStyle}} disableClick={true} multiple={false}
+                                      onDragOver={this.setDropDirectory.bind(this, directories[i])}
+                                      onDrop={this.uploadDroppedFile}>
+                                <div id="dropZoneText" name={directories[i]} style={dropZoneStyle}>Drop Zone</div>
+                            </Dropzone>
+                        </Col>
+                        <Col>
+                            <div>
+                                <p><b onMouseOver={this.handleMouseIn.bind(this, display)}
+                                      onMouseOut={this.handleMouseOut.bind(this, display)}>Commands:</b> {words.map(t =>
+                                    <span>{t}</span>).reduce((prev, curr) => [prev, ', ', curr])}</p>
+                                <div style={this.tooltipStyle(display)}> {description}</div>
+                            </div>
+                        </Col>
+                    </Row>
 
-
-            </div>);
+                </div>);
         }
 
-        if (this.state.Status === 'admin') {
-            return (<div>{directoryElements}</div>);
-        } else {
-            return <div> </div>;
-        }
+        return this.state.Status === 'admin' ? (<div>{directoryElements}</div>) : <div/>;
     }
 
     updateInputValue(e) {
@@ -369,34 +365,31 @@ class Upload extends BaseComponent {
     renderConfirmDialog(data) {
         confirmAlert({
             title: 'Confirm to proceed',
-            message: 'A convo event file with the same name already exists.  Are you sure you wish to proceed?',
+            message: 'A Convo event file with the name already exists.  Replace it?',
             confirmLabel: 'Confirm',
             cancelLabel: 'Cancel',
             onConfirm: () => this.proceedWithUpload(data)
-            //onCancel: () => do nothing,
         })
     }
 
     render() {
 
         return (
-            <div className="container">
-                <NotificationBar/>
-                <div className="row">
-                    <div className="col-md-12"><h1>Convo Event Upload</h1></div>
-                </div>
+            <Card>
+                <CardBody>
+                    <CardTitle>Convo Event File Upload</CardTitle>
+                    <NotificationBar/>
 
-                <form encType="multipart/form-data" action="">
-                    <input type="file" name="fileName" placeholder="fileName" id="upload" style={{display: 'none'}}
-                           onChange={this.uploadFile}/>
-                </form>
+                    <form encType="multipart/form-data" action="">
+                        <Input type="file" name="fileName" hint="fileName" id="upload" style={{display: 'none'}}
+                               onChange={this.uploadFile}/>
+                    </form>
 
-                <div className="row">
-                    <div className="col-md-12">
-                        {this.renderUploadFile()}
-                    </div>
-                </div>
-            </div>
+                    <Row>
+                        <Col>{this.renderUploadFile()}</Col>
+                    </Row>
+                </CardBody>
+            </Card>
         )
     }
 }
