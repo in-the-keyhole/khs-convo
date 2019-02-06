@@ -15,6 +15,7 @@
  */
 
 
+import '../../styles/index.css';
 import React from "react";
 import {Legend, RadialBar, RadialBarChart, Tooltip} from "recharts";
 import CustomTooltip from "./CustomTooltips";
@@ -35,7 +36,7 @@ const HoverChart = createReactClass({
 
         console.log(`HoverChart props`, this.props);
 
-        return (
+        const normalReturn = (
             <RadialBarChart width={500} height={500} cx={150} cy={150} innerRadius={20}
                             barCategoryGap={10} outerRadius={140} barSize={20} data={data}>
                 <RadialBar minAngle={15} background clockWise={true} dataKey={dataKey}/>
@@ -44,6 +45,10 @@ const HoverChart = createReactClass({
                 <Tooltip content={<CustomTooltip desc={desc}/>}/>
             </RadialBarChart>
         );
+
+        const emptyReturn = (<p className={"empty-return-msg"}>No items found</p>);
+
+        return data.length ? normalReturn : emptyReturn;
     }
 });
 

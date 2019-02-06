@@ -69,10 +69,10 @@ class GroupPhone extends BaseComponent {
 
     componentWillMount() {
         super.componentWillMount();
-        this.fetchGroupPhones();
+        this.fetchGroupQuestions();
     }
 
-    fetchGroupPhones() {
+    fetchGroupQuestions() {
         const self = this;
         restAPI({
             url: '../api/convo/groupphone',

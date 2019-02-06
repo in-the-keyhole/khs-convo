@@ -459,7 +459,7 @@ class Admin extends BaseComponent {
         };
 
 
-        // TODO enable add button per inputs;  clear inputs after add
+        // TODO enable add button per filters;  clear inputs after add
 
         return (
             <Col>

@@ -163,7 +163,7 @@ body {
 }
 
 .chart-main-content {
-    border: 1px solid rgba(0,0,0, 0.125);
+    border: 1px solid rgba(0, 0, 0, 0.125);
     width: 100%;
     margin-top: 2px;
     font-weight: 400;
@@ -195,3 +195,10 @@ ul.legend {
     font-weight: 300;
     font-size: 0.9rem;
 }
+
+.empty-return-msg {
+    margin: 1.0rem;
+    font-size: 0.8rem;
+    font-weight: 300;
+}
+

@@ -257,7 +257,7 @@ class ConversationsList extends BaseComponent {
 
         })(filters);
 
-        // 2. Get the filtered data, maintaining sortorder and pagination.
+        // 2. Get the filtered data, maintaining sort order and pagination.
 
         // Maintain any sortorder found in the state. If none, default to field date with order-1 (descending)
         // The table uses asc / desc. Mongo uses 1/-1
@@ -284,31 +284,6 @@ class ConversationsList extends BaseComponent {
         }).catch(err => console.log(err));
 
     };
-
-
-/*    filterHandler = ({ filters }) => {
-        setTimeout(() => {
-            const result = products.filter((row) => {
-                let valid = true;
-                for (const dataField in filters) {
-                    const { filterVal, filterType, comparator } = filters[dataField];
-
-                    if (filterType === 'TEXT') {
-                        if (comparator === Comparator.LIKE) {
-                            valid = row[dataField].toString().indexOf(filterVal) > -1;
-                        } else {
-                            valid = row[dataField] === filterVal;
-                        }
-                    }
-                    if (!valid) break;
-                }
-                return valid;
-            });
-            this.setState(() => ({
-                data: result
-            }));
-        }, 2000);
-    };*/
 
 
     /**

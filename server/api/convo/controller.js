@@ -258,6 +258,13 @@ function getConvoForPhone(req, res) {
 const MessagingResponse = require('twilio').twiml.MessagingResponse;
 
 function post(req, res) {
+
+    if (!isTokenValid(req)) {
+        res.end("Invalid API token");
+        return;
+    }
+
+
     const body = req.body['Body'] || req.body['body'];
 
     const result = {};
@@ -266,30 +273,13 @@ function post(req, res) {
         result.phone = result.phone.slice(1, result.phone.length);
     }
 
-    // ************************************************************
-    // Could not determine why the 2 commented out lines were doing
-    // what they are doing, so changed it to just splitting on a space
-    // and not converting the entire "sub" to lowerCase, but rather
-    // just trimming them.  If no ill effects are seen because of
-    // this change, the commented out lines below can be removed.
-
-    //var sub = body.match(/([a-zA-Z0-9\+\*\/\-\!\?'])+/gm);
-    const sub = body.split(' ');
-    for (let i = 0; i < sub.length; i++) {
-        //sub[i] = sub[i].toLowerCase().trim();
-        sub[i] = sub[i].trim();
-    }
-    // ************************************************************
+    const sub =  [];
+    body.split(' ').forEach( v => sub.push(v.trim()));
 
     result.question = sub;
     result.rawQuestion = body;
     result.raw = req.body;
     result.scheduleDate = req.body['scheduleDate'];
-
-    if (!isTokenValid(req)) {
-        res.end("Invalid API token");
-        return;
-    }
 
     ConvoService.findAnswer(result)
         .then(function (result) {
