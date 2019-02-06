@@ -18,10 +18,12 @@
 import React from "react";
 import {Legend, RadialBar, RadialBarChart, Tooltip} from "recharts";
 import CustomTooltip from "./CustomTooltips";
+import renderLegend from './renderLegend';
+
 const createReactClass = require('create-react-class');
 
 const HoverChart = createReactClass({
-    getDefaultProps: function() {
+    getDefaultProps: function () {
         return {
             desc: React.string,
             data: React.array,
@@ -29,21 +31,19 @@ const HoverChart = createReactClass({
         };
     },
     render() {
-        const { active, payload, desc } = this.props;
+        const {dataKey, data, desc} = this.props;
 
-        if (active) {
-            return (
-                <RadialBarChart width={500} height={500} cx={150} cy={150} innerRadius={20}
-                                barCategoryGap={10} outerRadius={140} barSize={20} data={data}>
-                    <RadialBar minAngle={15} background clockWise={true} dataKey={dataKey}/>
-                    <Legend wrapperStyle={{top: 25, right: 0, left: 0, bottom: 0}} iconSize={10}
-                            top={10} layout='vertical' content={renderLegend}/>
-                    <Tooltip content={<CustomTooltip desc={desc}/>}/>
-                </RadialBarChart>
-            );
-        }
+        console.log(`HoverChart props`, this.props);
 
-        return null;
+        return (
+            <RadialBarChart width={500} height={500} cx={150} cy={150} innerRadius={20}
+                            barCategoryGap={10} outerRadius={140} barSize={20} data={data}>
+                <RadialBar minAngle={15} background clockWise={true} dataKey={dataKey}/>
+                <Legend wrapperStyle={{top: 25, right: 0, left: 0, bottom: 0}} iconSize={10}
+                        top={10} layout='vertical' content={renderLegend}/>
+                <Tooltip content={<CustomTooltip desc={desc}/>}/>
+            </RadialBarChart>
+        );
     }
 });
 

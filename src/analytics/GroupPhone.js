@@ -17,16 +17,46 @@ limitations under the License.
 import '../styles/index.css';
 import React from 'react';
 import restAPI from '../service/restAPI';
-import {RadialBarChart, RadialBar, Legend, Tooltip} from 'recharts';
 import {compare, getRandomColor} from '../util';
 import {connect} from "react-redux";
 import BaseComponent from '../BaseComponent';
-import CustomTooltip from './helpers/CustomTooltips';
-import renderLegend from './helpers/renderLegend';
+import HoverChart from './helpers/HoverChart';
 // noinspection ES6CheckImport
-import {Card, CardBody, CardTitle, Row, Col} from 'mdbreact';
+import {Card, CardBody, CardTitle, Col, Row} from 'mdbreact';
 
 
+/**
+ * Extracts non-null phone group items, migrating them into
+ * a sorted list suitable for a React Chart legend.
+ *
+ * @param group
+ * @returns {this}
+ */
+const extractPhoneItems = (group) => {
+
+    return ( groupValue => {
+        const newList = [];
+
+        groupValue
+            .filter(v => {
+                return v != null;
+            })
+            .map(v => {
+                const phoneItem = {};
+                phoneItem.name = v.text;
+                phoneItem.count = v.value;
+                phoneItem.fill = getRandomColor();
+                newList.push(phoneItem);
+                return null;
+            });
+
+        return newList;
+    })(group).sort(compare);
+};
+
+/**
+ * Analytics - Phone Groups main component
+ */
 class GroupPhone extends BaseComponent {
     constructor(props) {
         super(props);
@@ -55,45 +85,18 @@ class GroupPhone extends BaseComponent {
         });
     }
 
-    static handleBarClick(element, id) {
-        console.log(`The bin ${element.text} with id ${id} was clicked`);
-    }
-
 
     render() {
-        const grpPhones = [];
-        for (let i = 0; i < this.state.grpPhone.length; i++) {
-            const grpItem = {};
-            if (this.state.grpPhone[i] !== undefined) {
-                grpItem.name = this.state.grpPhone[i].text;
-                grpItem.count = this.state.grpPhone[i].value;
-                grpItem.fill = getRandomColor();
-                grpPhones.push(grpItem);
-            }
-        }
-        grpPhones.sort(compare);
 
         return (
-
             <Card>
                 <CardBody>
                     <CardTitle>Analytics</CardTitle>
+                    <Row><Col>Group By Phone Number - Hover Chart</Col></Row>
                     <Row>
-                        <Col>Group By Phone Number - Hover Chart</Col>
-                    </Row>
-                    <Row>
-                        <div className={"chart-main-content"}>
-                            <RadialBarChart width={500} height={500} cx={150} cy={150} innerRadius={20}
-                                            barCategoryGap={10} outerRadius={140} barSize={20} data={grpPhones}>
-                                <RadialBar minAngle={15} background clockWise={true} dataKey='count'/>
-
-                                <Legend wrapperStyle={{top: 25, right: 0, left: 0, bottom: 0}} iconSize={10}
-                                        top={10} layout='vertical' content={renderLegend}/>
-
-                                <Tooltip content={<CustomTooltip desc={"Phone Number - Count"}/>}/>
-                            </RadialBarChart>
-                        </div>
-
+                        <Col className={"chart-main-content"}>
+                            <HoverChart data={extractPhoneItems(this.state.grpPhone)} dataKey={"count"} desc={"Phone Number - Count"}/>
+                        </Col>
                     </Row>
                 </CardBody>
             </Card>
