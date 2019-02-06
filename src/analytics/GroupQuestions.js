@@ -14,13 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+
+import '../styles/index.css';
 import React from 'react';
 import restAPI from '../service/restAPI';
 import { RadialBarChart, RadialBar, Legend, Tooltip} from 'recharts';
 import {connect} from "react-redux";
 import BaseComponent from "../BaseComponent";
 import {compare, cleanArray, getRandomColor} from '../util';
-import CustomTooltip from '../common/CustomTooltips';
+import CustomTooltip from './helpers/CustomTooltips';
 // noinspection ES6CheckImport
 import {Card, CardBody, CardTitle, Row, Col} from 'mdbreact';
 
@@ -147,7 +149,7 @@ class GroupQuestions extends BaseComponent {
                 <CardBody>
                     <CardTitle>Analytics</CardTitle>
                     <Row>
-                        <Col>Group By Question - Hoverchart</Col>
+                        <Col>Group By Question - Hover Chart</Col>
                     </Row>
                     <Row>
                         <Col md={"9"}>

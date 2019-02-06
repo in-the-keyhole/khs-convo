@@ -1,131 +1,197 @@
 
+input, select {
+    margin: 0 10px 10px 0
+}
 
-input, select {margin:0 10px 10px 0 }
+.red {
+    color: #bf0d3c
+}
 
-.red{color:#bf0d3c}
+a.login {
+    float: right;
+    margin-top: 10px;
+}
 
-a.login{  float: right; margin-top: 10px;}
+div.login-error {
+    color: #A94442;
+    margin-top: 10px
+}
 
-div.login-error{color:#A94442; margin-top: 10px}
-div.logout{float:right; margin-top:10px}
+div.logout {
+    float: right;
+    margin-top: 10px
+}
 
-div.logout span{margin-right:5px}
+div.logout span {
+    margin-right: 5px
+}
 
-.clickable{cursor: pointer; margin-right:10px}
+.clickable {
+    cursor: pointer;
+    margin-right: 10px
+}
 
-.white-space{white-space: pre-line}
+.white-space {
+    white-space: pre-line
+}
 
-h3.command{margin-top:0}
+h3.command {
+    margin-top: 0
+}
 
-div.emulator{margin-top: 20px;margin-bottom: 20px;}
+div.emulator {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
 
-div.list-item{ padding: 5px}
+div.list-item {
+    padding: 5px
+}
 
-div.list{ margin-top: 30px;}
+div.list {
+    margin-top: 30px;
+}
 
 .bar {
-  fill: steelblue;
+    fill: steelblue;
 }
 
 .bar:hover {
-  fill: brown;
+    fill: brown;
 }
 
 .axis {
-  font: 10px sans-serif;
+    font: 10px sans-serif;
 }
 
 .axis path,
 .axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
 }
 
 .x.axis path {
-  display: none;
+    display: none;
 }
 
 svg {
-      /*padding-left: 10px;*/
+    /*padding-left: 10px;*/
 }
 
 @media screen and (max-width: 991px) {
-     .img-responsive {
-       min-width: 70%;
-     }
+    .img-responsive {
+        min-width: 70%;
+    }
 }
 
 @media screen and (max-width: 767px) {
-     .img-responsive {
-       min-width: 30%;
-     }
+    .img-responsive {
+        min-width: 30%;
+    }
 }
 
 @media screen and (max-width: 479px) {
-     .img-responsive {
-       min-width: 10%;
-     }
+    .img-responsive {
+        min-width: 10%;
+    }
 }
 
 .panel-body {
-    padding-left: 0px;
-    padding-right: 0px;
-    padding-top: 0px;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
 }
 
 
 .footer {
-  /* position: fixed; */
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  text-align: center;
-  /* margin-top: 30px; */
-  background-color: #f8f8f8;
-  padding: 1em;
-  border: 1px solid #e7e7e7;
+    /* position: fixed; */
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    /* margin-top: 30px; */
+    background-color: #f8f8f8;
+    padding: 1rem;
+    border: 1px solid #e7e7e7;
 }
 
 body {
-  margin-bottom: 5em;
+    margin-bottom: 5rem;
 }
 
 .row-striped {
-  padding: .2em 0;
+    padding: .2rem 0;
 }
+
 /* .row-striped:nth-of-type(odd){
   background-color: #867d7d;
 } */
-.row-striped:nth-of-type(even){
-  background-color: #efefef;
+.row-striped:nth-of-type(even) {
+    background-color: #efefef;
 }
 
 
 .mainContent {
     width: 100%;
     height: 100%;
-    border-width: 0px;
+    border-width: 0;
     overflow: auto;
 }
 
 .notificationsHeaderStyle {
-  border-bottom: 1px solid #000;
-  margin: .5em 0;
+    border-bottom: 1px solid #000;
+    margin: .5rem 0;
 }
-  .notificationsHeaderStyle span{
-    font-size: 1.5em;
-  }
-  .notificationsHeaderStyle span.sub{
-    font-size: 1.2em;
-  }
+
+.notificationsHeaderStyle span {
+    font-size: 1.5rem;
+}
+
+.notificationsHeaderStyle span.sub {
+    font-size: 1.2rem;
+}
 
 .groupListUserCount {
-  text-align: center !important;
+    text-align: center !important;
 }
 
 .pagination-totals {
+    font-weight: 300;
+    font-size: 0.9rem;
+}
+
+.chart-main-content {
+    border: 1px solid rgba(0,0,0, 0.125);
+    width: 100%;
+    margin-top: 2px;
+    font-weight: 400;
+    font-size: 0.925rem;
+}
+
+.custom-tooltip {
+    font-weight: 300;
+    font-size: 0.85rem;
+}
+
+ul.legend {
+    margin-left: 400px;
+    margin-top: -1.0rem;
+    width: 300px;
+}
+
+.legend-col-1 {
+    width: 6%;
+    height: 20px;
+    float: left;
+    background-color: lightgray;
+}
+
+.legend-col-2 {
+    width: 80%;
+    float: left;
+    margin-left: 6px;
     font-weight: 300;
     font-size: 0.9rem;
 }

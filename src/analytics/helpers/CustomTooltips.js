@@ -15,8 +15,9 @@
  */
 
 
-import React from "react";
-import createReactClass from 'create-react-class';
+import '../../styles/index.css';
+import React from 'react';
+const createReactClass = require('create-react-class');
 
 const CustomTooltip = createReactClass({
     getDefaultProps: function() {

@@ -14,14 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import '../styles/index.css';
 import React from 'react';
 import restAPI from '../service/restAPI';
-import { RadialBarChart, RadialBar, Legend, Tooltip} from 'recharts';
-import '../styles/index.css';
+import {RadialBarChart, RadialBar, Legend, Tooltip} from 'recharts';
 import {compare, getRandomColor} from '../util';
 import {connect} from "react-redux";
 import BaseComponent from '../BaseComponent';
-import CustomTooltip from '../common/CustomTooltips';
+import CustomTooltip from './helpers/CustomTooltips';
+import renderLegend from './helpers/renderLegend';
 // noinspection ES6CheckImport
 import {Card, CardBody, CardTitle, Row, Col} from 'mdbreact';
 
@@ -44,22 +45,24 @@ class GroupPhone extends BaseComponent {
     fetchGroupPhones() {
         const self = this;
         restAPI({
-            url:'../api/convo/groupphone',
+            url: '../api/convo/groupphone',
             data: this.state
-        }).then( res => {
+        }).then(res => {
             console.log(res);
-            self.setState({ grpPhone: res.data });
-        }).catch(function(err){console.log(err)});
+            self.setState({grpPhone: res.data});
+        }).catch(function (err) {
+            console.log(err)
+        });
     }
 
-    static handleBarClick(element, id){
+    static handleBarClick(element, id) {
         console.log(`The bin ${element.text} with id ${id} was clicked`);
     }
 
 
     render() {
         const grpPhones = [];
-        for(let i=0; i<this.state.grpPhone.length; i++) {
+        for (let i = 0; i < this.state.grpPhone.length; i++) {
             const grpItem = {};
             if (this.state.grpPhone[i] !== undefined) {
                 grpItem.name = this.state.grpPhone[i].text;
@@ -70,43 +73,26 @@ class GroupPhone extends BaseComponent {
         }
         grpPhones.sort(compare);
 
-
-        const renderLegend = (props) => {
-            const { payload } = props;
-
-            return (
-                <ul style={{listStyle: 'none', width: 200, marginTop: -50, marginLeft: 400}}><b>Phone Number- Count</b>
-                {
-                    payload.map((entry, index) => (
-                        <li key={`item-${index}`}><div style={{width: '18%', height: '20px', float: 'left', backgroundColor: entry.payload.fill}}/><div style={{ width: '80%', float: 'right'}}>{entry.value} - {entry.payload.count}</div></li>
-                    ))
-                }
-                </ul>
-            );
-        };
-
         return (
 
             <Card>
                 <CardBody>
                     <CardTitle>Analytics</CardTitle>
                     <Row>
-                        <Col>Group By Phone Number - Hoverchart</Col>
+                        <Col>Group By Phone Number - Hover Chart</Col>
                     </Row>
                     <Row>
-                        <Col md={"9"}>
-                            <div className="mainContent">
-                                <RadialBarChart width={500} height={500} cx={150} cy={150} innerRadius={20}
-                                                barCategoryGap={10} outerRadius={140} barSize={20} data={grpPhones}>
-                                    <RadialBar minAngle={15} background clockWise={true} dataKey='count'/>
-                                    <Legend wrapperStyle={{top: 25, right: 0, left: 0, bottom: 0}} iconSize={10}
-                                            top={10} layout='vertical' content={renderLegend}/>
-                                    <Tooltip content={<CustomTooltip desc={"xxx Phone Number - Count"}/>}/>
-                                </RadialBarChart>
-                            </div>
-                        </Col>
-                        <Col md={"3"}>
-                        </Col>
+                        <div className={"chart-main-content"}>
+                            <RadialBarChart width={500} height={500} cx={150} cy={150} innerRadius={20}
+                                            barCategoryGap={10} outerRadius={140} barSize={20} data={grpPhones}>
+                                <RadialBar minAngle={15} background clockWise={true} dataKey='count'/>
+
+                                <Legend wrapperStyle={{top: 25, right: 0, left: 0, bottom: 0}} iconSize={10}
+                                        top={10} layout='vertical' content={renderLegend}/>
+
+                                <Tooltip content={<CustomTooltip desc={"Phone Number - Count"}/>}/>
+                            </RadialBarChart>
+                        </div>
 
                     </Row>
                 </CardBody>
