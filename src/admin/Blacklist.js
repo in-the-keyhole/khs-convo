@@ -85,8 +85,8 @@ class Blacklist extends BaseComponent {
             method: 'post',
             url: '../api/admin/blacklist',
             data: insert,
-        }).then((res, me) => {
-            console.log(me);
+        }).then( res => {
+            console.log(res);
         }).catch((err) => console.log(err));
 
         this.setState({editing: null});
@@ -165,11 +165,9 @@ class Blacklist extends BaseComponent {
             method: 'delete',
             url: '../api/admin/blacklist',
             data: record
-        }).then((res, me) => {
-            console.log(`deleteItem`, me);
-        }).catch((err) => {
-            console.log(err)
-        });
+        }).then( res => {
+            console.log(`deleteItem`, res);
+        }).catch( err => console.log(err));
 
         this.fetchBlacklist();
         this.setState({
