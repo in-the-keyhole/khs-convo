@@ -23,10 +23,8 @@ import React from "react";
  * @param props
  * @returns legend render-fragment
  */
-const renderLegend = props => {
-    const {payload} = props;
+const RenderLegend = ({payload}) => (
 
-    return (
         <ul className={"legend"}><span>Items</span>
             {
                 payload.map((entry, index) => (
@@ -37,7 +35,6 @@ const renderLegend = props => {
                 ))
             }
         </ul>
-    );
-};
+);
 
-export default renderLegend;
+export default RenderLegend;

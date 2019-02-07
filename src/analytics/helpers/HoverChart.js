@@ -14,42 +14,32 @@
  * limitations under the License.
  */
 
-
 import '../../styles/index.css';
 import React from "react";
 import {Legend, RadialBar, RadialBarChart, Tooltip} from "recharts";
 import CustomTooltip from "./CustomTooltips";
-import renderLegend from './renderLegend';
+import RenderLegend from './RenderLegend';
 
-const createReactClass = require('create-react-class');
 
-const HoverChart = createReactClass({
-    getDefaultProps: function () {
-        return {
-            desc: React.string,
-            data: React.array,
-            dataKey: React.string
-        };
-    },
-    render() {
-        const {dataKey, data, desc} = this.props;
+const HoverChart = ({ desc, data, dataKey }) => {
 
-        console.log(`HoverChart props`, this.props);
+        console.log(`HoverChart props`, { desc, data, dataKey });
 
-        const normalReturn = (
+        const normalReturn =
             <RadialBarChart width={500} height={500} cx={150} cy={150} innerRadius={20}
                             barCategoryGap={10} outerRadius={140} barSize={20} data={data}>
                 <RadialBar minAngle={15} background clockWise={true} dataKey={dataKey}/>
                 <Legend wrapperStyle={{top: 25, right: 0, left: 0, bottom: 0}} iconSize={10}
-                        top={10} layout='vertical' content={renderLegend}/>
+                        top={10} layout='vertical' content={RenderLegend}/>
                 <Tooltip content={<CustomTooltip desc={desc}/>}/>
             </RadialBarChart>
-        );
+        ;
 
         const emptyReturn = (<p className={"empty-return-msg"}>No items found</p>);
 
         return data.length ? normalReturn : emptyReturn;
-    }
-});
+
+};
+
 
 export default HoverChart;

@@ -17,32 +17,18 @@
 
 import '../../styles/index.css';
 import React from 'react';
-const createReactClass = require('create-react-class');
 
-const CustomTooltip = createReactClass({
-    getDefaultProps: function() {
-        return {
-            type: React.string,
-            payload: React.array,
-            label: React.string,
-            desc: React.string
-        };
-    },
-    render() {
-        const { active, payload, desc } = this.props;
+const CustomTooltip = (({active, type, payload, label, desc}) =>
 
-        if (active) {
-            return (
-                <div className="custom-tooltip">
-                    <p className="desc">{desc || "Empty"}</p>
-                    <p className="name">{`${payload ? payload[0].payload.name : "Empty"}`} - {`${payload ? payload[0].payload.count : "0"}`}</p>
-                </div>
-            );
-        }
+        active ?
+            <div className="custom-tooltip">
+                <p className="desc">{desc || "Empty"}</p>
+                <p className="name">{`${payload ? payload[0].payload.name : "Empty"}`} - {`${payload ? payload[0].payload.count : "0"}`}</p>
+            </div>
+            : <p>Empty</p>
 
-        return null;
-    }
-});
+);
+
 
 export default CustomTooltip;
 
