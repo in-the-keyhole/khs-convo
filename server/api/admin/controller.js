@@ -65,6 +65,14 @@ function contentget(req, res) {
         })
 }
 
+
+/**
+ * Adds a new Convo user.
+ *
+ * @param req
+ * @param res
+ * @returns {*}
+ */
 function post(req, res) {
 
     req.body.uuid = uuid();
@@ -72,11 +80,11 @@ function post(req, res) {
         return res.send("The email address pair does not match");
     }
 
-    mongo.Get({Username: req.body.Email, Status: {$ne: "removed"}}, "Users")
-        .then(function (response) {
+    return mongo.Get({Username: req.body.Email, Status: {$ne: "removed"}}, "Users")
+        .then( (response) => {
 
             if (response.length > 0) {
-                res.send("The email address is previously registered");
+                res.send("The email address you have entered is already registered");
             } else {
                 mongo.Insert(req.body, 'Users')
                     .then(function (contact) {
@@ -86,8 +94,8 @@ function post(req, res) {
                 return sendRegistrationEmail(req, res);
             }
         })
-        .catch(function (error) {
-            console.log(" Duplication check error  " + error);
+        .catch( (error) => {
+            console.log(" duplication check error  " + error);
 
         });
 }

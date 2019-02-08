@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React from 'react';
+import React, {Fragment} from 'react';
 import restAPI from '../service/restAPI';
 import cellEditFactory from 'react-bootstrap-table2-editor';
 import paginationFactory from 'react-bootstrap-table2-paginator';
@@ -37,15 +37,17 @@ import {
     ModalBody,
     ModalHeader,
     ModalFooter,
+    toast
 } from 'mdbreact';
 import BaseComponent from '../BaseComponent';
 import {connect} from "react-redux";
+import ConvoNotificationContainer from '../common/ConvoNotificationContainer';
+
 
 class Admin extends BaseComponent {
 
     constructor(props) {
         super(props);
-        console.log('Admin credentials', props.credentials);
 
         this.state = {
             users: [],
@@ -65,49 +67,59 @@ class Admin extends BaseComponent {
     addUserHandler(event) {
         event.preventDefault();
 
-        const add = {
-            FirstName: this.state.FirstName,
-            LastName: this.state.LastName,
-            Phone: this.state.Phone,
-            Email: this.state.Email,
-            ConfirmEmail: this.state.ConfirmEmail,
-            Status: this.state.Status,
-            Name: `${this.state.FirstName} ${this.state.LastName}`,
-            basePath: window.location.origin
-        };
+        if (this.state.ConfirmEmail !== this.state.Email) {
+            this.setState( { errorMsg: 'Email addresses must match'} );
+            toast.error('Email addresses must match');
 
-        restAPI({
-            method: 'post',
-            url: '/api/admin',
-            data: add
-        }).then(res => {
+        } else {
 
-            if (res && res.data && res.data === 'The email address is already registered') {
-                this.setState({
-                    errorMsg: 'The email address is already registered.'
-                })
-            } else if (res && res.data && res.data === 'The email addresses do not match') {
-                this.setState({
-                    errorMsg: 'The email addresses do not match'
-                })
-            } else {
-                this.setState({
-                    errorMsg: ''
-                });
-                this.closeAddUserModal();
-                this.fetchUsers();
-            }
+            const newUser = {
+                UserName: '',
+                FirstName: this.state.FirstName,
+                LastName: this.state.LastName,
+                Phone: this.state.Phone,
+                Email: this.state.Email,
+                ConfirmEmail: this.state.ConfirmEmail,
+                Status: this.state.Status,
+                Name: `${this.state.FirstName} ${this.state.LastName}`,
+                basePath: window.location.origin
+            };
 
-        }).catch(err => console.log(err));
+            restAPI({
+                method: 'post',
+                url: '/api/admin',
+                data: newUser
+            }).then((res) => {
+
+                if (res.data != null && res.data === 'The email address you have entered is already registered') {
+                    this.setState({
+                        errorMsg: "Email address previously registered."
+                    })
+                } else if (res.data != null && res.data === 'your email addresses are not the same') {
+                    this.setState({
+                        errorMsg: "Email addresses do not match"
+                    })
+                } else {
+                    this.setState({
+                        errorMsg: ''
+                    });
+                    this.closeAddUserModal();
+                    this.fetchUsers();
+                    toast.success(`Added user ${newUser.FirstName} ${newUser.LastName}`);
+                }
+
+            }).catch(err => {
+                console.log(err)
+            });
+        }
     }
 
 
-    fetchUsers() {
-
+    fetchUsers(){
         restAPI({
-            url: '/api/admin',
+            url:'/api/admin',
             data: this.state
-        }).then((res) => {
+        }).then( res => {
             this.setState({
                 users: res.data.sort(function (a, b) {
                     return (a.FirstName.toLowerCase() > b.FirstName.toLowerCase()) ? 1 : -1;
@@ -120,16 +132,14 @@ class Admin extends BaseComponent {
                 Status: 'active'
             });
 
-        }).catch(function (err) {
-            console.log(err);
-        });
+        }).catch( err =>  console.log(err));
     }
 
     componentWillMount() {
-        if (super.componentWillMount()) {
-            this.fetchUsers();
-        }
+        super.componentWillMount();
+        this.fetchUsers();
     }
+
 
     sendRegistrationEmail() {
         const creds = {
@@ -142,7 +152,7 @@ class Admin extends BaseComponent {
             method: 'post',
             url: '/api/admin/sendRegistrationEmail',
             data: creds
-        }).then((res) => {
+        }).then( res => {
             console.log(res);
             if (res) {
                 this.closeCredentialsModal();
@@ -174,6 +184,7 @@ class Admin extends BaseComponent {
 
     deleteUser() {
         const user = this.state.currentUser;
+        const {firstName, lastName} = this.state;
         user.Status = 'removed';
 
         restAPI({
@@ -183,9 +194,8 @@ class Admin extends BaseComponent {
         }).then(() => {
             this.fetchUsers();
             this.closeDeleteModal();
-        }).catch(function (err) {
-            console.log(err)
-        });
+            toast.info(`Removed user ${firstName} ${lastName}`);
+        }).catch( err => console.log(err));
 
     }
 
@@ -239,15 +249,10 @@ class Admin extends BaseComponent {
 
     openAddUserModal() {
         console.log('openAddUserModal');
-        this.setState({addUserModal: true});
-    }
-
-
-    closeAddUserModal() {
-        console.log('closeAddUserModal');
         this.setState(
             {
-                addUserModal: false,
+                addUserModal: true,
+                UserName: '',
                 FirstName: '',
                 LastName: '',
                 Phone: '',
@@ -256,6 +261,23 @@ class Admin extends BaseComponent {
                 Status: 'active',
                 errorMsg: ''
 
+            });
+    }
+
+
+    closeAddUserModal() {
+        console.log('closeAddUserModal');
+        this.setState(
+            {
+                addUserModal: false,
+                UserName: '',
+                FirstName: '',
+                LastName: '',
+                Phone: '',
+                Email: '',
+                ConfirmEmail: '',
+                Status: 'active',
+                errorMsg: ''
             });
     }
 
@@ -358,6 +380,7 @@ class Admin extends BaseComponent {
         );
     }
 
+
     modalCredentials() {
         return (
             <Modal isOpen={this.state.credentialsModal} onHide={this.close}>
@@ -383,6 +406,7 @@ class Admin extends BaseComponent {
         );
     }
 
+
     modalDelete() {
         return (
             <Modal isOpen={this.state.deleteModal} onHide={this.close}>
@@ -398,8 +422,9 @@ class Admin extends BaseComponent {
         );
     }
 
+
     render() {
-        // Note: textFilter searching commented-out. It results in a confusing grid giving not much value added. Mauget's pinion.
+        // Note: textFilter searching commented-out.
         const data = {
             columns: [
                 {
@@ -462,10 +487,13 @@ class Admin extends BaseComponent {
         // TODO enable add button per filters;  clear inputs after add
 
         return (
-            <Col>
+            <Fragment>
+
                 {this.modalAddUser()}
                 {this.modalCredentials()}
                 {this.modalDelete()}
+
+                <ConvoNotificationContainer/>
 
                 <Card>
                     <CardBody>
@@ -497,7 +525,7 @@ class Admin extends BaseComponent {
                         </Row>
                     </CardBody>
                 </Card>
-            </Col>
+            </Fragment>
         )
     }
 }

@@ -52,7 +52,7 @@ const upload = multer({
     storage: storage,
     fileFilter: ((req, file, cb) => {
         if (file.originalname.slice(-3) !== '.js') {
-            return cb(new Error('Only js files are allowed'))
+            return cb(new Error('Only .js files allowed'))
         }
 
         cb(null, true)
