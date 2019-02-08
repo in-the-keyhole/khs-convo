@@ -22,7 +22,7 @@ import Dropzone from 'react-dropzone';
 import $ from 'jquery';
 import '../styles/emulator.css';
 import {confirmAlert} from 'react-confirm-alert';
-import NotificationBar from '../common/NotificationBar';
+import NotificationBar from './NotificationBar';
 import BaseComponent from '../BaseComponent';
 import {connect} from "react-redux";
 import {base} from '../service/restHelpers';
@@ -61,7 +61,7 @@ class Upload extends BaseComponent {
         this.uploadDroppedFile = this.uploadDroppedFile.bind(this);
         this.setDropDirectory = this.setDropDirectory.bind(this);
         this.uploadFile = this.uploadFile.bind(this);
-        this.renderUploadFile = this.renderUploadFile.bind(this);
+        this.renderDropZone = this.renderDropZone.bind(this);
         this.updateInputValue = this.updateInputValue.bind(this);
         this.handleMouseIn = this.handleMouseIn.bind(this);
         this.handleMouseOut = this.handleMouseOut.bind(this);
@@ -264,32 +264,29 @@ class Upload extends BaseComponent {
         self.setState({CurrentDirectory: e});
     }
 
-    handleMouseIn(x) {
+    handleMouseIn(arg) {
         const self = this;
-        self.setState({displayHover: x});
+        self.setState({displayHover: arg});
         console.log("handleMouseIn The state " + JSON.stringify(self.state.displayHover));
 
     }
 
     handleMouseOut() {
         const self = this;
-        self.setState({displayHover: ""});
+        self.setState({displayHover: ''});
         console.log("handleMouseOut  The state " + JSON.stringify(self.state.displayHover));
 
     }
 
 
-    tooltipStyle = function (x) {
-        const self = this;
-        return {display: (x !== undefined && self.state.displayHover === x) ? 'block' : 'none'}
-    };
+    tooltipStyle = arg => ({color: "#0000ff", marginBottom: "2.0rem",  fontSize: "0.9rem",
+        display: (arg && this.state.displayHover === arg) ? 'block' : 'none'});
 
 
-    renderUploadFile() {
-        const self = this;
-        console.log("The self  state " + JSON.stringify(self.state.displayHover));
+    renderDropZone() {
 
         const dropZoneStyle = {
+            width: '100%',
             padding: '0.5rem',
             borderWidth: '1px',
             borderStyle: 'dashed',
@@ -297,14 +294,18 @@ class Upload extends BaseComponent {
             marginBottom: '0.5rem',
             marginLeft: '1.0rem',
             verticalAlign: 'middle',
-            display: 'table'
+            display: 'table',
+            fontSize: '0.9rem',
+            fontWeight: '300'
         };
 
         const directories = this.state.Directories;
         const directoriesAndWordsObj = this.state.DirectoriesAndWords;
         const directoryElements = [];
-        let description = "";
+
+        let description = '';
         let display;
+
         for (let i = 0; i < directories.length; i++) {
             description = "";
             display = "directory" + i;
@@ -315,10 +316,10 @@ class Upload extends BaseComponent {
                     for (let k = 0; k < directoriesAndWordsObj[j].dataDirectory.words.length; k++) {
                         words.push(directoriesAndWordsObj[j].dataDirectory.words[k])
                     }
-                    if (description === "") {
+                    if (description === '') {
                         description = directoriesAndWordsObj[j].description;
                     } else {
-                        description = description + ",  " + directoriesAndWordsObj[j].description + " ";
+                        description = `${description},  ${directoriesAndWordsObj[j].description} `;
                     }
                 }
 
@@ -326,26 +327,28 @@ class Upload extends BaseComponent {
 
             directoryElements.push(
                 <div>
-                    <Row>
+                    <Row start>
                         <Col md={"2"}>
-                            <p >{directories[i]}</p>
+                            <div className={"float-right"} style={{fontWeight: "400", fontSize: "1.0rem"}}>{directories[i]}</div>
                         </Col>
                         <Col md={"1"}>
-                            <Button size={"sm"}  onClick={this.initiateUploadClick.bind(this, directories[i])}>Upload</Button>
+                            <Button size={"sm"} onClick={this.initiateUploadClick.bind(this, directories[i])}>Upload</Button>
                         </Col>
                         <Col md={"2"}>
                             <Dropzone style={{dropZoneStyle}} disableClick={true} multiple={false}
                                       onDragOver={this.setDropDirectory.bind(this, directories[i])}
                                       onDrop={this.uploadDroppedFile}>
-                                <div id="dropZoneText" name={directories[i]} style={dropZoneStyle}>Drop Zone</div>
+                                <div id="dropZoneText" name={directories[i]} style={dropZoneStyle}>File Drop</div>
                             </Dropzone>
                         </Col>
                         <Col>
                             <div>
-                                <p><b onMouseOver={this.handleMouseIn.bind(this, display)}
-                                      onMouseOut={this.handleMouseOut.bind(this, display)}>Commands:</b> {words.map(t =>
+                                <p><span onMouseOver={this.handleMouseIn.bind(this, display)}
+                                         style={{fontSize: "0.95rem", fontWeight: "500"}}
+                                      onMouseOut={this.handleMouseOut.bind(this, display)}>Commands:</span> {words.map(t =>
                                     <span>{t}</span>).reduce((prev, curr) => [prev, ', ', curr])}</p>
-                                <div style={this.tooltipStyle(display)}> {description}</div>
+
+                                <div style={this.tooltipStyle(display)}>{description}</div>
                             </div>
                         </Col>
                     </Row>
@@ -365,7 +368,7 @@ class Upload extends BaseComponent {
     renderConfirmDialog(data) {
         confirmAlert({
             title: 'Confirm to proceed',
-            message: 'A Convo event file with the name already exists.  Replace it?',
+            message: 'Convo event name exists.  Replace?',
             confirmLabel: 'Confirm',
             cancelLabel: 'Cancel',
             onConfirm: () => this.proceedWithUpload(data)
@@ -378,6 +381,8 @@ class Upload extends BaseComponent {
             <Card>
                 <CardBody>
                     <CardTitle>Convo Event File Upload</CardTitle>
+                    <p style={{fontWeight: "300", fontSize: "0.9rem", color: "#0000ff"}}>
+                        (Hover over any <b>"Commands"</b> item for its detail)</p>
                     <NotificationBar/>
 
                     <form encType="multipart/form-data" action="">
@@ -386,7 +391,7 @@ class Upload extends BaseComponent {
                     </form>
 
                     <Row>
-                        <Col>{this.renderUploadFile()}</Col>
+                        <Col>{this.renderDropZone()}</Col>
                     </Row>
                 </CardBody>
             </Card>
