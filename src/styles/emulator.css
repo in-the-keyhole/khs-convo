@@ -1,4 +1,4 @@
-.emulator-input {
+s.emulator-input {
    display: inline-block;
    vertical-align: top;
 }
@@ -7,7 +7,7 @@
    width: 100%;
    /*min-height: 10rem;*/
    /*max-height: 20rem;*/
-   height: 16rem;
+   height: 29rem;
    padding: 1rem 1rem 1rem 1rem;
    margin-bottom: 1.5rem;
    overflow-y: scroll;
