@@ -324,7 +324,8 @@ class ConversationsList extends BaseComponent {
             this.sortHandler( {page, sizePerPage, sortField, sortOrder} );
         } else if (type === 'filter') {
             console.log(`>>>>> We have  filters`, filters);
-            /*  Here's filter set. Each item should be AND clause. LIKE done by regex: /426/
+            /*  // Example of a filter set. Each top-level item means it's an AND clause.
+                // LIKE applied server-side by regex. E.g. /426/ means a 426 found anywhere in the value
                 {
                     answer: {filterVal: "you", filterType: "TEXT", comparator: "LIKE", caseSensitive: false}
                     date: {filterVal: "T17", filterType: "TEXT", comparator: "LIKE", caseSensitive: false}
@@ -333,6 +334,8 @@ class ConversationsList extends BaseComponent {
                 }
             */
             this.filterHandler( {page, sizePerPage, sortField, sortOrder, filters} );
+        } else {
+            console.log('type', type);
         }
     };
 
