@@ -14,11 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import '../styles/data-table.css';
 import '../styles/emulator.css';
 import React from 'react';
 import restAPI from '../service/restAPI';
-import NotificationBar from '../common/NotificationBar';
+import NotificationBar from '../upload/NotificationBar';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import cellEditFactory, {Type} from 'react-bootstrap-table2-editor';
 import BootstrapTable from 'react-bootstrap-table-next';
@@ -301,13 +300,20 @@ class Emulator extends BaseComponent {
         });
     }
 
+    /**
+     * Paints the conversation elements in a transcript
+     *
+     * @returns {*[]}
+     */
     renderConversation() {
         const convo = this.state.Conversation;
         const elements = [];
+        const overrideFontSize = {fontSize: "0.9rem"};
         convo.forEach((input, i) => {
             const dynamicAnswer = this.dynamicLinks(input.answer);
             const questionElement = (
                 <div className="conversation__message-container conversation__message-question"
+                     style={overrideFontSize}
                      key={`question_${i}`}>
                     <div className="conversation__message-content white-space">
                         {input.question}
@@ -316,7 +322,8 @@ class Emulator extends BaseComponent {
             );
 
             const answerElement = (
-                <div className="conversation__message-container conversation__message-answer" key={`answer_${i}`}>
+                <div className="conversation__message-container conversation__message-answer" key={`answer_${i}`}
+                     style={overrideFontSize}>
                     <div className="conversation__message-content white-space">
                         {dynamicAnswer}
                     </div>
@@ -358,6 +365,8 @@ class Emulator extends BaseComponent {
         const conversationElements = this.renderConversation();
         const isAdmin = this.props.credentials.status === 'admin';
 
+        const titleStyle = {fontSize: "1.22rem", color: "#66f"};
+
         const columns = [
             {
                 hidden: true,
@@ -381,6 +390,89 @@ class Emulator extends BaseComponent {
             }
         ];
 
+        const card1 =
+            <Card>
+                <CardBody>
+                    <CardTitle style={titleStyle}>Sending Center</CardTitle>
+                    <Row>
+                        <Col>
+                            <span style={{fontSize: "0.85rem", color: "#888"}}>
+                                {`${this.state.Conversation.length || 'no'} commands sent:`}</span>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col className="emulator__message-list" id="emulator__conversation-thread">
+                            {conversationElements}
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col md={"9"}>
+                            <Input name="Body"
+                                   type="text"
+                                   autoFocus
+                                   value={this.state.Body || ''}
+                                   onChange={this.handleInputChange}
+                                   onKeyPress={this.onConversationKeypress}
+                                   label={"Enter command"}
+                            />
+                        </Col>
+                        <Col md={"2"}>
+                            <Button size={"sm"}
+                                    onClick={this.handleSubmit}
+                                    style={buttonAligment}>Send</Button>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col md={"4"}>
+                            <Input name="From"
+                                   type="tel"
+                                   validate
+                                   value={this.state.From || ''}
+                                   onChange={this.handleInputChange}
+                                   label={"Enter phone"}
+                            />
+                        </Col>
+                        <Col md={"2"}>
+                            <Button size={"sm"}
+                                    color={"primary"}
+                                    style={buttonAligment}
+                                    onClick={this.loadMoreMessages}>Load&nbsp;More</Button>
+                        </Col>
+                    </Row>
+
+
+                </CardBody>
+            </Card>
+        ;
+
+        const card2 =
+            <Card>
+                <CardBody>
+                    <CardTitle  style={titleStyle}>Installed Commands</CardTitle>
+                    <Row>
+                        <Col>
+                            <BootstrapTable
+                                bootstrap4
+                                data={this.state.EventArray}
+                                columns={columns}
+                                keyField={'key'}
+                                pagination={paginationFactory( pageinationOptions )}
+                                cellEdit={cellEditFactory({
+                                    mode: 'click',
+                                    blurToSave: true,
+                                    afterSaveCell: this.onAfterSaveCell
+                                })}
+                            />
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <CommandLink value={this.state.CommandLink}/>
+                        </Col>
+                    </Row>
+                </CardBody>
+            </Card>
+        ;
 
         return (
             <Card>
@@ -394,89 +486,10 @@ class Emulator extends BaseComponent {
                     </form>
 
                     <Row>
-                        <Col md={"6"}>
-                            <Card>
-                                <CardBody>
-                                    <CardTitle>Sending Center</CardTitle>
-                                    <Row>
-                                        <Col>
-                                            <span>{`${this.state.Conversation.length || 'no'} commands sent:`}</span>
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col className="emulator__message-list" id="emulator__conversation-thread">
-                                            {conversationElements}
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col md={"9"}>
-                                            <Input name="Body"
-                                                   type="text"
-                                                   autoFocus
-                                                   value={this.state.Body || ''}
-                                                   onChange={this.handleInputChange}
-                                                   onKeyPress={this.onConversationKeypress}
-                                                   label={"Enter command"}
-                                            />
-                                        </Col>
-                                        <Col md={"2"}>
-                                            <Button size={"sm"}
-                                                    onClick={this.handleSubmit}
-                                                    style={buttonAligment}>Send</Button>
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col md={"4"}>
-                                            <Input name="From"
-                                                   type="tel"
-                                                   validate
-                                                   value={this.state.From || ''}
-                                                   onChange={this.handleInputChange}
-                                                   label={"Enter phone"}
-                                            />
-                                        </Col>
-                                        <Col md={"2"}>
-                                            <Button size={"sm"}
-                                                    color={"primary"}
-                                                    style={buttonAligment}
-                                                    onClick={this.loadMoreMessages}>Load&nbsp;More</Button>
-                                        </Col>
-                                    </Row>
-
-
-                                </CardBody>
-                            </Card>
-                        </Col>
-
-                        <Col md={"6"}>
-                            <Card>
-                                <CardBody>
-                                    <CardTitle>Installed Commands</CardTitle>
-                                    <Row>
-                                        <Col>
-                                            <BootstrapTable
-                                                bootstrap4
-                                                data={this.state.EventArray}
-                                                columns={columns}
-                                                keyField={'key'}
-                                                pagination={paginationFactory( pageinationOptions )}
-                                                cellEdit={cellEditFactory({
-                                                    mode: 'click',
-                                                    blurToSave: true,
-                                                    afterSaveCell: this.onAfterSaveCell
-                                                })}
-                                            />
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col>
-                                            <CommandLink value={this.state.CommandLink}/>
-                                        </Col>
-                                    </Row>
-                                </CardBody>
-                            </Card>
-                        </Col>
+                        <Col md={"5"}>{card1}</Col>
+                        <Col>{card2}</Col>
                     </Row>
+
                 </CardBody>
             </Card>
         )
