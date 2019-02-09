@@ -36,6 +36,16 @@ import {
     Input
 } from 'mdbreact';
 
+
+/**
+ * Custom page sizes for Emulator commands table.
+ * @type {{} & {sizePerPageList: number[]} & {showTotal: boolean, paginationTotalRenderer: (function(*, *, *): *)}}
+ */
+const commandsPaginationOptions = Object.assign(
+    {},
+    {sizePerPageList: [5, 10, 15, 50]},
+    pageinationOptions);
+
 /**
  * Helper for renderConversation()
  *
@@ -480,7 +490,7 @@ class Emulator extends BaseComponent {
                                 data={this.state.EventArray}
                                 columns={columns}
                                 keyField={'key'}
-                                pagination={paginationFactory( pageinationOptions )}
+                                pagination={paginationFactory( commandsPaginationOptions )}
                                 cellEdit={cellEditFactory({
                                     mode: 'click',
                                     blurToSave: true,
