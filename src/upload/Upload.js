@@ -326,7 +326,7 @@ class Upload extends BaseComponent {
             }
 
             directoryElements.push(
-                <div>
+                <div key={directoryElements.length.toString()}>
                     <Row start>
                         <Col md={"2"}>
                             <div className={"float-right"} style={{fontWeight: "400", fontSize: "1.0rem"}}>{directories[i]}</div>
