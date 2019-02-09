@@ -75,27 +75,32 @@ function contentget(req, res) {
  */
 function post(req, res) {
 
+    const email = req.body.Email ? req.body.Email.toLowerCase() : '';
+    const email2 = req.body.Email ? req.body.ConfirmEmail.toLowerCase() : '';
+
     req.body.uuid = uuid();
-    if (req.body.Email !== req.body.ConfirmEmail) {
+    if (email !== email2) {
         return res.send("The email address pair does not match");
     }
 
-    return mongo.Get({Username: req.body.Email, Status: {$ne: "removed"}}, "Users")
+    req.body.Email = email;
+    return mongo.Get({Email: email, Status: {$ne: "removed"}}, "Users")
         .then( (response) => {
 
-            if (response.length > 0) {
-                res.send("The email address you have entered is already registered");
+            if (response.length) {
+                res.send("dupe");
             } else {
                 mongo.Insert(req.body, 'Users')
                     .then(function (contact) {
+                        // TODO What is this no-op function ???
                     });
 
-                req.body.RegistrationEmail = req.body.Email;
+                req.body.RegistrationEmail = email;
                 return sendRegistrationEmail(req, res);
             }
         })
         .catch( (error) => {
-            console.log(" duplication check error  " + error);
+            console.log(`duplication check error  ${error}`);
 
         });
 }

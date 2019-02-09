@@ -26,10 +26,12 @@ import App from './App';
 import FooterPanel from './footer';
 import { Provider } from 'react-redux';
 import { store } from './configureStore';
+import ConvoNotificationContainer from './common/ConvoNotificationContainer';
 
 const element = (
     <BrowserRouter id="wrapper">
         <Provider store={store}>
+            <ConvoNotificationContainer/>
             {/*<div id="header"></div>*/}
             <div id="content"><App/></div>
             <div id="footer"><FooterPanel/></div>

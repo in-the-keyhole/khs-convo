@@ -15,6 +15,7 @@
  */
 
 import React from 'react';
+// noinspection ES6CheckImport
 import { ToastContainer }  from 'mdbreact';
 
 /**

@@ -41,7 +41,6 @@ import {
 } from 'mdbreact';
 import BaseComponent from '../BaseComponent';
 import {connect} from "react-redux";
-import ConvoNotificationContainer from '../common/ConvoNotificationContainer';
 
 
 class Admin extends BaseComponent {
@@ -67,9 +66,11 @@ class Admin extends BaseComponent {
     addUserHandler(event) {
         event.preventDefault();
 
+        // UI checks duplicate emails, but API should catch it regardless. It is the final arbitror.
         if (this.state.ConfirmEmail !== this.state.Email) {
-            this.setState( { errorMsg: 'Email addresses must match'} );
-            toast.error('Email addresses must match');
+            const msg = `Email mismatch; ${this.state.Email} / ${this.state.ConfirmEmail}`;
+            this.setState( { errorMsg: msg} );
+            toast.error(msg);
 
         } else {
 
@@ -89,23 +90,24 @@ class Admin extends BaseComponent {
                 method: 'post',
                 url: '/api/admin',
                 data: newUser
-            }).then((res) => {
+            }).then( res => {
+                if (res.data && res.data === 'dupe') {
 
-                if (res.data != null && res.data === 'The email address you have entered is already registered') {
-                    this.setState({
-                        errorMsg: "Email address previously registered."
-                    })
-                } else if (res.data != null && res.data === 'your email addresses are not the same') {
-                    this.setState({
-                        errorMsg: "Email addresses do not match"
-                    })
+                    this.setState({errorMsg: `Email ${newUser.Email} previously registered.`});
+                    toast.error(this.state.errorMsg);
+
+                } else if (res.data && res.data === 'your email addresses are not the same') {
+
+                    this.setState({errorMsg: 'Email addresses do not match'});
+                    toast.error(this.state.errorMsg);
+
                 } else {
-                    this.setState({
-                        errorMsg: ''
-                    });
+
+                    this.setState({errorMsg: ''});
                     this.closeAddUserModal();
                     this.fetchUsers();
                     toast.success(`Added user ${newUser.FirstName} ${newUser.LastName}`);
+
                 }
 
             }).catch(err => {
@@ -188,7 +190,7 @@ class Admin extends BaseComponent {
         user.Status = 'removed';
 
         restAPI({
-            method: 'put',
+            method: 'put', // delete?
             url: '/api/admin',
             data: user
         }).then(() => {
@@ -493,7 +495,7 @@ class Admin extends BaseComponent {
                 {this.modalCredentials()}
                 {this.modalDelete()}
 
-                <ConvoNotificationContainer/>
+                {/*<ConvoNotificationContainer/>*/}
 
                 <Card>
                     <CardBody>
