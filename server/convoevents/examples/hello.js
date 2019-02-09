@@ -17,7 +17,7 @@ limitations under the License.
 'use strict';
 module.exports = function (events) {
 
-    var event = {};
+    const event = {};
     event.isAuth = false;
     event.description = "Say Hello";
     event.words = [{
@@ -26,18 +26,19 @@ module.exports = function (events) {
     }, {
         word: 'hi',
         value: 10
-    }]
+    }];
+
     event.run = function (request) {
         console.log(request);
-        return new Promise(function (resolve, reject) {
-            if (request.me) {
-                return resolve("Hello " + request.me.FirstName + "!");
-            } else {
-                return resolve("Hello!");
-            }
+        // noinspection ES6ModulesDependencies
+        return new Promise(function (resolve) {
+            const msg = request.me
+                ? "Hello " + request.me.FirstName + "!"
+                : "Hello!";
+            return resolve(msg);
         })
-    }
+    };
 
     events.push(event);
 
-}
+};
