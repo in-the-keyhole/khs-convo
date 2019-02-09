@@ -345,15 +345,18 @@ class Upload extends BaseComponent {
                             <div>
                                 <p><span onMouseOver={this.handleMouseIn.bind(this, display)}
                                          style={{fontSize: "0.95rem", fontWeight: "500"}}
-                                      onMouseOut={this.handleMouseOut.bind(this, display)}>Commands:</span> {words.map(t =>
-                                    <span>{t}</span>).reduce((prev, curr) => [prev, ', ', curr])}</p>
+                                      onMouseOut={this.handleMouseOut.bind(this, display)}>Commands:</span>
+
+                                    {words.map((t,k) => <span key={k.toString()}>{t}</span>).reduce((prev, curr) => [prev, ', ', curr])}
+                                </p>
 
                                 <div style={this.tooltipStyle(display)}>{description}</div>
                             </div>
                         </Col>
                     </Row>
 
-                </div>);
+                </div>
+            );
         }
 
         return this.state.Status === 'admin' ? (<div>{directoryElements}</div>) : <div/>;

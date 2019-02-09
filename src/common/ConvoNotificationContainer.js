@@ -19,12 +19,13 @@ import React from 'react';
 import { ToastContainer }  from 'mdbreact';
 
 /**
- * Use this component in any top-level panel that needs to make toast calls.
+ * Use this component in the top-level panel to provide a containter for toast calls.
+ * See attributes at API tab of https://mdbootstrap.com/docs/react/advanced/notifications/
  *
  * @returns {*}
  * @constructor
  */
-const ConvoNotificationContainer = ({}) => (
+const ConvoNotificationContainer = () => (
     <ToastContainer
         hideProgressBar={true}
         newestOnTop={true}

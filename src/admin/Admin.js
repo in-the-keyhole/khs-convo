@@ -68,7 +68,7 @@ class Admin extends BaseComponent {
 
         // UI checks duplicate emails, but API should catch it regardless. It is the final arbitror.
         if (this.state.ConfirmEmail !== this.state.Email) {
-            const msg = `Email mismatch; ${this.state.Email} / ${this.state.ConfirmEmail}`;
+            const msg = `Mismatch; ${this.state.Email} / ${this.state.ConfirmEmail}`;
             this.setState( { errorMsg: msg} );
             toast.error(msg);
 
@@ -93,10 +93,11 @@ class Admin extends BaseComponent {
             }).then( res => {
                 if (res.data && res.data === 'dupe') {
 
-                    this.setState({errorMsg: `Email ${newUser.Email} previously registered.`});
+                    this.setState({errorMsg: `"${newUser.Email}" previously registered.`});
                     toast.error(this.state.errorMsg);
 
                 } else if (res.data && res.data === 'your email addresses are not the same') {
+                    // Alas, string literal above must exactly match server's rendition.
 
                     this.setState({errorMsg: 'Email addresses do not match'});
                     toast.error(this.state.errorMsg);
@@ -494,8 +495,6 @@ class Admin extends BaseComponent {
                 {this.modalAddUser()}
                 {this.modalCredentials()}
                 {this.modalDelete()}
-
-                {/*<ConvoNotificationContainer/>*/}
 
                 <Card>
                     <CardBody>
