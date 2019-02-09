@@ -25,15 +25,15 @@ module.exports = function (events) {
         value: 10
     }];
     event.run = function (request) {
-        console.log(request);
-        return new Promise(function (resolve, reject) {
-            if (request.me) {
-                return resolve(`You have been added as ${request.me.FirstName}!`);
-            } else {
-                return resolve(`You have been added.`);
-            }
+        // noinspection ES6ModulesDependencies
+        return new Promise(function (resolve) {
+            const msg = request.me
+                ? `Added ${request.me.FirstName}.`
+                : `Added you.`;
+
+            return resolve(msg);
         })
-    }
+    };
 
     events.push(event);
 
