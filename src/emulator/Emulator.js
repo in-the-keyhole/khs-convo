@@ -36,6 +36,44 @@ import {
     Input
 } from 'mdbreact';
 
+/**
+ * Helper for renderConversation()
+ *
+ * @param i
+ * @param overrideFontSize
+ * @param input
+ * @returns {*}
+ */
+const questionElement = ({i, overrideFontSize, input}) =>  (
+
+        <div className="conversation__message-container conversation__message-question"
+             style={overrideFontSize}
+             key={`question_${i}`}>
+            <div className="conversation__message-content white-space">
+                {input.question}
+            </div>
+        </div>
+);
+
+
+/**
+ * Helper for renderConversation
+ *
+ * @param i
+ * @param overrideFontSize
+ * @param dynamicAnswer
+ * @returns {*}
+ */
+const answerElement = ({i, overrideFontSize, dynamicAnswer}) => (
+
+        <div className="conversation__message-container conversation__message-answer" key={`answer_${i}`}
+             style={overrideFontSize}>
+            <div className="conversation__message-content white-space">
+                {dynamicAnswer}
+            </div>
+        </div>
+);
+
 
 class Emulator extends BaseComponent {
 
@@ -282,11 +320,11 @@ class Emulator extends BaseComponent {
             To: "+19132703506",
             From: phoneFrom
         };
-        const skipCount = skip ? skip : 0;
+        const skipCount = skip ||  0;
 
         restAPI({
             method: 'GET',
-            url: '../api/convo/getconvoforphone?phone=' + phoneFrom + '&skip=' + skipCount,
+            url: `../api/convo/getconvoforphone?phone=${phoneFrom}&skip=${skipCount}`,
             data: getConvoData
         }).then(function (res) {
             const newConvo = (skipCount === 0) ? res.data : self.state.Conversation.concat(res.data);
@@ -300,8 +338,9 @@ class Emulator extends BaseComponent {
         });
     }
 
+
     /**
-     * Paints the conversation elements in a transcript
+     * Paints the conversation elements to the sending cneter's transcript
      *
      * @returns {*[]}
      */
@@ -311,27 +350,10 @@ class Emulator extends BaseComponent {
         const overrideFontSize = {fontSize: "0.9rem"};
         convo.forEach((input, i) => {
             const dynamicAnswer = this.dynamicLinks(input.answer);
-            const questionElement = (
-                <div className="conversation__message-container conversation__message-question"
-                     style={overrideFontSize}
-                     key={`question_${i}`}>
-                    <div className="conversation__message-content white-space">
-                        {input.question}
-                    </div>
-                </div>
-            );
 
-            const answerElement = (
-                <div className="conversation__message-container conversation__message-answer" key={`answer_${i}`}
-                     style={overrideFontSize}>
-                    <div className="conversation__message-content white-space">
-                        {dynamicAnswer}
-                    </div>
-                </div>
-            );
+            elements.push(questionElement({i, overrideFontSize, input}));
+            elements.push(answerElement({i, overrideFontSize, dynamicAnswer}));
 
-            elements.push(answerElement);
-            elements.push(questionElement);
         });
         return elements.reverse();
     }
@@ -344,13 +366,15 @@ class Emulator extends BaseComponent {
      * @param cellName
      * @param cellValue -- an object of all fields of the row's document
      */
-    onAfterSaveCell(row , cellName, cellValue) {
+    onAfterSaveCell(row, cellName, cellValue) {
 
         restAPI({
             method: 'post',
             url: '../api/convo/disableevent',
-            data: cellValue,
-        }).then(result => console.log(`onAfterSaveCell`, result)).catch(err => console.log(err));
+            data: cellValue
+        })
+            .then(result => console.log(`onAfterSaveCell`, result))
+            .catch(err => console.log(err));
     }
 
 
