@@ -109,8 +109,8 @@ class Login extends Component {
 
     render() {
 
-        const inputPadding = {padding: '0.5rem'};
-        const cardLayout = {width: "26rem", padding: "3em"};
+        const inputStyle = {padding: '0.5rem', color: "#000"};
+        const cardLayout = {width: "26.0rem", padding: "3.0rem"};
 
         return (
             <Container>
@@ -130,7 +130,7 @@ class Login extends Component {
                                            type={"text"}
                                            icon={"user"}
                                            group
-                                           style={inputPadding}
+                                           style={inputStyle}
                                            value={this.state.username}
                                            onChange={this.handleInputChange} placeholder="username"/>
 
@@ -139,9 +139,9 @@ class Login extends Component {
                                            label={"Password"}
                                            hint={"Password"}
                                            type={"password"}
-                                           icon={"unlock"}
+                                           icon={"lock"}
                                            group
-                                           style={inputPadding}
+                                           style={inputStyle}
                                            value={this.state.password}
                                            onChange={this.handleInputChange} placeholder="password"/>
 

@@ -30,12 +30,14 @@ const styleLink = {
     fontWeight: 300
 };
 
+const crUrl = 'https://keyholesoftware.com/company/creations/content-usage-guidelines/';
+
 export const FooterPanel = (/*props*/) => (
     <Footer>
         <div className="footer-copyright text-center py-3" style={styleA}>
             &copy; {new Date().getFullYear()} Copyright: KeyHole Software -&nbsp;
             <a target={"_blank"} style={styleLink}
-               href="https://keyholesoftware.com/company/creations/content-usage-guidelines/"> Content Usage
+               href={crUrl}> Content Usage
                 Guidelines </a>
 
         </div>
