@@ -33,7 +33,8 @@ import {
     Card,
     CardBody,
     CardTitle,
-    Input
+    Input,
+    MDBIcon
 } from 'mdbreact';
 
 
@@ -395,7 +396,7 @@ class Emulator extends BaseComponent {
         // TODO Stop injecting HTML from the API. See help.js for its own TODO
         const CommandLink = ({value}) => (<div dangerouslySetInnerHTML={{__html: value}}/>);
 
-        const buttonAligment = {marginTop: '2rem'};
+        const buttonAligment = {marginTop: '2rem', width: "100%"};
         const conversationElements = this.renderConversation();
         const isAdmin = this.props.credentials.status === 'admin';
 
@@ -440,7 +441,7 @@ class Emulator extends BaseComponent {
                         </Col>
                     </Row>
                     <Row>
-                        <Col md={"9"}>
+                        <Col md={"8"}>
                             <Input name="Body"
                                    type="text"
                                    autoFocus
@@ -450,14 +451,15 @@ class Emulator extends BaseComponent {
                                    label={"Enter command"}
                             />
                         </Col>
-                        <Col md={"2"}>
+                        <Col md={"4"}>
                             <Button size={"sm"}
+                                    color={"light"}
                                     onClick={this.handleSubmit}
-                                    style={buttonAligment}>Send</Button>
+                                    style={buttonAligment}><MDBIcon icon="paper-plane" />&nbsp;Send</Button>
                         </Col>
                     </Row>
                     <Row>
-                        <Col md={"4"}>
+                        <Col md={"8"}>
                             <Input name="From"
                                    type="tel"
                                    validate
@@ -466,9 +468,9 @@ class Emulator extends BaseComponent {
                                    label={"Enter phone"}
                             />
                         </Col>
-                        <Col md={"2"}>
+                        <Col md={"4"}>
                             <Button size={"sm"}
-                                    color={"primary"}
+                                    color={"light"}
                                     style={buttonAligment}
                                     onClick={this.loadMoreMessages}>Load&nbsp;More</Button>
                         </Col>
