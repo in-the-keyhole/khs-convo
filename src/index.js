@@ -27,8 +27,6 @@ import FooterPanel from './footer';
 import { Provider } from 'react-redux';
 import { store } from './configureStore';
 import ConvoNotificationContainer from './common/ConvoNotificationContainer';
-// noinspection ES6CheckImport
-import {MDBIcon} from 'mdbreact';
 
 const element = (
     <Fragment>

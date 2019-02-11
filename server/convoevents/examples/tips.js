@@ -35,7 +35,6 @@ module.exports = function (events) {
 
         // noinspection ES6ModulesDependencies
         return new Promise(function (resolve) {
-
             let decimal = ".00";
             if (result.question.length > 1) {
 

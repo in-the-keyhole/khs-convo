@@ -16,21 +16,19 @@ limitations under the License.
 
 'use strict';
 
-var events = require('./events');
-var mongo = require('../mongo');
-var session = require('../session');
-var config = require('../../config');
-var moment = require('moment');
-var _ = require('lodash');
+const events = require('./events');
+const mongo = require('../mongo');
+const session = require('../session');
+const config = require('../../config');
+const moment = require('moment');
+const _ = require('lodash');
 
-var StateMachine = require("../state-machine");
+const host_url = config.url;
 
-var host_url = config.url;
-
-var Thresh = 10;
+const Thresh = 10;
 
 function removeQuestion(result, word) {
-    var i = result.question.indexOf(word);
+    const i = result.question.indexOf(word);
     if (i === -1) return result;
 
     result.question.splice(i, 1);
@@ -39,19 +37,17 @@ function removeQuestion(result, word) {
 
 function duplicates() {
 
-    var list = _.flatten(_.map(events, 'words'));
-    var dupes = _.filter(_.map(list, 'word'), function (value, index, iteratee) {
+    const list = _.flatten(_.map(events, 'words'));
+    const dupes = _.filter(_.map(list, 'word'), function (value, index, iteratee) {
         return _.includes(iteratee, value, index + 1);
     });
 
-    var outputList = [];
+    const outputList = [];
 
     _.forEach(dupes, function (value, key) {
 
-        var results = _.filter(events, function (obj) {
-            var mytest = _.includes(_.map(obj.words, 'word'), dupes[key]);
-            //console.log(mytest);
-            return mytest;
+        const results = _.filter(events, function (obj) {
+            return _.includes(_.map(obj.words, 'word'), dupes[key]);
         });
 
 
@@ -67,13 +63,14 @@ function duplicates() {
 }
 
 function findAnswer(result) {
-    return new Promise(function (resolve, reject) {
+    // noinspection ES6ModulesDependencies
+    return new Promise(function (resolve) {
 
-        var mainEvent;
-        var mainEventWeight = 0;
+        let mainEvent;
+        let mainEventWeight = 0;
         result.answer = "";
-        var exit = ['exit', 'x'];
-        var ui = ['u'];
+        const exit = ['exit', 'x'];
+        const ui = ['u'];
 
         result = removeQuestion(result, 'what');
         result = removeQuestion(result, 'is');
@@ -89,16 +86,17 @@ function findAnswer(result) {
                 }
             });
 
-        var revisit = session.Get(result.phone).then(
+        session.Get(result.phone).then(
             function (r) {
 
+                let word;
                 if (result.question.length === 0) {
                     result.answer = 'Invalid input. Please try again';
                     session.Delete(result.phone);
                     return resolve(result);
                 }
 
-                var entry = result.question[0].toLowerCase();
+                let entry = result.question[0].toLowerCase();
 
                 if (exit.includes(entry)) {
                     result.answer = "Goodbye, thank you";
@@ -109,8 +107,8 @@ function findAnswer(result) {
                 if (r.length > 0) {
 
                     // validate session, if out of date, delete....
-                    var d = moment(r[r.length - 1].date);
-                    var d2 = moment(new Date());
+                    const d = moment(r[r.length - 1].date);
+                    const d2 = moment(new Date());
                     if (d2.diff(d, 'minutes') > config.session_timeout) {
                         session.Delete(result.phone);
                     } else {
@@ -120,8 +118,10 @@ function findAnswer(result) {
 
                 if (entry) {
 
-                    for (var i = 0; i < events.length; i++) {
-                        for (var j = 0; j < events[i].words.length; j++) {
+                    let i;
+                    // noinspection JSUnresolvedVariable
+                    for (i = 0; i < events.length; i++) {
+                        for (let j = 0; j < events[i].words.length; j++) {
                             if (events[i].words[j].word.toLowerCase() === entry.toLowerCase()) {
                                 mainEvent = events[i];
                                 break;
@@ -132,15 +132,16 @@ function findAnswer(result) {
                         }
                     }
 
-                    if (mainEvent === undefined) {
-                        for (var y = 0; y < result.question.length; y++) {
-                            var quest = result.question[y];
-                            for (var i = 0; i < events.length; i++) {
-                                var event = events[i];
-                                var weight = 0;
-                                for (var x = 0; x < event.words.length; x++) {
-                                    var word = event.words[x];
-                                    var m = quest.match(RegExp(word.word)) || [];
+                    if (!mainEvent) {
+                        for (let y = 0; y < result.question.length; y++) {
+                            const quest = result.question[y];
+                            // noinspection JSUnresolvedVariable
+                            for (i = 0; i < events.length; i++) {
+                                const event = events[i];
+                                let weight = 0;
+                                for (let x = 0; x < event.words.length; x++) {
+                                    word = event.words[x];
+                                    const m = quest.match(RegExp(word.word)) || [];
                                     if (m.length > 0) {
                                         weight += word.value;
                                     }
@@ -159,23 +160,23 @@ function findAnswer(result) {
 
                     // UI requested
                     if (ui.includes(result.question[0].toLowerCase()) && mainEvent.html) {
-                        var html = mainEvent.html();
-                        var word = mainEvent.words[0].word;
-                        result.answer = 'Link to ' + mainEvent.description + ' UI: ' +
-                            host_url + 'api/public/html/' + result.phone + '/' + word;
+                        const html = mainEvent.html();
+                        word = mainEvent.words[0].word;
+                        result.answer = `Link to ${mainEvent.description} UI: ${host_url}api/public/html/${result.phone}/${word}`;
+
                         saveHtml(result, html, word);
                         session.Delete(result.phone);
                         return resolve(result);
                     }
 
 
-                    mongo.Get({ Phone: result.phone }, 'Users')
+                    mongo.Get({Phone: result.phone}, 'Users')
                         .then(function (contact) {
-                            if (contact != null)
+                            if (contact)
                                 result.me = contact[0];
                             if (mainEvent.isAuth) {
-                                if (contact.length == 0) {
-                                    result.answer = "No Auth: Please Contact Admin!";
+                                if (contact.length === 0) {
+                                    result.answer = "Not authorized. Please contact an administrator.";
                                     return resolve(result);
                                 }
                             }
@@ -200,14 +201,12 @@ function findAnswer(result) {
 }
 
 function saveHtml(result, html, word) {
-
     mongo.Update({ phone: result.phone, event: word }, { phone: result.phone, event: word, html: html }, "ui", { upsert: true });
-    return;
 }
 
 
 module.exports = {
     findAnswer: findAnswer,
     duplicates: duplicates,
-    saveHtml, saveHtml
-}
+    saveHtml: saveHtml
+};

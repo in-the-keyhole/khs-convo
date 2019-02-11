@@ -38,7 +38,8 @@ import {
     MDBModalFooter,
     MDBInput,
     MDBIcon,
-    Button
+    Button,
+    toast
 } from 'mdbreact';
 import {connect} from "react-redux";
 
@@ -103,6 +104,7 @@ class Properties extends BaseComponent {
             console.log(res);
 
             this.fetchContents();
+            toast.info(`Deleted property "${remove.Name}"`);
 
         }).catch((err) => {
             console.log(err)
@@ -139,6 +141,8 @@ class Properties extends BaseComponent {
             data: insert,
         }).then(res => {
             console.log(res);
+
+            toast.success(`Inserted property "${insert.Name}"`);
             this.setState({insertName: null, insertContent: null});
         }).catch(err => {
             console.log(err)
@@ -256,14 +260,14 @@ class Properties extends BaseComponent {
                                           onChange={this.handleInputChange}/>
                             </Col>
                             <Col md={"2"}>
-                                <Button size={"sm"}
+                                <Button size={"sm"} color={"light"}
                                         onClick={this.handleInsertItem}
                                         disabled={!this.state.insertName || !this.state.insertContent}
-                                        style={{marginTop: "1.5rem"}}>
-                                    <MDBIcon icon="plus"/>&nbsp;Add</Button>
+                                        style={{marginTop: "1.5rem", width: "100%"}}>
+                                    <MDBIcon icon="plus-circle"/>&nbsp;Add Property</Button>
                             </Col>
                             <Col md={"2"} className="text-danger">
-                                {this.state.insertError}>
+                                {this.state.insertError}
                             </Col>
                         </Row>
 
