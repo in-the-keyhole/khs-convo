@@ -74,19 +74,23 @@ class App extends Component {
         this.onClickLogout = this.onClickLogout.bind(this);
     }
 
+
     static getDerivedStateFromError(/*error*/) {
         // Update state so the next render will show the fallback UI.
         return { hasError: true };
     }
 
+
     componentDidCatch(error, info) {
         console.log(error, info);
     }
+
 
     onClick(ev) {
         ev.preventDefault();
         this.setState({collapse: !this.state.collapse});
     }
+
 
     onClickLogout(ev) {
         ev.preventDefault();
@@ -122,7 +126,8 @@ class App extends Component {
         const main = (
             <main>
                 <Switch>
-                    <Route exact path='/' component={Admin}/>
+                    <Route exact path='/' component={Emulator}/>
+                    <Route path='/users' component={Admin}/>
                     <Route path='/analytics/all' component={ConversionListChunked}/>
                     <Route path='/analytics/groupquestion' component={GroupQuestions}/>
                     <Route path='/analytics/groupphone' component={GroupPhone}/>
@@ -140,6 +145,7 @@ class App extends Component {
             </main>
         );
 
+
         // Show most of the navbar only for authenticated users
         const privateNav = checkCredentials() ?
             (
@@ -152,7 +158,7 @@ class App extends Component {
                                     <div className="d-none d-md-inline">Admin</div>
                                 </DropdownToggle>
                                 <DropdownMenu>
-                                    <DropdownItem eventkey={1.1}><Link to={"/"}>Users</Link></DropdownItem>
+                                    <DropdownItem eventkey={1.1}><Link to={"/users"}>Users</Link></DropdownItem>
                                     <DropdownItem eventkey={1.2}><Link to={"/blacklist"}>Blacklist</Link></DropdownItem>
                                     <DropdownItem eventkey={1.3}><Link
                                         to={"/properties"}>Properties</Link></DropdownItem>
@@ -214,7 +220,7 @@ class App extends Component {
             <header>
                 {/*<Navbar expand="md" scrolling fixed="top">*/}
                 <Navbar expand="md">
-                    <NavbarBrand><Link to={"/"}>KHS&#123;Convo&#125;</Link></NavbarBrand>
+                    <NavbarBrand><Link to={"/emulator"}>KHS&#123;Convo&#125;</Link></NavbarBrand>
                     <NavbarToggler onClick={this.onClick}/>
                     {privateNav}
                 </Navbar>
@@ -231,5 +237,4 @@ class App extends Component {
 
 
 const mapStateToProps = state => ({credentials: state.credentials});
-
 export default withRouter(connect(mapStateToProps)(App));
