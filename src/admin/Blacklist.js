@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import '../styles/data-table.css';
-import React from 'react';
+import React, {Fragment} from 'react';
 import restAPI from '../service/restAPI';
 import cellEditFactory from 'react-bootstrap-table2-editor';
 // import filterFactory /*, { textFilter, selectFilter }*/ from 'react-bootstrap-table2-filter';
@@ -37,7 +37,8 @@ import {
     MDBModalFooter,
     MDBInput,
     MDBIcon,
-    Button
+    Button,
+    toast
 } from 'mdbreact';
 import CommonUI from "../common/CommonUI";
 
@@ -61,10 +62,12 @@ class Blacklist extends BaseComponent {
         this.onAfterSaveCell = this.onAfterSaveCell.bind(this);
     }
 
+
     componentWillMount() {
         super.componentWillMount();
         this.fetchBlacklist();
     }
+
 
     fetchBlacklist() {
         const self = this;
@@ -80,6 +83,7 @@ class Blacklist extends BaseComponent {
         }).catch((err) => console.log(err));
     }
 
+
     handleBlacklistInsert(insert) {
         restAPI({
             method: 'post',
@@ -87,6 +91,7 @@ class Blacklist extends BaseComponent {
             data: insert,
         }).then( res => {
             console.log(res);
+            toast.success(`Blacklisted phone number "${insert.phone}"`);
         }).catch((err) => console.log(err));
 
         this.setState({editing: null});
@@ -108,10 +113,12 @@ class Blacklist extends BaseComponent {
             this.setState({
                 insertError: "Phone number cannot be empty"
             });
+            toast.warning(this.state.insertError);
         }
 
         this.fetchBlacklist();
     }
+
 
     handleInputChange(event) {
         const target = event.target;
@@ -135,6 +142,7 @@ class Blacklist extends BaseComponent {
         })
     }
 
+
     /**
      * CellValue is, a Blackist record, including _id. This methods  updates any of its fields except _id.
      * eg. PUT a bookstrap table cell edit's "cellValue". The API will update its copy.
@@ -154,6 +162,7 @@ class Blacklist extends BaseComponent {
         }).catch((err) => console.log(err));
     }
 
+
     deleteItem() {
         const item = this.state.currentItem;
         // Omit _id. we want to remove all copies of the input phone number.
@@ -167,6 +176,7 @@ class Blacklist extends BaseComponent {
             data: record
         }).then( res => {
             console.log(`deleteItem`, res);
+            toast.info(`Deleted phone "${record.phone}"`);
         }).catch( err => console.log(err));
 
         this.fetchBlacklist();
@@ -233,7 +243,7 @@ class Blacklist extends BaseComponent {
         const data = this.state.numbers;
 
         return (
-            <div>
+            <Fragment>
                 <Card>
                     <CardBody>
                         <CardTitle>Phone Number Blacklist</CardTitle>
@@ -252,10 +262,10 @@ class Blacklist extends BaseComponent {
                                           label={"Enter Notes"}/>
                             </Col>
                             <Col md={"2"}>
-                                <Button size={"sm"}
+                                <Button size={"sm"} color={"light"} style={{marginTop: "1.5rem", width: "100%"}}
                                         onClick={() => this.handleInsertItem()}
                                         disabled={!this.state.insertNumber || !this.state.insertNotes}
-                                ><MDBIcon icon="plus"/>&nbsp;Add</Button>
+                                ><MDBIcon icon="plus-circle"/>&nbsp;Add Phone</Button>
                             </Col>
                             <Col md={"2"} className="text-danger">
                                 <span>{this.state.insertError}</span>
@@ -292,7 +302,7 @@ class Blacklist extends BaseComponent {
                         </MDBModalFooter>
                     </MDBModalBody>
                 </MDBModal>
-            </div>
+            </Fragment>
         )
 
     }
