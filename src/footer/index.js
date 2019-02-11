@@ -17,13 +17,18 @@ limitations under the License.
 import React, {Component} from 'react';
 import {Footer} from "mdbreact";
 
+const style = {
+    color: "#333",
+    backgroundColor: "#ddd"
+};
+
 class FooterPanel extends Component {
     render() {
         return (
             <Footer >
-                <div className="footer-copyright text-center py-3">
+                <div className="footer-copyright text-center py-3" style={style}>
                     &copy; {new Date().getFullYear()} Copyright: KeyHole Software -
-                    <a target={"_blank"}
+                    <a target={"_blank"} style={style}
                        href="https://keyholesoftware.com/company/creations/content-usage-guidelines/"> Content Usage
                         Guidelines </a>
 
