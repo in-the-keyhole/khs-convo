@@ -14,28 +14,30 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React, {Component} from 'react';
+import React from 'react';
+// noinspection ES6CheckImport
 import {Footer} from "mdbreact";
 
-const style = {
+const styleA = {
     color: "#333",
-    backgroundColor: "#ddd"
+    backgroundColor: "#ddd",
+    fontWeight: 200
 };
 
-class FooterPanel extends Component {
-    render() {
-        return (
-            <Footer >
-                <div className="footer-copyright text-center py-3" style={style}>
-                    &copy; {new Date().getFullYear()} Copyright: KeyHole Software -
-                    <a target={"_blank"} style={style}
-                       href="https://keyholesoftware.com/company/creations/content-usage-guidelines/"> Content Usage
-                        Guidelines </a>
+const styleLink = {
+    color: "#00d",
+    backgroundColor: "#ddd",
+    fontWeight: 300
+};
 
-                </div>
-            </Footer>
-        )
-    }
-}
+export const FooterPanel = (/*props*/) => (
+    <Footer>
+        <div className="footer-copyright text-center py-3" style={styleA}>
+            &copy; {new Date().getFullYear()} Copyright: KeyHole Software -&nbsp;
+            <a target={"_blank"} style={styleLink}
+               href="https://keyholesoftware.com/company/creations/content-usage-guidelines/"> Content Usage
+                Guidelines </a>
 
-export default FooterPanel
+        </div>
+    </Footer>
+);
