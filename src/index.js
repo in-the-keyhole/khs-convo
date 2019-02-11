@@ -23,7 +23,7 @@ import React, {Fragment} from 'react';
 import ReactDOM from 'react-dom';
 import {BrowserRouter} from 'react-router-dom'
 import App from './App';
-import {FooterPanel} from './footer';
+import {Footer, FooterPanel} from './footer';
 import {Provider} from 'react-redux';
 import {store} from './configureStore';
 import ConvoNotificationContainer from './common/ConvoNotificationContainer';

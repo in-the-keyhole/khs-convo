@@ -59,11 +59,11 @@ import {store} from './configureStore';
 import {checkCredentials} from './common/checkCredentials';
 import { connect } from 'react-redux';
 
+
 class App extends Component {
 
     constructor(props) {
         super(props);
-        console.log('App props', props);
 
         this.state = {
             collapse: false,
@@ -145,13 +145,13 @@ class App extends Component {
             </main>
         );
 
+        // const navStyle = {backgroundColor: "rgb(221,221,221"};
 
         // Show most of the navbar only for authenticated users
-        const privateNav = checkCredentials() ?
-            (
-                <Collapse isOpen={this.state.collapse} navbar>
+        const privateNav = checkCredentials()
+            ? ( <Collapse isOpen={this.state.collapse} navbar>
 
-                    <NavbarNav left>
+                    <NavbarNav left className={"header-footer"}>
                         <NavItem>
                             <Dropdown eventkey={1} id="nav-dropdown-1">
                                 <DropdownToggle nav caret>
@@ -203,23 +203,24 @@ class App extends Component {
                     </NavbarNav>
 
                     {/* User name and logout button : pull right */}
-                    <NavbarNav right>
+                    <NavbarNav right className={"header-footer"}>
                         <NavItem>
                             {this.getLogoutFragment()}
                         </NavItem>
                     </NavbarNav>
 
-                </Collapse>
-            ) : (<span/>);
+                </Collapse> )
+            : (<span/>);
 
+        // This is a top-level React error boundary (like try-catch for view only)
         if (this.state.hasError) {
-            return <h1>Something is wrong in the view.</h1>;
+            return <h1 style={{color: "#ff0000"}}>Something is wrong in the view.</h1>;
         }
 
         return (
             <header>
                 {/*<Navbar expand="md" scrolling fixed="top">*/}
-                <Navbar expand="md">
+                <Navbar expand="md" className={"header-footer"}>
                     <NavbarBrand><Link to={"/emulator"}>KHS&#123;Convo&#125;</Link></NavbarBrand>
                     <NavbarToggler onClick={this.onClick}/>
                     {privateNav}

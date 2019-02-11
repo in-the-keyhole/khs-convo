@@ -20,13 +20,14 @@ import {Footer} from "mdbreact";
 
 const styleA = {
     color: "#333",
-    backgroundColor: "#ddd",
-    fontWeight: 200
+    backgroundColor: "#f0f0f0",
+    fontWeight: 200,
+    borderBottom: "4px inset #ddd"
 };
 
 const styleLink = {
     color: "#00d",
-    backgroundColor: "#ddd",
+    backgroundColor: "#f0f0f0",
     fontWeight: 300
 };
 
