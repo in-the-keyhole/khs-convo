@@ -264,8 +264,8 @@ class Blacklist extends BaseComponent {
                             <Col md={"2"}>
                                 <Button size={"sm"} color={"light"} style={{marginTop: "1.5rem", width: "100%"}}
                                         onClick={() => this.handleInsertItem()}
-                                        disabled={!this.state.insertNumber || !this.state.insertNotes}
-                                ><MDBIcon icon="plus-circle"/>&nbsp;Add Phone</Button>
+                                        disabled={!this.state.insertNumber || !this.state.insertNotes}>
+                                    <MDBIcon icon="plus-circle"/>&nbsp;Add Phone</Button>
                             </Col>
                             <Col md={"2"} className="text-danger">
                                 <span>{this.state.insertError}</span>
