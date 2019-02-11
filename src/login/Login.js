@@ -145,8 +145,11 @@ class Login extends Component {
                                            value={this.state.password}
                                            onChange={this.handleInputChange} placeholder="password"/>
 
-                                    <Button size={"sm"} type={"submit"} value={"Login"}><MDBIcon
-                                        icon={"sign-in"}/>&nbsp;Login</Button>
+                                    <Button size={""}
+                                            type={"submit"}
+                                            color={"light"}
+                                            value={"Login"}>
+                                        <MDBIcon icon={"sign-in"}/>&nbsp;Login</Button>
 
                                 </form>
 

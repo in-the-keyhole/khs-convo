@@ -27,7 +27,7 @@ import BaseComponent from '../BaseComponent';
 import {connect} from "react-redux";
 import {base} from '../service/restHelpers';
 // noinspection ES6CheckImport
-import {Card, CardBody, CardTitle, Col, Row, Button, Input} from 'mdbreact';
+import {Card, CardBody, CardTitle, Col, Row, Button, Input, MDBIcon} from 'mdbreact';
 
 class Upload extends BaseComponent {
 
@@ -332,7 +332,9 @@ class Upload extends BaseComponent {
                             <div className={"float-right"} style={{fontWeight: "400", fontSize: "1.0rem"}}>{directories[i]}</div>
                         </Col>
                         <Col md={"1"}>
-                            <Button size={"sm"} onClick={this.initiateUploadClick.bind(this, directories[i])}>Upload</Button>
+                            <Button size={"sm"}
+                                    color={"light"}
+                                    onClick={this.initiateUploadClick.bind(this, directories[i])}>Upload</Button>
                         </Col>
                         <Col md={"2"}>
                             <Dropzone style={{dropZoneStyle}} disableClick={true} multiple={false}
