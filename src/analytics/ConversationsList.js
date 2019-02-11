@@ -25,7 +25,7 @@ import restAPI from '../service/restAPI';
 import CommonUI from '../common/CommonUI';
 import moment from 'moment';
 // noinspection ES6CheckImport
-import {Card, CardBody, CardTitle, Col, Row, Button} from 'mdbreact';
+import {Card, CardBody, CardTitle, Col, Row, Button, MDBIcon} from 'mdbreact';
 
 
 //====== Column formatting functions ============
@@ -123,7 +123,10 @@ const RemotelyPaginatedTable = (
             <CardTitle>Analytics</CardTitle>
             <Row>
                 <Col md={"10"}>Conversations</Col>
-                <Col md={"2"}><Button size={"sm"} onClick={ clearFilters } style={{marginTop: "-1.25rem"}}>Clear filters</Button></Col>
+                <Col md={"2"}><Button size={"sm"}
+                      color={"light"}
+                      onClick={ clearFilters }
+                      style={{marginTop: "-1.25rem"}}><MDBIcon icon="plus-circle"/>Clear filters</Button></Col>
             </Row>
             <Row>
                 <Col>
