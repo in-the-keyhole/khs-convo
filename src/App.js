@@ -35,6 +35,7 @@ import NotificationGroups from './convos/NotificationGroups';
 import Blacklist from './admin/Blacklist';
 import Properties from './admin/Properties';
 import Upload from './upload/Upload';
+// noinspection ES6CheckImport
 import {
     Navbar,
     NavbarBrand,
@@ -73,7 +74,7 @@ class App extends Component {
         this.onClickLogout = this.onClickLogout.bind(this);
     }
 
-    static getDerivedStateFromError(error) {
+    static getDerivedStateFromError(/*error*/) {
         // Update state so the next render will show the fallback UI.
         return { hasError: true };
     }
