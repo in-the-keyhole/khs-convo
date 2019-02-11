@@ -29,7 +29,9 @@ import {base} from '../service/restHelpers';
 // noinspection ES6CheckImport
 import {Card, CardBody, CardTitle, Col, Row, Button, Input, MDBIcon} from 'mdbreact';
 
+
 class Upload extends BaseComponent {
+
 
     constructor(props) {
         super(props);
@@ -68,10 +70,12 @@ class Upload extends BaseComponent {
         this.tooltipStyle = this.tooltipStyle.bind(this);
     }
 
+
     handleInputChange(event) {
         const target = event.target;
         this.setState({[target.name]: target.value});
     }
+
 
     dynamicLinks(str) {
         if (typeof str !== 'string') {
@@ -91,6 +95,7 @@ class Upload extends BaseComponent {
         });
         return listSpace.join(' ');
     }
+
 
     componentWillMount() {
         if (!super.componentWillMount()) {
@@ -126,6 +131,7 @@ class Upload extends BaseComponent {
         });
     }
 
+
     retrieveDirectories() {
         const self = this;
 
@@ -148,6 +154,7 @@ class Upload extends BaseComponent {
         })
     }
 
+
     refreshAvailableCommandsList() {
         const self = this;
 
@@ -169,6 +176,7 @@ class Upload extends BaseComponent {
         }).catch(err => console.log(err));
     }
 
+
     static getCommandUploaded(a, b) {
         let i = 0;
         let j = 0;
@@ -183,6 +191,7 @@ class Upload extends BaseComponent {
         }
         return result;
     }
+
 
     uploadFile(e) {
         e.preventDefault();
@@ -199,7 +208,7 @@ class Upload extends BaseComponent {
             data.append('file', file, originalName);
 
             restAPI({
-                url: '../api/admin/fileExistsOnUpload?name=' + originalName + '&directory=' + self.state.CurrentDirectory,
+                url: `../api/admin/fileExistsOnUpload?name=${originalName}&directory=${self.state.CurrentDirectory}`,
                 data: originalName
             }).then(function (res) {
                 if (res.data === 'exists') {
@@ -213,6 +222,7 @@ class Upload extends BaseComponent {
         reader.readAsDataURL(file);
     }
 
+
     uploadDroppedFile(file) {
         const self = this;
         const data = new FormData();
@@ -221,7 +231,7 @@ class Upload extends BaseComponent {
 
         restAPI({
             method: 'POST',
-            url: '../api/admin/fileExistsOnUploadPost?directory=' + self.state.CurrentDirectory,
+            url: `../api/admin/fileExistsOnUploadPost?directory=${self.state.CurrentDirectory}`,
             data: data
         }).then(function (res) {
             if (res.data === 'exists') {
@@ -232,13 +242,14 @@ class Upload extends BaseComponent {
         })
     }
 
+
     proceedWithUpload(data) {
         const self = this;
         self.state.CommandsCached = self.state.Commands;
         let currentDirectory = self.state.CurrentDirectory;
 
         superagent
-            .post(base + '/api/admin/fileupload')
+            .post(`${base}/api/admin/fileupload`)
             .query({directory: currentDirectory})
             .send(data)
             .end((ex, result) => {
@@ -252,6 +263,7 @@ class Upload extends BaseComponent {
             });
     }
 
+
     initiateUploadClick(e) {
         const self = this;
         self.setState({CurrentDirectory: e});
@@ -259,22 +271,25 @@ class Upload extends BaseComponent {
         ele.trigger('click');
     }
 
+
     setDropDirectory(e) {
         const self = this;
         self.setState({CurrentDirectory: e});
     }
 
+
     handleMouseIn(arg) {
         const self = this;
         self.setState({displayHover: arg});
-        console.log("handleMouseIn The state " + JSON.stringify(self.state.displayHover));
+        console.log(`handleMouseIn The state ${JSON.stringify(self.state.displayHover)}`);
 
     }
+
 
     handleMouseOut() {
         const self = this;
         self.setState({displayHover: ''});
-        console.log("handleMouseOut  The state " + JSON.stringify(self.state.displayHover));
+        console.log(`handleMouseOut  The state ${JSON.stringify(self.state.displayHover)}`);
 
     }
 
@@ -308,7 +323,7 @@ class Upload extends BaseComponent {
 
         for (let i = 0; i < directories.length; i++) {
             description = "";
-            display = "directory" + i;
+            display = `directory${i}`;
             const words = [];
             for (let j = 0; j < directoriesAndWordsObj.length; j++) {
 
@@ -331,16 +346,19 @@ class Upload extends BaseComponent {
                         <Col md={"2"}>
                             <div className={"float-right"} style={{fontWeight: "400", fontSize: "1.0rem"}}>{directories[i]}</div>
                         </Col>
-                        <Col md={"1"}>
+                        <Col md={"2"}>
                             <Button size={"sm"}
+                                    style={{marginTop: "0.05rem", width: "100%"}}
                                     color={"light"}
-                                    onClick={this.initiateUploadClick.bind(this, directories[i])}>Upload</Button>
+                                    onClick={this.initiateUploadClick.bind(this, directories[i])}>
+                                <MDBIcon size="lg" far icon="file" /><span style={{fontSize: "0.85rem", fontWeight: "300"}}>&nbsp;File Upload</span>
+                            </Button>
                         </Col>
                         <Col md={"2"}>
                             <Dropzone style={{dropZoneStyle}} disableClick={true} multiple={false}
                                       onDragOver={this.setDropDirectory.bind(this, directories[i])}
                                       onDrop={this.uploadDroppedFile}>
-                                <div id="dropZoneText" name={directories[i]} style={dropZoneStyle}>File Drop</div>
+                                <div id="dropZoneText" name={directories[i]} style={dropZoneStyle}><MDBIcon far icon="file" />&nbsp;FILE DROP</div>
                             </Dropzone>
                         </Col>
                         <Col>
