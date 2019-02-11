@@ -107,7 +107,7 @@ class App extends Component {
 
             <span>
                 <MDBIcon icon="user"/>&nbsp;{firstName}&nbsp;{lastName}&nbsp;
-                <Button size={""} color={"light"} onClick={this.onClickLogout}><MDBIcon icon="sign-out"/>&nbsp;Logout</Button>
+                <Button size={"sm"} color={"light"} onClick={this.onClickLogout}><MDBIcon icon="sign-out"/>&nbsp;Logout</Button>
             </span>
         );
 

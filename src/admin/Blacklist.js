@@ -262,7 +262,7 @@ class Blacklist extends BaseComponent {
                                           label={"Enter Notes"}/>
                             </Col>
                             <Col md={"2"}>
-                                <Button size={"sm"} color={"light"} style={{marginTop: "1.5rem", width: "100%"}}
+                                <Button size={"md"} color={"light"} style={{marginTop: "1.5rem", width: "100%", fontSize: "0.8rem"}}
                                         onClick={() => this.handleInsertItem()}
                                         disabled={!this.state.insertNumber || !this.state.insertNotes}>
                                     <MDBIcon icon="plus-circle"/>&nbsp;Add Phone</Button>
