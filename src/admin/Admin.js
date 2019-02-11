@@ -18,7 +18,7 @@ import React, {Fragment} from 'react';
 import restAPI from '../service/restAPI';
 import cellEditFactory from 'react-bootstrap-table2-editor';
 import paginationFactory from 'react-bootstrap-table2-paginator';
-import filterFactory /*, { textFilter, selectFilter }*/ from 'react-bootstrap-table2-filter';
+`import filterFactory, {textFilter, selectFilter} from 'react-bootstrap-table2-filter';
 import BootstrapTable from 'react-bootstrap-table-next';
 import CommonUI from '../common/CommonUI';
 import {pageinationOptions} from '../common/pageinationOptions';
@@ -42,6 +42,20 @@ import {
 import BaseComponent from '../BaseComponent';
 import {connect} from "react-redux";
 
+let phoneFilter;
+let firstNameFilter;
+let lastNameFilter;
+let userNameFilter;
+let statusFilter;
+
+
+const clearFilters = () => {
+    phoneFilter('');
+    firstNameFilter('');
+    lastNameFilter('');
+    userNameFilter('');
+    statusFilter('');
+};
 
 class Admin extends BaseComponent {
 
@@ -60,6 +74,8 @@ class Admin extends BaseComponent {
         this.deleteUser = this.deleteUser.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.userToolbar = this.userToolbar.bind(this);
+        this.openAddUserModal = this.openAddUserModal.bind(this);
+        this.onAfterSaveCell = this.onAfterSaveCell.bind(this);
     }
 
 
@@ -178,10 +194,7 @@ class Admin extends BaseComponent {
             method: 'put',
             url: '../api/admin',
             data: update,
-        }).catch(function (err) {
-                console.log(err)
-            }
-        );
+        }).catch( err => console.log(err) );
     }
 
 
@@ -251,7 +264,6 @@ class Admin extends BaseComponent {
 
 
     openAddUserModal() {
-        console.log('openAddUserModal');
         this.setState(
             {
                 addUserModal: true,
@@ -437,7 +449,7 @@ class Admin extends BaseComponent {
                 },
                 {
                     text: 'First Name',
-                    // filter: textFilter({ caseSensitive: true }),
+                    filter: textFilter({ caseSensitive: true, getFilter: filter => (firstNameFilter = filter) }),
                     dataField: 'FirstName',
                     sort: true,
                     sortCaret: CommonUI.ColumnSortCaret
@@ -445,14 +457,14 @@ class Admin extends BaseComponent {
                 {
                     text: 'Last Name',
                     dataField: 'LastName',
-                    // filter: textFilter({ caseSensitive: true }),
+                    filter: textFilter({ caseSensitive: true, getFilter: filter => (lastNameFilter = filter) }),
                     sort: true,
                     sortCaret: CommonUI.ColumnSortCaret
                 },
                 {
                     text: 'Phone',
                     dataField: 'Phone',
-                    // filter: textFilter(),
+                    filter: textFilter({ getFilter: filter => (phoneFilter = filter) }),
                     sort: true,
                     sortCaret: CommonUI.ColumnSortCaret
                 },
@@ -460,14 +472,14 @@ class Admin extends BaseComponent {
                     text: 'Status',
                     dataField: 'Status',
                     attrs: {width: '100px'},
-                    // filter: selectFilter( {options: {'active': 'active', 'admin': 'admin'} } ),
+                    filter: selectFilter( {options: {'active': 'active', 'admin': 'admin'},  getFilter: filter => (statusFilter = filter) } ),
                     sort: true,
                     sortCaret: CommonUI.ColumnSortCaret
                 },
                 {
                     text: 'Username',
                     dataField: 'Username',
-                    // filter: textFilter({ caseSensitive: true }),
+                    filter: textFilter({ caseSensitive: true, getFilter: filter => (userNameFilter = filter) }),
                     sort: true,
                     sortCaret: CommonUI.ColumnSortCaret
                 },
@@ -499,9 +511,8 @@ class Admin extends BaseComponent {
                 <Card>
                     <CardBody>
                         <CardTitle>Administer Users</CardTitle>
-
                         <Row>
-                            <Col md={"9"}>
+                            <Col md={"10"}>
                                 <BootstrapTable
                                     bootstrap4
                                     keyField={'uuid'}
@@ -519,9 +530,11 @@ class Admin extends BaseComponent {
                                 />
 
                             </Col>
-                            <Col>
-                                <Button size={"sm"} onClick={() => this.openAddUserModal()}
-                                ><MDBIcon icon="plus"/>&nbsp;Add</Button>
+                            <Col md={"2"}>
+                                <Row><Col><Button size={"md"} style={{width: "100%"}} color={"light"}
+                                      onClick={ clearFilters }><MDBIcon icon="times-circle"/>&nbsp;Reset</Button></Col></Row>
+                                <Row><Col><Button size={"md"} style={{width: "100%"}} color={"light"}
+                                      onClick={ this.openAddUserModal }><MDBIcon icon="plus-circle"/>&nbsp;Add User</Button></Col></Row>
                             </Col>
                         </Row>
                     </CardBody>
