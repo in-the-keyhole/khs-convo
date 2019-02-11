@@ -18,7 +18,7 @@ import React, {Fragment} from 'react';
 import restAPI from '../service/restAPI';
 import cellEditFactory from 'react-bootstrap-table2-editor';
 import paginationFactory from 'react-bootstrap-table2-paginator';
-`import filterFactory, {textFilter, selectFilter} from 'react-bootstrap-table2-filter';
+import filterFactory, {textFilter, selectFilter} from 'react-bootstrap-table2-filter';
 import BootstrapTable from 'react-bootstrap-table-next';
 import CommonUI from '../common/CommonUI';
 import {pageinationOptions} from '../common/pageinationOptions';
@@ -84,7 +84,7 @@ class Admin extends BaseComponent {
 
         // UI checks duplicate emails, but API should catch it regardless. It is the final arbitror.
         if (this.state.ConfirmEmail !== this.state.Email) {
-            const msg = `Mismatch; ${this.state.Email} / ${this.state.ConfirmEmail}`;
+            const msg = `Mismatch; ${this.state.Email} // ${this.state.ConfirmEmail}`;
             this.setState( { errorMsg: msg} );
             toast.error(msg);
 
@@ -532,7 +532,7 @@ class Admin extends BaseComponent {
                             </Col>
                             <Col md={"2"}>
                                 <Row><Col><Button size={"md"} style={{width: "100%"}} color={"light"}
-                                      onClick={ clearFilters }><MDBIcon icon="times-circle"/>&nbsp;Reset</Button></Col></Row>
+                                      onClick={ clearFilters }><MDBIcon icon="times-circle"/>&nbsp;Reset Filter</Button></Col></Row>
                                 <Row><Col><Button size={"md"} style={{width: "100%"}} color={"light"}
                                       onClick={ this.openAddUserModal }><MDBIcon icon="plus-circle"/>&nbsp;Add User</Button></Col></Row>
                             </Col>
