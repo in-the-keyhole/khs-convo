@@ -22,7 +22,9 @@ import {checkCredentials} from "./common/checkCredentials";
 const checkAuthentication = props => {
     if (!checkCredentials()) {
         const {history} = props;
-        history.replace({pathname: '/login'});
+        if (history) {
+            history.replace({pathname: '/login'});
+        }
         return false;
     }
     return true;
