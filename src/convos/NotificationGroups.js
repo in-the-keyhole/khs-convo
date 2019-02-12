@@ -16,11 +16,11 @@ limitations under the License.
 
 import React, {Fragment} from 'react';
 import restAPI from '../service/restAPI';
-import {Modal} from 'react-bootstrap';
 import '../styles/data-table.css';
 import BootstrapTable from 'react-bootstrap-table-next';
 import GroupUserList from './GroupUserList';
-import BaseComponent from '../BaseComponent';// noinspection ES6CheckImport
+import BaseComponent from '../BaseComponent';
+// noinspection ES6CheckImport
 import {
     Container,
     Row,
@@ -29,7 +29,12 @@ import {
     Card,
     CardBody,
     CardTitle,
-    MDBIcon
+    MDBIcon,
+    MDBInput,
+    MDBModal,
+    MDBModalBody,
+    MDBModalHeader,
+    MDBModalFooter
 } from 'mdbreact';
 import {connect} from "react-redux";
 import paginationFactory from 'react-bootstrap-table2-paginator';
@@ -178,12 +183,13 @@ class NotificationGroups extends BaseComponent {
 
 
     openAddGroupModal() {
-        this.setState({addGroupModal: true})
+        this.setState({addGroupModal: true});
+        console.log("openAddGroupModel");
     }
 
 
     closeAddGroupModal() {
-        this.setState({addGroupModal: false})
+        this.setState({addGroupModal: false});
     }
 
 
@@ -254,7 +260,7 @@ class NotificationGroups extends BaseComponent {
                                     <Col md={"9"}> </Col>
                                     <Col md={"3"}>
                                         <Button size={"md"} color={"light"} style={{width: "100%"}}
-                                            onClick={this.openAddGroupModal}>
+                                                onClick={this.openAddGroupModal}>
                                             <MDBIcon icon="plus-circle"/>&nbsp;Add Group</Button>
                                     </Col>
                                 </Row>
@@ -288,41 +294,28 @@ class NotificationGroups extends BaseComponent {
                     </CardBody>
                 </Card>
 
-                <Modal show={this.state.addGroupModal} onHide={this.close}>
-                    <Modal.Body>
+                <MDBModal size={"sm"} isOpen={this.state.addGroupModal} onHide={this.close}>
+                    <MDBModalBody>
+                        <MDBModalHeader>Add Group Item</MDBModalHeader>
                         <form className="form" onSubmit={this.addGroup}>
-
-                            <Container>
-                                <Row>
-
-                                    <Col md={"3"}>
-                                        <div className="form-group">
-                                            <input
-                                                name="GroupName"
-                                                id="GroupName"
-                                                className="form-control"
-                                                type="text"
-                                                required="required"
-                                                value={this.state.GroupName}
-                                                onChange={this.handleInputChange}
-                                                placeholder="Group Name"/>
-                                        </div>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col md={"12"}>
-                                        <input className="btn btn-primary" type="submit" value="Add Group"/>
-                                        <Button color={"dark"} onClick={this.closeAddGroupModal}>Cancel
-                                        </Button>
-                                    </Col>
-                                </Row>
-                            </Container>
+                            <MDBInput
+                                name="GroupName"
+                                id="GroupName"
+                                type="text"
+                                required="required"
+                                value={this.state.GroupName}
+                                onChange={this.handleInputChange}
+                                label={"Group Name"}/>
+                            <MDBModalFooter>
+                                <Button size={"md"} type={"submit"}><MDBIcon icon={"plus-circle"}/>&nbsp;Add</Button>
+                                <Button size={"md"} color={"red"} onClick={this.closeAddGroupModal}>Cancel</Button>
+                            </MDBModalFooter>
                         </form>
-                    </Modal.Body>
-                </Modal>
+                    </MDBModalBody>
+                </MDBModal>
 
-                <Modal show={this.state.deleteModal} onHide={this.close}>
-                    <Modal.Body>
+                <MDBModal size={"sm"} isOpenw={this.state.deleteModal} onHide={this.close}>
+                    <MDBModalBody>
                         <div className="form-group">
                             <label>Are you sure you want to delete this?</label>
                         </div>
@@ -335,8 +328,8 @@ class NotificationGroups extends BaseComponent {
                                 <Button color={"light"} onClick={this.closeDeleteModal}>Cancel</Button>
                             </Col>
                         </Row>
-                    </Modal.Body>
-                </Modal>
+                    </MDBModalBody>
+                </MDBModal>
 
             </Fragment>
         )
