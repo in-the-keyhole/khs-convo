@@ -42,6 +42,111 @@ import paginationFactory from 'react-bootstrap-table2-paginator';
 // import {pageinationOptions} from "../common/pageinationOptions";
 
 
+/**
+ * The defintiona of the BootstrapTable2 table columns.
+ * @type {*[]}
+ */
+const columns = [
+    {
+        hidden: true,
+        dataField: '_id',
+    },
+    {
+        hidden: true,
+        dataField: 'uuid',
+        isKey: true
+    },
+    {
+        text: 'Group Name',
+        dataField: 'GroupName',
+        width: "60%",
+        sort: true
+    },
+    {
+        text: 'Users',
+        dataField: 'Users',
+        width: "20%",
+        sort: true
+    }
+];
+
+/**
+ * This component prompts for a new group name. A submiission triggers the creation API.
+ *
+ * @param props
+ * @returns {*}
+ * @constructor
+ */
+const AddGroupModal = props => {
+
+    const {
+        fnIsOpen,
+        fnDoClose,
+        fnAddGroup,
+        fnHandleInputChange,
+        fncloseAddGroupModal,
+        valueGroupName
+    } = props;
+
+    return (
+        <MDBModal size={"sm"} isOpen={fnIsOpen} onHide={fnDoClose}>
+            <MDBModalBody>
+                <MDBModalHeader>Add Group Item</MDBModalHeader>
+                <form className="form" onSubmit={fnAddGroup}>
+                    <MDBInput
+                        name="GroupName"
+                        id="GroupName"
+                        type="text"
+                        required="required"
+                        value={valueGroupName}
+                        onChange={fnHandleInputChange}
+                        label={"Group Name"}/>
+                    <MDBModalFooter>
+                        <Button size={"md"} type={"submit"}><MDBIcon icon={"plus-circle"}/>&nbsp;Add</Button>
+                        <Button size={"md"} color={"red"} onClick={fncloseAddGroupModal}>Cancel</Button>
+                    </MDBModalFooter>
+                </form>
+            </MDBModalBody>
+        </MDBModal>
+    );
+};
+
+
+/**
+ * This component renders a go/no[-go confirmaiton pop-up for delete. It triggers the delete upon user confirmation.
+ *
+ * @param props
+ * @returns {*}
+ * @constructor
+ */
+const DeleteGroupModal = props => {
+
+    const {
+        fnDeleteModal,
+        fnDoClose,
+        fnDeleteGroup,
+        fnCloseDeleteModal
+    } = props;
+
+    return (
+        <MDBModal size={"sm"} isOpen={fnDeleteModal} onHide={fnDoClose}>
+            <MDBModalBody>
+                <MDBModalHeader>Confirm</MDBModalHeader>
+                <label>Delete group items?</label>
+
+                <MDBModalFooter>
+                    <Button size={"md"} color={"danger"} onClick={fnDeleteGroup}>Delete</Button>
+                    <Button size={"md"} color={"light"} onClick={fnCloseDeleteModal}>Cancel</Button>
+                </MDBModalFooter>
+            </MDBModalBody>
+        </MDBModal>
+    );
+};
+
+
+/**
+ * The is the root component for rendering notification groups.
+ */
 class NotificationGroups extends BaseComponent {
 
     constructor(props) {
@@ -212,40 +317,9 @@ class NotificationGroups extends BaseComponent {
     }
 
 
+
     render() {
 
-
-        /*
-         <TableHeaderColumn dataField='uuid' isKey hidden>ID</TableHeaderColumn>
-         <TableHeaderColumn width="60%" dataField='GroupName'>Group Name</TableHeaderColumn>
-         <TableHeaderColumn width="20%" dataAlign="center" dataField='Users' editable={false}
-                            dataFormat={NotificationGroups.groupUsers}># Users</TableHeaderColumn>
-         <TableHeaderColumn width="20%" dataAlign="center" editable={false} dataFormat={this.groupToolbar}> </TableHeaderColumn>
-         */
-
-        const columns = [
-            {
-                hidden: true,
-                dataField: '_id',
-            },
-            {
-                hidden: true,
-                dataField: 'uuid',
-                isKey: true
-            },
-            {
-                text: 'Group Name',
-                dataField: 'GroupName',
-                width: "60%",
-                sort: true
-            },
-            {
-                text: 'Users',
-                dataField: 'Users',
-                width: "20%",
-                sort: true
-            }
-        ];
 
         return (
 
@@ -257,11 +331,16 @@ class NotificationGroups extends BaseComponent {
                             <Col md={"8"}>
 
                                 <Row>
-                                    <Col md={"9"}> </Col>
+                                    <Col md={"6"}> </Col>
                                     <Col md={"3"}>
                                         <Button size={"md"} color={"light"} style={{width: "100%"}}
                                                 onClick={this.openAddGroupModal}>
                                             <MDBIcon icon="plus-circle"/>&nbsp;Add Group</Button>
+                                    </Col>
+                                    <Col md={"3"}>
+                                        <Button size={"md"} color={"dark"} style={{width: "100%"}}
+                                                onClick={this.openDeleteModal}>
+                                            <MDBIcon icon="times-circle"/>&nbsp;Delete Group</Button>
                                     </Col>
                                 </Row>
 
@@ -294,42 +373,21 @@ class NotificationGroups extends BaseComponent {
                     </CardBody>
                 </Card>
 
-                <MDBModal size={"sm"} isOpen={this.state.addGroupModal} onHide={this.close}>
-                    <MDBModalBody>
-                        <MDBModalHeader>Add Group Item</MDBModalHeader>
-                        <form className="form" onSubmit={this.addGroup}>
-                            <MDBInput
-                                name="GroupName"
-                                id="GroupName"
-                                type="text"
-                                required="required"
-                                value={this.state.GroupName}
-                                onChange={this.handleInputChange}
-                                label={"Group Name"}/>
-                            <MDBModalFooter>
-                                <Button size={"md"} type={"submit"}><MDBIcon icon={"plus-circle"}/>&nbsp;Add</Button>
-                                <Button size={"md"} color={"red"} onClick={this.closeAddGroupModal}>Cancel</Button>
-                            </MDBModalFooter>
-                        </form>
-                    </MDBModalBody>
-                </MDBModal>
+                <AddGroupModal
+                    fnIsOpen={this.state.addGroupModal}
+                    fnDoClose={this.close}
+                    fnAddGroup={this.addGroup}
+                    fnHandleInputChange={this.handleInputChange}
+                    fnCloseAddGroupModal={this.closeAddGroupModal}
+                    valueGroupName={this.state.GroupName}
+                />
 
-                <MDBModal size={"sm"} isOpenw={this.state.deleteModal} onHide={this.close}>
-                    <MDBModalBody>
-                        <div className="form-group">
-                            <label>Are you sure you want to delete this?</label>
-                        </div>
-                        <Row>
-                            <Col md={"3"}> </Col>
-                            <Col md={"4"}>
-                                <Button color={"danger"} onClick={this.deleteGroup}>Delete</Button>
-                            </Col>
-                            <Col md={"5"}>
-                                <Button color={"light"} onClick={this.closeDeleteModal}>Cancel</Button>
-                            </Col>
-                        </Row>
-                    </MDBModalBody>
-                </MDBModal>
+                <DeleteGroupModal
+                    fnDeleteModal={this.state.deleteModal}
+                    fnDoClose={this.close}
+                    fnDeleteGroup={this.deleteGroup}
+                    fnCloseDeleteModal={this.closeDeleteModal}
+                />
 
             </Fragment>
         )
