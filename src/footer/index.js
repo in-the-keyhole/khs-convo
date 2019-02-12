@@ -16,31 +16,16 @@ limitations under the License.
 
 import React from 'react';
 // noinspection ES6CheckImport
-import {Footer} from "mdbreact";
-
-const styleA = {
-    color: "#333",
-    backgroundColor: "#f0f0f0",
-    fontWeight: 200,
-    borderBottom: "4px inset #ddd"
-};
-
-const styleLink = {
-    color: "#00d",
-    backgroundColor: "#f0f0f0",
-    fontWeight: 300
-};
+import {MDBFooter} from "mdbreact";
 
 const crUrl = 'https://keyholesoftware.com/company/creations/content-usage-guidelines/';
 
 export const FooterPanel = (/*props*/) => (
-    <Footer>
-        <div className="footer-copyright text-center py-3" style={styleA}>
-            &copy; {new Date().getFullYear()} Copyright: KeyHole Software -&nbsp;
-            <a target={"_blank"} style={styleLink}
-               href={crUrl}> Content Usage
-                Guidelines </a>
-
+    <MDBFooter  color={"unique-color"} className={"white-text"}>
+        <div className="text-center py-3" style={{}}>
+            &copy; {new Date().getFullYear()} Copyright: KeyHole Software&nbsp;&gt;&gt;&nbsp;
+            <a target={"_blank"}
+               href={crUrl}>Content Usage Guidelines</a>
         </div>
-    </Footer>
+    </MDBFooter>
 );

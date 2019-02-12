@@ -22,7 +22,7 @@ import './styles/data-table.css';
 import React, {Fragment} from 'react';
 import ReactDOM from 'react-dom';
 import {BrowserRouter} from 'react-router-dom'
-import App from './App';
+import App, {Navbar} from './App';
 import {FooterPanel} from './footer';
 import {Provider} from 'react-redux';
 import {store} from './configureStore';
@@ -34,7 +34,7 @@ const element = (
             <Provider store={store}>
                 {/*<div id="header"></div>*/}
                 <div id="content"><App/></div>
-                <div id="footer"><FooterPanel/></div>
+                <div id="footer" className={"header-footer"}><FooterPanel/></div>
             </Provider>
         </BrowserRouter>
         <ConvoNotificationContainer/>

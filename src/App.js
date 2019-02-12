@@ -147,7 +147,7 @@ class App extends Component {
 
         // const navStyle = {backgroundColor: "rgb(221,221,221"};
 
-        // Show most of the navbar only for authenticated users
+        // Show rest of the navbar for authenticated users
         const privateNav = checkCredentials()
             ? ( <Collapse isOpen={this.state.collapse} navbar>
 
@@ -212,7 +212,7 @@ class App extends Component {
                 </Collapse> )
             : (<span/>);
 
-        // This is a top-level React error boundary (like try-catch for view only)
+        // This is a top-level React error boundary (like a try-catch for view)
         if (this.state.hasError) {
             return <h1 style={{color: "#ff0000"}}>Something is wrong in the view.</h1>;
         }
@@ -221,12 +221,17 @@ class App extends Component {
             <header>
                 {/*<Navbar expand="md" scrolling fixed="top">*/}
                 <Navbar expand="md" className={"header-footer"}>
-                    <NavbarBrand><Link to={"/emulator"}>KHS&#123;Convo&#125;</Link></NavbarBrand>
+                    <NavbarBrand>
+                        <img alt={"Keyhole Software LLC"} className={"logo-icon"} src={"images/keyholelogo.png"}/>
+                        <Link to={"/emulator"}>
+                        <span className={"logo-b"}>&nbsp;&#123;Convo&#125;</span>
+                        </Link>
+                    </NavbarBrand>
                     <NavbarToggler onClick={this.onClick}/>
                     {privateNav}
                 </Navbar>
 
-                {/*This is the working content panel. The rest is really header / nabvar.*/}
+                {/*This is the working content panel, but capped by a navbar header.*/}
                 <Container style={{marginTop: "1.75rem"}}>
                     <Row><Col>{main}</Col></Row>
                 </Container>

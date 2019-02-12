@@ -1,4 +1,8 @@
 
+#root {
+    background-color: #f3f3f3;
+}
+
 input, select {
     margin: 0 10px 10px 0
 }
@@ -103,7 +107,6 @@ svg {
     padding-top: 0;
 }
 
-
 .footer {
     /* position: fixed; */
     position: fixed;
@@ -138,6 +141,8 @@ body {
     height: 100%;
     border-width: 0;
     overflow: auto;
+
+    background-color: #186860;
 }
 
 .notificationsHeaderStyle {
@@ -202,7 +207,27 @@ ul.legend {
     font-weight: 300;
 }
 
-.header-footer {
-    background-color: #f0f0f0;
+.header-footer, footer {
+    background-color: #fafafa !important;
+}
+
+.logo-a {
+    color: #0000f0;
+    font-weight: 300;
+}
+
+.logo-icon {
+    width: 6rem;
+}
+
+.logo-b {
+    color: #f00000;
+    font-weight: 400;
+    font-family: Roboto, sans-serif;
+    font-style: oblique;
+}
+
+.card {
+    background-color: #fdfdfd;
 }
 
