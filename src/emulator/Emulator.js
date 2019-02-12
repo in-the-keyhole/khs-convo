@@ -44,7 +44,7 @@ import {
  */
 const commandsPaginationOptions = Object.assign(
     {},
-    {sizePerPageList: [5, 10, 15, 50]},
+    {sizePerPageList: [6, 12, 24, 48]},
     pageinationOptions);
 
 /**
@@ -468,11 +468,13 @@ class Emulator extends BaseComponent {
                                    label={"Enter phone"}
                             />
                         </Col>
-                        <Col md={"4"}>
+                    </Row>
+                    <Row>
+                        <Col md={"5"}>
                             <Button size={"sm"}
                                     color={"light"}
                                     style={buttonAligment}
-                                    onClick={this.loadMoreMessages}>Load&nbsp;More</Button>
+                                    onClick={this.loadMoreMessages}>Load More Msgs</Button>
                         </Col>
                     </Row>
 
