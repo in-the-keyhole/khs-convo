@@ -37,6 +37,33 @@ import {
     MDBIcon
 } from 'mdbreact';
 
+const columns = (isAdmin) => {
+
+    return [
+        {
+            hidden: true,
+            dataField: '_id'
+        },
+        {
+            text: 'Keyhole SMS Commands',
+            dataField: 'key',
+            width: "75%",
+            isKey: true
+        },
+        {
+            text: 'Status',
+            dataField: 'eventStatus',
+            width: "25%",
+            editable: isAdmin,
+            editor: {
+                type: Type.CHECKBOX,
+                value: 'enabled:disabled'
+            }
+        }
+    ];
+
+};
+
 
 /**
  * Custom page sizes for Emulator commands table.
@@ -402,29 +429,6 @@ class Emulator extends BaseComponent {
 
         const titleStyle = {fontSize: "1.22rem", color: "#66f"};
 
-        const columns = [
-            {
-                hidden: true,
-                dataField: '_id'
-            },
-            {
-                text: 'Keyhole SMS Commands',
-                dataField: 'key',
-                width: "75%",
-                isKey: true
-            },
-            {
-                text: 'Status',
-                dataField: 'eventStatus',
-                width: "25%",
-                editable: isAdmin,
-                editor: {
-                    type: Type.CHECKBOX,
-                    value: 'enabled:disabled'
-                }
-            }
-        ];
-
         const card1 =
             <Card>
                 <CardBody>
@@ -492,7 +496,7 @@ class Emulator extends BaseComponent {
                             <BootstrapTable
                                 bootstrap4
                                 data={this.state.EventArray}
-                                columns={columns}
+                                columns={columns(isAdmin)}
                                 keyField={'key'}
                                 pagination={paginationFactory( commandsPaginationOptions )}
                                 cellEdit={cellEditFactory({
