@@ -14,10 +14,26 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React from 'react';
+import React, {Fragment} from 'react';
 import restAPI from '../service/restAPI';
-import { Modal  } from 'react-bootstrap';
 import BaseComponent from '../BaseComponent';
+// noinspection ES6CheckImport
+import {
+    Container,
+    Row,
+    Col,
+    Button,
+    Card,
+    CardBody,
+    CardTitle,
+    MDBIcon,
+    MDBInput,
+    MDBModal,
+    MDBModalBody,
+    MDBModalHeader,
+    MDBModalFooter,
+    toast
+} from 'mdbreact';
 
 class Tailwater extends BaseComponent {
     constructor(props) {
@@ -32,7 +48,7 @@ class Tailwater extends BaseComponent {
             insertFlow: null,
             insertName: null,
             insertError: null
-        }
+        };
 
         this.componentWillMount = this.componentWillMount.bind(this);
         this.renderItemOrEditField = this.renderItemOrEditField.bind(this);
@@ -48,112 +64,132 @@ class Tailwater extends BaseComponent {
         this.fetchTailwaters();
     }
 
+
     fetchTailwaters() {
-        var self = this;
+        const self = this;
         restAPI({
-            url:'../api/tailwater',
+            url: '../api/tailwater',
             data: this.state,
             cache: false
-        }).then(function(res, me) {
-            self.setState({ locations: res.data });
-        }).catch(function(err){console.log(err)});
+        }).then( (res) => {
+            self.setState({locations: res.data});
+        }).catch( (err) => console.log(err));
     }
 
+
     handleTailwaterInsert(insert) {
-        var that = this;
+        const that = this;
         restAPI({
-            method:'post',
-            url:'../api/tailwater/insert',
+            method: 'post',
+            url: '../api/tailwater/insert',
             data: insert,
-        }).then(function(res, me) {
+        }).then( () => {
             that.fetchTailwaters();
-        }).catch(function(err){console.log(err)});
-        this.setState( { insertID: null,
+        }).catch( (err) =>
+            console.log(err)
+        );
+
+        this.setState({
+            insertID: null,
             insertLocation: null,
             insertType: null,
             insertState: null,
             insertFlow: null,
-            insertName: null } );
-        this.setState( { editing: null } );
+            insertName: null
+        });
+
+        this.setState({editing: null});
         this.fetchTailwaters();
     }
+
 
     handleTailwaterUpdate(update) {
-        var that = this;
+        const that = this;
         restAPI({
-            method:'post',
-            url:'../api/tailwater/update',
+            method: 'post',
+            url: '../api/tailwater/update',
             data: update,
-        }).then(function(res, me) {
+        }).then(function () {
             that.fetchTailwaters();
-        }).catch(function(err){console.log(err)});
+        }).catch(function (err) {
+            console.log(err)
+        });
 
-        this.setState( { editing: null } );
+        this.setState({editing: null});
         this.fetchTailwaters();
     }
 
+
     handleTailwaterDelete(remove) {
-        var that = this;
+        const that = this;
         restAPI({
-            method:'delete',
-            url:'../api/tailwater',
+            method: 'delete',
+            url: '../api/tailwater',
             data: remove,
-        }).then(function(res, me) {
+        }).then(function () {
             that.closeDeleteModal();
             that.fetchTailwaters();
-        }).catch(function(err){console.log(err)});
+        }).catch(function (err) {
+            console.log(err)
+        });
         this.closeDeleteModal();
         this.fetchTailwaters();
     }
 
-    toggleEditing( itemId ) {
-        this.setState( { editing: itemId } );
+
+    toggleEditing(itemId) {
+        this.setState({editing: itemId});
     }
+
 
     handleEditItem() {
-        let itemId = this.state.editing;
+        const itemId = this.state.editing;
 
+        // noinspection JSDeprecatedSymbols
         this.handleTailwaterUpdate({
-        id: itemId,
-        location: this.refs[ `location_${ itemId }` ].value,
-        type: this.refs[ `type_${ itemId }` ].value,
-        state: this.refs[ `state_${ itemId }` ].value,
-        flowData: this.refs[ `flowData_${ itemId }` ].value === 'true' ? true : false,
-        name: this.refs[ `name_${ itemId }` ].value
+            id: itemId,
+            location: this.refs[`location_${itemId}`].value,
+            type: this.refs[`type_${itemId}`].value,
+            state: this.refs[`state_${itemId}`].value,
+            flowData: this.refs[`flowData_${itemId}`].value === 'true',
+            name: this.refs[`name_${itemId}`].value
         });
     }
+
 
     handleInsertItem() {
         if (this.state.insertID) {
             this.setState({
                 insertError: null
-                });
+            });
 
             this.handleTailwaterInsert({
-            id: this.state.insertID,
-            location: this.state.insertLocation,
-            type: this.state.insertType,
-            state: this.state.insertState,
-            flowData: this.state.insertFlow === 'true' ? true : false,
-            name: this.state.insertName
+                id: this.state.insertID,
+                location: this.state.insertLocation,
+                type: this.state.insertType,
+                state: this.state.insertState,
+                flowData: this.state.insertFlow === 'true',
+                name: this.state.insertName
             });
         } else {
             this.setState({
                 insertError: "ID cannot be empty"
-                });
+            });
         }
     }
+
 
     handleDeleteItem() {
         let itemId = this.state.editing;
 
+        // noinspection JSDeprecatedSymbols
         this.handleTailwaterDelete({
-        id: itemId,
-        location: this.refs[ `location_${ itemId }` ].value,
-        type: this.refs[ `type_${ itemId }` ].value,
-        state: this.refs[ `state_${ itemId }` ].value,
-        flowData: this.refs[ `flowData_${ itemId }` ].value,
-        name: this.refs[ `name_${ itemId }` ].value
+            id: itemId,
+            location: this.refs[`location_${itemId}`].value,
+            type: this.refs[`type_${itemId}`].value,
+            state: this.refs[`state_${itemId}`].value,
+            flowData: this.refs[`flowData_${itemId}`].value,
+            name: this.refs[`name_${itemId}`].value
         });
     }
 
@@ -162,136 +198,149 @@ class Tailwater extends BaseComponent {
         this.setState({[target.name]: target.value});
     }
 
-    closeDeleteModal(){
-        this.setState( { deleteModal: false })
+    closeDeleteModal() {
+        this.setState({deleteModal: false})
     }
 
-    openDeleteModal(){
-        this.setState( { deleteModal: true })
+    openDeleteModal() {
+        this.setState({deleteModal: true})
     }
 
     renderItemOrEditField(loc) {
-        if ( this.state.editing === loc.id ) {
-        // Handle rendering our edit fields here.
-            return <div className="row">
-                    <div className="col-md-2">{loc.id}</div>
-                    <div className="col-md-2">
+        if (this.state.editing === loc.id) {
+            // Handle rendering our edit fields here.
+            return <Fragment>
+                <Row>
+                    <Col md={"2"}>{loc.id}</Col>
+                    <Col md={"2"}>
                         <input
-                        type="text"
-                        className="form-control"
-                        ref={ `location_${ loc.id }` }
-                        name="location"
-                        defaultValue={ loc.location }
+                            type="text"
+                            className="form-control"
+                            ref={`location_${loc.id}`}
+                            name="location"
+                            defaultValue={loc.location}
                         />
-                    </div>
-                    <div className="col-md-1">
+                    </Col>
+                    <Col md={"1"}>
                         <input
-                        type="text"
-                        className="form-control"
-                        ref={ `type_${ loc.id }` }
-                        name="type"
-                        defaultValue={ loc.type }
+                            type="text"
+                            className="form-control"
+                            ref={`type_${loc.id}`}
+                            name="type"
+                            defaultValue={loc.type}
                         />
-                    </div>
-                    <div className="col-md-1">
+                    </Col>
+                    <Col md={"1"}>
                         <input
-                        type="text"
-                        className="form-control"
-                        ref={ `state_${ loc.id }` }
-                        name="state"
-                        defaultValue={ loc.state }
+                            type="text"
+                            className="form-control"
+                            ref={`state_${loc.id}`}
+                            name="state"
+                            defaultValue={loc.state}
                         />
-                    </div>
-                    <div className="col-md-1">
+                    </Col>
+                    <Col md={"1"}>
                         <input
-                        type="text"
-                        className="form-control"
-                        ref={ `flowData_${ loc.id }` }
-                        name="flowData"
-                        defaultValue={ loc.flowData.toString() }
+                            type="text"
+                            className="form-control"
+                            ref={`flowData_${loc.id}`}
+                            name="flowData"
+                            defaultValue={loc.flowData.toString()}
                         />
-                    </div>
-                    <div className="col-md-2">
+                    </Col>
+                    <Col md={"2"}>
                         <input
-                        type="text"
-                        className="form-control"
-                        ref={ `name_${ loc.id }` }
-                        name="name"
-                        defaultValue={ loc.name }
+                            type="text"
+                            className="form-control"
+                            ref={`name_${loc.id}`}
+                            name="name"
+                            defaultValue={loc.name}
                         />
-                    </div>
-                    <div className="glyphicon glyphicon-floppy-save clickable text-success col-md-1" onClick={ this.handleEditItem }/>
-                    <div className="glyphicon glyphicon-remove clickable text-danger col-md-1" onClick={() => this.openDeleteModal()}/>
+                    </Col>
+                    <div className="glyphicon glyphicon-floppy-save clickable text-success col-md-1"
+                         onClick={this.handleEditItem}/>
+                    <div className="glyphicon glyphicon-remove clickable text-danger col-md-1"
+                         onClick={() => this.openDeleteModal()}/>
+                </Row>
 
-                        <Modal show={this.state.deleteModal} onHide={this.close}>
-                            <Modal.Body>
-                                <div className="form-group">
-                                    <label>Are you sure you want to delete this?</label>
-                                </div>
-                                <div className="row">
-                                    <div className="col-md-3"> </div>
-                                    <div className="col-md-4">  <button className="btn btn-danger"  onClick={() => this.handleDeleteItem()} >Delete</button> </div>
-                                    <div className="col-md-5">  <button className="btn btn-default" onClick={() => this.closeDeleteModal()}>Cancel</button></div>
-                                </div>
-                            </Modal.Body>
-                        </Modal>
-                </div>;
+                <MDBModal show={this.state.deleteModal} onHide={this.close}>
+                    <MDBModalBody>
+                        <MDBModalHeader>Delete?</MDBModalHeader>
+                        <MDBModalFooter>
+                            <Button color={"red"} style={{width: "100%"}}
+                                    onClick={this.handleDeleteItem}>Delete</Button>
+                            <Button color={"light"} style={{width: "100%"}}
+                                    onClick={this.closeDeleteModal}>Cancel</Button>
+                        </MDBModalFooter>
+                    </MDBModalBody>
+                </MDBModal>
+
+            </Fragment>;
 
         } else {
-        return <div className="row">
-                    <div className="col-md-2">{loc.id}</div>
-                    <div className="col-md-2">{loc.location}</div>
-                    <div className="col-md-1">{loc.type}</div>
-                    <div className="col-md-1">{loc.state}</div>
-                    <div className="col-md-1">{loc.flowData.toString()}</div>
-                    <div className="col-md-2">{loc.name}</div>
-                    <div className="glyphicon glyphicon-edit clickable text-primary col-md-1" onClick={ this.toggleEditing.bind(null, loc.id) }/>
-                </div>;
+            return <Row>
+                <Col md={"2"}>{loc.id}</Col>
+                <Col md={"2"}>{loc.location}</Col>
+                <Col md={"1"}>{loc.type}</Col>
+                <Col md={"1"}>{loc.state}</Col>
+                <Col md={"1"}>{loc.flowData.toString()}</Col>
+                <Col md={"2"}>{loc.name}</Col>
+                <Col md={"1"} className="glyphicon glyphicon-edit clickable text-primary"
+                     onClick={this.toggleEditing.bind(null, loc.id)}/>
+            </Row>;
         }
     }
 
     render() {
         return (
-            <div className="container">
-                <div className="row">
-                    <div className="col-md-12"><h1>Tailwaters</h1></div>
-                </div>
-                <div className="row">
-                    <div className="col-md-2">
-                        <input name="insertID"id="insertID" className="form-control" type="text" value={this.state.insertID} onChange={this.handleInputChange} placeholder="ID" />
-                    </div>
-                    <div className="col-md-2">
-                        <input name="insertLocation"id="insertLocation" className="form-control" type="text" value={this.state.insertLocation} onChange={this.handleInputChange} placeholder="Location" />
-                    </div>
-                    <div className="col-md-1">
-                        <input name="insertType"id="insertType" className="form-control" type="text" value={this.state.insertType} onChange={this.handleInputChange} placeholder="Type" />
-                    </div>
-                    <div className="col-md-1">
-                        <input name="insertState"id="insertState" className="form-control" type="text" value={this.state.insertState} onChange={this.handleInputChange} placeholder="State" />
-                    </div>
-                    <div className="col-md-1">
-                        <input name="insertFlow"id="insertFlow" className="form-control" type="text" value={this.state.insertFlow} onChange={this.handleInputChange} placeholder="Flow" />
-                    </div>
-                    <div className="col-md-2">
-                        <input name="insertName"id="insertName" className="form-control" type="text" value={this.state.insertName} onChange={this.handleInputChange} placeholder="Name" />
-                    </div>
-                    <div className="col-md-1 text-success glyphicon glyphicon-floppy-save clickable" onClick={ this.handleInsertItem }/>
-                    <div className="col-md-2 text-danger">{this.state.insertError}</div>
-                </div>
-                <div className="col-md-12">
-                    <div className="row">
+            <Container>
+                <Row>
+                    <Col md={"12"}><h1>Tailwaters</h1></Col>
+                </Row>
+                <Row>
+                    <Col md={"2"}>
+                        <input name="insertID" id="insertID" className="form-control" type="text"
+                               value={this.state.insertID} onChange={this.handleInputChange} placeholder="ID"/>
+                    </Col>
+                    <Col md={"2"}>
+                        <input name="insertLocation" id="insertLocation" className="form-control" type="text"
+                               value={this.state.insertLocation} onChange={this.handleInputChange}
+                               placeholder="Location"/>
+                    </Col>
+                    <Col md={"1"}>
+                        <input name="insertType" id="insertType" className="form-control" type="text"
+                               value={this.state.insertType} onChange={this.handleInputChange} placeholder="Type"/>
+                    </Col>
+                    <Col md={"1"}>
+                        <input name="insertState" id="insertState" className="form-control" type="text"
+                               value={this.state.insertState} onChange={this.handleInputChange} placeholder="State"/>
+                    </Col>
+                    <Col  md={"1"}>
+                        <input name="insertFlow" id="insertFlow" className="form-control" type="text"
+                               value={this.state.insertFlow} onChange={this.handleInputChange} placeholder="Flow"/>
+                    </Col>
+                    <Col md={"2"}>
+                        <input name="insertName" id="insertName" className="form-control" type="text"
+                               value={this.state.insertName} onChange={this.handleInputChange} placeholder="Name"/>
+                    </Col>
+                    <Col  md={"1"} className="text-success glyphicon glyphicon-floppy-save clickable"
+                         onClick={this.handleInsertItem}/>
+                    <Col md={"2"} className="text-danger">{this.state.insertError}</Col>
+                </Row>
+                <Col md={"12"} className="col-md-12">
+                    <Row>
                         <div className="col-md-2"><b>Id</b></div>
                         <div className="col-md-2"><b>Location</b></div>
                         <div className="col-md-1"><b>Type</b></div>
                         <div className="col-md-1"><b>State</b></div>
                         <div className="col-md-1"><b>Flow</b></div>
                         <div className="col-md-2"><b>Name</b></div>
-                    </div>
-                {this.state.locations.map(loc => {
-                    return this.renderItemOrEditField(loc);
-                })}
-                </div>
-            </div>
+                    </Row>
+                    {this.state.locations.map(loc => {
+                        return this.renderItemOrEditField(loc);
+                    })}
+                </Col>
+            </Container>
         );
     }
 }

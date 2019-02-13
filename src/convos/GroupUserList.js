@@ -23,6 +23,7 @@ import BaseComponent from '../BaseComponent';
 import {connect} from "react-redux";
 // noinspection ES6CheckImport
 import {
+    Button,
     Row,
     Col,
     Card,
@@ -146,13 +147,13 @@ class GroupUserList extends BaseComponent {
         }
 
         const MailingList = this.props.group.Users.map((user) =>
-            <div className="row row-striped">
-                <div className="col-xs-1"><i title="Remove from list"
-                                             className="glyphicon glyphicon-remove-sign text-danger clickable"
-                                             onClick={() => this.deleteUser(user.uuid)}/></div>
-                <div className="col-xs-4">{user.Name}</div>
-                <div className="col-xs-6">{user.Username}</div>
-            </div>
+            <Row className="row-striped">
+                <Col xs={"1"}><i title="Remove from list"
+                                 className="glyphicon glyphicon-remove-sign text-danger clickable"
+                                 onClick={() => this.deleteUser(user.uuid)}/></Col>
+                <Col xs={"4"}>{user.Name}</Col>
+                <Col xs={"6"}>{user.Username}</Col>
+            </Row>
         );
 
         const selectUsers = this.state.availableUsers.map((user) =>
@@ -163,55 +164,69 @@ class GroupUserList extends BaseComponent {
             <Fragment>
                 <Card>
                     <CardBody>
-                        <CardTitle>{this.props.group.GroupName}</CardTitle>
+                        <CardTitle><h5>Group {this.props.group.GroupName}</h5></CardTitle>
 
+                        {/*NotifyEmulator is a child card atop the group card*/}
                         <NotifyEmulator group={this.props.group}/>
+                        <br/>
 
-                        <Row className="row">
-                            <Col md={"12"}  className="notificationsHeaderStyle"><span>Send To</span></Col>
-                        </Row>
-                        <Row className="row">
-                            <Col md={"3"}>
-                                <Checkbox name="checkSMS" checked={this.props.group.checkSMS}
-                                          onChange={this.handleChange}>SMS</Checkbox>
-                            </Col>
-                            <Col md={"3"}>
-                                <Checkbox name="checkEmail" checked={this.props.group.checkEmail}
-                                          onChange={this.handleChange}>Email</Checkbox>
-                            </Col>
-                            <Col md={"3"}>
-                                <Checkbox name="checkSlack" checked={this.props.group.checkSlack}
-                                          onChange={this.handleChange}>Slack
-                                    ({this.props.credentials.slackchannel})</Checkbox>
-                            </Col>
-                        </Row>
 
-                        <Row>
-                            <Col md={"12"} className="notificationsHeaderStyle">
-                                <span>Users ({this.props.group.Users.length})</span></Col>
-                        </Row>
-                        <Row className="row">
-                            <Col xs={"12"}>
-                                <select value={this.state.user} className="form-control emulator-input"
-                                        onChange={this.addUser}>
-                                    <option value="">Select user to add to list OR click 'Add All' button</option>
-                                    {selectUsers}
-                                </select>
-                            </Col>
-                            <Col xs={"2"}>
-                                <button className="btn btn-default" onClick={() => this.addAllUsers()}>Add All</button>
-                            </Col>
-                        </Row>
+                        {/*Send card is a child card atop the group card*/}
+                        <Card>
+                            <CardBody>
+                                <CardTitle><h5>Send</h5></CardTitle>
 
-                        <Row className="row">
-                            <div className={this.props.group.Users.length > 0 ? 'col-xs-offset-1 col-xs-11' : 'hidden'}>
-                                <Row className="row">
-                                    <Col xd={"12"} className="notificationsHeaderStyle"><span className="sub">Currently assigned Users to Group</span>
+                                <Row>
+                                    <Col md={"12"} className="notificationsHeaderStyle"><span>Send To</span>
                                     </Col>
                                 </Row>
-                                {MailingList}
-                            </div>
-                        </Row>
+                                <Row>
+                                    <Col md={"3"}>
+                                        <Checkbox name="checkSMS" checked={this.props.group.checkSMS}
+                                                  onChange={this.handleChange}>SMS</Checkbox>
+                                    </Col>
+                                    <Col md={"3"}>
+                                        <Checkbox name="checkEmail" checked={this.props.group.checkEmail}
+                                                  onChange={this.handleChange}>Email</Checkbox>
+                                    </Col>
+                                    <Col md={"3"}>
+                                        <Checkbox name="checkSlack" checked={this.props.group.checkSlack}
+                                                  onChange={this.handleChange}>Slack
+                                            ({this.props.credentials.slackchannel})</Checkbox>
+                                    </Col>
+                                </Row>
+
+                                <Row>
+                                    <Col md={"12"} className="notificationsHeaderStyle">
+                                        <span>Users ({this.props.group.Users.length})</span>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col xs={"12"}>
+                                        <select value={this.state.user} className="form-control emulator-input"
+                                                onChange={this.addUser}>
+                                            <option value="">Select user to add, or click 'Add All'</option>
+                                            {selectUsers}
+                                        </select>
+                                    </Col>
+                                    <Col xs={"2"}>
+                                        <Button size={"sm"} color={"light"} onClick={this.addAllUsers}>Add All</Button>
+                                    </Col>
+                                </Row>
+
+                                <Row>
+                                    <Col xs={"11"} className={this.props.group.Users.length > 0 ? '' : 'hidden'}>
+                                        <Row>
+                                            <Col xd={"12"} className="notificationsHeaderStyle">
+                                                <span className="sub">Group Users</span>
+                                            </Col>
+                                        </Row>
+                                        {MailingList}
+                                    </Col>
+                                </Row>
+                            </CardBody>
+                        </Card>
+
                     </CardBody>
                 </Card>
             </Fragment>

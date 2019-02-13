@@ -146,16 +146,22 @@ body {
 }
 
 .notificationsHeaderStyle {
-    border-bottom: 1px solid #000;
+    border-bottom: 1px solid #333;
     margin: .5rem 0;
+    font-weight: 400;
+    color: #505050;
 }
 
 .notificationsHeaderStyle span {
-    font-size: 1.5rem;
+    font-size: 1.0rem;
+    font-weight: 400;
+    color: #505050;
 }
 
 .notificationsHeaderStyle span.sub {
-    font-size: 1.2rem;
+    font-size: 1.0rem;
+    font-weight: 400;
+    color: #505050;
 }
 
 .groupListUserCount {

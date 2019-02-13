@@ -22,7 +22,6 @@ import GroupUserList from './GroupUserList';
 import BaseComponent from '../BaseComponent';
 // noinspection ES6CheckImport
 import {
-    Container,
     Row,
     Col,
     Button,
@@ -34,41 +33,14 @@ import {
     MDBModal,
     MDBModalBody,
     MDBModalHeader,
-    MDBModalFooter
+    MDBModalFooter,
+    toast
 } from 'mdbreact';
 import {connect} from "react-redux";
 import paginationFactory from 'react-bootstrap-table2-paginator';
 // import cellEditFactory, {Type} from 'react-bootstrap-table2-editor';
 // import {pageinationOptions} from "../common/pageinationOptions";
 
-
-/**
- * The defintiona of the BootstrapTable2 table columns.
- * @type {*[]}
- */
-const columns = [
-    {
-        hidden: true,
-        dataField: '_id',
-    },
-    {
-        hidden: true,
-        dataField: 'uuid',
-        isKey: true
-    },
-    {
-        text: 'Group Name',
-        dataField: 'GroupName',
-        width: "60%",
-        sort: true
-    },
-    {
-        text: 'Users',
-        dataField: 'Users',
-        width: "20%",
-        sort: true
-    }
-];
 
 /**
  * This component prompts for a new group name. A submiission triggers the creation API.
@@ -80,16 +52,16 @@ const columns = [
 const AddGroupModal = props => {
 
     const {
-        fnIsOpen,
+        isOpen,
         fnDoClose,
         fnAddGroup,
         fnHandleInputChange,
-        fncloseAddGroupModal,
+        fnCloseAddGroupModal,
         valueGroupName
     } = props;
 
     return (
-        <MDBModal size={"sm"} isOpen={fnIsOpen} onHide={fnDoClose}>
+        <MDBModal size={"sm"} isOpen={isOpen} onHide={fnDoClose}>
             <MDBModalBody>
                 <MDBModalHeader>Add Group Item</MDBModalHeader>
                 <form className="form" onSubmit={fnAddGroup}>
@@ -103,7 +75,7 @@ const AddGroupModal = props => {
                         label={"Group Name"}/>
                     <MDBModalFooter>
                         <Button size={"md"} type={"submit"}><MDBIcon icon={"plus-circle"}/>&nbsp;Add</Button>
-                        <Button size={"md"} color={"red"} onClick={fncloseAddGroupModal}>Cancel</Button>
+                        <Button size={"md"} color={"red"} onClick={fnCloseAddGroupModal}>Cancel</Button>
                     </MDBModalFooter>
                 </form>
             </MDBModalBody>
@@ -175,6 +147,7 @@ class NotificationGroups extends BaseComponent {
         this.openDeleteModal = this.openDeleteModal.bind(this);
         this.closeDeleteModal = this.closeDeleteModal.bind(this);
         this.closeAddGroupModal = this.closeAddGroupModal.bind(this);
+        this.manageToolbar = this.manageToolbar.bind(this);
         //this.deleteUser = this.deleteUser.bind(this);
 
     }
@@ -188,18 +161,19 @@ class NotificationGroups extends BaseComponent {
             checkEmail: false,
             checkSlack: false,
             Users: [],
-
         };
 
         restAPI({
             method: 'post',
             url: '/api/notify/group',
             data: add
-        }).then(res => {
-            this.showGroupUsers(res.data);
+        }).then(() => {
+            // TODO Don't showGroupUsers here.
+            // this.showGroupUsers(res.data);
             this.closeAddGroupModal();
             this.fetchGroups();
-
+            toast.success(`Added group "${add.GroupName}"`);
+            this.setState({GroupName: ''})
         }).catch(err => console.log(err));
     }
 
@@ -237,7 +211,7 @@ class NotificationGroups extends BaseComponent {
             data: this.state.currentGroup
         }).then(() => {
 
-            this.showGroupUsers({GroupName: ''});
+            // this.showGroupUsers({GroupName: ''});
             this.closeDeleteModal();
             this.fetchGroups();
 
@@ -317,8 +291,53 @@ class NotificationGroups extends BaseComponent {
     }
 
 
+    manageToolbar(cell, row) {
+        const self = this;
+        return (
+            <div className="btn-group" role="toolbar" aria-label="management">
+                <div onClick={() => self.openDeleteModal(row)}>
+                    <MDBIcon style={{marginLeft: '0.5rem', color: 'red'}} size={'lg'} icon={"ban"}/>
+                </div>
+            </div>
+        )
+    }
+
 
     render() {
+
+        const columns = [
+            {
+                hidden: true,
+                dataField: '_id',
+            },
+            {
+                hidden: true,
+                dataField: 'uuid',
+                isKey: true
+            },
+            {
+                text: 'Group Name',
+                dataField: 'GroupName',
+                width: "20%",
+                sort: true
+            },
+            {
+                text: 'Users',
+                dataField: 'Users',
+                // width: "20%",
+                sort: true
+            },
+            {
+                text: 'Manage',
+                dataField: 'df1',
+                isDummyField: true,
+                width: '5%',
+                formatter: this.manageToolbar,
+                editable: false,
+                align: 'center',
+                headerAlign: 'center'
+            }
+        ];
 
 
         return (
@@ -328,19 +347,14 @@ class NotificationGroups extends BaseComponent {
                     <CardBody>
                         <CardTitle>Groups</CardTitle>
                         <Row>
-                            <Col md={"8"}>
+                            <Col md={"7"}>
 
                                 <Row>
-                                    <Col md={"6"}> </Col>
+                                    <Col md={"9"}> </Col>
                                     <Col md={"3"}>
                                         <Button size={"md"} color={"light"} style={{width: "100%"}}
                                                 onClick={this.openAddGroupModal}>
                                             <MDBIcon icon="plus-circle"/>&nbsp;Add Group</Button>
-                                    </Col>
-                                    <Col md={"3"}>
-                                        <Button size={"md"} color={"dark"} style={{width: "100%"}}
-                                                onClick={this.openDeleteModal}>
-                                            <MDBIcon icon="times-circle"/>&nbsp;Delete Group</Button>
                                     </Col>
                                 </Row>
 
@@ -365,7 +379,7 @@ class NotificationGroups extends BaseComponent {
                                 </Row>
                             </Col>
 
-                            <Col md={"4"} className="col-md-offset-1">
+                            <Col md={"5"} className="col-md-offset-1">
                                 <GroupUserList group={this.state.currentGroup}/>
                             </Col>
                         </Row>
@@ -374,7 +388,7 @@ class NotificationGroups extends BaseComponent {
                 </Card>
 
                 <AddGroupModal
-                    fnIsOpen={this.state.addGroupModal}
+                    isOpen={this.state.addGroupModal}
                     fnDoClose={this.close}
                     fnAddGroup={this.addGroup}
                     fnHandleInputChange={this.handleInputChange}
