@@ -168,7 +168,7 @@ class NotificationGroups extends BaseComponent {
             url: '/api/notify/group',
             data: add
         }).then(() => {
-            // TODO Don't showGroupUsers here.
+            // TODO Cannot showGroupUsers here.
             // this.showGroupUsers(res.data);
             this.closeAddGroupModal();
             this.fetchGroups();
@@ -182,9 +182,10 @@ class NotificationGroups extends BaseComponent {
             method: 'get',
             url: '/api/notify/group',
             data: this.state
-        }).then(res => (
-            this.setState({users: res.data})
-        )).catch(err => console.log(err));
+        }).then(res => {
+            console.log(`user groups`, res.data);
+            this.setState({ users: res.data });
+        }).catch(err => console.log(err));
     }
 
     onAfterSaveGroup(row, cellName, cellValue) {
@@ -296,7 +297,7 @@ class NotificationGroups extends BaseComponent {
         return (
             <div className="btn-group" role="toolbar" aria-label="management">
                 <div onClick={() => self.openDeleteModal(row)}>
-                    <MDBIcon style={{marginLeft: '0.5rem', color: 'red'}} size={'lg'} icon={"ban"}/>
+                    <MDBIcon style={{marginLeft: '0.5rem', color: 'red'}} size={'lg'} icon={"minus-circle"}/>
                 </div>
             </div>
         )
@@ -321,12 +322,12 @@ class NotificationGroups extends BaseComponent {
                 width: "20%",
                 sort: true
             },
-            {
-                text: 'Users',
-                dataField: 'Users',
-                // width: "20%",
-                sort: true
-            },
+            // {
+            //     text: 'Users',
+            //     dataField: 'Users',
+            //     // width: "20%",
+            //     sort: true
+            // },
             {
                 text: 'Manage',
                 dataField: 'df1',
@@ -379,7 +380,7 @@ class NotificationGroups extends BaseComponent {
                                 </Row>
                             </Col>
 
-                            <Col md={"5"} className="col-md-offset-1">
+                            <Col md={"5"}>
                                 <GroupUserList group={this.state.currentGroup}/>
                             </Col>
                         </Row>

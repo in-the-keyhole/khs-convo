@@ -366,7 +366,7 @@ class NotifyEmulator extends BaseComponent {
             <Fragment>
                 <Card>
                     <CardBody>
-                        <CardTitle><h5>Message</h5></CardTitle>
+                        <CardTitle>Message</CardTitle>
                         <Row>
                             <Col xs={"10"}>
                                 <MDBInput name="msgtext" type="text" className="form-control emulator-input" autoFocus
@@ -382,18 +382,18 @@ class NotifyEmulator extends BaseComponent {
                         </Row>
 
                         <Row>
-                            <Col xs={"4"}>Scheduled Date: <MDBInput name="newScheduleDate" type="date"
+                            <Col xs={"6"}>Scheduled Date: <MDBInput name="newScheduleDate" type="date"
                                                                     className="form-control emulator-input"
                                                                     value={this.state.newScheduleDate}
                                                                     onChange={this.handleInputChange}/></Col>
-                            <Col xs={"4"}>Scheduled Time: <MDBInput name="newScheduleTime" type="time"
+                            <Col xs={"6"}>Scheduled Time: <MDBInput name="newScheduleTime" type="time"
                                                                     className="form-control emulator-input"
                                                                     value={this.state.newScheduleTime}
                                                                     onChange={this.handleInputChange}/></Col>
                         </Row>
                         <Row>
                             <Col xs={"12"}>
-                                <em>* To send at a later time, else message will be sent immediately</em>
+                                <em>* Deferred for sending later</em>
                             </Col>
                         </Row>
 

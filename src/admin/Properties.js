@@ -179,7 +179,7 @@ class Properties extends BaseComponent {
         return (
             <div className="btn-group" role="toolbar" aria-label="management">
                 <div onClick={() => this.openDeleteModal(row)}>
-                    <MDBIcon style={{marginLeft: '0.5rem', color: 'red'}} size={'lg'} icon={"ban"}/>
+                    <MDBIcon style={{marginLeft: '0.5rem', color: 'red'}} size={'lg'} icon={"minus-circle"}/>
                 </div>
             </div>
         )

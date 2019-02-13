@@ -305,7 +305,7 @@ class Admin extends BaseComponent {
                     <MDBIcon style={{marginRight: '0.5rem', color: 'gray'}} size={'lg'} icon={"envelope"}/>
                 </div>
                 <div onClick={() => self.openDeleteModal(row)}>
-                    <MDBIcon style={{marginLeft: '0.5rem', color: 'red'}} size={'lg'} icon={"ban"}/>
+                    <MDBIcon style={{marginLeft: '0.5rem', color: 'red'}} size={'lg'} icon={"minus-circle"}/>
                 </div>
             </div>
         )
