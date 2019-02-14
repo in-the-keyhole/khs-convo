@@ -43,6 +43,12 @@ import CommonUI from "../common/CommonUI";
 // import {pageinationOptions} from "../common/pageinationOptions";
 
 
+const selectRow = {
+    mode: 'radio',
+    clickToSelect: true,
+    style: { backgroundColor: '#c8c8e6' }
+};
+
 /**
  * This component prompts for a new group name. A submiission triggers the creation API.
  *
@@ -152,6 +158,10 @@ class NotificationGroups extends BaseComponent {
         //this.deleteUser = this.deleteUser.bind(this);
 
     }
+
+
+
+
 
     addGroup(event) {
         event.preventDefault();
@@ -373,6 +383,7 @@ class NotificationGroups extends BaseComponent {
                                             keyField={'uuid'}
                                             pagination={paginationFactory()}
                                             noDataIndication="No groups"
+                                            selectRow={selectRow}
                                             cellEdit={{
                                                 mode: 'click',
                                                 blurToSave: true,
