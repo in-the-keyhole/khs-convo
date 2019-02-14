@@ -34,7 +34,8 @@ import {
     MDBModalBody,
     MDBModalHeader,
     MDBModalFooter,
-    toast
+    toast,
+    MDBBtnGroup
 } from 'mdbreact';
 import {connect} from "react-redux";
 import paginationFactory from 'react-bootstrap-table2-paginator';
@@ -276,7 +277,6 @@ class NotificationGroups extends BaseComponent {
 
     openAddGroupModal() {
         this.setState({addGroupModal: true});
-        console.log("openAddGroupModel");
     }
 
 
@@ -307,11 +307,11 @@ class NotificationGroups extends BaseComponent {
     manageToolbar(cell, row) {
         const self = this;
         return (
-            <div className="btn-group" role="toolbar" aria-label="management">
+            <MDBBtnGroup role="toolbar" aria-label="management">
                 <div onClick={() => self.openDeleteModal(row)}>
                     <MDBIcon style={{marginLeft: '0.5rem', color: 'red'}} size={'lg'} icon={"minus-circle"}/>
                 </div>
-            </div>
+            </MDBBtnGroup>
         )
     }
 
@@ -421,6 +421,8 @@ class NotificationGroups extends BaseComponent {
             </Fragment>
         )
     }
+
+
 }
 
 
