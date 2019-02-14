@@ -46,7 +46,7 @@ import CommonUI from "../common/CommonUI";
 const selectRow = {
     mode: 'radio',
     clickToSelect: true,
-    style: { backgroundColor: '#c8c8e6' }
+    style: { backgroundColor: '#ececff' }
 };
 
 /**
