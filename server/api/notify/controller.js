@@ -31,7 +31,8 @@ function postgroup(req, res) {
 
 
 function getgroup(req, res) {
-    mongo.Get({}, 'NotificationGroups')
+    const sort = {"GroupName": 1};
+    mongo.GetSort({}, sort, 'NotificationGroups')
         .then(function (groups) {
             res.send(groups);
         });

@@ -187,16 +187,18 @@ class GroupUserList extends BaseComponent {
                     <Row>
                         <Col md={"3"}>
                             <MDBInput type={"checkbox"} name="checkSMS" checked={this.props.group.checkSMS}
-                                      onChange={this.handleChange}>SMS</MDBInput>
+                                      label={"SMS"}
+                                      onChange={this.handleChange}/>
                         </Col>
                         <Col md={"3"}>
                             <MDBInput type={"checkbox"} name="checkEmail" checked={this.props.group.checkEmail}
-                                      onChange={this.handleChange}>Email</MDBInput>
+                                      label={"Email"}
+                                      onChange={this.handleChange}/>
                         </Col>
                         <Col md={"6"}>
                             <MDBInput type={"checkbox"} name="checkSlack" checked={this.props.group.checkSlack}
-                                      onChange={this.handleChange}>Slack
-                                ({this.props.credentials.slackchannel})</MDBInput>
+                                      label={`Slack ${this.props.credentials.slackchannel}`}
+                                      onChange={this.handleChange}/>
                         </Col>
                     </Row>
 

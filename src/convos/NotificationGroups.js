@@ -319,15 +319,16 @@ class NotificationGroups extends BaseComponent {
             {
                 text: 'Group Name',
                 dataField: 'GroupName',
-                width: "20%",
                 sort: true
             },
-            // {
-            //     text: 'Users',
-            //     dataField: 'Users',
-            //     // width: "20%",
-            //     sort: true
-            // },
+            {
+                text: 'User Count',
+                dataField: 'Users.length',
+                width: "5%",
+                align: 'center',
+                headerAlign: 'center',
+                sort: true
+            },
             {
                 text: 'Manage',
                 dataField: 'df1',
@@ -348,7 +349,7 @@ class NotificationGroups extends BaseComponent {
                     <CardBody>
                         <CardTitle>Groups</CardTitle>
                         <Row>
-                            <Col md={"7"}>
+                            <Col md={"6"}>
 
                                 <Row>
                                     <Col md={"9"}> </Col>
@@ -367,7 +368,6 @@ class NotificationGroups extends BaseComponent {
                                             columns={columns}
                                             keyField={'uuid'}
                                             pagination={paginationFactory()}
-                                            //insertRow={ true }
                                             noDataIndication="No groups"
 
                                             cellEdit={{
@@ -380,7 +380,7 @@ class NotificationGroups extends BaseComponent {
                                 </Row>
                             </Col>
 
-                            <Col md={"5"}>
+                            <Col md={"6"}>
                                 <GroupUserList group={this.state.currentGroup}/>
                             </Col>
                         </Row>
