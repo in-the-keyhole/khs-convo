@@ -38,6 +38,7 @@ import {
 } from 'mdbreact';
 import {connect} from "react-redux";
 import paginationFactory from 'react-bootstrap-table2-paginator';
+import CommonUI from "../common/CommonUI";
 // import cellEditFactory, {Type} from 'react-bootstrap-table2-editor';
 // import {pageinationOptions} from "../common/pageinationOptions";
 
@@ -167,13 +168,14 @@ class NotificationGroups extends BaseComponent {
             method: 'post',
             url: '/api/notify/group',
             data: add
-        }).then(() => {
-            // TODO Cannot showGroupUsers here.
-            // this.showGroupUsers(res.data);
+        }).then((res) => {
             this.closeAddGroupModal();
             this.fetchGroups();
             toast.success(`Added group "${add.GroupName}"`);
-            this.setState({GroupName: ''})
+            this.setState({GroupName: ''});
+
+            window.setTimeout(() => this.showGroupUsers(res.data),0);
+
         }).catch(err => console.log(err));
     }
 
@@ -319,7 +321,8 @@ class NotificationGroups extends BaseComponent {
             {
                 text: 'Group Name',
                 dataField: 'GroupName',
-                sort: true
+                sort: true,
+                sortCaret: CommonUI.ColumnSortCaret
             },
             {
                 text: 'User Count',
@@ -327,7 +330,8 @@ class NotificationGroups extends BaseComponent {
                 width: "5%",
                 align: 'center',
                 headerAlign: 'center',
-                sort: true
+                sort: true,
+                sortCaret: CommonUI.ColumnSortCaret
             },
             {
                 text: 'Manage',
@@ -369,7 +373,6 @@ class NotificationGroups extends BaseComponent {
                                             keyField={'uuid'}
                                             pagination={paginationFactory()}
                                             noDataIndication="No groups"
-
                                             cellEdit={{
                                                 mode: 'click',
                                                 blurToSave: true,
