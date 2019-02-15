@@ -397,12 +397,12 @@ class NotifyEmulator extends BaseComponent {
                             </Col>
                         </Row>
 
-                        <Row className="row">
+                        <Row>
                             <Col xs={"12"} className="notificationsHeaderStyle">
-                                <i title="Schedule"
-                                   className={"glyphicon clickable " + (this.state.scheduleHide ? 'glyphicon-plus' : 'glyphicon-minus')}
-                                   onClick={() => this.toggleScheduleHide()}/>
-                                <span>Scheduled Notifications ({this.state.scheduledNotifications.length})</span>
+                                <span onClick={() => this.toggleScheduleHide()}>
+                                    Schedule&nbsp;
+                                    <MDBIcon icon={this.state.scheduleHide ? 'circle-plus' : 'circle-minus'}  />
+                                    &nbsp;Scheduled Notifications ({this.state.scheduledNotifications.length})</span>
                             </Col>
                         </Row>
                         <Row className={this.state.scheduleHide ? 'hidden' : ''}>
@@ -426,12 +426,12 @@ class NotifyEmulator extends BaseComponent {
                     </CardBody>
                 </Card>
 
-                <Modal show={this.state.confirmSendModal} onHide={this.close}>
-                    <Modal.Header className="bg-info">
-                        <strong>Confirm Send Notification</strong>
-                    </Modal.Header>
+                <MDBModal show={this.state.confirmSendModal} onHide={this.close}>
 
-                    <Modal.Body>
+                    <MDBModalHeader>Confirm Send Notification</MDBModalHeader>
+
+                    <MDBModalBody>
+
                         <div className={this.state.sentMsg !== "" ? 'row visible' : 'row invisible'}>
                             <div className="col-md-12 red text-center">{this.state.sentMsg}</div>
                         </div>
@@ -455,9 +455,9 @@ class NotifyEmulator extends BaseComponent {
                                 <div className="col-md-8">{this.sendMediums()}</div>
                             </div>
                         </div>
-                    </Modal.Body>
+                    </MDBModalBody>
 
-                    <Modal.Footer>
+                    <MDBModalFooter>
                         <div className="row">
                             <div className="col-md-12 pull-right">
                                 <button
@@ -468,15 +468,13 @@ class NotifyEmulator extends BaseComponent {
                                         onClick={() => this.closeConfirmSendModal()}>{this.state.sentMsg !== '' ? 'Close' : 'Cancel'}</button>
                             </div>
                         </div>
-                    </Modal.Footer>
-                </Modal>
+                    </MDBModalFooter>
+                </MDBModal>
 
-                <Modal show={this.state.deleteScheduledNotificationModal} onHide={this.close}>
-                    <Modal.Header className="bg-danger">
-                        <strong>Confirm Delete Scheduled Notification</strong>
-                    </Modal.Header>
+                <MDBModal show={this.state.deleteScheduledNotificationModal} onHide={this.close}>
+                    <MDBModalHeader>Confirm Delete Scheduled Notification</MDBModalHeader>
 
-                    <Modal.Body>
+                    <MDBModalBody>
                         <div className="form-group">
                             <label>Are you sure you want to delete this?</label>
                         </div>
@@ -491,9 +489,9 @@ class NotifyEmulator extends BaseComponent {
                             <div
                                 className="col-md-8">{this.state.currentScheduledNotification ? this.state.currentScheduledNotification.msg : ''} </div>
                         </div>
-                    </Modal.Body>
+                    </MDBModalBody>
 
-                    <Modal.Footer>
+                    <MDBModalFooter>
                         <div className="row">
                             <div className="col-md-12 pull-right">
                                 <button className="btn btn-danger"
@@ -504,15 +502,13 @@ class NotifyEmulator extends BaseComponent {
                                 </button>
                             </div>
                         </div>
-                    </Modal.Footer>
-                </Modal>
+                    </MDBModalFooter>
+                </MDBModal>
 
-                <Modal show={this.state.editScheduledNotificationModal} onHide={this.close}>
-                    <Modal.Header className="bg-info">
-                        <strong>Edit Scheduled Notification</strong>
-                    </Modal.Header>
+                <MDBModal show={this.state.editScheduledNotificationModal} onHide={this.close}>
+                    <MDBModalHeader>Edit Scheduled Notification</MDBModalHeader>
 
-                    <Modal.Body>
+                    <MDBModalBody>
                         <div className="row">
                             <div className="col-md-4 text-right"><strong>Scheduled date/time:</strong></div>
                             <div className="col-md-4">
@@ -537,9 +533,9 @@ class NotifyEmulator extends BaseComponent {
                                        placeholder="Enter notification message here"/>
                             </div>
                         </div>
-                    </Modal.Body>
+                    </MDBModalBody>
 
-                    <Modal.Footer>
+                    <MDBModalFooter>
                         <div className="row">
                             <div className="col-md-12 pull-right">
                                 <button className="btn btn-primary" disabled={!this.validEdit()}
@@ -550,8 +546,8 @@ class NotifyEmulator extends BaseComponent {
                                 </button>
                             </div>
                         </div>
-                    </Modal.Footer>
-                </Modal>
+                    </MDBModalFooter>
+                </MDBModal>
 
             </Fragment>
         )

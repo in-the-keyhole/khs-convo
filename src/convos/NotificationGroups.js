@@ -45,7 +45,8 @@ import CommonUI from "../common/CommonUI";
 
 
 /**
- * This component prompts for a new group name. A submiission triggers the creation API.
+ * This component prompts for a new group name. A submission triggers the creation API.
+ * Inherited technical debt: this app confuses groups and users in its state names.
  *
  * @param props
  * @returns {*}
@@ -129,18 +130,15 @@ class NotificationGroups extends BaseComponent {
         this.state = {
             users: [],
             GroupName: '',
-            // group: '',
             currentGroup: {},
-            // showUserList: false,
             selected: []
-
         };
 
-        this.selectRow = {
+        this.rowSelectionOptions = {
             mode: 'radio',
             clickToSelect: true,
             style: {backgroundColor: '#ececff'},
-            selectionHeaderRenderer: () => 'Select',
+            selectionHeaderRenderer: (() => 'Select'),
             onSelect: (row, isSelect) => this.handleOnSelect(row, isSelect)
         };
 
@@ -156,6 +154,7 @@ class NotificationGroups extends BaseComponent {
         this.closeDeleteModal = this.closeDeleteModal.bind(this);
         this.closeAddGroupModal = this.closeAddGroupModal.bind(this);
         this.manageToolbar = this.manageToolbar.bind(this);
+        this.selectTableRow = this.selectTableRow.bind(this);
         //this.deleteUser = this.deleteUser.bind(this);
 
     }
@@ -167,12 +166,18 @@ class NotificationGroups extends BaseComponent {
      * We hook it to sync the group details sub-pane.
      *
      * @param row
+     * @param isSelect
      * @returns isSelect
      */
     handleOnSelect(row, isSelect) {
         console.log(`row`, row);
-        window.setTimeout(() => this.showGroupUsers(row), 0);
+        this.renderGroupDetailPane(row, isSelect);
         return isSelect;
+    }
+
+
+    renderGroupDetailPane(groupRecord, isSelect = true) {
+        window.setTimeout(() => (this.showGroupUsers(isSelect ? groupRecord : [])), 0);
     }
 
 
@@ -197,30 +202,30 @@ class NotificationGroups extends BaseComponent {
             toast.success(`Added group "${add.GroupName}"`);
             this.setState({GroupName: ''});
 
-            window.setTimeout(() => this.showGroupUsers(res.data), 0);
+            this.renderGroupDetailPane(res.data);
 
         }).catch(err => console.log(err));
     }
+
 
     fetchGroups() {
         restAPI({
             method: 'get',
             url: '/api/notify/group',
             data: this.state
-        }).then(res => {
+        }).then((res) => {
             const data = res.data;
             console.log(`user groups`, data);
             this.setState({users: data});
             if (Array.isArray(data) && data.length) {
 
-                // TODO Also auto-select row 0
-                window.setTimeout(() => (this.setState({selected: data[0]})), 0);
-                // this.setState( {selected: [0]});
-
-                this.showGroupUsers(data[0]);
+                // If any groups, paint groups pane and auto-select row 0
+                this.renderGroupDetailPane(data[0]);
+                this.selectTableRow();
             }
         }).catch(err => console.log(err));
     }
+
 
     onAfterSaveGroup(row, cellName, cellValue) {
 
@@ -237,6 +242,7 @@ class NotificationGroups extends BaseComponent {
             this.fetchGroups();
         }).catch((err) => console.log(err));
     }
+
 
     deleteGroup() {
         console.log(this.state.currentGroup);
@@ -274,9 +280,6 @@ class NotificationGroups extends BaseComponent {
         console.log(`showGroupUsers`, groupRecord);
         this.setState({
             currentGroup: groupRecord,
-            // showUserList: true,
-            // group: 'User list for ' + groupRecord.GroupName
-
         });
     }
 
@@ -337,10 +340,19 @@ class NotificationGroups extends BaseComponent {
         )
     }
 
+    selectTableRow() {
+        console.log(`state`, this.state);
+        const arg = this.state.users && Array.isArray(this.state.users) && this.state.users.length
+            ? [this.state.users[0].uuid]
+            : [];
+
+        this.setState({selected: arg});
+        console.log(`state.selected`, this.state.selected);
+    }
 
     render() {
 
-        console.log(`NotifcationGroup render call ${new Date()}`, this.state.selected );
+        console.log(`NotifcationGroup render call ${new Date()}`, this.state.selected);
 
         const columns = [
             {
@@ -390,7 +402,11 @@ class NotificationGroups extends BaseComponent {
                             <Col md={"6"}>
 
                                 <Row>
-                                    <Col md={"9"}> </Col>
+                                    <Col md={"9"}>
+                                        <Button size={"md"} color={"danger"}
+                                                onClick={this.selectTableRow}>
+                                            Select First</Button>
+                                    </Col>
                                     <Col md={"3"}>
                                         <Button size={"md"} color={"light"} style={{width: "100%"}}
                                                 onClick={this.openAddGroupModal}>
@@ -407,7 +423,7 @@ class NotificationGroups extends BaseComponent {
                                             keyField={'uuid'}
                                             pagination={paginationFactory()}
                                             noDataIndication="No groups"
-                                            selectRow={this.selectRow}
+                                            selectRow={this.rowSelectionOptions}
                                             cellEdit={{
                                                 mode: 'click',
                                                 blurToSave: true,
