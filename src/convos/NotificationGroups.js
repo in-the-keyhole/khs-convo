@@ -167,6 +167,7 @@ class NotificationGroups extends BaseComponent {
     addGroup(event) {
         event.preventDefault();
 
+        // This is a local dupe check. Another user could add a dupe unless server reads before update.
         if (this.state.users.filter(v => v.GroupName === this.state.GroupName).length) {
             toast.error(`Group ${this.state.GroupName} already exists. Nothing added.`)
         } else {
