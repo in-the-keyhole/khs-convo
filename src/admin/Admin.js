@@ -82,7 +82,7 @@ class Admin extends BaseComponent {
     addUserHandler(event) {
         event.preventDefault();
 
-        // UI checks duplicate emails, but API should catch it regardless. It is the final arbitror.
+        // UI checks duplicate emails, but API should catch it regardless. It is the final arbiter.
         if (this.state.ConfirmEmail !== this.state.Email) {
             const msg = `Mismatch; ${this.state.Email} // ${this.state.ConfirmEmail}`;
             this.setState( { errorMsg: msg} );

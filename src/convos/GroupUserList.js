@@ -18,7 +18,6 @@ import React from 'react';
 import _ from "lodash";
 import restAPI from '../service/restAPI';
 import NotifyEmulator from './NotifyEmulator';
-// import {Checkbox} from 'react-bootstrap';
 import BaseComponent from '../BaseComponent';
 import {connect} from "react-redux";
 // noinspection ES6CheckImport
@@ -158,11 +157,6 @@ class GroupUserList extends BaseComponent {
     componentWillMount() {
         super.componentWillMount();
         this.fetchUsers();
-    }
-
-
-    componentWillReceiveProps() {
-        // this.setState(this.props);
     }
 
 

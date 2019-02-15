@@ -95,15 +95,14 @@ class NotifyEmulator extends BaseComponent {
             scheduleDate: tmpScheduleDate
         };
 
-        const self = this;
         restAPI({
             method: 'POST',
             url: '/api/convo',
             data: payload,
             headers: {"token": this.props.credentials.apitoken}
         }).then(() => {
-            self.setState({
-                msgtext: "",
+            this.setState({
+                msgtext: '',
                 sentMsg: sentMsgText,
                 scheduleHide: true,
                 newScheduleDate: '',
@@ -111,11 +110,9 @@ class NotifyEmulator extends BaseComponent {
             });
 
             // self.getConversationsForPhone();
-            self.fetchScheduledNotifications();
+            this.fetchScheduledNotifications();
 
-        }).catch(function (err) {
-            console.log(err)
-        });
+        }).catch( err => console.log(err));
 
     }
 
@@ -337,16 +334,14 @@ class NotifyEmulator extends BaseComponent {
 
 
     render() {
-        // this.setState( {Body: `notify ${this.props.group.GroupName}`} );   // <==============  move out of render and uncommnet
+        // this.setState( {Body: `notify ${this.props.group.GroupName}`} );   // TODO <==============  carry out setState outsdie of render
 
         // Form list of Scheduled Notifications for group
         const ScheduledNotificationist = this.state.scheduledNotifications.map((record) =>
             <Row className="row-striped">
                 <Col xs={"2"}>
-                    <i title="Edit" className="glyphicon glyphicon-edit clickable"
-                       onClick={() => this.openEditScheduledNotificationModal(record)}/>
-                    <i title="Delete from schedule" className="glyphicon glyphicon-remove-sign text-danger clickable"
-                       onClick={() => this.openDeleteScheduledNotificationModal(record)}/>
+                    <span onClick={() => this.openEditScheduledNotificationModal(record)}><MDBIcon icon={"edit"}/>&nbsp;Edit</span>
+                    <span onClick={() => this.openDeleteScheduledNotificationModal(record)}><MDBIcon icon={"edit"}/>&nbsp;Delete from schedule</span>
                 </Col>
                 <Col xs={"4"}>{NotifyEmulator.formatScheduleDate(record.scheduleDate)}</Col>
                 <Col xs={"6"}>{record.msg}</Col>
@@ -365,13 +360,13 @@ class NotifyEmulator extends BaseComponent {
                     <CardBody>
                         <CardTitle>Message</CardTitle>
                         <Row>
-                            <Col xs={"10"}>
+                            <Col xs={"8"}>
                                 <MDBInput name="msgtext" type="text" className="form-control emulator-input" autoFocus
                                           value={this.state.msgtext} onChange={this.handleInputChange}
                                           onKeyPress={this.onConversationKeypress}
                                           label="Notification message"/>
                             </Col>
-                            <Col xs={"2"}>
+                            <Col xs={"4"}>
                                 <Button size={"sm"} color={"light"} disabled={!this.validConfirmSend()}
                                         onClick={this.openConfirmSendModal}>Confirm
                                 </Button>
