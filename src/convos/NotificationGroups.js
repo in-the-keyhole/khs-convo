@@ -65,10 +65,11 @@ const AddGroupModal = props => {
 
     return (
         <MDBModal size={"sm"} isOpen={isOpen} onHide={fnDoClose}>
-            <MDBModalBody>
-                <MDBModalHeader>Add Group Item</MDBModalHeader>
-                <form className="form" onSubmit={fnAddGroup}>
+            <MDBModalHeader>Add Group Item</MDBModalHeader>
+            <form className="form" onSubmit={fnAddGroup}>
+                <MDBModalBody>
                     <MDBInput
+                        autoFocus
                         name="GroupName"
                         id="GroupName"
                         type="text"
@@ -76,12 +77,12 @@ const AddGroupModal = props => {
                         value={valueGroupName}
                         onChange={fnHandleInputChange}
                         label={"Group Name"}/>
-                    <MDBModalFooter>
-                        <Button size={"md"} type={"submit"}><MDBIcon icon={"plus-circle"}/>&nbsp;Add</Button>
-                        <Button size={"md"} color={"red"} onClick={fnCloseAddGroupModal}>Cancel</Button>
-                    </MDBModalFooter>
-                </form>
-            </MDBModalBody>
+                </MDBModalBody>
+                <MDBModalFooter>
+                    <Button size={"md"} type={"submit"}><MDBIcon icon={"plus-circle"}/>&nbsp;Add</Button>
+                    <Button size={"md"} color={"red"} onClick={fnCloseAddGroupModal}>Cancel</Button>
+                </MDBModalFooter>
+            </form>
         </MDBModal>
     );
 };
@@ -105,15 +106,14 @@ const DeleteGroupModal = props => {
 
     return (
         <MDBModal size={"sm"} isOpen={fnDeleteModal} onHide={fnDoClose}>
+            <MDBModalHeader>Confirm</MDBModalHeader>
             <MDBModalBody>
-                <MDBModalHeader>Confirm</MDBModalHeader>
                 <label>Delete group items?</label>
-
-                <MDBModalFooter>
-                    <Button size={"md"} color={"danger"} onClick={fnDeleteGroup}>Delete</Button>
-                    <Button size={"md"} color={"light"} onClick={fnCloseDeleteModal}>Cancel</Button>
-                </MDBModalFooter>
             </MDBModalBody>
+            <MDBModalFooter>
+                <Button size={"md"} color={"danger"} onClick={fnDeleteGroup}>Delete</Button>
+                <Button size={"md"} color={"light"} onClick={fnCloseDeleteModal}>Cancel</Button>
+            </MDBModalFooter>
         </MDBModal>
     );
 };
@@ -167,31 +167,36 @@ class NotificationGroups extends BaseComponent {
     addGroup(event) {
         event.preventDefault();
 
-        const add = {
-            GroupName: this.state.GroupName,
-            checkSMS: true,
-            checkEmail: false,
-            checkSlack: false,
-            Users: []
-        };
+        if (this.state.users.filter(v => v.GroupName === this.state.GroupName).length) {
+            toast.error(`Group ${this.state.GroupName} already exists. Nothing added.`)
+        } else {
 
-        restAPI({
-            method: 'post',
-            url: '/api/notify/group',
-            data: add
-        }).then(res => {
-            this.closeAddGroupModal();
-            this.fetchGroups(false);
+            const add = {
+                GroupName: this.state.GroupName,
+                checkSMS: true,
+                checkEmail: false,
+                checkSlack: false,
+                Users: []
+            };
 
-            this.handleOnSelect(res.data);
+            restAPI({
+                method: 'post',
+                url: '/api/notify/group',
+                data: add
+            }).then(res => {
+                this.closeAddGroupModal();
+                this.fetchGroups(false);
+                this.handleOnSelect(res.data);
 
-            toast.success(`Added group "${add.GroupName}"`);
+                toast.success(`Added group "${add.GroupName}"`);
+                this.setState({GroupName: ''});
 
-        }).catch(err => console.log(err));
+            }).catch(err => console.log(err));
+        }
     }
 
 
-    fetchGroups(autoSelect=true) {
+    fetchGroups(autoSelect = true) {
         restAPI({
             method: 'get',
             url: '/api/notify/group',
