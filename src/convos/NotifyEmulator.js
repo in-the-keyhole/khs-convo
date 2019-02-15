@@ -17,7 +17,6 @@ limitations under the License.
 import React, {Fragment} from 'react';
 import restAPI from '../service/restAPI';
 import '../styles/emulator.css';
-import {Modal} from 'react-bootstrap';
 import BaseComponent from '../BaseComponent';
 import {connect} from "react-redux";
 // noinspection ES6CheckImport
@@ -33,8 +32,7 @@ import {
     MDBModal,
     MDBModalBody,
     MDBModalHeader,
-    MDBModalFooter,
-    toast
+    MDBModalFooter
 } from 'mdbreact';
 
 const moment = require('moment');
@@ -45,7 +43,6 @@ class NotifyEmulator extends BaseComponent {
 
     constructor(props) {
         super(props);
-        console.log('NotifyEmulator credentials', props.credentials);
 
         this.state = {
             scheduledNotifications: [],
@@ -401,7 +398,7 @@ class NotifyEmulator extends BaseComponent {
                             <Col xs={"12"} className="notificationsHeaderStyle">
                                 <span onClick={() => this.toggleScheduleHide()}>
                                     Schedule&nbsp;
-                                    <MDBIcon icon={this.state.scheduleHide ? 'circle-plus' : 'circle-minus'}  />
+                                    <MDBIcon icon={this.state.scheduleHide ? 'circle-plus' : 'circle-minus'}/>
                                     &nbsp;Scheduled Notifications ({this.state.scheduledNotifications.length})</span>
                             </Col>
                         </Row>

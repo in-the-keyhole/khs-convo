@@ -134,14 +134,6 @@ class NotificationGroups extends BaseComponent {
             selected: []
         };
 
-        this.rowSelectionOptions = {
-            mode: 'radio',
-            clickToSelect: true,
-            style: {backgroundColor: '#ececff'},
-            selectionHeaderRenderer: (() => 'Select'),
-            onSelect: (row, isSelect) => this.handleOnSelect(row, isSelect)
-        };
-
         this.componentWillMount = this.componentWillMount.bind(this);
         this.addGroup = this.addGroup.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -154,30 +146,21 @@ class NotificationGroups extends BaseComponent {
         this.closeDeleteModal = this.closeDeleteModal.bind(this);
         this.closeAddGroupModal = this.closeAddGroupModal.bind(this);
         this.manageToolbar = this.manageToolbar.bind(this);
-        this.selectTableRow = this.selectTableRow.bind(this);
+        this.handleOnSelect = this.handleOnSelect.bind(this);
         //this.deleteUser = this.deleteUser.bind(this);
 
     }
 
 
-    /**
-     * Callback from Bootstrap table 2.
-     *
-     * We hook it to sync the group details sub-pane.
-     *
-     * @param row
-     * @param isSelect
-     * @returns isSelect
-     */
-    handleOnSelect(row, isSelect) {
-        console.log(`row`, row);
-        this.renderGroupDetailPane(row, isSelect);
-        return isSelect;
-    }
-
-
-    renderGroupDetailPane(groupRecord, isSelect = true) {
-        window.setTimeout(() => (this.showGroupUsers(isSelect ? groupRecord : [])), 0);
+    renderGroupDetailPane(groupRecord) {
+        // window.setTimeout(() => (this.showGroupUsers(isSelect ? groupRecord : [])), 0);
+        window.setTimeout(() => {
+            const sel = this.state.selected;
+            const isNewView = sel && Array.isArray(sel) && sel.length && sel[0] !== this.state.currentGroup.uuid;
+            if (isNewView) {
+                this.showGroupUsers(groupRecord);
+            }
+        }, 0);
     }
 
 
@@ -219,9 +202,8 @@ class NotificationGroups extends BaseComponent {
             this.setState({users: data});
             if (Array.isArray(data) && data.length) {
 
-                // If any groups, paint groups pane and auto-select row 0
-                this.renderGroupDetailPane(data[0]);
-                this.selectTableRow();
+                // If any groups,  auto-select row 0, paint its group pane
+                this.handleOnSelect(data[0]);
             }
         }).catch(err => console.log(err));
     }
@@ -277,7 +259,6 @@ class NotificationGroups extends BaseComponent {
 
 
     showGroupUsers(groupRecord) {
-        console.log(`showGroupUsers`, groupRecord);
         this.setState({
             currentGroup: groupRecord,
         });
@@ -340,19 +321,21 @@ class NotificationGroups extends BaseComponent {
         )
     }
 
-    selectTableRow() {
-        console.log(`state`, this.state);
-        const arg = this.state.users && Array.isArray(this.state.users) && this.state.users.length
-            ? [this.state.users[0].uuid]
-            : [];
 
-        this.setState({selected: arg});
-        console.log(`state.selected`, this.state.selected);
-    }
+    handleOnSelect = (record) => {
+        if (!this.state.selected.includes(record.uuid)) {
+            this.setState({
+                selected: [record.uuid]
+            });
+
+            this.renderGroupDetailPane(record);
+        }
+    };
+
 
     render() {
 
-        console.log(`NotifcationGroup render call ${new Date()}`, this.state.selected);
+        // console.log(`NotifcationGroup render call ${new Date()}`, this.state);
 
         const columns = [
             {
@@ -391,6 +374,14 @@ class NotificationGroups extends BaseComponent {
             }
         ];
 
+        const rowSelectionOptions = {
+            mode: 'radio',
+            clickToSelect: true,
+            style: {backgroundColor: '#ececff'},
+            selectionHeaderRenderer: (() => 'Select'),
+            selected: this.state.selected,
+            onSelect: this.handleOnSelect
+        };
 
         return (
 
@@ -402,13 +393,11 @@ class NotificationGroups extends BaseComponent {
                             <Col md={"6"}>
 
                                 <Row>
-                                    <Col md={"9"}>
-                                        <Button size={"md"} color={"danger"}
-                                                onClick={this.selectTableRow}>
-                                            Select First</Button>
-                                    </Col>
-                                    <Col md={"3"}>
-                                        <Button size={"md"} color={"light"} style={{width: "100%"}}
+                                    <Col md={"8"}/>
+                                    <Col md={"4"}>
+                                        <Button size={"md"}
+                                                color={"light"}
+                                                style={{width: "100%"}}
                                                 onClick={this.openAddGroupModal}>
                                             <MDBIcon icon="plus-circle"/>&nbsp;Add Group</Button>
                                     </Col>
@@ -423,7 +412,7 @@ class NotificationGroups extends BaseComponent {
                                             keyField={'uuid'}
                                             pagination={paginationFactory()}
                                             noDataIndication="No groups"
-                                            selectRow={this.rowSelectionOptions}
+                                            selectRow={rowSelectionOptions}
                                             cellEdit={{
                                                 mode: 'click',
                                                 blurToSave: true,
