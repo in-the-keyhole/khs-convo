@@ -179,19 +179,19 @@ class NotificationGroups extends BaseComponent {
             method: 'post',
             url: '/api/notify/group',
             data: add
-        }).then((res) => {
+        }).then(res => {
             this.closeAddGroupModal();
-            this.fetchGroups();
-            toast.success(`Added group "${add.GroupName}"`);
-            this.setState({GroupName: ''});
+            this.fetchGroups(false);
 
-            this.renderGroupDetailPane(res.data);
+            this.handleOnSelect(res.data);
+
+            toast.success(`Added group "${add.GroupName}"`);
 
         }).catch(err => console.log(err));
     }
 
 
-    fetchGroups() {
+    fetchGroups(autoSelect=true) {
         restAPI({
             method: 'get',
             url: '/api/notify/group',
@@ -199,7 +199,7 @@ class NotificationGroups extends BaseComponent {
         }).then((res) => {
             const data = res.data;
             this.setState({users: data});
-            if (Array.isArray(data) && data.length) {
+            if (autoSelect && Array.isArray(data) && data.length) {
 
                 // If any groups,  auto-select row 0; paint its group pane
                 this.handleOnSelect(data[0]);
