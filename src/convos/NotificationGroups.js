@@ -198,7 +198,6 @@ class NotificationGroups extends BaseComponent {
             data: this.state
         }).then((res) => {
             const data = res.data;
-            console.log(`user groups`, data);
             this.setState({users: data});
             if (Array.isArray(data) && data.length) {
 

@@ -23,7 +23,6 @@ class NotificationBar extends BaseComponent {
 
     constructor(props) {
         super(props);
-        console.log('NotificationBar', props.credentials);
 
         this.state = {
             duplicates: []

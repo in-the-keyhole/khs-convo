@@ -23,16 +23,10 @@ import {
     Row,
     Col,
     Button,
-    Card,
-    CardBody,
-    CardTitle,
-    MDBIcon,
-    MDBInput,
     MDBModal,
     MDBModalBody,
     MDBModalHeader,
-    MDBModalFooter,
-    toast
+    MDBModalFooter
 } from 'mdbreact';
 
 class Tailwater extends BaseComponent {
@@ -71,9 +65,9 @@ class Tailwater extends BaseComponent {
             url: '../api/tailwater',
             data: this.state,
             cache: false
-        }).then( (res) => {
+        }).then((res) => {
             self.setState({locations: res.data});
-        }).catch( (err) => console.log(err));
+        }).catch((err) => console.log(err));
     }
 
 
@@ -83,9 +77,9 @@ class Tailwater extends BaseComponent {
             method: 'post',
             url: '../api/tailwater/insert',
             data: insert,
-        }).then( () => {
+        }).then(() => {
             that.fetchTailwaters();
-        }).catch( (err) =>
+        }).catch((err) =>
             console.log(err)
         );
 
@@ -315,7 +309,7 @@ class Tailwater extends BaseComponent {
                         <input name="insertState" id="insertState" className="form-control" type="text"
                                value={this.state.insertState} onChange={this.handleInputChange} placeholder="State"/>
                     </Col>
-                    <Col  md={"1"}>
+                    <Col md={"1"}>
                         <input name="insertFlow" id="insertFlow" className="form-control" type="text"
                                value={this.state.insertFlow} onChange={this.handleInputChange} placeholder="Flow"/>
                     </Col>
@@ -323,7 +317,7 @@ class Tailwater extends BaseComponent {
                         <input name="insertName" id="insertName" className="form-control" type="text"
                                value={this.state.insertName} onChange={this.handleInputChange} placeholder="Name"/>
                     </Col>
-                    <Col  md={"1"} className="text-success glyphicon glyphicon-floppy-save clickable"
+                    <Col md={"1"} className="text-success glyphicon glyphicon-floppy-save clickable"
                          onClick={this.handleInsertItem}/>
                     <Col md={"2"} className="text-danger">{this.state.insertError}</Col>
                 </Row>

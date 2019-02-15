@@ -38,7 +38,6 @@ class Login extends Component {
 
     constructor(props) {
         super(props);
-        console.log('Login credentials', props.credentials);
         store.dispatch(resetCredentials);
 
         this.state = {
@@ -63,7 +62,6 @@ class Login extends Component {
     // Redirects to the default protected content
     redirectToContent() {
         this.props.history.push(pathDefaultContent);
-        console.log(`this.props.history.push(${pathDefaultContent})`)
     }
 
     handleSubmit(ev) {

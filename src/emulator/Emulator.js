@@ -117,7 +117,6 @@ class Emulator extends BaseComponent {
 
     constructor(props) {
         super(props);
-        console.log('Emulator credentials', props.credentials);
 
         this.state = {
             FromZip: '',
@@ -303,7 +302,6 @@ class Emulator extends BaseComponent {
             }).then(function (events) {
 
                 eventStatus = events.data;
-                console.log('events.data', eventStatus);
                 commandArray.forEach(function (item, index) {
                     eventArray.push({key: item, eventStatus: "enabled"});
                     eventStatus.forEach(event => {
