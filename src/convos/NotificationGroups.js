@@ -201,7 +201,7 @@ class NotificationGroups extends BaseComponent {
             this.setState({users: data});
             if (Array.isArray(data) && data.length) {
 
-                // If any groups,  auto-select row 0, paint its group pane
+                // If any groups,  auto-select row 0; paint its group pane
                 this.handleOnSelect(data[0]);
             }
         }).catch(err => console.log(err));
@@ -226,7 +226,6 @@ class NotificationGroups extends BaseComponent {
 
 
     deleteGroup() {
-        console.log(this.state.currentGroup);
         restAPI({
             method: 'delete',
             url: '/api/notify/group',
@@ -321,6 +320,12 @@ class NotificationGroups extends BaseComponent {
     }
 
 
+    /**
+     * Auto-selects row 0, paiting its group pane. Callable eithr by table mechanism or by local code.
+     * Does nothing if current record already selected and details displayed.
+     *
+     * @param record
+     */
     handleOnSelect = (record) => {
         if (!this.state.selected.includes(record.uuid)) {
             this.setState({
@@ -333,8 +338,6 @@ class NotificationGroups extends BaseComponent {
 
 
     render() {
-
-        // console.log(`NotifcationGroup render call ${new Date()}`, this.state);
 
         const columns = [
             {
