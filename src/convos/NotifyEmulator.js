@@ -61,6 +61,7 @@ class NotifyEmulator extends BaseComponent {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.componentWillMount = this.componentWillMount.bind(this);
         this.onConversationKeypress = this.onConversationKeypress.bind(this);
+        this.openConfirmSendModal = this.openConfirmSendModal.bind(this);
     }
 
 
