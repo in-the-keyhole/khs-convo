@@ -463,5 +463,6 @@ class NotificationGroups extends BaseComponent {
 }
 
 
+
 const mapStateToProps = state => ({credentials: state.credentials});
 export default connect(mapStateToProps)(NotificationGroups);
