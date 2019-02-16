@@ -298,8 +298,8 @@ class NotifyEmulator extends BaseComponent {
         return isValid;
     }
 
-    // No such word as "mediums". sendMedia would be better
-    sendMediums() {
+
+    sendingMedia() {
         let str = '';
         if (this.props.group.checkSMS) {
             str = 'SMS';
@@ -445,7 +445,7 @@ class NotifyEmulator extends BaseComponent {
                             </div>
                             <div className="row">
                                 <div className="col-md-4 text-right"><strong>Send Mediums:</strong></div>
-                                <div className="col-md-8">{this.sendMediums()}</div>
+                                <div className="col-md-8">{this.sendingMedia()}</div>
                             </div>
                         </div>
                     </MDBModalBody>

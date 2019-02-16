@@ -238,19 +238,6 @@ class GroupUserList extends BaseComponent {
             return null;
         }
 
-        // const SendList = this.props.group.Users.map((user) =>
-        //     <Row className="row-striped">
-        //         <Col xs={"1"}><i title="Remove from list"
-        //                          className="glyphicon glyphicon-remove-sign text-danger clickable"
-        //                          onClick={() => this.deleteUser(user.uuid)}/></Col>
-        //         <Col xs={"4"}>{user.Name}</Col>
-        //         <Col xs={"6"}>{user.Username}</Col>
-        //     </Row>
-        // );
-
-        // const selectUsers = this.state.availableUsers.map((user) =>
-        //     <option key={user.uuid} value={user.uuid}>{user.Name} - {user.Username}</option>
-        // );
 
         return (
             <Card>
