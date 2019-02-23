@@ -46,9 +46,9 @@ class NotifyEmulator extends BaseComponent {
 
         this.state = {
             scheduledNotifications: [],
-            msgtext: "",
-            sentMsg: "",
-            Body: "notify " + props.group.GroupName + " ",
+            msgtext: '',
+            sentMsg: '',
+            Body: `notify ${props.group.GroupName} `,
             To: "9132703506",
             From: props.phone,
             confirmSendModal: false,
@@ -113,7 +113,7 @@ class NotifyEmulator extends BaseComponent {
             // self.getConversationsForPhone();
             this.fetchScheduledNotifications();
 
-        }).catch( err => console.log(err));
+        }).catch(err => console.log(err));
 
     }
 
@@ -141,8 +141,9 @@ class NotifyEmulator extends BaseComponent {
 
     componentWillReceiveProps(nextProps) {
         super.componentWillReceiveProps(nextProps);
+
         if (nextProps.group !== this.props.group) {
-            this.setState({group: nextProps.group});
+            this.setState({group: nextProps.group,  Body: `notify ${nextProps.group.GroupName} `});
             this.fetchScheduledNotifications();
         }
     }
@@ -240,20 +241,19 @@ class NotifyEmulator extends BaseComponent {
         csn.scheduleDate = NotifyEmulator.createScheduleDate(this.state.editScheduleDate, this.state.editScheduleTime);
         csn.msg = this.state.editMsg;
 
-        const self = this;
         restAPI({
             method: 'put',
             url: '/api/notify/schedulednotification',
             data: csn
         }).then(() => {
-            self.setState({
+            this.setState({
                 currentScheduledNotification: {},
                 editScheduleDate: '',
                 editScheduleTime: '',
                 editMsg: ''
             });
-            self.fetchScheduledNotifications();
-            self.closeEditScheduledNotificationModal();
+            this.fetchScheduledNotifications();
+            this.closeEditScheduledNotificationModal();
 
         }).catch(err => console.log(err));
     }
@@ -335,14 +335,16 @@ class NotifyEmulator extends BaseComponent {
 
 
     render() {
-        // this.setState( {Body: `notify ${this.props.group.GroupName}`} );   // TODO <==============  carry out setState outsdie of render
+        console.log(`NotifyEmulator.render() ${new Date().getMilliseconds()}`, this.state);
 
-        // Form list of Scheduled Notifications for group
+        // Collect list of Scheduled Notifications for group
         const ScheduledNotificationist = this.state.scheduledNotifications.map((record) =>
             <Row className="row-striped">
                 <Col xs={"2"}>
-                    <span onClick={() => this.openEditScheduledNotificationModal(record)}><MDBIcon icon={"edit"}/>&nbsp;Edit</span>
-                    <span onClick={() => this.openDeleteScheduledNotificationModal(record)}><MDBIcon icon={"edit"}/>&nbsp;Delete from schedule</span>
+                    <span onClick={() => this.openEditScheduledNotificationModal(record)}><MDBIcon
+                        icon={"edit"}/>&nbsp;Edit</span>
+                    <span onClick={() => this.openDeleteScheduledNotificationModal(record)}><MDBIcon
+                        icon={"edit"}/>&nbsp;Delete from schedule</span>
                 </Col>
                 <Col xs={"4"}>{NotifyEmulator.formatScheduleDate(record.scheduleDate)}</Col>
                 <Col xs={"6"}>{record.msg}</Col>

@@ -81,7 +81,7 @@ class GroupUserList extends BaseComponent {
     }
 
     putGroup(group, reloadUsers) {
-        if (reloadUsers === undefined) {
+        if (!reloadUsers) {
             reloadUsers = true;
         }
 
@@ -238,6 +238,7 @@ class GroupUserList extends BaseComponent {
             return null;
         }
 
+        console.log(`GroupUserList.render() ${new Date().getMilliseconds()}`, this.props.group);
 
         return (
             <Card>
