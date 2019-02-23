@@ -351,14 +351,14 @@ class Upload extends BaseComponent {
                                     style={{marginTop: "0.05rem", width: "100%"}}
                                     color={"light"}
                                     onClick={this.initiateUploadClick.bind(this, directories[i])}>
-                                <MDBIcon size="lg" far icon="file" /><span style={{fontSize: "0.85rem", fontWeight: "300"}}>&nbsp;File Upload</span>
+                                <MDBIcon icon="upload" /><span style={{fontSize: "0.85rem", fontWeight: "300"}}>&nbsp;File Upload</span>
                             </Button>
                         </Col>
                         <Col md={"2"}>
                             <Dropzone style={{dropZoneStyle}} disableClick={true} multiple={false}
                                       onDragOver={this.setDropDirectory.bind(this, directories[i])}
                                       onDrop={this.uploadDroppedFile}>
-                                <div id="dropZoneText" name={directories[i]} style={dropZoneStyle}><MDBIcon far icon="file" />&nbsp;FILE DROP</div>
+                                <div id="dropZoneText" name={directories[i]} style={dropZoneStyle}><MDBIcon icon="arrow-down" />&nbsp;FILE DROP</div>
                             </Dropzone>
                         </Col>
                         <Col>
