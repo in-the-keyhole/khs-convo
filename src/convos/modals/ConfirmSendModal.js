@@ -21,6 +21,13 @@ import {Fragment} from "react";
 import React from "react";
 import moment from 'moment';
 
+/**
+ * This popup shows values for the record about to be scheduled for sending.
+ *
+ * @param props
+ * @returns {*}
+ * @constructor
+ */
 export function ConfirmSendModal(props) {
     const {
         confirmSendModal,
