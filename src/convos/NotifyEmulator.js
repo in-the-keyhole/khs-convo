@@ -62,6 +62,7 @@ class NotifyEmulator extends BaseComponent {
         this.componentWillMount = this.componentWillMount.bind(this);
         this.onConversationKeypress = this.onConversationKeypress.bind(this);
         this.openConfirmSendModal = this.openConfirmSendModal.bind(this);
+        this.closeConfirmSendModal = this.closeConfirmSendModal.bind(this);
     }
 
 
@@ -143,7 +144,7 @@ class NotifyEmulator extends BaseComponent {
         super.componentWillReceiveProps(nextProps);
 
         if (nextProps.group !== this.props.group) {
-            this.setState({group: nextProps.group,  Body: `notify ${nextProps.group.GroupName} `});
+            this.setState({group: nextProps.group, Body: `notify ${nextProps.group.GroupName} `});
             this.fetchScheduledNotifications();
         }
     }
@@ -335,8 +336,6 @@ class NotifyEmulator extends BaseComponent {
 
 
     render() {
-        console.log(`NotifyEmulator.render() ${new Date().getMilliseconds()}`, this.state);
-
         // Collect list of Scheduled Notifications for group
         const ScheduledNotificationist = this.state.scheduledNotifications.map((record) =>
             <Row className="row-striped">
@@ -421,52 +420,55 @@ class NotifyEmulator extends BaseComponent {
                     </CardBody>
                 </Card>
 
-                <MDBModal show={this.state.confirmSendModal} onHide={this.close}>
+                <MDBModal isOpen={this.state.confirmSendModal} onHide={this.close} size={"lg"}>
 
-                    <MDBModalHeader>Confirm Send Notification</MDBModalHeader>
+                    <MDBModalHeader>Confirm Notification</MDBModalHeader>
 
                     <MDBModalBody>
 
-                        <div className={this.state.sentMsg !== "" ? 'row visible' : 'row invisible'}>
-                            <div className="col-md-12 red text-center">{this.state.sentMsg}</div>
-                        </div>
-                        <div className={this.state.sentMsg === "" ? 'visible' : 'invisible'}>
-                            <div className="row">
-                                <div className="col-md-4 text-right"><strong>Message:</strong></div>
-                                <div className="col-md-8">{this.state.msgtext}</div>
-                            </div>
-                            <div className={"row " + (this.state.newScheduleDate === '' ? 'hidden' : '')}>
-                                <div className="col-md-4 text-right"><strong>Scheduled date/time:</strong></div>
-                                <div className="col-md-8">
-                                    {NotifyEmulator.formatScheduleDate(moment(this.state.newScheduleDate + " " + this.state.newScheduleTime, "YYYY-MM-DD HH:mi"))}
-                                </div>
-                            </div>
-                            <div className="row">
-                                <div className="col-md-4 text-right"><strong># Users:</strong></div>
-                                <div className="col-md-8">{this.props.group.Users.length}</div>
-                            </div>
-                            <div className="row">
-                                <div className="col-md-4 text-right"><strong>Send Mediums:</strong></div>
-                                <div className="col-md-8">{this.sendingMedia()}</div>
-                            </div>
+                        <Row className={this.state.sentMsg !== '' ? 'row visible' : 'row invisible'}>
+                            <Col md="{12}" className="red text-center">{this.state.sentMsg}</Col>
+                        </Row>
+                        <div className={this.state.sentMsg === '' ? 'visible' : 'invisible'}>
+                            <Row className="row">
+                                <Col md={"4"} className="text-right">Message:</Col>
+                                <Col md={"8"}>{this.state.msgtext}</Col>
+                            </Row>
+                            <Row className={this.state.newScheduleDate === '' ? 'hidden' : ''}>
+                                <Col md={"4"} className="text-right">Scheduled:</Col>
+                                <Col md={"8"}>
+                                    {NotifyEmulator.formatScheduleDate(
+                                        moment(
+                                            `${this.state.newScheduleDate} ${this.state.newScheduleTime}`,
+                                            'YYYY-MM-DD HH:mi'))}
+                                </Col>
+                            </Row>
+                            <Row className="row">
+                                <Col md={"4"} className="text-right">User Count:</Col>
+                                <Col md={"8"}>{this.props.group.Users.length}</Col>
+                            </Row>
+                            <Row className="row">
+                                <Col md={"4"} className="text-right">Media:</Col>
+                                <Col md={"8"}>{this.sendingMedia()}</Col>
+                            </Row>
                         </div>
                     </MDBModalBody>
 
                     <MDBModalFooter>
-                        <div className="row">
-                            <div className="col-md-12 pull-right">
-                                <button
-                                    className={"btn btn-primary" + (this.state.sentMsg !== '' ? ' hidden' : '')}
-                                    disabled={this.state.sentMsg !== ""}
-                                    onClick={() => this.handleSubmit()}>{this.state.newScheduleDate === '' ? 'Send' : 'Schedule'}</button>
-                                <button className="btn btn-default"
-                                        onClick={() => this.closeConfirmSendModal()}>{this.state.sentMsg !== '' ? 'Close' : 'Cancel'}</button>
-                            </div>
-                        </div>
+                        <Row>
+                            <Col md={"12"} className="pull-right">
+                                <Button color={"primary"}
+                                        className={this.state.sentMsg !== '' ? ' hidden' : ''}
+                                        disabled={this.state.sentMsg !== ""}
+                                        onClick={this.handleSubmit}>{this.state.newScheduleDate === '' ? 'Send' : 'Schedule'}</Button>
+                                <Button color={"red"}
+                                    onClick={this.closeConfirmSendModal}>{this.state.sentMsg !== '' ? 'Close' : 'Cancel'}</Button>
+                            </Col>
+                        </Row>
                     </MDBModalFooter>
                 </MDBModal>
 
-                <MDBModal show={this.state.deleteScheduledNotificationModal} onHide={this.close}>
+                <MDBModal isOpen={this.state.deleteScheduledNotificationModal} onHide={this.close}>
                     <MDBModalHeader>Confirm Delete Scheduled Notification</MDBModalHeader>
 
                     <MDBModalBody>
@@ -500,7 +502,7 @@ class NotifyEmulator extends BaseComponent {
                     </MDBModalFooter>
                 </MDBModal>
 
-                <MDBModal show={this.state.editScheduledNotificationModal} onHide={this.close}>
+                <MDBModal isOpen={this.state.editScheduledNotificationModal} onHide={this.close}>
                     <MDBModalHeader>Edit Scheduled Notification</MDBModalHeader>
 
                     <MDBModalBody>
