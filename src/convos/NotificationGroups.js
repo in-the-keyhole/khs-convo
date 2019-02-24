@@ -344,7 +344,6 @@ class NotificationGroups extends BaseComponent {
 
 
     render() {
-        console.log(`NotificationGroups.render() ${new Date().getMilliseconds()}`);
 
         const columns = [
             {
