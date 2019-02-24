@@ -163,7 +163,7 @@ class Visitors extends BaseComponent {
             data: this.state
         }).then(res => {
             this.setState({
-                totalSize: res.data
+                totalSize: parseInt(res.data)
             });
         }).catch(err => console.log(err));
     }
@@ -316,7 +316,7 @@ class Visitors extends BaseComponent {
                 data={data}
                 page={page}
                 sizePerPage={sizePerPage}
-                totalSize={totalSize}
+                totalSize={parseInt(totalSize)}
                 showTotal={showTotal}
                 onTableChange={this.onTableChange}
                 paginationTotalRenderer={paginationTotalRenderer}
