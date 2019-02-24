@@ -348,7 +348,8 @@ class NotifyEmulator extends BaseComponent {
                 </Col>
                 <Col xs={"2"}>
                     <span onClick={() => this.openDeleteScheduledNotificationModal(record)}><MDBIcon
-                        icon={"edit"}/> Del</span>
+                        style={{color: "red"}}
+                        icon={"minus-circle"}/> Del</span>
                 </Col>
                 <Col xs={"4"}>{NotifyEmulator.formatScheduleDate(record.scheduleDate)}</Col>
                 <Col xs={"4"}>{record.msg}</Col>
