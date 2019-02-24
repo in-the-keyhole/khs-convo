@@ -78,7 +78,7 @@ function findAnswer(result) {
         result = removeQuestion(result, '?');
 
         // Check Blacklist
-        mongo.Get({ phone: result.phone }, 'Blacklist')
+        mongo.Get({phone: result.phone}, 'Blacklist')
             .then(function (contact) {
                 if (contact.length !== 0) {
                     result.answer = "Blacklisted: Please Contact Admin!";
@@ -201,7 +201,11 @@ function findAnswer(result) {
 }
 
 function saveHtml(result, html, word) {
-    mongo.Update({ phone: result.phone, event: word }, { phone: result.phone, event: word, html: html }, "ui", { upsert: true });
+    mongo.Update({phone: result.phone, event: word}, {
+        phone: result.phone,
+        event: word,
+        html: html
+    }, "ui", {upsert: true});
 }
 
 

@@ -29,48 +29,41 @@ module.exports = {
         callbackMaxRun: 0
     },
 
-    process: function() {
+    process: function () {
         logger.info('   scheduledNotifications.process() called');
 
-        mongo.Get({} , "ScheduledNotifications")
-            .then(function(records) {
-                //console.log("SCHEDULEDNOTIFICATION");
+        mongo.Get({}, "ScheduledNotifications")
+            .then(function (records) {
 
-                var now = new Date();
+                const now = new Date();
                 now.setSeconds(0);
-                //console.log('NOW: ' + now);
-                //console.log('NOW: ' + now.getTime());
-                //console.log('NOW: ' + now.toUTCString());
 
-                for (var i = 0; i < records.length; i++) {
-                    var record = records[i];
+                for (let i = 0; i < records.length; i++) {
+                    const record = records[i];
                     record.scheduleDate.setSeconds(0);
-                    //console.dir(record);
-                    //console.log('RECORD: ' + record.scheduleDate);
-                    //console.log('RECORD: ' + record.scheduleDate.getTime());
-                    //console.log('RECORD: ' + record.scheduleDate.toUTCString());
 
                     // Send Notification if it's time
-                    if(record.scheduleDate.toUTCString() === now.toUTCString()) {
+                    if (record.scheduleDate.toUTCString() === now.toUTCString()) {
                         console.log('SEND NOTIFICATION');
+
                         notifyService.ChooseChannels(record.msg, record.group);
 
                         // Now delete from mongo
                         mongo.Delete({_id: record._id}, 'ScheduledNotifications')
-                            .then(function (deleted) {
-                                console.log("DELETED: " + record._id);
+                            .then(() => {
+                                console.log(`DELETED: ${record._id}`);
                             });
                     }
                 }
-        });
+            });
     },
 
-    removeExpired: function() {
+    removeExpired: function () {
         logger.info('   scheduledNotifications.removeExpired() called');
 
-        var today = new Date();
+        const today = new Date();
         today.setSeconds(0);
 
         mongo.Delete({'scheduleDate': {'$lt': today}}, 'ScheduledNotifications');
     }
-}
+};

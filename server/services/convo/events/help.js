@@ -24,6 +24,11 @@ const host_url = config.url;
 
 
 module.exports = function (events) {
+    const compileHtml = function (events) {
+        const compiledFunction = pug.compileFile('templates/help.pug');
+        console.log(events);
+        return compiledFunction({url: host_url, convos: events});
+    };
     const event = {};
     event.isAuth = false;
     event.description = "Command Help";
@@ -38,6 +43,7 @@ module.exports = function (events) {
     event.threash = 10;
     event.run = function (result) {
 
+        // noinspection ES6ModulesDependencies
         return new Promise((resolve) => {
 
             mongo.Get({Name: "commandsintro"}, 'Content')
@@ -98,11 +104,6 @@ module.exports = function (events) {
         })
     };
 
-    var compileHtml = function (events) {
-        var compiledFunction = pug.compileFile('templates/help.pug');
-        console.log(events);
-        return compiledFunction({url: host_url, convos: events});
-    };
 
     events.push(event);
 
