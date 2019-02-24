@@ -32,7 +32,8 @@ import {
     MDBModal,
     MDBModalBody,
     MDBModalHeader,
-    MDBModalFooter
+    MDBModalFooter,
+    toast
 } from 'mdbreact';
 
 const moment = require('moment');
@@ -50,7 +51,7 @@ class NotifyEmulator extends BaseComponent {
             sentMsg: '',
             Body: `notify ${props.group.GroupName} `,
             To: "9132703506",
-            From: props.phone,
+            From: props.phone || '9195550123',
             confirmSendModal: false,
             scheduleHide: true,
             newScheduleDate: '',
@@ -63,6 +64,7 @@ class NotifyEmulator extends BaseComponent {
         this.onConversationKeypress = this.onConversationKeypress.bind(this);
         this.openConfirmSendModal = this.openConfirmSendModal.bind(this);
         this.closeConfirmSendModal = this.closeConfirmSendModal.bind(this);
+        this.toggleScheduleHide = this.toggleScheduleHide.bind(this);
     }
 
 
@@ -103,6 +105,7 @@ class NotifyEmulator extends BaseComponent {
             data: payload,
             headers: {"token": this.props.credentials.apitoken}
         }).then(() => {
+            toast.success(`Notification scheduled for ${tmpScheduleDate}`);
             this.setState({
                 msgtext: '',
                 sentMsg: sentMsgText,
@@ -338,21 +341,23 @@ class NotifyEmulator extends BaseComponent {
     render() {
         // Collect list of Scheduled Notifications for group
         const ScheduledNotificationist = this.state.scheduledNotifications.map((record) =>
-            <Row className="row-striped">
+            <Row className="row-striped" key={record.uuid}>
                 <Col xs={"2"}>
                     <span onClick={() => this.openEditScheduledNotificationModal(record)}><MDBIcon
-                        icon={"edit"}/>&nbsp;Edit</span>
+                        icon={"edit"}/> Edit </span>
+                </Col>
+                <Col xs={"2"}>
                     <span onClick={() => this.openDeleteScheduledNotificationModal(record)}><MDBIcon
-                        icon={"edit"}/>&nbsp;Delete from schedule</span>
+                        icon={"edit"}/> Del</span>
                 </Col>
                 <Col xs={"4"}>{NotifyEmulator.formatScheduleDate(record.scheduleDate)}</Col>
-                <Col xs={"6"}>{record.msg}</Col>
+                <Col xs={"4"}>{record.msg}</Col>
             </Row>
         );
 
         const NoScheduledNotificationist = (
-            <Row className={"row-striped"}>
-                <Col xs={"12"}>No Scheduled Notifications</Col>
+            <Row>
+                <Col><span style={{fontWeight: "300", fontSize: "0.8rem"}}> (No Scheduled Notifications)</span></Col>
             </Row>
         );
 
@@ -370,8 +375,7 @@ class NotifyEmulator extends BaseComponent {
                             </Col>
                             <Col xs={"4"}>
                                 <Button size={"sm"} color={"light"} disabled={!this.validConfirmSend()}
-                                        onClick={this.openConfirmSendModal}>Confirm
-                                </Button>
+                                        onClick={this.openConfirmSendModal}><MDBIcon icon="check" />&nbsp;Submit</Button>
                             </Col>
                         </Row>
 
@@ -393,23 +397,22 @@ class NotifyEmulator extends BaseComponent {
 
                         <Row>
                             <Col xs={"12"} className="notificationsHeaderStyle">
-                                <span onClick={() => this.toggleScheduleHide()}>
-                                    Schedule&nbsp;
+                                <span onClick={this.toggleScheduleHide}>
                                     <MDBIcon icon={this.state.scheduleHide ? 'circle-plus' : 'circle-minus'}/>
-                                    &nbsp;Scheduled Notifications ({this.state.scheduledNotifications.length})</span>
+                                    &nbsp;Scheduled Notifications&nbsp;({this.state.scheduledNotifications.length})</span>
                             </Col>
                         </Row>
                         <Row className={this.state.scheduleHide ? 'hidden' : ''}>
                             <Col xs={"11"}>
-                                <Row>
+                               {/* <Row>
                                     <Col xs={"12"} className="notificationsHeaderStyle">
                                         <span className="sub">Scheduled Notifications</span>
                                     </Col>
-                                </Row>
+                                </Row>*/}
                                 <Row>
                                     <Col>
                                         {
-                                            this.state.scheduledNotifications.length > 0
+                                            this.state.scheduledNotifications.length
                                                 ? ScheduledNotificationist
                                                 : NoScheduledNotificationist
                                         }
@@ -435,7 +438,7 @@ class NotifyEmulator extends BaseComponent {
                                 <Col md={"8"}>{this.state.msgtext}</Col>
                             </Row>
                             <Row className={this.state.newScheduleDate === '' ? 'hidden' : ''}>
-                                <Col md={"4"} className="text-right">Scheduled:</Col>
+                                <Col md={"4"} className="text-right">When:</Col>
                                 <Col md={"8"}>
                                     {NotifyEmulator.formatScheduleDate(
                                         moment(
@@ -444,7 +447,7 @@ class NotifyEmulator extends BaseComponent {
                                 </Col>
                             </Row>
                             <Row className="row">
-                                <Col md={"4"} className="text-right">User Count:</Col>
+                                <Col md={"4"} className="text-right"># Users:</Col>
                                 <Col md={"8"}>{this.props.group.Users.length}</Col>
                             </Row>
                             <Row className="row">
