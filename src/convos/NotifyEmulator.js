@@ -343,7 +343,7 @@ class NotifyEmulator extends BaseComponent {
     render() {
 
         const scheduledNotificationistBody = this.state.scheduledNotifications.map((record) =>
-            <tr>
+            <tr key={record.uuid}>
                 <td onClick={() => this.openEditScheduledNotificationModal(record)}><MDBIcon
                     style={{color: "blue"}}
                     icon={"edit"}/></td>
