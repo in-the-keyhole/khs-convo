@@ -336,11 +336,12 @@ class NotifyEmulator extends BaseComponent {
 
 
     static formatScheduleDate(sd) {
-        return `${moment(sd).format('L')} ${moment(sd).format('LT')}`;
+        return `${moment(sd).format('L HH:mm a')}`;
     }
 
 
     render() {
+        const schedlineItemStyle = {fontSize: "0.98rem", fontFamily: "monospace"};
 
         const scheduledNotificationistBody = this.state.scheduledNotifications.map((record) =>
             <tr key={record.uuid}>
@@ -351,10 +352,10 @@ class NotifyEmulator extends BaseComponent {
                     style={{color: "red"}}
                     icon={"minus-circle"}/></td>
                 <td>
-                    {NotifyEmulator.formatScheduleDate(record.scheduleDate)}
+                    <span style={schedlineItemStyle}>{NotifyEmulator.formatScheduleDate(record.scheduleDate)}</span>
                 </td>
                 <td>
-                    {record.msg}
+                    <span style={schedlineItemStyle}>{record.msg}</span>
                 </td>
             </tr>
         );
@@ -371,8 +372,8 @@ class NotifyEmulator extends BaseComponent {
                     <caption>Scheduled Notifications ({this.state.scheduledNotifications.length})</caption>
                     <MDBTableHead>
                         <tr>
-                            <th></th>
-                            <th></th>
+                            <th/>
+                            <th/>
                             <th>Timestamp</th>
                             <th>Message</th>
                         </tr>
