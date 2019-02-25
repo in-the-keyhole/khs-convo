@@ -21,22 +21,22 @@ import BaseComponent from '../BaseComponent';
 import {connect} from "react-redux";
 // noinspection ES6CheckImport
 import {
-    Row,
-    Col,
     Button,
     Card,
     CardBody,
     CardTitle,
+    Col,
     MDBIcon,
     MDBInput,
     MDBModal,
     MDBModalBody,
-    MDBModalHeader,
     MDBModalFooter,
-    toast,
+    MDBModalHeader,
     MDBTable,
+    MDBTableBody,
     MDBTableHead,
-    MDBTableBody
+    Row,
+    toast
 } from 'mdbreact';
 import moment from 'moment';
 
@@ -265,43 +265,26 @@ class NotifyEmulator extends BaseComponent {
     }
 
 
+    /**
+     * Send is valid if: there is a message, there is at least one sending medium, and there is either a complete
+     * date-time or none.
+     * @returns {string|boolean|number}
+     */
     validConfirmSend() {
-        let isValid = true;
-
-        if (!this.state.msgtext) {
-            isValid = false;
-        }
-        if (!this.props.group.checkSMS && !this.props.group.checkEmail && !this.props.group.checkSlack) {
-            isValid = false;
-        }
-        if (this.props.group.Users.length === 0) {
-            isValid = false;
-        }
-        if (this.state.scheduleDate && !this.state.scheduleTime) {
-            isValid = false;
-        }
-        if (this.state.scheduleTime && !this.state.scheduleDate) {
-            isValid = false;
-        }
-
-        return isValid;
+        return this.state.msgtext &&
+            (this.props.group.checkSMS || this.props.group.checkEmail || this.props.group.checkSlack) &&
+            this.props.group.Users.length &&
+            (!(this.state.scheduleTime ^ this.state.scheduleDate));
     }
 
 
+    /**
+     * Edit allowed if there is an edit message and there is either a complete
+     * date-time or none.
+     * @returns {((s: string, type?: ts.server.Msg) => void) | * | string | boolean}
+     */
     validEdit() {
-        let isValid = true;
-
-        if (!this.state.editMsg) {
-            isValid = false;
-        }
-        if (this.state.editScheduleDate && !this.state.editScheduleTime) {
-            isValid = false;
-        }
-        if (this.state.editScheduleTime && !this.state.editScheduleDate) {
-            isValid = false;
-        }
-
-        return isValid;
+        return this.state.editMsg && (!(this.state.scheduleTime ^ this.state.scheduleDate));
     }
 
 
@@ -341,7 +324,7 @@ class NotifyEmulator extends BaseComponent {
 
 
     render() {
-        const schedlineItemStyle = {fontSize: "0.98rem", fontFamily: "monospace"};
+        const schedlineItemStyle = {fontSize: "0.98rem", fontFamily: "monospace", color: "#666"};
 
         const scheduledNotificationistBody = this.state.scheduledNotifications.map((record) =>
             <tr key={record.uuid}>
