@@ -33,10 +33,12 @@ import {
     MDBModalBody,
     MDBModalHeader,
     MDBModalFooter,
-    toast
+    toast,
+    MDBTable,
+    MDBTableHead,
+    MDBTableBody
 } from 'mdbreact';
-
-const moment = require('moment');
+import moment from 'moment';
 
 const EnterKey = 13;
 
@@ -334,29 +336,55 @@ class NotifyEmulator extends BaseComponent {
 
 
     static formatScheduleDate(sd) {
-        return moment(sd).format('L') + ' @ ' + moment(sd).format('LT');
+        return `${moment(sd).format('L')} ${moment(sd).format('LT')}`;
     }
 
 
     render() {
-        // Collect list of Scheduled Notifications for group
-        const ScheduledNotificationist = this.state.scheduledNotifications.map((record) =>
-            <Row className="row-striped" key={record.uuid}>
-                <Col xs={"2"}>
-                    <span onClick={() => this.openEditScheduledNotificationModal(record)}><MDBIcon
-                        icon={"edit"}/> Edit </span>
-                </Col>
-                <Col xs={"2"}>
-                    <span onClick={() => this.openDeleteScheduledNotificationModal(record)}><MDBIcon
-                        style={{color: "red"}}
-                        icon={"minus-circle"}/> Del</span>
-                </Col>
-                <Col xs={"4"}>{NotifyEmulator.formatScheduleDate(record.scheduleDate)}</Col>
-                <Col xs={"4"}>{record.msg}</Col>
-            </Row>
+
+        const scheduledNotificationistBody = this.state.scheduledNotifications.map((record) =>
+            <tr>
+                <td onClick={() => this.openEditScheduledNotificationModal(record)}><MDBIcon
+                    style={{color: "blue"}}
+                    icon={"edit"}/></td>
+                <td onClick={() => this.openDeleteScheduledNotificationModal(record)}><MDBIcon
+                    style={{color: "red"}}
+                    icon={"minus-circle"}/></td>
+                <td>
+                    {NotifyEmulator.formatScheduleDate(record.scheduleDate)}
+                </td>
+                <td>
+                    {record.msg}
+                </td>
+            </tr>
         );
 
-        const NoScheduledNotificationist = (
+        // Collect list of Scheduled Notifications for group
+        const scheduledNotificationist = (
+            <Fragment>
+                <Row>
+                    <Col xs={"12"}>
+                        <em>* Deferred for sending later</em>
+                    </Col>
+                </Row>
+                <MDBTable small striped>
+                    <caption>Scheduled Notifications ({this.state.scheduledNotifications.length})</caption>
+                    <MDBTableHead>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th>Timestamp</th>
+                            <th>Message</th>
+                        </tr>
+                    </MDBTableHead>
+                    <MDBTableBody>
+                        {scheduledNotificationistBody}
+                    </MDBTableBody>
+                </MDBTable>
+            </Fragment>
+        );
+
+        const noScheduledNotificationist = (
             <Row>
                 <Col><span style={{fontWeight: "300", fontSize: "0.8rem"}}> (No Scheduled Notifications)</span></Col>
             </Row>
@@ -376,7 +404,7 @@ class NotifyEmulator extends BaseComponent {
                             </Col>
                             <Col xs={"4"}>
                                 <Button size={"sm"} color={"light"} disabled={!this.validConfirmSend()}
-                                        onClick={this.openConfirmSendModal}><MDBIcon icon="check" />&nbsp;Submit</Button>
+                                        onClick={this.openConfirmSendModal}><MDBIcon icon="check"/>&nbsp;Submit</Button>
                             </Col>
                         </Row>
 
@@ -390,32 +418,14 @@ class NotifyEmulator extends BaseComponent {
                                                                     value={this.state.newScheduleTime}
                                                                     onChange={this.handleInputChange}/></Col>
                         </Row>
-                        <Row>
-                            <Col xs={"12"}>
-                                <em>* Deferred for sending later</em>
-                            </Col>
-                        </Row>
 
-                        <Row>
-                            <Col xs={"12"} className="notificationsHeaderStyle">
-                                <span onClick={this.toggleScheduleHide}>
-                                    <MDBIcon icon={this.state.scheduleHide ? 'circle-plus' : 'circle-minus'}/>
-                                    &nbsp;Scheduled Notifications&nbsp;({this.state.scheduledNotifications.length})</span>
-                            </Col>
-                        </Row>
                         <Row className={this.state.scheduleHide ? 'hidden' : ''}>
-                            <Col xs={"11"}>
-                               {/* <Row>
-                                    <Col xs={"12"} className="notificationsHeaderStyle">
-                                        <span className="sub">Scheduled Notifications</span>
-                                    </Col>
-                                </Row>*/}
+                            <Col xs={"12"}>
                                 <Row>
                                     <Col>
-                                        {
-                                            this.state.scheduledNotifications.length
-                                                ? ScheduledNotificationist
-                                                : NoScheduledNotificationist
+                                        {this.state.scheduledNotifications.length
+                                            ? scheduledNotificationist
+                                            : noScheduledNotificationist
                                         }
                                     </Col>
                                 </Row>
@@ -466,7 +476,7 @@ class NotifyEmulator extends BaseComponent {
                                         disabled={this.state.sentMsg !== ""}
                                         onClick={this.handleSubmit}>{this.state.newScheduleDate === '' ? 'Send' : 'Schedule'}</Button>
                                 <Button color={"red"}
-                                    onClick={this.closeConfirmSendModal}>{this.state.sentMsg !== '' ? 'Close' : 'Cancel'}</Button>
+                                        onClick={this.closeConfirmSendModal}>{this.state.sentMsg !== '' ? 'Close' : 'Cancel'}</Button>
                             </Col>
                         </Row>
                     </MDBModalFooter>
