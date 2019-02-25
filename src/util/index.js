@@ -15,6 +15,8 @@
  */
 
 
+import moment from "../convos/NotifyEmulator";
+
 /**
  * Standard sort comparator.
  *
@@ -61,4 +63,15 @@ export const getRandomColor = () => {
         color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
+};
+
+
+/**
+ * Converts raw date to a formatted "schedule date"
+ *
+ * @param sd, a raw schedule date
+ * @returns {string}, a formatted date string
+ */
+export const formatScheduleDate = (sd) => {
+    return `${moment(sd).format('L')} @ ${moment(sd).format('LT')}`;
 };

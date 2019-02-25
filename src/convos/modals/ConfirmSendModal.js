@@ -14,12 +14,20 @@
  * limitations under the License.
  */
 
-'use strict';
 
-import {Button, Col, MDBModal, MDBModalBody, MDBModalFooter, MDBModalHeader, Row} from "../NotifyEmulator";
+// noinspection ES6CheckImport
+import {
+    Button,
+    Col,
+    MDBModal,
+    MDBModalBody,
+    MDBModalFooter,
+    MDBModalHeader,
+    Row} from "mdbreact";
 import {Fragment} from "react";
 import React from "react";
 import moment from 'moment';
+import {formatScheduleDate} from '../../util';
 
 /**
  * This popup shows values for the record about to be scheduled for sending.
@@ -28,13 +36,14 @@ import moment from 'moment';
  * @returns {*}
  * @constructor
  */
-export function ConfirmSendModal(props) {
+export const ConfirmSendModal = (props) => {
     const {
         confirmSendModal,
         close,
         sentMsg,
         msgtext,
         newScheduleDate,
+        newScheduleTime,
         users,
         sendingMedia,
         handleSubmit,
@@ -59,7 +68,7 @@ export function ConfirmSendModal(props) {
                         <Row className={newScheduleDate === '' ? 'hidden' : ''}>
                             <Col md={"4"} className="text-right">When:</Col>
                             <Col md={"8"}>
-                                {NotifyEmulator.formatScheduleDate(
+                                {formatScheduleDate(
                                     moment(
                                         `${newScheduleDate} ${newScheduleTime}`,
                                         'YYYY-MM-DD HH:mi'))}
