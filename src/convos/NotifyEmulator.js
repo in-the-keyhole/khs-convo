@@ -124,6 +124,7 @@ class NotifyEmulator extends BaseComponent {
         super(props);
 
         this.state = {
+            group: props.group,
             scheduledNotifications: [],
             msgtext: '',
             sentMsg: '',
@@ -205,12 +206,12 @@ class NotifyEmulator extends BaseComponent {
 
     }
 
-    // TODO check out the accuracy of the GroupName setting here
     fetchScheduledNotifications() {
+
         restAPI({
             method: 'get',
             url: '/api/notify/schedulednotification',
-            params: {'group': this.props.group.GroupName}
+            params: {'group': this.state.group.GroupName}
         }).then(res => {
             this.setState({
                 scheduledNotifications: res.data,
@@ -230,8 +231,20 @@ class NotifyEmulator extends BaseComponent {
         super.componentWillReceiveProps(nextProps);
 
         if (nextProps.group !== this.props.group) {
-            this.setState({group: nextProps.group, Body: `notify ${nextProps.group.GroupName} `});
-            this.fetchScheduledNotifications();
+            // Prevent lagging state:
+            window.setTimeout(() => {
+                this.setState({
+                    group: nextProps.group,
+                    Body: `notify ${nextProps.group.GroupName} `,
+                    msgtext: '',
+                    sentMsg: '',
+                    newScheduleDate: '',
+                    newScheduleTime: '',
+                    scheduledNotifications: []
+                });
+
+                this.fetchScheduledNotifications();
+            }, 0);
         }
     }
 
