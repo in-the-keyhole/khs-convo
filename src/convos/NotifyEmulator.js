@@ -89,6 +89,33 @@ const isEmpty = obj => !Object.keys(obj).length;
 
 
 /**
+ * This pure function creates a string of comma-separated value governed by group media boolean flags.
+ * Examples: "SMS, Email", or "SMS" or "Email, Slack", or empty string, or ...
+ *
+ * @param group (object containing media flags)
+ * @returns string
+ */
+const sendingMedia = group => {
+    const {checkSMS, checkEmail, checkSlack} = group;
+
+    const initialAccumulator = '';
+    let currentSeparator = '';
+
+    return [
+        {bool: checkSMS, value: 'SMS'},
+        {bool: checkEmail, value: 'Email'},
+        {bool: checkSlack, value: 'Slack'}
+    ]
+        .filter(obj => obj.bool)
+        .reduce((accumulator, currrent) => {
+            accumulator += currentSeparator + currrent.value;
+            currentSeparator = ', ';
+            return accumulator;
+        }, initialAccumulator);
+};
+
+
+/**
  * The actual NofityEmulaotr component
  */
 class NotifyEmulator extends BaseComponent {
@@ -178,7 +205,7 @@ class NotifyEmulator extends BaseComponent {
 
     }
 
-
+    // TODO check out the accuracy of the GroupName setting here
     fetchScheduledNotifications() {
         restAPI({
             method: 'get',
@@ -317,27 +344,6 @@ class NotifyEmulator extends BaseComponent {
     }
 
 
-    sendingMedia() {
-        let str = '';
-        if (this.props.group.checkSMS) {
-            str = 'SMS';
-        }
-        if (this.props.group.checkEmail) {
-            if (str !== '') {
-                str += ', ';
-            }
-            str += 'Email';
-        }
-        if (this.props.group.checkSlack) {
-            if (str !== '') {
-                str += ', ';
-            }
-            str += 'Slack';
-        }
-        return str;
-    }
-
-
     toggleScheduleHide() {
         this.setState({
             scheduleHide: !this.state.scheduleHide,
@@ -381,7 +387,7 @@ class NotifyEmulator extends BaseComponent {
                         </Row>
                         <Row className="row">
                             <Col md={"4"} className="text-right">Media:</Col>
-                            <Col md={"8"}>{this.sendingMedia()}</Col>
+                            <Col md={"8"}>{sendingMedia(this.props.group)}</Col>
                         </Row>
                     </div>
                 </MDBModalBody>
@@ -446,7 +452,7 @@ class NotifyEmulator extends BaseComponent {
 
     modalEditScheduledNotification() {
         return (
-            <MDBModal isOpen={this.state.editScheduledNotificationModal} >
+            <MDBModal isOpen={this.state.editScheduledNotificationModal}>
                 <MDBModalHeader>Edit Scheduled Notification</MDBModalHeader>
 
                 <MDBModalBody>
