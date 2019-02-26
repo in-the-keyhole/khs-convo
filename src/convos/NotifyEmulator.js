@@ -89,7 +89,7 @@ const isEmpty = obj => !Object.keys(obj).length;
 
 
 /**
- * This pure function creates a string of comma-separated value governed by group media boolean flags.
+ * This pure function creates a string of comma-separated values governed by group media boolean flags.
  * Examples: "SMS, Email", or "SMS" or "Email, Slack", or empty string, or ...
  *
  * @param group (object containing media flags)
@@ -116,7 +116,7 @@ const sendingMedia = group => {
 
 
 /**
- * The actual NofityEmulaotr component
+ * The actual NotifyEmulator component
  */
 class NotifyEmulator extends BaseComponent {
 
