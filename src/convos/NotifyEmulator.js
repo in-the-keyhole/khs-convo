@@ -350,7 +350,7 @@ class NotifyEmulator extends BaseComponent {
     modalConfirmSend() {
         return (
 
-            <MDBModal isOpen={this.state.confirmSendModal} onHide={this.close} size={"lg"}>
+            <MDBModal isOpen={this.state.confirmSendModal} size={"lg"}>
 
                 <MDBModalHeader>Confirm Notification</MDBModalHeader>
 
@@ -407,7 +407,7 @@ class NotifyEmulator extends BaseComponent {
 
     modalDeleteScheduledNotification() {
         return (
-            <MDBModal isOpen={this.state.deleteScheduledNotificationModal} onHide={this.close}>
+            <MDBModal isOpen={this.state.deleteScheduledNotificationModal}>
                 <MDBModalHeader>Confirm Delete Scheduled Notification</MDBModalHeader>
 
                 <MDBModalBody>
@@ -446,35 +446,41 @@ class NotifyEmulator extends BaseComponent {
 
     modalEditScheduledNotification() {
         return (
-            <MDBModal isOpen={this.state.editScheduledNotificationModal} onHide={this.close}>
+            <MDBModal isOpen={this.state.editScheduledNotificationModal} >
                 <MDBModalHeader>Edit Scheduled Notification</MDBModalHeader>
 
                 <MDBModalBody>
                     <Row>
-                        <Col md={"4"} className="text-right">Scheduled date/time:</Col>
-                        <Col md={"4"}>
+                        <Col md={"7"}>
                             <MDBInput name="editScheduleDate" type="date"
-                                   className="emulator-input"
-                                   defaultValue={this.state.currentScheduledNotification
-                                       ? this.state.editScheduleDate : ''}
-                                   onChange={this.handleInputChange}/>
-                        </Col>
-                        <Col md={"4"}>
-                            <MDBInput name="editScheduleTime" type="time"
-                                   className="emulator-input"
-                                   defaultValue={this.state.currentScheduledNotification
-                                       ? this.state.editScheduleTime : ''}
-                                   onChange={this.handleInputChange}/>
+                                      className="emulator-input"
+                                      value={this.state.currentScheduledNotification
+                                          ? this.state.editScheduleDate : ''}
+                                      onChange={this.handleInputChange}
+                                      label={"Scheduled Date"}
+                            />
                         </Col>
                     </Row>
                     <Row>
-                        <Col md={"4"} className="text-right">Message</Col>
-                        <Col md={"8"}>
-                            <MDBInput name="editMsg" type="text" className="emulator-input"
-                                   defaultValue={this.state.currentScheduledNotification
-                                       ? this.state.editMsg : ''}
-                                   onChange={this.handleInputChange}
-                                   label="Notification message"/>
+                        <Col md={"5"}>
+                            <MDBInput name="editScheduleTime" type="time"
+                                      className="emulator-input"
+                                      value={this.state.currentScheduledNotification
+                                          ? this.state.editScheduleTime : ''}
+                                      onChange={this.handleInputChange}
+                                      label={"Scheduled Time"}
+                            />
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col md={"12"}>
+                            <MDBInput name="editMsg" type="textarea" rows={"2"}
+                                      value={this.state.currentScheduledNotification
+                                          ? this.state.editMsg : ''}
+                                      onChange={this.handleInputChange}
+                                      hint={"Enter message"}
+                                      label={"Notification message"}
+                            />
                         </Col>
                     </Row>
                 </MDBModalBody>
@@ -585,15 +591,15 @@ class NotifyEmulator extends BaseComponent {
 
         const schedlineItemStyle = {fontSize: "0.98rem", fontFamily: "monospace", color: "#666"};
 
-        return this.state.scheduledNotifications.map((record) =>
-            <tr key={record.uuid}>
-                <td onClick={() => this.openEditScheduledNotificationModal(record)}><IconEdit/></td>
-                <td onClick={() => this.openDeleteScheduledNotificationModal(record)}><IconDelete/></td>
+        return this.state.scheduledNotifications.map((sn, key) =>
+            <tr key={key}>
+                <td onClick={() => this.openEditScheduledNotificationModal(sn)}><IconEdit/></td>
+                <td onClick={() => this.openDeleteScheduledNotificationModal(sn)}><IconDelete/></td>
                 <td>
-                    <span style={schedlineItemStyle}>{formatScheduleDate(record.scheduleDate)}</span>
+                    <span style={schedlineItemStyle}>{formatScheduleDate(sn.scheduleDate)}</span>
                 </td>
                 <td>
-                    <span style={schedlineItemStyle}>{record.msg}</span>
+                    <span style={schedlineItemStyle}>{sn.msg}</span>
                 </td>
             </tr>
         )
