@@ -107,8 +107,8 @@ const sendingMedia = group => {
         {bool: checkSlack, value: 'Slack'}
     ]
         .filter(obj => obj.bool)
-        .reduce((accumulator, currrent) => {
-            accumulator += currentSeparator + currrent.value;
+        .reduce((accumulator, current) => {
+            accumulator += currentSeparator + current.value;
             currentSeparator = ', ';
             return accumulator;
         }, initialAccumulator);
