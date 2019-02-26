@@ -118,6 +118,10 @@ class NotifyEmulator extends BaseComponent {
         this.openConfirmSendModal = this.openConfirmSendModal.bind(this);
         this.closeConfirmSendModal = this.closeConfirmSendModal.bind(this);
         this.toggleScheduleHide = this.toggleScheduleHide.bind(this);
+        this.closeEditScheduledNotificationModal = this.closeEditScheduledNotificationModal.bind(this);
+        this.editScheduledNotification = this.editScheduledNotification.bind(this);
+        this.deleteScheduledNotification = this.deleteScheduledNotification.bind(this);
+        this.closeDeleteScheduledNotificationModal = this.closeDeleteScheduledNotificationModal.bind(this);
     }
 
 
@@ -388,9 +392,11 @@ class NotifyEmulator extends BaseComponent {
                             <Button color={"primary"}
                                     className={this.state.sentMsg !== '' ? ' hidden' : ''}
                                     disabled={this.state.sentMsg !== ""}
-                                    onClick={this.handleSubmit}>{this.state.newScheduleDate === '' ? 'Send' : 'Schedule'}</Button>
+                                    onClick={this.handleSubmit}>{this.state.newScheduleDate === ''
+                                ? 'Send' : 'Schedule'}</Button>
                             <Button color={"red"}
-                                    onClick={this.closeConfirmSendModal}>{this.state.sentMsg !== '' ? 'Close' : 'Cancel'}</Button>
+                                    onClick={this.closeConfirmSendModal}>{this.state.sentMsg !== ''
+                                ? 'Close' : 'Cancel'}</Button>
                         </Col>
                     </Row>
                 </MDBModalFooter>
@@ -406,32 +412,32 @@ class NotifyEmulator extends BaseComponent {
 
                 <MDBModalBody>
                     <div className="form-group">
-                        <label>Are you sure you want to delete this?</label>
+                        <label>Delete?</label>
                     </div>
 
-                    <div className="row">
-                        <div className="col-md-4 text-right"><strong>Scheduled date/time:</strong></div>
-                        <div
-                            className="col-md-8">{this.state.currentScheduledNotification ? formatScheduleDate(this.state.currentScheduledNotification.scheduleDate) : ''} </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-md-4 text-right"><strong>Message:</strong></div>
-                        <div
-                            className="col-md-8">{this.state.currentScheduledNotification ? this.state.currentScheduledNotification.msg : ''} </div>
-                    </div>
+                    <Row>
+                        <Col md={"4"} className="text-right"><strong>Scheduled date/time:</strong></Col>
+                        <Col md={"8"}>{this.state.currentScheduledNotification
+                            ? formatScheduleDate(this.state.currentScheduledNotification.scheduleDate) : ''} </Col>
+                    </Row>
+                    <Row>
+                        <Col md={"4"} className="text-right"><strong>Message:</strong></Col>
+                        <Col md={"8"}>{this.state.currentScheduledNotification
+                            ? this.state.currentScheduledNotification.msg : ''} </Col>
+                    </Row>
                 </MDBModalBody>
 
                 <MDBModalFooter>
-                    <div className="row">
-                        <div className="col-md-12 pull-right">
-                            <button className="btn btn-danger"
-                                    onClick={() => this.deleteScheduledNotification()}>Delete
-                            </button>
-                            <button className="btn btn-default"
-                                    onClick={() => this.closeDeleteScheduledNotificationModal()}>Cancel
-                            </button>
-                        </div>
-                    </div>
+                    <Row className="row">
+                        <Col md={"12"} className="pull-right">
+                            <Button color={"primary"}
+                                    onClick={this.deleteScheduledNotification}>Delete
+                            </Button>
+                            <Button color={"red"}
+                                    onClick={this.closeDeleteScheduledNotificationModal}>Cancel
+                            </Button>
+                        </Col>
+                    </Row>
                 </MDBModalFooter>
             </MDBModal>
         );
@@ -444,43 +450,44 @@ class NotifyEmulator extends BaseComponent {
                 <MDBModalHeader>Edit Scheduled Notification</MDBModalHeader>
 
                 <MDBModalBody>
-                    <div className="row">
-                        <div className="col-md-4 text-right"><strong>Scheduled date/time:</strong></div>
-                        <div className="col-md-4">
-                            <input name="editScheduleDate" type="date"
-                                   className="form-control emulator-input"
-                                   defaultValue={this.state.currentScheduledNotification ? this.state.editScheduleDate : ''}
+                    <Row>
+                        <Col md={"4"} className="text-right">Scheduled date/time:</Col>
+                        <Col md={"4"}>
+                            <MDBInput name="editScheduleDate" type="date"
+                                   className="emulator-input"
+                                   defaultValue={this.state.currentScheduledNotification
+                                       ? this.state.editScheduleDate : ''}
                                    onChange={this.handleInputChange}/>
-                        </div>
-                        <div className="col-md-4">
-                            <input name="editScheduleTime" type="time"
-                                   className="form-control emulator-input"
-                                   defaultValue={this.state.currentScheduledNotification ? this.state.editScheduleTime : ''}
+                        </Col>
+                        <Col md={"4"}>
+                            <MDBInput name="editScheduleTime" type="time"
+                                   className="emulator-input"
+                                   defaultValue={this.state.currentScheduledNotification
+                                       ? this.state.editScheduleTime : ''}
                                    onChange={this.handleInputChange}/>
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-md-4 text-right"><strong>Message:</strong></div>
-                        <div className="col-md-8">
-                            <input name="editMsg" type="text" className="form-control emulator-input"
-                                   defaultValue={this.state.currentScheduledNotification ? this.state.editMsg : ''}
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col md={"4"} className="text-right">Message</Col>
+                        <Col md={"8"}>
+                            <MDBInput name="editMsg" type="text" className="emulator-input"
+                                   defaultValue={this.state.currentScheduledNotification
+                                       ? this.state.editMsg : ''}
                                    onChange={this.handleInputChange}
-                                   placeholder="Enter notification message here"/>
-                        </div>
-                    </div>
+                                   label="Notification message"/>
+                        </Col>
+                    </Row>
                 </MDBModalBody>
 
                 <MDBModalFooter>
-                    <div className="row">
-                        <div className="col-md-12 pull-right">
-                            <button className="btn btn-primary" disabled={!this.validEdit()}
-                                    onClick={() => this.editScheduledNotification()}>Submit
-                            </button>
-                            <button className="btn btn-default"
-                                    onClick={() => this.closeEditScheduledNotificationModal()}>Cancel
-                            </button>
-                        </div>
-                    </div>
+                    <Row>
+                        <Col md={"12"} className="pull-right">
+                            <Button color={"primary"} disabled={!this.validEdit()}
+                                    onClick={this.editScheduledNotification}>Submit</Button>
+                            <Button color={"red"}
+                                    onClick={this.closeEditScheduledNotificationModal}>Cancel</Button>
+                        </Col>
+                    </Row>
                 </MDBModalFooter>
             </MDBModal>
         );
