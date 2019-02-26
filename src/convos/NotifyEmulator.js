@@ -201,7 +201,7 @@ class NotifyEmulator extends BaseComponent {
 
             // self.getConversationsForPhone();
             this.fetchScheduledNotifications();
-
+            this.closeConfirmSendModal();
         }).catch(err => console.log(err));
 
     }
@@ -375,9 +375,9 @@ class NotifyEmulator extends BaseComponent {
 
                 <MDBModalBody>
 
-                    <Row className={this.state.sentMsg !== '' ? 'row visible' : 'row invisible'}>
+                    {/*<Row className={this.state.sentMsg !== '' ? 'row visible' : 'row invisible'}>
                         <Col md="{12}" className="red text-center">{this.state.sentMsg}</Col>
-                    </Row>
+                    </Row>*/}
                     <div className={this.state.sentMsg === '' ? 'visible' : 'invisible'}>
                         <Row className="row">
                             <Col md={"4"} className="text-right">Message:</Col>
