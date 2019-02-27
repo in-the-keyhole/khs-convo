@@ -240,6 +240,7 @@ ul.legend {
 /* Modal-specific */
 .modal-wrapper {
     background-color: #ececec;
+    width: 40rem;
 }
 
 .modal-label {

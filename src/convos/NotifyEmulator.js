@@ -379,7 +379,7 @@ class NotifyEmulator extends BaseComponent {
         return (
 
             <MDBModal isOpen={this.state.confirmSendModal}>
-                <div className={"modal-wrapper"} style={{width: "40rem"}}>
+                <div className={"modal-wrapper"}>
 
                     <MDBModalHeader>{textCreateOrSend} Notification?</MDBModalHeader>
 
@@ -429,7 +429,7 @@ class NotifyEmulator extends BaseComponent {
 
         return (
             <MDBModal isOpen={this.state.deleteScheduledNotificationModal}>
-                <div className={"modal-wrapper"} style={{width: "40rem"}}>
+                <div className={"modal-wrapper"}>
                     <MDBModalHeader>Delete Notification?</MDBModalHeader>
 
                     <MDBModalBody>
@@ -471,7 +471,7 @@ class NotifyEmulator extends BaseComponent {
     modalEditScheduledNotification() {
         return (
             <MDBModal isOpen={this.state.editScheduledNotificationModal}>
-                <div className={"modal-wrapper"} style={{width: "40rem"}}>
+                <div className={"modal-wrapper"}>
                     <MDBModalHeader>Edit Notification</MDBModalHeader>
 
                     <MDBModalBody>
