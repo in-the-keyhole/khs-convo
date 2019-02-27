@@ -73,7 +73,6 @@ const formatScheduleDate = (sd) => (`${moment(sd).format('L')}`);
 
 const formatScheduleTime = (sd) => (`${moment(sd).format('HH:mm a')}`);
 
-
 const createScheduleDate = (tmpDate, tmpTime) => {
     const scheduleTimeExists = tmpTime !== 'undefined' && !isEmpty(tmpTime);
     const requestScheduleDate = tmpDate;
@@ -92,7 +91,6 @@ const createScheduleDate = (tmpDate, tmpTime) => {
     return new Date(dateParts[0], parseInt(dateParts[1]) - 1, dateParts[2],
         parseInt(timeParts[0]), parseInt(timeParts[1]), 0);
 };
-
 
 const isEmpty = obj => !Object.keys(obj).length;
 
@@ -283,7 +281,6 @@ class NotifyEmulator extends BaseComponent {
 
 
     deleteScheduledNotification() {
-        const self = this;
 
         restAPI({
             method: 'delete',
@@ -480,7 +477,7 @@ class NotifyEmulator extends BaseComponent {
 
                 <MDBModalBody>
                     <Row>
-                        <Col md={"7"}>
+                        <Col md={"7"} style={styleD} >
                             <MDBInput name="editScheduleDate" type="date"
                                       className="emulator-input"
                                       value={this.state.currentScheduledNotification
@@ -491,7 +488,7 @@ class NotifyEmulator extends BaseComponent {
                         </Col>
                     </Row>
                     <Row>
-                        <Col md={"5"}>
+                        <Col md={"5"} style={styleD} >
                             <MDBInput name="editScheduleTime" type="time"
                                       className="emulator-input"
                                       value={this.state.currentScheduledNotification
@@ -502,7 +499,7 @@ class NotifyEmulator extends BaseComponent {
                         </Col>
                     </Row>
                     <Row>
-                        <Col md={"12"}>
+                        <Col md={"12"} style={styleD} >
                             <MDBInput name="editMsg" type="textarea" rows={"2"}
                                       value={this.state.currentScheduledNotification
                                           ? this.state.editMsg : ''}
