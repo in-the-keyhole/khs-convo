@@ -60,6 +60,30 @@ import {checkCredentials} from './common/checkCredentials';
 import { connect } from 'react-redux';
 
 
+// BrowserRouter's route switch:
+const main = (
+    <main>
+        <Switch>
+            <Route exact path='/' component={Emulator}/>
+            <Route path='/users' component={Admin}/>
+            <Route path='/analytics/all' component={ConversionListChunked}/>
+            <Route path='/analytics/groupquestion' component={GroupQuestions}/>
+            <Route path='/analytics/groupphone' component={GroupPhone}/>
+            <Route path='/analytics/visitors' component={Visitors}/>
+            <Route path='/analytics' component={Analytics}/>
+            <Route path='/emulator' component={Emulator}/>
+            <Route path='/upload' component={Upload}/>
+            <Route path='/convos/tailwater' component={Tailwater}/>
+            <Route path='/convos/notifications' component={NotificationGroups}/>
+            <Route path='/blacklist' component={Blacklist}/>
+            <Route path='/properties' component={Properties}/>
+            <Route path='/login' component={Login}/>
+            <Route path='/register' component={Registration}/>
+        </Switch>
+    </main>
+);
+
+
 class App extends Component {
 
     constructor(props) {
@@ -122,30 +146,6 @@ class App extends Component {
 
     render() {
 
-        // BrowserRouter's route switch:
-        const main = (
-            <main>
-                <Switch>
-                    <Route exact path='/' component={Emulator}/>
-                    <Route path='/users' component={Admin}/>
-                    <Route path='/analytics/all' component={ConversionListChunked}/>
-                    <Route path='/analytics/groupquestion' component={GroupQuestions}/>
-                    <Route path='/analytics/groupphone' component={GroupPhone}/>
-                    <Route path='/analytics/visitors' component={Visitors}/>
-                    <Route path='/analytics' component={Analytics}/>
-                    <Route path='/emulator' component={Emulator}/>
-                    <Route path='/upload' component={Upload}/>
-                    <Route path='/convos/tailwater' component={Tailwater}/>
-                    <Route path='/convos/notifications' component={NotificationGroups}/>
-                    <Route path='/blacklist' component={Blacklist}/>
-                    <Route path='/properties' component={Properties}/>
-                    <Route path='/login' component={Login}/>
-                    <Route path='/register' component={Registration}/>
-                </Switch>
-            </main>
-        );
-
-        // const navStyle = {backgroundColor: "rgb(221,221,221"};
 
         // Show rest of the navbar for authenticated users
         const privateNav = checkCredentials()

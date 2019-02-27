@@ -237,3 +237,17 @@ ul.legend {
     background-color: #fcfcfc;
 }
 
+/* Modal-specific */
+.modal-wrapper {
+    background-color: #ececec;
+}
+
+.modal-label {
+    font-weight: 200;
+    font-size: 0.8rem;
+}
+
+.modal-value {
+    font-weight: 300;
+}
+
