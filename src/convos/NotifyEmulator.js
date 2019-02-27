@@ -43,9 +43,7 @@ import moment from 'moment';
 // === Manifest constants
 
 const EnterKey = 13;
-
 const DefaultToPhone = '9132703506';
-
 const DefaultFromPhone = '9195550123';
 
 
@@ -561,19 +559,38 @@ class NotifyEmulator extends BaseComponent {
 
 
     rowSchedule() {
+        const wantHidden = this.state.scheduleHide ? {display: "none"} : {};
+
         return (
-            <Row className={this.state.scheduleHide ? 'hidden' : ''}>
-                <Col xs={"12"}>
-                    <Row>
-                        <Col>
-                            {this.state.scheduledNotifications.length
-                                ? this.scheduledNotificationList()
-                                : <NoScheduledNotificationList/>
-                            }
-                        </Col>
-                    </Row>
-                </Col>
-            </Row>
+            <Fragment>
+                <Row>
+                    <Col xs={"12"}>
+                        <Row>
+                            <Col>
+                                <label>
+                                    <a href={"#"} onClick={this.toggleScheduleHide}>
+                                       {this.state.scheduleHide ? 'Show ' : 'Hide '}
+                                        ({this.state.scheduledNotifications.length})
+                                        scheduled notifications:
+                                    </a>
+                                </label>
+                            </Col>
+                        </Row>
+                    </Col>
+                </Row>
+                <Row style={wantHidden}>
+                    <Col xs={"12"}>
+                        <Row>
+                            <Col>
+                                {this.state.scheduledNotifications.length
+                                    ? this.scheduledNotificationList()
+                                    : <NoScheduledNotificationList/>
+                                }
+                            </Col>
+                        </Row>
+                    </Col>
+                </Row>
+            </Fragment>
         )
     }
 
@@ -590,7 +607,6 @@ class NotifyEmulator extends BaseComponent {
                     </Col>
                 </Row>
                 <MDBTable small striped>
-                    <caption>Scheduled Notifications ({this.state.scheduledNotifications.length})</caption>
                     <MDBTableHead>
                         <tr>
                             <th/>
