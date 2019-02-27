@@ -560,6 +560,8 @@ class NotifyEmulator extends BaseComponent {
 
     rowSchedule() {
         const wantHidden = this.state.scheduleHide ? {display: "none"} : {};
+        const show = <span><MDBIcon icon="eye" /> Show </span>;
+        const hide = <span><MDBIcon icon="eye-slash" /> Hide </span>;
 
         return (
             <Fragment>
@@ -568,11 +570,11 @@ class NotifyEmulator extends BaseComponent {
                         <Row>
                             <Col>
                                 <label>
-                                    <a href={"#"} onClick={this.toggleScheduleHide}>
-                                       {this.state.scheduleHide ? 'Show ' : 'Hide '}
+                                    <Button color={"light"} onClick={this.toggleScheduleHide} size={"sm"}>
+                                        {this.state.scheduleHide ? show : hide }
                                         ({this.state.scheduledNotifications.length})
-                                        scheduled notifications:
-                                    </a>
+                                        scheduled notifications
+                                    </Button>
                                 </label>
                             </Col>
                         </Row>
