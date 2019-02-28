@@ -294,8 +294,10 @@ class Upload extends BaseComponent {
     }
 
 
-    tooltipStyle = arg => ({color: "#0000ff", marginBottom: "2.0rem",  fontSize: "0.9rem",
-        display: (arg && this.state.displayHover === arg) ? 'block' : 'none'});
+    tooltipStyle = arg => ({
+        color: "#0000ff", marginBottom: "2.0rem", fontSize: "0.9rem",
+        display: (arg && this.state.displayHover === arg) ? 'block' : 'none'
+    });
 
 
     renderDropZone() {
@@ -344,30 +346,35 @@ class Upload extends BaseComponent {
                 <div key={directoryElements.length.toString()}>
                     <Row start>
                         <Col md={"2"}>
-                            <div className={"float-right"} style={{fontWeight: "400", fontSize: "1.0rem"}}>{directories[i]}</div>
+                            <div className={"float-right"}
+                                 style={{fontWeight: "400", fontSize: "1.0rem"}}>{directories[i]}</div>
                         </Col>
                         <Col md={"2"}>
                             <Button size={"sm"}
                                     style={{marginTop: "0.05rem", width: "100%"}}
                                     color={"light"}
                                     onClick={this.initiateUploadClick.bind(this, directories[i])}>
-                                <MDBIcon icon="upload" /><span style={{fontSize: "0.85rem", fontWeight: "300"}}>&nbsp;File Upload</span>
+                                <MDBIcon icon="upload"/><span
+                                style={{fontSize: "0.85rem", fontWeight: "300"}}>&nbsp;File Upload</span>
                             </Button>
                         </Col>
                         <Col md={"2"}>
                             <Dropzone style={{dropZoneStyle}} disableClick={true} multiple={false}
                                       onDragOver={this.setDropDirectory.bind(this, directories[i])}
                                       onDrop={this.uploadDroppedFile}>
-                                <div id="dropZoneText" name={directories[i]} style={dropZoneStyle}><MDBIcon icon="arrow-down" />&nbsp;FILE DROP</div>
+                                <div id="dropZoneText" name={directories[i]} style={dropZoneStyle}><MDBIcon
+                                    icon="arrow-down"/>&nbsp;FILE DROP
+                                </div>
                             </Dropzone>
                         </Col>
                         <Col>
                             <div>
                                 <p><span onMouseOver={this.handleMouseIn.bind(this, display)}
                                          style={{fontSize: "0.95rem", fontWeight: "500"}}
-                                      onMouseOut={this.handleMouseOut.bind(this, display)}>Commands:</span>
+                                         onMouseOut={this.handleMouseOut.bind(this, display)}>Commands:</span>
 
-                                    {words.map((t,k) => <span key={k.toString()}>{t}</span>).reduce((prev, curr) => [prev, ', ', curr])}
+                                    {words.map((t, k) => <span
+                                        key={k.toString()}>{t}</span>).reduce((prev, curr) => [prev, ', ', curr])}
                                 </p>
 
                                 <div style={this.tooltipStyle(display)}>{description}</div>
@@ -404,8 +411,12 @@ class Upload extends BaseComponent {
             <Card>
                 <CardBody>
                     <CardTitle>Convo Event File Upload</CardTitle>
-                    <p style={{fontWeight: "300", fontSize: "0.9rem", color: "#0000ff"}}>
-                        (Hover over any <b>"Commands"</b> item for its detail)</p>
+                    <Row>
+                        <Col md={"6"} className={"offset-md-6"}>
+                            <span style={{fontWeight: "300", fontSize: "0.9rem", color: "#0000ff"}}>
+                                * Hover over any <b>"Commands"</b> item for its detail</span>
+                        </Col>
+                    </Row>
                     <NotificationBar/>
 
                     <form encType="multipart/form-data" action="">
