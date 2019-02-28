@@ -137,89 +137,89 @@ function getduplicates(req, res) {
 }
 
 function getgroupquestion(req, res) {
-    let i;
-    let questionsArr = [];
+    const questionsArr = [];
 
-    for (i = 0; i < req.body.length; i++) {
-        questionsArr.push(req.body[i].replace("'", ""));
-    }
+    // Populate questionsArr from request, removing ALL single-quotes
+    req.body.forEach( v => questionsArr.push(v.replace(/'/g, '')));
 
-    let allQuestions = [];
-    for (i = 1; i < questionsArr.length; i++) {
-        allQuestions[i] = questionsArr[i].charAt(0).toUpperCase() + questionsArr[i].slice(1);
-    }
+    // Array of items having first letter capitalized. Safe for lengths of 0, 1, > 1
+    const allQuestions = [];
+    questionsArr.forEach( v => allQuestions.push( v.charAt(0).toUpperCase() + v.slice(1) ));
 
-    for (i = 1; i < allQuestions.length; i++) {
-        questionsArr.push(allQuestions[i]);
-    }
+    // Append the capitalized items to populated questionsArr (ed note: really ?)
+    allQuestions.forEach( q => questionsArr.push(q));
 
     mongo.Aggregate([
-        {
-            "$group": {_id: { tag: '$question', lower: { $toLower: '$question' } },//"count": { "$sum": 1 },
-                "count": {"$sum": {"$cond": [{"$anyElementTrue": {"$map": {"input": questionsArr, "as": "el", "in": { "$eq": ["$$el", "$question"] }}}}, 1, 0]}}}
-        },
-        {
-            $project: {
-                _id: 0,
-                text: "$_id.lower",
-                count: 1,
-                value: "$count"
-            }
-        },
-        {
-            $redact: {
-                $cond: {
-                    if: { $eq: ["$count", 0] },
-                    then: '$$PRUNE',
-                    else: '$$DESCEND'
+            {
+                "$group": {
+                    _id: {tag: '$question', lower: {$toLower: '$question'}},//"count": { "$sum": 1 },
+                    "count": {
+                        "$sum": {
+                            "$cond": [{
+                                "$anyElementTrue": {
+                                    "$map": {
+                                        "input": questionsArr,
+                                        "as": "el",
+                                        "in": {"$eq": ["$$el", "$question"]}
+                                    }
+                                }
+                            }, 1, 0]
+                        }
+                    }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    text: "$_id.lower",
+                    count: 1,
+                    value: "$count"
+                }
+            },
+            {
+                $redact: {
+                    $cond: {
+                        if: {$eq: ["$count", 0]},
+                        then: '$$PRUNE',
+                        else: '$$DESCEND'
+                    }
                 }
             }
-        }
-    ]
-        , 'Convos')
-        .then(function (contact) {
-            res.send(cleanUpGroupByQuestions(contact));
-        });
+        ], 'Convos').then(contact => res.send(cleanUpGroupByQuestions(contact)));
 }
 
-function cleanUpGroupByQuestions(array) {
-    let i;
-    const textArr = [];
-    for (i = 0; i < array.length; i++) {
-        textArr.push(array[i].text);
-    }
 
-    const sorted_arr = textArr.slice().sort();
+function cleanUpGroupByQuestions(array) {
+    console.log(`Raw cleanUpGroupByQuestions`, array);
+
+    const textArray = [];
+    array.forEach( t => textArray.push(t.text) );
+
+    const sorted_arr = textArray.slice().sort();
     const dupTexts = [];
-    for (i = 0; i < sorted_arr.length - 1; i++) {
-        if (sorted_arr[i + 1] === sorted_arr[i]) {
+    for (let i = 0; i < sorted_arr.length - 1; i++) {
+        if (sorted_arr[i + 1] && ( sorted_arr[i + 1] === sorted_arr[i] )) {
             dupTexts.push(sorted_arr[i]);
         }
     }
 
-    for (i = 0; i < dupTexts.length; i++) {
-        const text = dupTexts[i];
-        const obj = {};
-        let count = 0;
 
-        for (let j = 0; j < array.length; j++) {
-            if (array[j].text === text) {
-                count += array[j].count;
-            }
-        }
+    dupTexts.forEach( text => {
+
+        const count = array.filter( obj => obj.text === text).length;
+        const obj = {};
         obj.count = count;
         obj.text = text;
         obj.value = count;
 
-        array = array.filter( (obj) => {
-            return obj.text !== text;
-        });
+        array = array.filter( obj => obj.text !== text);
 
         array.push(obj);
-    }
+    });
 
     return array;
 }
+
 
 function getgroupphone(req, res) {
     mongo.Aggregate(
@@ -254,6 +254,7 @@ function getConvoForPhone(req, res) {
         });
 }
 
+
 // const twilio = require('twilio');
 const MessagingResponse = require('twilio').twiml.MessagingResponse;
 
@@ -263,7 +264,6 @@ function post(req, res) {
         res.end("Invalid API token");
         return;
     }
-
 
     const body = req.body['Body'] || req.body['body'];
 
