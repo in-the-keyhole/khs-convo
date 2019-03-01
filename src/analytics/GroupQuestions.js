@@ -22,14 +22,20 @@ import {connect} from "react-redux";
 import BaseComponent from "../BaseComponent";
 import {compare, cleanArray, getRandomColor} from '../util';
 // noinspection ES6CheckImport
-import {Card, CardBody, CardTitle, Row, Col} from 'mdbreact';
+import {
+    Card,
+    CardBody,
+    CardTitle,
+    Row,
+    Col
+} from 'mdbreact';
 import HoverChart from "./helpers/HoverChart";
 
 
 class GroupQuestions extends BaseComponent {
+
     constructor(props) {
         super(props);
-        console.log('GroupQuestions credentials', props.credentials);
         this.state = {
             grpQuestions: [],
             convoQuestionsArr: [],
@@ -39,18 +45,20 @@ class GroupQuestions extends BaseComponent {
         this.componentWillMount = this.componentWillMount.bind(this);
     }
 
+
     componentWillMount() {
         super.componentWillMount();
         this.fetch();
     }
+
 
     fetch() {
         const self = this;
 
         const myData = {
             Body: "allcommands",
-            To: "",//"913 2700360",
-            From: ""//this.props.credentials.phone
+            To: "", //"913 2700360",
+            From: this.props.credentials.phone
         };
 
         restAPI({
@@ -58,10 +66,10 @@ class GroupQuestions extends BaseComponent {
             url:'/api/convo/groupquestion',
             data: myData
         }).then( res => {
-            const dataStr = res.data;
-            console.log(`Received Convos`, dataStr);
+            const data = res.data;
+            console.log(`Received Convos`, data);
 
-            const message = dataStr.substring(dataStr.lastIndexOf('<Message>')+1, dataStr.lastIndexOf('</Message>'));
+            const message = data.slice(data.lastIndexOf('<Message>')+1, data.lastIndexOf('</Message>'));
             if (message) {
                 const commands = GroupQuestions.retrieveCommands(message);
                 console.log(`Received command list`, commands);
@@ -71,6 +79,7 @@ class GroupQuestions extends BaseComponent {
             }
         }).catch(err => console.log(err));
     }
+
 
     static retrieveCommands(data) {
         const matches = [];
@@ -106,7 +115,6 @@ class GroupQuestions extends BaseComponent {
     }
 
 
-
     render() {
         const grpQuestions = [];
         for (let i = 0; i < this.state.grpQuestions.length; i++) {
@@ -127,7 +135,7 @@ class GroupQuestions extends BaseComponent {
                     <Row><Col>Group By Question - Hover Chart</Col></Row>
                     <Row>
                         <Col className={"chart-main-content"}>
-                            <HoverChart data={grpQuestions} dataKey={"count"} desc={"Question - Count"}/>
+                            <HoverChart data={this.state.grpQuestions} dataKey={"count"} desc={"Question - Count"}/>
                         </Col>
                     </Row>
                 </CardBody>
@@ -135,7 +143,7 @@ class GroupQuestions extends BaseComponent {
         );
 
 
-       /* return (
+        /*return (
 
             <Card>
                 <CardBody>
