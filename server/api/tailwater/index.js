@@ -14,17 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-'use strict';
 
-var express = require('express');
-var router = express.Router();
-var controller = require('./controller');
-var auth = require('../../services/authentication');
+const express = require('express');
+const router = express.Router();
+const controller = require('./controller');
+const auth = require('../../services/authentication');
 
 module.exports = function (app) {
-    router.post('/update', auth.isAuth, controller.postUpdate);
+    router.put('/update', auth.isAuth, controller.putUpdate);
     router.post('/insert', auth.isAuth, controller.postInsert);
     router.get('/', auth.isAuth, controller.get);
     router.delete('/', auth.isAuth,  controller.remove);
     app.use('/api/tailwater', router);
-}
+};

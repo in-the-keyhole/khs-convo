@@ -193,6 +193,7 @@ class App extends Component {
 
                                 <DropdownMenu>
                                     <DropdownItem eventkey={4.2}><Link to={"/convos/notifications"}>Notifications</Link></DropdownItem>
+                                    <DropdownItem eventkey={4.2}><Link to={"/convos/tailwater"}>Tailwaters</Link></DropdownItem>
                                 </DropdownMenu>
                             </Dropdown>
                         </NavItem>
