@@ -502,6 +502,9 @@ class Emulator extends BaseComponent {
                                     blurToSave: true,
                                     afterSaveCell: this.onAfterSaveCell
                                 })}
+                                striped
+                                hover
+                                condensed
                             />
                         </Col>
                     </Row>

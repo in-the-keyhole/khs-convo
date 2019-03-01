@@ -42,6 +42,22 @@ import BootstrapTable from 'react-bootstrap-table-next';
 class Tailwater extends BaseComponent {
     constructor(props) {
         super(props);
+        this.resetState();
+
+        this.componentWillMount = this.componentWillMount.bind(this);
+        this.renderItemOrEditField = this.renderItemOrEditField.bind(this);
+        this.handleEditItem = this.handleEditItem.bind(this);
+        this.handleInsertItem = this.handleInsertItem.bind(this);
+        this.toggleEditing = this.toggleEditing.bind(this);
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleDeleteItem = this.handleDeleteItem.bind(this);
+        this.onAfterSaveCell = this.onAfterSaveCell.bind(this);
+        this.openDeleteModal = this.openDeleteModal.bind(this);
+        this.closeDeleteModal = this.closeDeleteModal.bind(this);
+    }
+
+
+    resetState() {
         this.state = {
             locations: [],
             editing: null,
@@ -53,16 +69,8 @@ class Tailwater extends BaseComponent {
             insertName: null,
             insertError: null
         };
-
-        this.componentWillMount = this.componentWillMount.bind(this);
-        this.renderItemOrEditField = this.renderItemOrEditField.bind(this);
-        this.handleEditItem = this.handleEditItem.bind(this);
-        this.handleInsertItem = this.handleInsertItem.bind(this);
-        this.toggleEditing = this.toggleEditing.bind(this);
-        this.handleInputChange = this.handleInputChange.bind(this);
-        this.handleDeleteItem = this.handleDeleteItem.bind(this);
-        this.onAfterSaveCell = this.onAfterSaveCell.bind(this);
     }
+
 
     componentWillMount() {
         super.componentWillMount();
@@ -88,22 +96,23 @@ class Tailwater extends BaseComponent {
             url: '../api/tailwater/insert',
             data: insert,
         }).then(() => {
-            that.fetchTailwaters();
+            this.fetchTailwaters();
+            window.setTimeout(()=> that.resetState())
         }).catch((err) =>
             console.log(err)
         );
 
-        this.setState({
-            insertID: null,
-            insertLocation: null,
-            insertType: null,
-            insertState: null,
-            insertFlow: null,
-            insertName: null
-        });
+        // this.setState({
+        //     insertID: null,
+        //     insertLocation: null,
+        //     insertType: null,
+        //     insertState: null,
+        //     insertFlow: null,
+        //     insertName: null
+        // });
 
-        this.setState({editing: null});
-        this.fetchTailwaters();
+        // this.setState({editing: null});
+        // this.fetchTailwaters();
     }
 
 
@@ -115,7 +124,7 @@ class Tailwater extends BaseComponent {
             data: update,
         }).then(function () {
             that.fetchTailwaters();
-        }).catch( (err) => {
+        }).catch((err) => {
             console.log(err)
         });
 
@@ -197,28 +206,37 @@ class Tailwater extends BaseComponent {
         });
     }
 
+
     handleInputChange(event) {
         const target = event.target;
         this.setState({[target.name]: target.value});
     }
 
+
     closeDeleteModal() {
         this.setState({deleteModal: false})
     }
 
-    openDeleteModal() {
-        this.setState({deleteModal: true})
+
+    openDeleteModal(item) {
+        console.log(`row`, item);
+        this.setState({
+            currentItem: item,
+            deleteModal: true
+        })
     }
 
-    toolbar(cell, row) {
+    managementToolbar(cell, row) {
+        const that = this;
         return (
             <div className="btn-group" role="toolbar" aria-label="management">
-                <div onClick={() => this.openDeleteModal(row)}>
+                <div onClick={() => that.openDeleteModal(row)}>
                     <MDBIcon style={{marginLeft: '0.5rem', color: 'red'}} size={'lg'} icon={"minus-circle"}/>
                 </div>
             </div>
         )
     }
+
 
     /**
      * CellValue is, a Blackist record, including _id. This methods  updates any of its fields except _id.
@@ -235,7 +253,8 @@ class Tailwater extends BaseComponent {
             data: cellValue,
         }).then((res) => {
             console.log(res);
-        }).catch( err => console.log(err));
+            toast.success(`Cell updated.`)
+        }).catch(err => console.log(err));
     }
 
 
@@ -382,7 +401,7 @@ class Tailwater extends BaseComponent {
                 dataField: 'df1',
                 isDummyField: true,
                 width: '5%',
-                formatter: this.toolbar,
+                formatter: this.managementToolbar,
                 editable: false,
                 align: 'center',
                 headerAlign: 'center'
@@ -414,22 +433,27 @@ class Tailwater extends BaseComponent {
                                         blurToSave: true,
                                         afterSaveCell: this.onAfterSaveCell
                                     })}
+                                    striped
+                                    hover
+                                    condensed
                                 />
                             </Col>
                         </Row>
                     </MDBCardBody>
                 </MDBCard>
 
-                <MDBModal size={"sm"} isOpen={this.state.deleteModal} onHide={this.close}>
-                    <MDBModalBody>
-                        <MDBModalHeader>Delete Tailwaters Item?</MDBModalHeader>
-                        <Row><Col sm={"1"}>&nbsp;</Col><Col>{this.state.currentItem
-                            ? `ID: ${this.state.currentItem.phone}` : ''}</Col></Row>
-                        <MDBModalFooter>
-                            <Button size={"sm"} color={"danger"} onClick={this.deleteItem}>Yes</Button>
-                            <Button size={"sm"} onClick={this.closeDeleteModal}>No</Button>
-                        </MDBModalFooter>
-                    </MDBModalBody>
+                <MDBModal size={"sm"} isOpen={this.state.deleteModal}>
+                    <div className={"modal-wrapper"}>
+                        <MDBModalBody>
+                            <MDBModalHeader>Delete Tailwaters Item?</MDBModalHeader>
+                            <Row><Col sm={"1"}>&nbsp;</Col><Col>{this.state.currentItem
+                                ? `ID: ${this.state.currentItem.phone}` : ''}</Col></Row>
+                            <MDBModalFooter>
+                                <Button size={"sm"} color={"danger"} onClick={this.deleteItem}>Yes</Button>
+                                <Button size={"sm"} onClick={this.closeDeleteModal}>No</Button>
+                            </MDBModalFooter>
+                        </MDBModalBody>
+                    </div>
                 </MDBModal>
             </Fragment>
         )

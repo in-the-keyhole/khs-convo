@@ -140,6 +140,9 @@ const RemotelyPaginatedTable = (
                             {page, sizePerPage, totalSize, showTotal, paginationTotalRenderer})}
                         onTableChange={onTableChange}
                         filter={ filterFactory() }
+                        striped
+                        hover
+                        condensed
                     />
                 </Col>
             </Row>
