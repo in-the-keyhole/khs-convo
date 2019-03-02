@@ -61,11 +61,11 @@ const NoScheduledNotificationList = () =>
 
 // === Utility functions
 
-const formatScheduleDateTime = (sd) => (`${moment(sd).format('L HH:mm a')}`);
+const formatScheduleDateTime = (sd) => (`${moment(sd).format('L hh:mm a')}`);
 
 const formatScheduleDate = (sd) => (`${moment(sd).format('L')}`);
 
-const formatScheduleTime = (sd) => (`${moment(sd).format('HH:mm a')}`);
+const formatScheduleTime = (sd) => (`${moment(sd).format('hh:mm a')}`);
 
 const createScheduleDate = (tmpDate, tmpTime) => {
     const scheduleTimeExists = tmpTime !== 'undefined' && !isEmpty(tmpTime);
