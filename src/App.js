@@ -222,7 +222,7 @@ class App extends Component {
                 <Navbar expand="md" className={"header-footer"}>
                     <NavbarBrand>
                         <img alt={"Keyhole Software LLC"} className={"logo-icon"} src={"images/keyholelogo.png"}/>
-                        <Link to={"/emulator"}>
+                        <Link to={"/analytics/all"}>
                         <span className={"logo-b"}>&nbsp;&#123;Convo&#125;</span>
                         </Link>
                     </NavbarBrand>
