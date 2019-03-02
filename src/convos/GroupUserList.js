@@ -255,12 +255,12 @@ class GroupUserList extends BaseComponent {
                         <Col xs={"8"}>
                             <select value={this.state.user} className="form-control emulator-input"
                                     onChange={this.addUser}>
-                                <option value="">&minus; choose user &minus;</option>
+                                <option value="">&minus; choose user to add &minus;</option>
                                 <UserOptionList availableUsers={this.state.availableUsers}/>
                             </select>
                         </Col>
                         <Col xs={"4"}>
-                            <Button size={"sm"} color={"light"} onClick={this.addAllUsers}>All</Button>
+                            <Button size={"sm"} color={"light"} onClick={this.addAllUsers}>Add All</Button>
                         </Col>
                     </Row>
 
