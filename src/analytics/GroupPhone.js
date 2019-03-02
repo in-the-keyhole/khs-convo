@@ -22,7 +22,14 @@ import {connect} from "react-redux";
 import BaseComponent from '../BaseComponent';
 import HoverChart from './helpers/HoverChart';
 // noinspection ES6CheckImport
-import {Card, CardBody, CardTitle, Col, Row} from 'mdbreact';
+import {
+    Container,
+    Card,
+    CardBody,
+    CardTitle,
+    Col,
+    Row
+} from 'mdbreact';
 
 
 /**
@@ -34,7 +41,7 @@ import {Card, CardBody, CardTitle, Col, Row} from 'mdbreact';
  */
 const extractPhoneItems = (group) => {
 
-    return ( groupValue => {
+    return (groupValue => {
         const newList = [];
 
         groupValue
@@ -89,17 +96,29 @@ class GroupPhone extends BaseComponent {
     render() {
 
         return (
-            <Card>
-                <CardBody>
-                    <CardTitle>Analytics</CardTitle>
-                    <Row><Col>Group By Phone Number - Hover Chart</Col></Row>
-                    <Row>
-                        <Col className={"chart-main-content"}>
-                            <HoverChart data={extractPhoneItems(this.state.grpPhone)} dataKey={"count"} desc={"Phone Number - Count"}/>
-                        </Col>
-                    </Row>
-                </CardBody>
-            </Card>
+            <Container>
+                <Row>
+                    <Col/>
+                    <Col>
+                        <Card style={{width: "48rem"}}>
+                            <CardBody>
+                                <CardTitle>Analytics</CardTitle>
+                                <Row><Col>Group By Phone Number - Hover Chart</Col></Row>
+                                <Row>
+                                    <Col className={"chart-main-content scrollbar scrollbar-primary"}>
+                                        <HoverChart
+                                            data={extractPhoneItems(this.state.grpPhone)}
+                                            dataKey={"count"}
+                                            desc={"Phone Number - Count"}
+                                        />
+                                    </Col>
+                                </Row>
+                            </CardBody>
+                        </Card>
+                    </Col>
+                    <Col/>
+                </Row>
+            </Container>
         );
     }
 }

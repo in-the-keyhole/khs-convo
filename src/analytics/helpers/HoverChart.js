@@ -16,7 +16,12 @@
 
 import '../../styles/index.css';
 import React from "react";
-import {Legend, RadialBar, RadialBarChart, Tooltip} from "recharts";
+import {
+    Legend,
+    RadialBar,
+    RadialBarChart,
+    Tooltip}
+from "recharts";
 import CustomTooltip from "./CustomTooltips";
 import RenderLegend from './RenderLegend';
 
@@ -26,11 +31,32 @@ const HoverChart = ({desc, data, dataKey}) => {
     // console.log(`HoverChart props`, {desc, data, dataKey});
 
     const normalReturn =
-        <RadialBarChart width={500} height={500} cx={150} cy={150} innerRadius={20}
-                        barCategoryGap={10} outerRadius={140} barSize={20} data={data}>
-            <RadialBar minAngle={15} background clockWise={true} dataKey={dataKey}/>
-            <Legend wrapperStyle={{top: 25, right: 0, left: 0, bottom: 0}} iconSize={10}
-                    top={10} layout='vertical' content={RenderLegend}/>
+        <RadialBarChart
+            width={500}
+            height={500}
+            cx={150}
+            cy={150}
+            innerRadius={20}
+            barCategoryGap={10}
+            outerRadius={140}
+            barSize={20}
+            startAngle={180}
+            endAngle={0}
+            data={data}
+        >
+            <RadialBar
+                minAngle={15}
+                background
+                clockWise={true}
+                dataKey={dataKey}
+            />
+            <Legend
+                wrapperStyle={{top: 25, right: 0, left: 0, bottom: 0}}
+                iconSize={10}
+                top={10}
+                layout='vertical'
+                content={RenderLegend}
+            />
             <Tooltip content={<CustomTooltip desc={desc}/>}/>
         </RadialBarChart>
     ;
