@@ -80,6 +80,11 @@ const SendList = props => {
         }
     ];
 
+    const defaultSorted = [{
+        dataField: 'Name',
+        order: 'asc'
+    }];
+
     return <Row>
         <Col>
             <BootstrapTable
@@ -92,6 +97,7 @@ const SendList = props => {
                 striped
                 hover
                 condensed
+                defaultSorted={ defaultSorted }
             />
         </Col>
     </Row>;
