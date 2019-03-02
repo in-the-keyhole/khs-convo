@@ -31,24 +31,70 @@ import {
     CardBody,
     CardTitle
 } from 'mdbreact';
+import BootstrapTable from 'react-bootstrap-table-next';
+import CommonUI from "../common/CommonUI";
+import paginationFactory from "react-bootstrap-table2-paginator";
+import {pageinationOptions} from "../common/pageinationOptions";
+
+
+const managementToolbar = (cell, row, rowIndex, context) => {
+
+    return <div className="btn-group" role="toolbar" aria-label="management">
+        <div onClick={() => context.deleteUser(row.uuid)}>
+            <MDBIcon style={{marginLeft: '0.5rem', color: 'red'}} size={'lg'} icon={"minus-circle"}/>
+        </div>
+    </div>
+};
 
 
 const SendList = props => {
     const {
         users,
-        fnDeleteUser
+        context
     } = props;
 
-    return users.map(user => (
-        <Row className="row-striped" key={user.uuid}>
-            <Col xs={"2"}>
-                <span className={"text-danger clickable"}
-                      onClick={() => fnDeleteUser(user.uuid)}>
-                    <MDBIcon icon={"minus-circle"}/></span>
-            </Col>
-            <Col xs={"10"}><span>{user.Name}</span></Col>
-        </Row>
-    ));
+    const columns = [
+        {
+            hidden: true,
+            dataField: 'uuid',
+            isKey: true
+        },
+        {
+            text: 'Name',
+            dataField: 'Name',
+            sort: true,
+            sortCaret: CommonUI.ColumnSortCaret,
+            editable: true
+        },
+        {
+            text: 'Manage',
+            dataField: 'df1',
+            isDummyField: true,
+            width: '5%',
+            formatter: managementToolbar,
+            formatExtraData: context,
+            editable: false,
+            align: 'center',
+            headerAlign: 'center'
+        }
+    ];
+
+    return <Row>
+        <Col>
+            <BootstrapTable
+                bootstrap4
+                data={users}
+                columns={columns}
+                keyField={'uuid'}
+                insertRow={false}
+                pagination={paginationFactory(pageinationOptions)}
+                striped
+                hover
+                condensed
+            />
+        </Col>
+    </Row>;
+
 };
 
 
@@ -78,7 +124,9 @@ class GroupUserList extends BaseComponent {
         this.addUser = this.addUser.bind(this);
         this.addAllUsers = this.addAllUsers.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.deleteUser = this.deleteUser.bind(this);
     }
+
 
     putGroup(group, reloadUsers) {
         if (!reloadUsers) {
@@ -134,6 +182,7 @@ class GroupUserList extends BaseComponent {
         }
     }
 
+
     addAllUsers(/*event*/) {
         const group = this.props.group;
         // noinspection JSValidateTypes
@@ -141,6 +190,7 @@ class GroupUserList extends BaseComponent {
 
         this.putGroup(group);
     }
+
 
     deleteUser(userId) {
         const group = this.props.group;
@@ -215,14 +265,14 @@ class GroupUserList extends BaseComponent {
                     </Row>
 
                     <Row>
-                        <Col xs={"11"} className={this.props.group.Users.length > 0 ? '' : 'hidden'}>
+                        <Col xs={"12"} className={this.props.group.Users.length > 0 ? '' : 'hidden'}>
                             <Row>
-                                <Col xd={"12"} className="notificationsHeaderStyle">
+                                <Col xs={"12"} className="notificationsHeaderStyle">
                                     <span className="sub">Group Members</span>
                                 </Col>
                             </Row>
 
-                            <SendList fnDeleteUser={this.deleteUser} users={this.props.group.Users}/>
+                            <SendList context={this} users={this.props.group.Users}/>
 
                         </Col>
                     </Row>

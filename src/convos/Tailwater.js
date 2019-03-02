@@ -22,7 +22,6 @@ import {
     Row,
     Col,
     Button,
-    MDBInput,
     MDBIcon,
     MDBModal,
     MDBModalBody,
@@ -38,7 +37,6 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 import {pageinationOptions} from "../common/pageinationOptions";
 import cellEditFactory from "react-bootstrap-table2-editor";
 import BootstrapTable from 'react-bootstrap-table-next';
-import {Container, Modal, ModalBody, ModalFooter, ModalHeader} from "../admin/Admin";
 
 class Tailwater extends BaseComponent {
     constructor(props) {
