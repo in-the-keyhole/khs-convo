@@ -484,7 +484,7 @@ class Admin extends BaseComponent {
                     sortCaret: CommonUI.ColumnSortCaret
                 },
                 {
-                    text: "Manage",
+                    text: "",
                     dataField: 'df1',
                     isDummyField: true,
                     formatter: this.userToolbar,

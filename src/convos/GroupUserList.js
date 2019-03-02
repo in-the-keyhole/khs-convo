@@ -63,15 +63,15 @@ const SendList = props => {
         {
             text: 'Name',
             dataField: 'Name',
+            width: '95%',
             sort: true,
             sortCaret: CommonUI.ColumnSortCaret,
             editable: true
         },
         {
-            text: 'Manage',
+            text: '',
             dataField: 'df1',
             isDummyField: true,
-            width: '5%',
             formatter: managementToolbar,
             formatExtraData: context,
             editable: false,

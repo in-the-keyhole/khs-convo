@@ -219,7 +219,7 @@ class Blacklist extends BaseComponent {
                 editable: true
             },
             {
-                text: 'Manage',
+                text: '',
                 dataField: 'df1',
                 isDummyField: true,
                 width: '5%',

@@ -371,7 +371,7 @@ class NotificationGroups extends BaseComponent {
                 sortCaret: CommonUI.ColumnSortCaret
             },
             {
-                text: 'Manage',
+                text: '',
                 dataField: 'df1',
                 isDummyField: true,
                 width: '5%',
