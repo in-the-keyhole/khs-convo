@@ -294,19 +294,6 @@ class NotificationGroups extends BaseComponent {
     }
 
 
-    /*  groupToolbar(cell, row) {
-          return (
-              <div className="adminIcons">
-                  <i title="View Group" className="glyphicon glyphicon-cog clickable"
-                     onClick={this.showGroupUsers(row)}/>
-
-                  <i title="Delete Group" className="glyphicon glyphicon-remove-sign text-danger clickable"
-                     onClick={this.openDeleteModal(row)}/>
-              </div>
-          )
-      }*/
-
-
     static groupUsers(cell, row) {
         return (
             <div className="groupListUserCount">{row.Users.length}</div>
@@ -386,7 +373,7 @@ class NotificationGroups extends BaseComponent {
             mode: 'radio',
             clickToSelect: true,
             style: {backgroundColor: '#ececff'},
-            selectionHeaderRenderer: (() => 'Select'),
+            selectionHeaderRenderer: (() => 'Sel'),
             selected: this.state.selected,
             onSelect: this.handleOnSelect
         };
@@ -426,9 +413,9 @@ class NotificationGroups extends BaseComponent {
                                                 blurToSave: true,
                                                 afterSaveCell: this.onAfterSaveGroup
                                             }}
-                                            hover
                                             striped
-                                            compact
+                                            hover
+                                            condensed
                                         />
                                     </Col>
                                 </Row>
