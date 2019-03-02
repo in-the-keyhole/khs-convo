@@ -29,7 +29,8 @@ import {
     Col,
     Card,
     CardBody,
-    CardTitle
+    CardTitle,
+    toast
 } from 'mdbreact';
 import BootstrapTable from 'react-bootstrap-table-next';
 import CommonUI from "../common/CommonUI";
@@ -201,6 +202,8 @@ class GroupUserList extends BaseComponent {
 
         group.Users = list;
         this.putGroup(group);
+
+        toast.success('User removed from group');
     }
 
 
