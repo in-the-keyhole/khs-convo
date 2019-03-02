@@ -134,7 +134,7 @@ class GroupQuestions extends BaseComponent {
                 <Row>
                     <Col/>
                     <Col>
-                        <Card>
+                        <Card style={{width: "48rem"}}>
                             <CardBody>
                                 <CardTitle>Analytics</CardTitle>
                                 <Row><Col>Group By Question - Hover Chart</Col></Row>
