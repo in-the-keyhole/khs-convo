@@ -22,7 +22,7 @@ import {
     Row,
     Col,
     Button,
-    MDBInput,
+    // MDBInput,
     MDBIcon,
     MDBModal,
     MDBModalBody,
@@ -42,22 +42,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 class Tailwater extends BaseComponent {
     constructor(props) {
         super(props);
-        this.resetState();
 
-        this.componentWillMount = this.componentWillMount.bind(this);
-        this.renderItemOrEditField = this.renderItemOrEditField.bind(this);
-        this.handleEditItem = this.handleEditItem.bind(this);
-        this.handleInsertItem = this.handleInsertItem.bind(this);
-        this.toggleEditing = this.toggleEditing.bind(this);
-        this.handleInputChange = this.handleInputChange.bind(this);
-        this.handleDeleteItem = this.handleDeleteItem.bind(this);
-        this.onAfterSaveCell = this.onAfterSaveCell.bind(this);
-        this.openDeleteModal = this.openDeleteModal.bind(this);
-        this.closeDeleteModal = this.closeDeleteModal.bind(this);
-    }
-
-
-    resetState() {
         this.state = {
             locations: [],
             editing: null,
@@ -69,6 +54,17 @@ class Tailwater extends BaseComponent {
             insertName: null,
             insertError: null
         };
+
+        this.componentWillMount = this.componentWillMount.bind(this);
+        this.handleEditItem = this.handleEditItem.bind(this);
+        this.handleInsertItem = this.handleInsertItem.bind(this);
+        this.toggleEditing = this.toggleEditing.bind(this);
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleDeleteItem = this.handleDeleteItem.bind(this);
+        this.onAfterSaveCell = this.onAfterSaveCell.bind(this);
+        this.openDeleteModal = this.openDeleteModal.bind(this);
+        this.closeDeleteModal = this.closeDeleteModal.bind(this);
+        this.fetchTailwaters = this.fetchTailwaters.bind(this);
     }
 
 
@@ -90,28 +86,26 @@ class Tailwater extends BaseComponent {
 
 
     handleTailwaterInsert(insert) {
-        const that = this;
         restAPI({
             method: 'post',
             url: '../api/tailwater/insert',
             data: insert,
         }).then(() => {
             this.fetchTailwaters();
-            window.setTimeout(()=> that.resetState())
         }).catch((err) =>
             console.log(err)
         );
 
-        // this.setState({
-        //     insertID: null,
-        //     insertLocation: null,
-        //     insertType: null,
-        //     insertState: null,
-        //     insertFlow: null,
-        //     insertName: null
-        // });
+        this.setState({
+            editing: null,
+            insertID: null,
+            insertLocation: null,
+            insertType: null,
+            insertState: null,
+            insertFlow: null,
+            insertName: null
+        });
 
-        // this.setState({editing: null});
         // this.fetchTailwaters();
     }
 
@@ -226,25 +220,14 @@ class Tailwater extends BaseComponent {
         })
     }
 
-    managementToolbar(cell, row) {
-        const that = this;
-        return (
-            <div className="btn-group" role="toolbar" aria-label="management">
-                <div onClick={() => that.openDeleteModal(row)}>
-                    <MDBIcon style={{marginLeft: '0.5rem', color: 'red'}} size={'lg'} icon={"minus-circle"}/>
-                </div>
-            </div>
-        )
-    }
-
 
     /**
      * CellValue is, a Blackist record, including _id. This methods  updates any of its fields except _id.
      * eg. PUT a bookstrap table cell edit's "cellValue". The API will update its copy.
      *
-     * @param row
-     * @param cellName
-     * @param cellValue
+     * @param row -- mongo id
+     * @param cellName -- mongo id
+     * @param cellValue -- entire table row object
      */
     onAfterSaveCell(row, cellName, cellValue) {
         restAPI({
@@ -258,89 +241,98 @@ class Tailwater extends BaseComponent {
     }
 
 
-    renderItemOrEditField(loc) {
-        if (this.state.editing === loc.id) {
-            // Handle rendering our edit fields here.
-            return <Fragment>
-                <Row>
-                    <Col md={"2"}>{loc.id}</Col>
-                    <Col md={"2"}>
-                        <MDBInput
-                            type="text"
-                            className="form-control"
-                            ref={`location_${loc.id}`}
-                            name="location"
-                            defaultValue={loc.location}
-                        />
-                    </Col>
-                    <Col md={"1"}>
-                        <MDBInput
-                            type="text"
-                            className="form-control"
-                            ref={`type_${loc.id}`}
-                            name="type"
-                            defaultValue={loc.type}
-                        />
-                    </Col>
-                    <Col md={"1"}>
-                        <MDBInput
-                            type="text"
-                            className="form-control"
-                            ref={`state_${loc.id}`}
-                            name="state"
-                            defaultValue={loc.state}
-                        />
-                    </Col>
-                    <Col md={"1"}>
-                        <MDBInput
-                            type="text"
-                            className="form-control"
-                            ref={`flowData_${loc.id}`}
-                            name="flowData"
-                            defaultValue={loc.flowData.toString()}
-                        />
-                    </Col>
-                    <Col md={"2"}>
-                        <MDBInput
-                            type="text"
-                            className="form-control"
-                            ref={`name_${loc.id}`}
-                            name="name"
-                            defaultValue={loc.name}
-                        />
-                    </Col>
-                    <Col md={"1"} className="clickable text-success"
-                         onClick={this.handleEditItem}><MDBIcon size={"lg"} icon="save"/></Col>
-                    <Col md={"1"} className="clickable text-danger"
-                         onClick={this.openDeleteModal}><MDBIcon icon="minus-circle"/></Col>
-                </Row>
+    /* renderItemOrEditField(loc) {
+         if (this.state.editing === loc.id) {
+             // Handle rendering our edit fields here.
+             return <Fragment>
+                 <Row>
+                     <Col md={"2"}>{loc.id}</Col>
+                     <Col md={"2"}>
+                         <MDBInput
+                             type="text"
+                             className="form-control"
+                             ref={`location_${loc.id}`}
+                             name="location"
+                             defaultValue={loc.location}
+                         />
+                     </Col>
+                     <Col md={"1"}>
+                         <MDBInput
+                             type="text"
+                             className="form-control"
+                             ref={`type_${loc.id}`}
+                             name="type"
+                             defaultValue={loc.type}
+                         />
+                     </Col>
+                     <Col md={"1"}>
+                         <MDBInput
+                             type="text"
+                             className="form-control"
+                             ref={`state_${loc.id}`}
+                             name="state"
+                             defaultValue={loc.state}
+                         />
+                     </Col>
+                     <Col md={"1"}>
+                         <MDBInput
+                             type="text"
+                             className="form-control"
+                             ref={`flowData_${loc.id}`}
+                             name="flowData"
+                             defaultValue={loc.flowData.toString()}
+                         />
+                     </Col>
+                     <Col md={"2"}>
+                         <MDBInput
+                             type="text"
+                             className="form-control"
+                             ref={`name_${loc.id}`}
+                             name="name"
+                             defaultValue={loc.name}
+                         />
+                     </Col>
+                     <Col md={"1"} className="clickable text-success"
+                          onClick={this.handleEditItem}><MDBIcon size={"lg"} icon="save"/></Col>
+                     <Col md={"1"} className="clickable text-danger"
+                          onClick={this.openDeleteModal}><MDBIcon icon="minus-circle"/></Col>
+                 </Row>
 
-                <MDBModal show={this.state.deleteModal}>
-                    <MDBModalBody>
-                        <MDBModalHeader>Delete?</MDBModalHeader>
-                        <MDBModalFooter>
-                            <Button color={"red"} style={{width: "100%"}}
-                                    onClick={this.handleDeleteItem}>Delete</Button>
-                            <Button color={"light"} style={{width: "100%"}}
-                                    onClick={this.closeDeleteModal}>Cancel</Button>
-                        </MDBModalFooter>
-                    </MDBModalBody>
-                </MDBModal>
+                 <MDBModal show={this.state.deleteModal}>
+                     <MDBModalBody>
+                         <MDBModalHeader>Delete?</MDBModalHeader>
+                         <MDBModalFooter>
+                             <Button color={"red"} style={{width: "100%"}}
+                                     onClick={this.handleDeleteItem}>Delete</Button>
+                             <Button color={"light"} style={{width: "100%"}}
+                                     onClick={this.closeDeleteModal}>Cancel</Button>
+                         </MDBModalFooter>
+                     </MDBModalBody>
+                 </MDBModal>
 
-            </Fragment>;
+             </Fragment>;
 
-        } else {
-            return <Row>
-                <Col md={"2"}>{loc.id}</Col>
-                <Col md={"2"}>{loc.location}</Col>
-                <Col md={"1"}>{loc.type}</Col>
-                <Col md={"1"}>{loc.state}</Col>
-                <Col md={"1"}>{loc.flowData.toString()}</Col>
-                <Col md={"2"}>{loc.name}</Col>
-                <Col md={"1"} className="clickable text-primary"
-                     onClick={this.toggleEditing.bind(null, loc.id)}><MDBIcon icon="edit"/></Col>
-            </Row>
-        }
+         } else {
+             return <Row>
+                 <Col md={"2"}>{loc.id}</Col>
+                 <Col md={"2"}>{loc.location}</Col>
+                 <Col md={"1"}>{loc.type}</Col>
+                 <Col md={"1"}>{loc.state}</Col>
+                 <Col md={"1"}>{loc.flowData.toString()}</Col>
+                 <Col md={"2"}>{loc.name}</Col>
+                 <Col md={"1"} className="clickable text-primary"
+                      onClick={this.toggleEditing.bind(null, loc.id)}><MDBIcon icon="edit"/></Col>
+             </Row>
+         }
+     }
+ */
+
+    managementToolbar(cell, row, rowIndex, tailwaters) {
+        return <div className="btn-group" role="toolbar" aria-label="management">
+            <div onClick={() => tailwaters.openDeleteModal(row)}>
+                <MDBIcon style={{marginLeft: '0.5rem', color: 'red'}} size={'lg'} icon={"minus-circle"}/>
+            </div>
+        </div>
     }
 
 
@@ -402,13 +394,13 @@ class Tailwater extends BaseComponent {
                 isDummyField: true,
                 width: '5%',
                 formatter: this.managementToolbar,
+                formatExtraData: this,
                 editable: false,
                 align: 'center',
                 headerAlign: 'center'
             }
         ];
 
-        const data = this.state.locations;
 
         return (
             <Fragment>
@@ -423,7 +415,7 @@ class Tailwater extends BaseComponent {
                             <Col md={"10"}>
                                 <BootstrapTable
                                     bootstrap4
-                                    data={data}
+                                    data={this.state.locations}
                                     columns={columns}
                                     keyField={'_id'}
                                     insertRow={true}
@@ -447,7 +439,7 @@ class Tailwater extends BaseComponent {
                         <MDBModalBody>
                             <MDBModalHeader>Delete Tailwaters Item?</MDBModalHeader>
                             <Row><Col sm={"1"}>&nbsp;</Col><Col>{this.state.currentItem
-                                ? `ID: ${this.state.currentItem.phone}` : ''}</Col></Row>
+                                ? `ID: ${this.state.currentItem.id}` : ''}</Col></Row>
                             <MDBModalFooter>
                                 <Button size={"sm"} color={"danger"} onClick={this.deleteItem}>Yes</Button>
                                 <Button size={"sm"} onClick={this.closeDeleteModal}>No</Button>

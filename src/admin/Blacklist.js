@@ -42,6 +42,7 @@ import {
 } from 'mdbreact';
 import CommonUI from "../common/CommonUI";
 
+
 class Blacklist extends BaseComponent {
     constructor(props) {
         super(props);
@@ -89,7 +90,7 @@ class Blacklist extends BaseComponent {
             method: 'post',
             url: '../api/admin/blacklist',
             data: insert,
-        }).then( res => {
+        }).then(res => {
             console.log(res);
             toast.success(`Blacklisted phone number "${insert.phone}"`);
         }).catch((err) => console.log(err));
@@ -174,10 +175,10 @@ class Blacklist extends BaseComponent {
             method: 'delete',
             url: '../api/admin/blacklist',
             data: record
-        }).then( res => {
+        }).then(res => {
             console.log(`deleteItem`, res);
             toast.info(`Deleted phone "${record.phone}"`);
-        }).catch( err => console.log(err));
+        }).catch(err => console.log(err));
 
         this.fetchBlacklist();
         this.setState({
@@ -186,14 +187,13 @@ class Blacklist extends BaseComponent {
     }
 
 
-    blackListToolbar(cell, row) {
-        return (
-            <div className="btn-group" role="toolbar" aria-label="management">
-                <div onClick={() => this.openDeleteModal(row)}>
-                    <MDBIcon style={{marginLeft: '0.5rem', color: 'red'}} size={'lg'} icon={"minus-circle"}/>
-                </div>
+    blackListToolbar(cell, row, rowIndex, blacklist) {
+        return <div className="btn-group" role="toolbar" aria-label="management">
+            <div onClick={() => blacklist.openDeleteModal(row)}>
+                <MDBIcon style={{marginLeft: '0.5rem', color: 'red'}} size={'lg'} icon={"minus-circle"}/>
             </div>
-        )
+        </div>
+
     }
 
     render() {
@@ -224,6 +224,7 @@ class Blacklist extends BaseComponent {
                 isDummyField: true,
                 width: '5%',
                 formatter: this.blackListToolbar,
+                formatExtraData: this,
                 editable: false,
                 align: 'center',
                 headerAlign: 'center'
@@ -262,7 +263,8 @@ class Blacklist extends BaseComponent {
                                           label={"Enter Notes"}/>
                             </Col>
                             <Col md={"2"}>
-                                <Button size={"md"} color={"light"} style={{marginTop: "1.5rem", width: "100%", fontSize: "0.8rem"}}
+                                <Button size={"md"} color={"light"}
+                                        style={{marginTop: "1.5rem", width: "100%", fontSize: "0.8rem"}}
                                         onClick={() => this.handleInsertItem()}
                                         disabled={!this.state.insertNumber || !this.state.insertNotes}>
                                     <MDBIcon icon="plus-circle"/>&nbsp;Add Phone</Button>
