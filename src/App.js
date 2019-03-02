@@ -22,7 +22,6 @@ import {
     withRouter
 } from 'react-router-dom'
 import Admin from './admin/Admin';
-import Analytics from './analytics/Analytics';
 import ConversionListChunked from './analytics/ConversationsList';
 import GroupQuestions from './analytics/GroupQuestions';
 import GroupPhone from './analytics/GroupPhone';
@@ -70,7 +69,6 @@ const main = (
             <Route path='/analytics/groupquestion' component={GroupQuestions}/>
             <Route path='/analytics/groupphone' component={GroupPhone}/>
             <Route path='/analytics/visitors' component={Visitors}/>
-            <Route path='/analytics' component={Analytics}/>
             <Route path='/emulator' component={Emulator}/>
             <Route path='/upload' component={Upload}/>
             <Route path='/convos/tailwater' component={Tailwater}/>
