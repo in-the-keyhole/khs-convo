@@ -75,8 +75,7 @@ const columns = [
         dataField: 'date',
         formatter: (dateFomatter),
         sort: true,
-        sortCaret: CommonUI.ColumnSortCaret,
-        // filter: textFilter()
+        sortCaret: CommonUI.ColumnSortCaret
     },
     {
         text: 'Phone',
@@ -122,7 +121,7 @@ const RemotelyPaginatedTable = (
         <CardBody>
             <CardTitle>Analytics</CardTitle>
             <Row>
-                <Col md={"10"}>Conversations</Col>
+                <Col md={"10"}>Search all Conversations</Col>
                 <Col md={"2"}><Button size={"sm"}
                       color={"light"}
                       onClick={ clearFilters }
@@ -222,7 +221,8 @@ class ConversationsList extends BaseComponent {
         const mongoSortOrder =  sortOrder === 'asc' ? 1 : -1;
         const currentIndex = (page - 1) * sizePerPage;
         restAPI({
-            url: `../api/convo/getconvochunk?skipCount=${currentIndex}&limitCount=${sizePerPage}&sortField=${sortField || 'date'}&sortOrder=${mongoSortOrder}`,
+            url: `../api/convo/getconvochunk?skipCount=${currentIndex}&limitCount=${sizePerPage}&sortField=${sortField
+                || 'date'}&sortOrder=${mongoSortOrder}`,
             data: this.state
         }).then(res => {
             this.setState(() => ({
@@ -235,10 +235,12 @@ class ConversationsList extends BaseComponent {
     };
 
 
-    paginationHandler = ({page, sizePerPage, sortField, sortOrder}) => (this.tableChangeHelper({page, sizePerPage, sortField, sortOrder}));
+    paginationHandler = ({page, sizePerPage, sortField, sortOrder}) =>
+        (this.tableChangeHelper({page, sizePerPage, sortField, sortOrder}));
 
 
-    sortHandler = ({page, sizePerPage, sortField, sortOrder}) => (this.tableChangeHelper({page, sizePerPage, sortField, sortOrder}));
+    sortHandler = ({page, sizePerPage, sortField, sortOrder}) =>
+        (this.tableChangeHelper({page, sizePerPage, sortField, sortOrder}));
 
 
     filterHandler = ({page, sizePerPage, sortField, sortOrder, filters}) => {
@@ -253,12 +255,12 @@ class ConversationsList extends BaseComponent {
                 }
             }
 
-            console.log(`query:`, q);
+            // console.log(`query:`, q);
 
             const json = JSON.stringify(q);
             const b64 =   Buffer.from(json).toString('base64');
 
-            console.log(`query in base64:`, b64);
+            // console.log(`query in base64:`, b64);
             return b64
 
         })(filters);

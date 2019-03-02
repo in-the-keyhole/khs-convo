@@ -242,7 +242,7 @@ class Tailwater extends BaseComponent {
     }
 
 
-    openAddRecordModal() {
+/*    openAddRecordModal() {
         this.setState(
             {
 
@@ -254,7 +254,7 @@ class Tailwater extends BaseComponent {
         console.log('closeAddUserModal');
         this.setState(
             {
- \
+
             });
     }
 
@@ -340,7 +340,7 @@ class Tailwater extends BaseComponent {
                 </form>
             </Modal>
         );
-    }
+    }*/
 
 
     managementToolbar(cell, row, rowIndex, tailwaters) {

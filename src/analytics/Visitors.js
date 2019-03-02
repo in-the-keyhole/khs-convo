@@ -86,7 +86,7 @@ const RemotelyPaginatedTable = (
         <CardBody>
             <CardTitle>Analytics</CardTitle>
             <Row>
-                <Col md={"10"}>Visitors</Col>
+                <Col md={"10"}>Search Visitors</Col>
                 <Col md={"2"}>
                     <Button size={"sm"}
                             color={"light"}

@@ -23,7 +23,8 @@ const CustomTooltip = (({active, type, payload, label, desc}) =>
         active ?
             <div className="custom-tooltip">
                 <p className="desc">{desc || "Empty"}</p>
-                <p className="name">{`${payload ? payload[0].payload.name : "Empty"}`} - {`${payload ? payload[0].payload.count : "0"}`}</p>
+                <p className="name">{`${payload ? payload[0].payload.name : "Empty"}`}
+                    - {`${payload ? payload[0].payload.count : "0"}`}</p>
             </div>
             : <p>Empty</p>
 

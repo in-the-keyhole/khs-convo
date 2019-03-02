@@ -23,7 +23,7 @@ import RenderLegend from './RenderLegend';
 
 const HoverChart = ({desc, data, dataKey}) => {
 
-    console.log(`HoverChart props`, {desc, data, dataKey});
+    // console.log(`HoverChart props`, {desc, data, dataKey});
 
     const normalReturn =
         <RadialBarChart width={500} height={500} cx={150} cy={150} innerRadius={20}
@@ -35,7 +35,7 @@ const HoverChart = ({desc, data, dataKey}) => {
         </RadialBarChart>
     ;
 
-    const emptyReturn = (<p className={"empty-return-msg"}>No items found</p>);
+    const emptyReturn = <p className={"empty-return-msg"}>No items found</p>;
 
     return data.length ? normalReturn : emptyReturn;
 
