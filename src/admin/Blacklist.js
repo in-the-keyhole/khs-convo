@@ -247,7 +247,7 @@ class Blacklist extends BaseComponent {
             <Fragment>
                 <Card>
                     <CardBody>
-                        <CardTitle>Phone Number Blacklist</CardTitle>
+                        <CardTitle>Administer Phone Number Blacklist</CardTitle>
                         <Row>
                             <Col md={"2"}>
                                 <MDBInput name="insertNumber" id="insertNumber"

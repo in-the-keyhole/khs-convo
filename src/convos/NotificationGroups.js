@@ -426,6 +426,9 @@ class NotificationGroups extends BaseComponent {
                                                 blurToSave: true,
                                                 afterSaveCell: this.onAfterSaveGroup
                                             }}
+                                            hover
+                                            striped
+                                            compact
                                         />
                                     </Col>
                                 </Row>

@@ -241,7 +241,7 @@ class Properties extends BaseComponent {
             <div>
                 <Card>
                     <CardBody>
-                        <CardTitle>Properties</CardTitle>
+                        <CardTitle>Administer Properties</CardTitle>
 
                         <Row>
                             <Col md={"2"}>
