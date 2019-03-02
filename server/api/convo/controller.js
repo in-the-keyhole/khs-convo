@@ -137,17 +137,21 @@ function getduplicates(req, res) {
 }
 
 function getgroupquestion(req, res) {
+    let i;
     const questionsArr = [];
 
-    // Populate questionsArr from request, removing ALL single-quotes
-    req.body.forEach( v => questionsArr.push(v.replace(/'/g, '')));
+    for (i = 0; i < req.body.length; i++) {
+        questionsArr.push(req.body[i].replace("'", ""));
+    }
 
-    // Array of items having first letter capitalized. Safe for lengths of 0, 1, > 1
-    const allQuestions = [];
-    questionsArr.forEach( v => allQuestions.push( v.charAt(0).toUpperCase() + v.slice(1) ));
+    let allQuestions = [];
+    for (i = 1; i < questionsArr.length; i++) {
+        allQuestions[i] = questionsArr[i].charAt(0).toUpperCase() + questionsArr[i].slice(1);
+    }
 
-    // Append the capitalized items to populated questionsArr (ed note: really ?)
-    allQuestions.forEach( q => questionsArr.push(q));
+    for (i = 1; i < allQuestions.length; i++) {
+        questionsArr.push(allQuestions[i]);
+    }
 
     mongo.Aggregate([
             {
