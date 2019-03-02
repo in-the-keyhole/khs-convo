@@ -297,15 +297,17 @@ class Blacklist extends BaseComponent {
                 </Card>
 
                 <MDBModal size={"sm"} isOpen={this.state.deleteModal} onHide={this.close}>
-                    <MDBModalBody>
-                        <MDBModalHeader>Delete Blacklist Item?</MDBModalHeader>
-                        <Row><Col sm={"1"}>&nbsp;</Col><Col>{this.state.currentItem
-                            ? `Phone: ${this.state.currentItem.phone}` : ''}</Col></Row>
-                        <MDBModalFooter>
-                            <Button size={"sm"} color={"danger"} onClick={() => this.deleteItem()}>Yes</Button>
-                            <Button size={"sm"} onClick={() => this.closeDeleteModal()}>No</Button>
-                        </MDBModalFooter>
-                    </MDBModalBody>
+                    <div className={"modal-wrapper"}>
+                        <MDBModalBody>
+                            <MDBModalHeader>Delete Blacklist Item?</MDBModalHeader>
+                            <Row><Col sm={"1"}>&nbsp;</Col><Col>{this.state.currentItem
+                                ? `Phone: ${this.state.currentItem.phone}` : ''}</Col></Row>
+                            <MDBModalFooter>
+                                <Button size={"sm"} color={"danger"} onClick={() => this.deleteItem()}>Yes</Button>
+                                <Button size={"sm"} onClick={() => this.closeDeleteModal()}>No</Button>
+                            </MDBModalFooter>
+                        </MDBModalBody>
+                    </div>
                 </MDBModal>
             </Fragment>
         )

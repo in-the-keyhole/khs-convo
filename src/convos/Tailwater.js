@@ -22,7 +22,7 @@ import {
     Row,
     Col,
     Button,
-    // MDBInput,
+    MDBInput,
     MDBIcon,
     MDBModal,
     MDBModalBody,
@@ -38,6 +38,7 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 import {pageinationOptions} from "../common/pageinationOptions";
 import cellEditFactory from "react-bootstrap-table2-editor";
 import BootstrapTable from 'react-bootstrap-table-next';
+import {Container, Modal, ModalBody, ModalFooter, ModalHeader} from "../admin/Admin";
 
 class Tailwater extends BaseComponent {
     constructor(props) {
@@ -241,91 +242,106 @@ class Tailwater extends BaseComponent {
     }
 
 
-    /* renderItemOrEditField(loc) {
-         if (this.state.editing === loc.id) {
-             // Handle rendering our edit fields here.
-             return <Fragment>
-                 <Row>
-                     <Col md={"2"}>{loc.id}</Col>
-                     <Col md={"2"}>
-                         <MDBInput
-                             type="text"
-                             className="form-control"
-                             ref={`location_${loc.id}`}
-                             name="location"
-                             defaultValue={loc.location}
-                         />
-                     </Col>
-                     <Col md={"1"}>
-                         <MDBInput
-                             type="text"
-                             className="form-control"
-                             ref={`type_${loc.id}`}
-                             name="type"
-                             defaultValue={loc.type}
-                         />
-                     </Col>
-                     <Col md={"1"}>
-                         <MDBInput
-                             type="text"
-                             className="form-control"
-                             ref={`state_${loc.id}`}
-                             name="state"
-                             defaultValue={loc.state}
-                         />
-                     </Col>
-                     <Col md={"1"}>
-                         <MDBInput
-                             type="text"
-                             className="form-control"
-                             ref={`flowData_${loc.id}`}
-                             name="flowData"
-                             defaultValue={loc.flowData.toString()}
-                         />
-                     </Col>
-                     <Col md={"2"}>
-                         <MDBInput
-                             type="text"
-                             className="form-control"
-                             ref={`name_${loc.id}`}
-                             name="name"
-                             defaultValue={loc.name}
-                         />
-                     </Col>
-                     <Col md={"1"} className="clickable text-success"
-                          onClick={this.handleEditItem}><MDBIcon size={"lg"} icon="save"/></Col>
-                     <Col md={"1"} className="clickable text-danger"
-                          onClick={this.openDeleteModal}><MDBIcon icon="minus-circle"/></Col>
-                 </Row>
+    openAddRecordModal() {
+        this.setState(
+            {
 
-                 <MDBModal show={this.state.deleteModal}>
-                     <MDBModalBody>
-                         <MDBModalHeader>Delete?</MDBModalHeader>
-                         <MDBModalFooter>
-                             <Button color={"red"} style={{width: "100%"}}
-                                     onClick={this.handleDeleteItem}>Delete</Button>
-                             <Button color={"light"} style={{width: "100%"}}
-                                     onClick={this.closeDeleteModal}>Cancel</Button>
-                         </MDBModalFooter>
-                     </MDBModalBody>
-                 </MDBModal>
+            });
+    }
 
-             </Fragment>;
 
-         } else {
-             return <Row>
-                 <Col md={"2"}>{loc.id}</Col>
-                 <Col md={"2"}>{loc.location}</Col>
-                 <Col md={"1"}>{loc.type}</Col>
-                 <Col md={"1"}>{loc.state}</Col>
-                 <Col md={"1"}>{loc.flowData.toString()}</Col>
-                 <Col md={"2"}>{loc.name}</Col>
-                 <Col md={"1"} className="clickable text-primary"
-                      onClick={this.toggleEditing.bind(null, loc.id)}><MDBIcon icon="edit"/></Col>
-             </Row>
-         }
-     }
- */
+    closeAddRecordModal() {
+        console.log('closeAddUserModal');
+        this.setState(
+            {
+ \
+            });
+    }
+
+
+    modalAddRecord() {
+        return (
+            <Modal size={"lg"} isOpen={this.state.addUserModal} onHide={this.close}>
+                <form onSubmit={this.addUserHandler}>
+                    <ModalBody>
+                        <ModalHeader>Add User</ModalHeader>
+                        <Container>
+                            <Row>
+                                <Col>
+                                    <p className="text-danger">{this.state.errorMsg}</p>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col md={"4"}>
+                                    <MDBInput
+                                        name="FirstName"
+                                        id="FirstName"
+                                        className="form-control"
+                                        type="text"
+                                        required
+                                        value={this.state.FirstName}
+                                        onChange={this.handleInputChange}
+                                        label="First Name"/>
+                                </Col>
+                                <Col md={"5"}>
+                                    <MDBInput
+                                        name="LastName"
+                                        id="LastName"
+                                        className="form-control"
+                                        type="text"
+                                        required
+                                        value={this.state.LastName}
+                                        onChange={this.handleInputChange}
+                                        label="Last Name"/>
+                                </Col>
+                                <Col md={"3"}>
+                                    <MDBInput name="Phone" id="Phone" className="form-control" type="text" required
+                                              value={this.state.Phone} onChange={this.handleInputChange}
+                                              label="Phone Number"/>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col md={"6"}>
+
+                                    <MDBInput name="Email" id="Email" className="form-control" type="email" required
+                                              value={this.state.Email} onChange={this.handleInputChange}
+                                              label="Email"/>
+                                </Col>
+                                <Col md={"6"}>
+                                    <MDBInput name="ConfirmEmail" id="ConfirmEmail" className="form-control"
+                                              type="email" required="required" value={this.state.ConfirmEmail}
+                                              onChange={this.handleInputChange} label="Confirm Email"/>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col md={"3"}>
+                                    <label style={{marginTop: '0.2rem', fontWeight: '300'}} htmlFor="addStatus">User
+                                        Type:</label>
+                                </Col>
+                                <Col md={"3"}>
+                                    <select id="addStatus" className="form-control" name="Status"
+                                            style={{fontWeight: '300', fontFamily: "Roboto, sans-serif"}}
+                                            value={this.state.Status} onChange={this.handleInputChange}>
+                                        <option value={"active"}>active</option>
+                                        <option value={"admin"}>admin</option>
+                                    </select>
+                                </Col>
+                            </Row>
+                        </Container>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button
+                            size={"sm"}
+                            color={"primary"}
+                            type={"submit"}
+                        ><MDBIcon icon="plus"/>&nbsp;Add&nbsp;User</Button>
+                        <Button size={"sm"} onClick={() => this.closeAddUserModal()}>Cancel</Button>
+                    </ModalFooter>
+                </form>
+            </Modal>
+        );
+    }
+
 
     managementToolbar(cell, row, rowIndex, tailwaters) {
         return <div className="btn-group" role="toolbar" aria-label="management">
@@ -407,10 +423,7 @@ class Tailwater extends BaseComponent {
                 <MDBCard>
                     <MDBCardBody>
                         <MDBCardTitle>Tailwaters</MDBCardTitle>
-                        <Row>
-                            <Col md={"2"} className="text-danger">
-                            </Col>
-                        </Row>
+
                         <Row>
                             <Col md={"10"}>
                                 <BootstrapTable
@@ -429,6 +442,12 @@ class Tailwater extends BaseComponent {
                                     hover
                                     condensed
                                 />
+                            </Col>
+
+                            <Col md={"2"}>
+                                <Row><Col><Button size={"md"} style={{width: "100%"}} color={"light"}
+                                                  ><MDBIcon icon="plus-circle"/>
+                                                  &nbsp;Add Item</Button></Col></Row>
                             </Col>
                         </Row>
                     </MDBCardBody>
