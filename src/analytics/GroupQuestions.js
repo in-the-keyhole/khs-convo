@@ -23,11 +23,12 @@ import BaseComponent from "../BaseComponent";
 import {compare, cleanArray, getRandomColor} from '../util';
 // noinspection ES6CheckImport
 import {
+    Container,
     Card,
     CardBody,
     CardTitle,
-    Row,
-    Col
+    Col,
+    Row
 } from 'mdbreact';
 import HoverChart from "./helpers/HoverChart";
 
@@ -62,19 +63,19 @@ class GroupQuestions extends BaseComponent {
         };
 
         restAPI({
-            method:'post',
-            url:'/api/convo/groupquestion',
+            method: 'post',
+            url: '/api/convo/groupquestion',
             data: myData
-        }).then( res => {
+        }).then(res => {
             const data = res.data;
             console.log(`Received Convos`, data);
 
-            const message = data.slice(data.lastIndexOf('<Message>')+1, data.lastIndexOf('</Message>'));
+            const message = data.slice(data.lastIndexOf('<Message>') + 1, data.lastIndexOf('</Message>'));
             if (message) {
                 const commands = GroupQuestions.retrieveCommands(message);
                 console.log(`Received command list`, commands);
 
-                self.setState({ convoQuestionsArr: commands });
+                self.setState({convoQuestionsArr: commands});
                 self.fetchGroupQuestions();
             }
         }).catch(err => console.log(err));
@@ -88,12 +89,12 @@ class GroupQuestions extends BaseComponent {
         const pattern = /\((.*?)\)/g;
         let match;
         while ((match = pattern.exec(data)) !== null) {
-          matches.push(match[1]);
+            matches.push(match[1]);
         }
 
-        for(let i=0; i<matches.length; i++) {
+        for (let i = 0; i < matches.length; i++) {
             const t = matches[i].split(" | ");
-            for(let k=0; k<t.length; k++) {
+            for (let k = 0; k < t.length; k++) {
                 done.push(t[k])
             }
         }
@@ -105,12 +106,12 @@ class GroupQuestions extends BaseComponent {
     fetchGroupQuestions() {
         const questionsArr = this.state.convoQuestionsArr;
         restAPI({
-            method:'POST',
-            url:'../api/convo/groupquestion',
+            method: 'POST',
+            url: '../api/convo/groupquestion',
             data: questionsArr
-        }).then( res => {
+        }).then(res => {
             console.log(res);
-            this.setState({ grpQuestions: res.data });
+            this.setState({grpQuestions: res.data});
         }).catch(err => console.log(err));
     }
 
@@ -129,47 +130,27 @@ class GroupQuestions extends BaseComponent {
         grpQuestions.sort(compare);
 
         return (
-            <Card>
-                <CardBody>
-                    <CardTitle>Analytics</CardTitle>
-                    <Row><Col>Group By Question - Hover Chart</Col></Row>
-                    <Row>
-                        <Col className={"chart-main-content"}>
-                            <HoverChart data={this.state.grpQuestions} dataKey={"count"} desc={"Question - Count"}/>
-                        </Col>
-                    </Row>
-                </CardBody>
-            </Card>
+            <Container>
+                <Row>
+                    <Col/>
+                    <Col>
+                        <Card>
+                            <CardBody>
+                                <CardTitle>Analytics</CardTitle>
+                                <Row><Col>Group By Question - Hover Chart</Col></Row>
+                                <Row>
+                                    <Col className={"chart-main-content  scrollbar scrollbar-primary"}>
+                                        <HoverChart data={grpQuestions} dataKey={"count"}
+                                                    desc={"Question - Count"}/>
+                                    </Col>
+                                </Row>
+                            </CardBody>
+                        </Card>
+                    </Col>
+                    <Col/>
+                </Row>
+            </Container>
         );
-
-
-        /*return (
-
-            <Card>
-                <CardBody>
-                    <CardTitle>Analytics</CardTitle>
-                    <Row>
-                        <Col>Group By Question - Hover Chart</Col>
-                    </Row>
-                    <Row>
-                        <Col md={"9"}>
-                            <div className="mainContent">
-                                <RadialBarChart width={500} height={500} cx={150} cy={150} innerRadius={20}
-                                                barCategoryGap={10} outerRadius={140} barSize={20} data={grpQuestions}>
-                                    <RadialBar minAngle={15} background clockWise={true} dataKey='count'/>
-                                    <Legend wrapperStyle={{top: 25, right: 0, left: 0, bottom: 0}} iconSize={10}
-                                            top={10} layout='vertical' content={renderLegend}/>
-                                    <Tooltip content={<CustomTooltip desc={"Question - Count"}/>}/>
-                                </RadialBarChart>
-                            </div>
-                        </Col>
-                        <Col md={"3"}>
-                        </Col>
-
-                    </Row>
-                </CardBody>
-            </Card>
-        );*/
 
     }
 }
