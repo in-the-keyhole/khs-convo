@@ -16,6 +16,7 @@ limitations under the License.
 
 import React, {Component} from 'react';
 import {restLogin, setRestToken} from '../service/restAPI';
+// noinspection ES6CheckImport
 import {
     Card,
     CardBody,
@@ -93,7 +94,7 @@ class Login extends Component {
             store.dispatch(setCredentials(credentials));
             this.redirectToContent();
 
-        }).catch(err => {
+        }).catch(() => {
             store.dispatch(resetCredentials());
             this.setState({
                 loginError: 'Username or password incorrect. Please try again.',
