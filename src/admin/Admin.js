@@ -76,6 +76,7 @@ class Admin extends BaseComponent {
         this.userToolbar = this.userToolbar.bind(this);
         this.openAddUserModal = this.openAddUserModal.bind(this);
         this.onAfterSaveCell = this.onAfterSaveCell.bind(this);
+        this.sendRegistrationEmail = this.sendRegistrationEmail.bind(this);
     }
 
 
@@ -175,6 +176,7 @@ class Admin extends BaseComponent {
             console.log(res);
             if (res) {
                 this.closeCredentialsModal();
+                toast.success('Email sent');
             } else {
                 this.setState({
                     errorMsg: 'Please check this email address'
@@ -226,7 +228,6 @@ class Admin extends BaseComponent {
 
 
     openCredentialsModal(user) {
-        console.log('openCredentialsModal');
         this.setState({
             currentUser: user,
             credentialsModal: true
@@ -412,7 +413,7 @@ class Admin extends BaseComponent {
                     <div className="red">{this.state.errorMsg}</div>
 
                     <ModalFooter/>
-                    <Button color={"primary"} onClick={() => this.sendRegistrationEmail()}>Send Registration
+                    <Button color={"primary"} onClick={this.sendRegistrationEmail}>Send Registration
                         Email
                     </Button>
                     <Button onClick={() => this.closeCredentialsModal()}>Cancel</Button>
