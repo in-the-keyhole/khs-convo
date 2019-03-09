@@ -21,7 +21,9 @@ import BaseComponent from '../BaseComponent';
 import {
     Row,
     Col,
+    Container,
     Button,
+    MDBInput,
     MDBIcon,
     MDBModal,
     MDBModalBody,
@@ -44,14 +46,17 @@ class Tailwater extends BaseComponent {
 
         this.state = {
             locations: [],
-            editing: null,
-            insertID: null,
-            insertLocation: null,
-            insertType: null,
-            insertState: null,
-            insertFlow: null,
-            insertName: null,
-            insertError: null
+            editing: '',
+
+            insertID: '',
+            insertLocation: '',
+            insertType: '',
+            insertState: '',
+            insertFlow: '',
+            insertName: '',
+
+            insertError: '',
+            addItemModal: false
         };
 
         this.componentWillMount = this.componentWillMount.bind(this);
@@ -64,6 +69,9 @@ class Tailwater extends BaseComponent {
         this.openDeleteModal = this.openDeleteModal.bind(this);
         this.closeDeleteModal = this.closeDeleteModal.bind(this);
         this.fetchTailwaters = this.fetchTailwaters.bind(this);
+        this.openAddItemModal = this.openAddItemModal.bind(this);
+        this.closeAddItemModal = this.closeAddItemModal.bind(this);
+        this.modalAddItem = this.modalAddItem.bind(this);
     }
 
 
@@ -84,28 +92,29 @@ class Tailwater extends BaseComponent {
     }
 
 
-    handleTailwaterInsert(insert) {
+    handleTailwaterInsert(item) {
         restAPI({
             method: 'post',
             url: '../api/tailwater/insert',
-            data: insert,
+            data: item,
         }).then(() => {
+            this.closeAddItemModal();
             this.fetchTailwaters();
+            toast.success(`Inserted new item ${item.id}`);
         }).catch((err) =>
             console.log(err)
         );
 
         this.setState({
-            editing: null,
-            insertID: null,
-            insertLocation: null,
-            insertType: null,
-            insertState: null,
-            insertFlow: null,
-            insertName: null
+            editing: '',
+            insertID: '',
+            insertLocation: '',
+            insertType: '',
+            insertState: '',
+            insertFlow: '',
+            insertName: ''
         });
 
-        // this.fetchTailwaters();
     }
 
 
@@ -121,7 +130,7 @@ class Tailwater extends BaseComponent {
             console.log(err)
         });
 
-        this.setState({editing: null});
+        this.setState({editing: ''});
         this.fetchTailwaters();
     }
 
@@ -132,14 +141,13 @@ class Tailwater extends BaseComponent {
             method: 'delete',
             url: '../api/tailwater',
             data: remove,
-        }).then(function () {
+        }).then( () => {
             that.closeDeleteModal();
             that.fetchTailwaters();
-        }).catch(function (err) {
+            toast.success(`Deleted item ${remove.id}`);
+        }).catch( err => {
             console.log(err)
         });
-        this.closeDeleteModal();
-        this.fetchTailwaters();
     }
 
 
@@ -163,10 +171,12 @@ class Tailwater extends BaseComponent {
     }
 
 
-    handleInsertItem() {
+    handleInsertItem(event) {
+        event.preventDefault();
+
         if (this.state.insertID) {
             this.setState({
-                insertError: null
+                insertError: ''
             });
 
             this.handleTailwaterInsert({
@@ -178,24 +188,26 @@ class Tailwater extends BaseComponent {
                 name: this.state.insertName
             });
         } else {
+            const msg = 'ID cannot be empty';
             this.setState({
-                insertError: "ID cannot be empty"
+                insertError: msg
             });
+            toast.error(msg);
         }
     }
 
 
     handleDeleteItem() {
-        let itemId = this.state.editing;
+        const it = this.state.currentItem;
 
         // noinspection JSDeprecatedSymbols
         this.handleTailwaterDelete({
-            id: itemId,
-            location: this.refs[`location_${itemId}`].value,
-            type: this.refs[`type_${itemId}`].value,
-            state: this.refs[`state_${itemId}`].value,
-            flowData: this.refs[`flowData_${itemId}`].value,
-            name: this.refs[`name_${itemId}`].value
+            id: it.id,
+            location: it.location,
+            type: it.type,
+            state: it.state,
+            flowData: it.flowData,
+            name: it.name
         });
     }
 
@@ -240,105 +252,141 @@ class Tailwater extends BaseComponent {
     }
 
 
-/*    openAddRecordModal() {
-        this.setState(
-            {
-
-            });
-    }
-
-
-    closeAddRecordModal() {
-        console.log('closeAddUserModal');
-        this.setState(
-            {
-
-            });
-    }
-
-
-    modalAddRecord() {
+    modelDeleteItem() {
         return (
-            <Modal size={"lg"} isOpen={this.state.addUserModal} onHide={this.close}>
-                <form onSubmit={this.addUserHandler}>
-                    <ModalBody>
-                        <ModalHeader>Add User</ModalHeader>
-                        <Container>
-                            <Row>
-                                <Col>
-                                    <p className="text-danger">{this.state.errorMsg}</p>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col md={"4"}>
-                                    <MDBInput
-                                        name="FirstName"
-                                        id="FirstName"
-                                        className="form-control"
-                                        type="text"
-                                        required
-                                        value={this.state.FirstName}
-                                        onChange={this.handleInputChange}
-                                        label="First Name"/>
-                                </Col>
-                                <Col md={"5"}>
-                                    <MDBInput
-                                        name="LastName"
-                                        id="LastName"
-                                        className="form-control"
-                                        type="text"
-                                        required
-                                        value={this.state.LastName}
-                                        onChange={this.handleInputChange}
-                                        label="Last Name"/>
-                                </Col>
-                                <Col md={"3"}>
-                                    <MDBInput name="Phone" id="Phone" className="form-control" type="text" required
-                                              value={this.state.Phone} onChange={this.handleInputChange}
-                                              label="Phone Number"/>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col md={"6"}>
+            <MDBModal size={"sm"} isOpen={this.state.deleteModal}>
+                <div className={"modal-wrapper"}>
+                    <MDBModalBody>
+                        <MDBModalHeader>Delete Tailwaters Item?</MDBModalHeader>
+                        <Row><Col sm={"1"}>&nbsp;</Col><Col>{this.state.currentItem
+                            ? `ID: ${this.state.currentItem.id}` : ''}</Col></Row>
+                        <MDBModalFooter>
+                            <Button size={"sm"} color={"success"} onClick={this.handleDeleteItem}>Yes</Button>
+                            <Button size={"sm"} color={"danger"} onClick={this.closeDeleteModal}>No</Button>
+                        </MDBModalFooter>
+                    </MDBModalBody>
+                </div>
+            </MDBModal>
+        )
 
-                                    <MDBInput name="Email" id="Email" className="form-control" type="email" required
-                                              value={this.state.Email} onChange={this.handleInputChange}
-                                              label="Email"/>
-                                </Col>
-                                <Col md={"6"}>
-                                    <MDBInput name="ConfirmEmail" id="ConfirmEmail" className="form-control"
-                                              type="email" required="required" value={this.state.ConfirmEmail}
-                                              onChange={this.handleInputChange} label="Confirm Email"/>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col md={"3"}>
-                                    <label style={{marginTop: '0.2rem', fontWeight: '300'}} htmlFor="addStatus">User
-                                        Type:</label>
-                                </Col>
-                                <Col md={"3"}>
-                                    <select id="addStatus" className="form-control" name="Status"
-                                            style={{fontWeight: '300', fontFamily: "Roboto, sans-serif"}}
-                                            value={this.state.Status} onChange={this.handleInputChange}>
-                                        <option value={"active"}>active</option>
-                                        <option value={"admin"}>admin</option>
-                                    </select>
-                                </Col>
-                            </Row>
-                        </Container>
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button
-                            size={"sm"}
-                            color={"primary"}
-                            type={"submit"}
-                        ><MDBIcon icon="plus"/>&nbsp;Add&nbsp;User</Button>
-                        <Button size={"sm"} onClick={() => this.closeAddUserModal()}>Cancel</Button>
-                    </ModalFooter>
-                </form>
-            </Modal>
+    }
+
+
+    openAddItemModal() {
+        this.setState(
+            {addItemModal: true}
         );
-    }*/
+    }
+
+
+    closeAddItemModal() {
+        this.setState(
+            {addItemModal: false}
+        );
+    }
+
+
+    modalAddItem() {
+
+        return (
+            <MDBModal size={"sm"} isOpen={this.state.addItemModal}>
+                <div className={"modal-wrapper"}>
+                    <form onSubmit={this.handleInsertItem}>
+
+                        <MDBModalBody>
+                            <MDBModalHeader>Add Tailwater Item</MDBModalHeader>
+                            <Container>
+                                <Row>
+                                    <Col>
+                                        <p className="text-danger">{this.state.errorMsg}</p>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col md={"4"}>
+                                        <MDBInput
+                                            name="insertID"
+                                            required
+                                            type={"text"}
+                                            value={this.state.insertID}
+                                            onChange={this.handleInputChange}
+                                            label="ID"/>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col md={"4"}>
+                                        <MDBInput
+                                            name="insertLocation"
+                                            required
+                                            type={"text"}
+                                            value={this.state.insertLocation}
+                                            onChange={this.handleInputChange}
+                                            label="Location"/>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col md={"3"}>
+                                        <MDBInput
+                                            name="insertType"
+                                            required
+                                            type={"text"}
+                                            value={this.state.insertType}
+                                            onChange={this.handleInputChange}
+                                            label="Type"/>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col md={"3"}>
+                                        <MDBInput
+                                            name="insertState"
+                                            required
+                                            type={"text"}
+                                            value={this.state.insertState}
+                                            onChange={this.handleInputChange}
+                                            label="State"/>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col md={"3"}>
+                                        <MDBInput
+                                            name="insertFlow"
+                                            required
+                                            type={"text"}
+                                            value={this.state.insertFlow}
+                                            onChange={this.handleInputChange}
+                                            label="Flow"/>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col md={"12"}>
+                                        <MDBInput
+                                            name="insertName"
+                                            required
+                                            type={"text"}
+                                            value={this.state.insertName}
+                                            onChange={this.handleInputChange}
+                                            label="Name"/>
+                                    </Col>
+                                </Row>
+
+                            </Container>
+                        </MDBModalBody>
+
+                        <MDBModalFooter>
+                            <Button
+                                size={"sm"}
+                                color={"primary"}
+                                type={"submit"}
+                            ><MDBIcon icon="plus"/>&nbsp;Add&nbsp;Item</Button>
+                            <Button
+                                size={"sm"}
+                                color={"danger"}
+                                onClick={this.closeAddItemModal}> Cancel</Button>
+                        </MDBModalFooter>
+                    </form>
+                </div>
+            </MDBModal>
+        );
+    }
 
 
     managementToolbar(cell, row, rowIndex, tailwaters) {
@@ -415,7 +463,6 @@ class Tailwater extends BaseComponent {
             }
         ];
 
-
         return (
             <Fragment>
                 <MDBCard>
@@ -444,26 +491,18 @@ class Tailwater extends BaseComponent {
 
                             <Col md={"2"}>
                                 <Row><Col><Button size={"md"} style={{width: "100%"}} color={"light"}
-                                                  ><MDBIcon icon="plus-circle"/>
-                                                  &nbsp;Add Item</Button></Col></Row>
+                                                  onClick={this.openAddItemModal}
+                                ><MDBIcon icon="plus-circle"/>
+                                    &nbsp;Add Item</Button></Col></Row>
                             </Col>
                         </Row>
                     </MDBCardBody>
                 </MDBCard>
 
-                <MDBModal size={"sm"} isOpen={this.state.deleteModal}>
-                    <div className={"modal-wrapper"}>
-                        <MDBModalBody>
-                            <MDBModalHeader>Delete Tailwaters Item?</MDBModalHeader>
-                            <Row><Col sm={"1"}>&nbsp;</Col><Col>{this.state.currentItem
-                                ? `ID: ${this.state.currentItem.id}` : ''}</Col></Row>
-                            <MDBModalFooter>
-                                <Button size={"sm"} color={"danger"} onClick={this.deleteItem}>Yes</Button>
-                                <Button size={"sm"} onClick={this.closeDeleteModal}>No</Button>
-                            </MDBModalFooter>
-                        </MDBModalBody>
-                    </div>
-                </MDBModal>
+                {this.modelDeleteItem()}
+
+                {this.modalAddItem()}
+
             </Fragment>
         )
 
