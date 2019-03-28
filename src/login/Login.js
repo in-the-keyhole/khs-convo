@@ -14,91 +14,158 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React, { Component } from 'react';
-import axios from 'axios';
+import React, {Component} from 'react';
+import {restLogin, setRestToken} from '../service/restAPI';
+// noinspection ES6CheckImport
+import {
+    Card,
+    CardBody,
+    CardTitle,
+    Container,
+    Button,
+    Row,
+    Col,
+    Input,
+    MDBIcon
+} from 'mdbreact';
+import {resetCredentials, setCredentials} from '../actions';
+import {store} from '../configureStore';
+import {connect} from 'react-redux';
+import {pathDefaultContent} from '../constants';
+import {base} from '../service/restHelpers';
+
 
 class Login extends Component {
 
     constructor(props) {
+        super(props);
+        store.dispatch(resetCredentials);
 
-        super(props); 
-        this.state = { username: '', password: '', loginError: '' };
+        this.state = {
+            loginError: '',
+            firstName: '',
+            lastName: ''
+        };
+
         this.handleInputChange = this.handleInputChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);        
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.redirectToContent = this.redirectToContent.bind(this);
     }
 
     handleInputChange(ev) {
+        ev.preventDefault();
         const target = ev.target;
         this.setState({[target.name]: target.value});
         this.setState({error: ''});
     }
 
+    // Call this after a login success from server
+    // Redirects to the default protected content
+    redirectToContent() {
+        this.props.history.push(pathDefaultContent);
+    }
+
     handleSubmit(ev) {
-        console.log(this.state);
+        ev.preventDefault();
+        store.dispatch(resetCredentials());
+        setRestToken(null);
 
-        var base = '';
-        if (window.location.hostname === 'localhost') {
-            base = 'http://localhost:3001';
-        }
-
-        console.log('submit login');
-        var self = this;
-        axios({// using axios directly to avoid redirect interceptor
-            method:'post',
-            url:'/api/auth/login',
+        restLogin({
+            method: 'post',
+            url: '/api/auth/login',
             baseURL: base,
             data: this.state
-        }).then(function(res) {
-            console.log(res.data);
-            window.sessionStorage.setItem('token', res.data.token);
-            window.sessionStorage.setItem('firstName', res.data.FirstName);
-            window.sessionStorage.setItem('lastName', res.data.LastName);
-            window.sessionStorage.setItem('phone', res.data.Phone);
-            window.sessionStorage.setItem('status', res.data.Status);
-            window.sessionStorage.setItem('apitoken', res.data.apitoken);
-            window.sessionStorage.setItem('slackchannel', res.data.slackchannel);
-            window.location = ('/emulator');
-        }).catch(function(err){
-            self.setState({loginError: 'Username or password incorrect. Please try again.'});
+
+        }).then(res => {
+
+            // Login? Login? We don't need no stinkin' Login.
+            // Give a shout-out that we have an authenticated user who is ready to roll.
+            const credentials = {
+                apitoken: res.data.apitoken,
+                token: res.data.token,
+                firstName: res.data.FirstName,
+                lastName: res.data.LastName,
+                phone: res.data.Phone || '',
+                status: res.data.Status,
+                slackchannel: res.data.slackchannel
+            };
+
+            setRestToken(credentials.token);
+            store.dispatch(setCredentials(credentials));
+            this.redirectToContent();
+
+        }).catch(() => {
+            store.dispatch(resetCredentials());
+            this.setState({
+                loginError: 'Username or password incorrect. Please try again.',
+                firstName: '',
+                lastName: ''
+            });
         });
 
-        ev.preventDefault();
-    }    
+    }
 
-        
+
     render() {
+
+        const inputStyle = {padding: '0.5rem', color: "#000"};
+        const cardLayout = {width: "26.0rem", padding: "3.0rem"};
+
         return (
+            <Container>
+                <Row>
+                    <Col/>
+                    <Col>
+                        <Card style={cardLayout}>
+                            <CardBody>
+                                <CardTitle>Login</CardTitle>
 
-            <div className="container">
-                <div className="row">
-                    <div className="col-md-12"><h1>Login</h1></div>
-                </div>        
+                                <form onSubmit={this.handleSubmit}>
 
-                <div className="row">
-                    <div className="col-md-4 col-md-offset-4">
+                                    <Input name={"username"}
+                                           id={"username"}
+                                           label={"User name"}
+                                           hint={"User name"}
+                                           type={"text"}
+                                           icon={"user"}
+                                           group
+                                           style={inputStyle}
+                                           value={this.state.username}
+                                           onChange={this.handleInputChange} placeholder="username"/>
 
-                        <form className="form" onSubmit={this.handleSubmit}>
+                                    <Input name={"password"}
+                                           id={"password"}
+                                           label={"Password"}
+                                           hint={"Password"}
+                                           type={"password"}
+                                           icon={"lock"}
+                                           group
+                                           style={inputStyle}
+                                           value={this.state.password}
+                                           onChange={this.handleInputChange} placeholder="password"/>
 
-                            <div className="form-group">
-                                <label>Username:</label>
-                                <input name="username" id="username" className="form-control" type="text" value={this.state.username} onChange={this.handleInputChange} placeholder="username" />
-                            </div>
+                                    <Button size={""}
+                                            type={"submit"}
+                                            color={"light"}
+                                            value={"Login"}>
+                                        <MDBIcon icon={"sign-in"}/>&nbsp;Login</Button>
 
-                            <div className="form-group">
-                                <label>Password:</label>
-                                <input name="password" id="password" className="form-control" type="password" value={this.state.password} onChange={this.handleInputChange} placeholder="password" />
-                            </div>
+                                </form>
 
-                            <input className="btn btn-default" type="submit" value="Login" />
-                        </form>
+                                <div className={"login-error"}>{this.state.loginError}</div>
+                            </CardBody>
+                        </Card>
+                    </Col>
 
-                        <div className="login-error">{this.state.loginError}</div>
-                    </div>
-                </div>
-            </div>
-        ) 
+                    <Col/>
+                </Row>
+            </Container>
+        )
     }
 
 }
 
-export default Login
+
+const mapStateToProps = state => ({credentials: state.credentials});
+export default connect(mapStateToProps)(Login);
+

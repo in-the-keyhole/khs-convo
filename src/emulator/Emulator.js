@@ -14,39 +14,129 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React, { Component } from 'react';
-import ajax from '../util/ajax';
 import '../styles/emulator.css';
-import NotificationBar from '../common/NotificationBar';
+import React from 'react';
+import restAPI from '../service/restAPI';
+import NotificationBar from '../upload/NotificationBar';
+import paginationFactory from 'react-bootstrap-table2-paginator';
+import cellEditFactory, {Type} from 'react-bootstrap-table2-editor';
+import BootstrapTable from 'react-bootstrap-table-next';
+import {checkCredentials} from "../common/checkCredentials";
+import BaseComponent from '../BaseComponent';
+import {connect} from "react-redux";
+import {pageinationOptions} from "../common/pageinationOptions";
+// noinspection ES6CheckImport
+import {
+    Row,
+    Col,
+    Button,
+    Card,
+    CardBody,
+    CardTitle,
+    Input,
+    MDBIcon
+} from 'mdbreact';
 
-import '../styles/data-table.css';
-import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
+const columns = (isAdmin) => {
+
+    return [
+        {
+            hidden: true,
+            dataField: '_id'
+        },
+        {
+            text: 'Keyhole SMS Commands',
+            dataField: 'key',
+            width: "75%",
+            isKey: true
+        },
+        {
+            text: 'Status',
+            dataField: 'eventStatus',
+            width: "25%",
+            editable: isAdmin,
+            editor: {
+                type: Type.CHECKBOX,
+                value: 'enabled:disabled'
+            }
+        }
+    ];
+
+};
 
 
-class Emulator extends Component {
+/**
+ * Custom page sizes for Emulator commands table.
+ * @type {{} & {sizePerPageList: number[]} & {showTotal: boolean, paginationTotalRenderer: (function(*, *, *): *)}}
+ */
+const commandsPaginationOptions = Object.assign(
+    {},
+    {sizePerPageList: [6, 12, 24, 48]},
+    pageinationOptions);
+
+/**
+ * Helper for renderConversation()
+ *
+ * @param i
+ * @param overrideFontSize
+ * @param input
+ * @returns {*}
+ */
+const questionElement = ({i, overrideFontSize, input}) =>  (
+
+        <div className="conversation__message-container conversation__message-question"
+             style={overrideFontSize}
+             key={`question_${i}`}>
+            <div className="conversation__message-content white-space">
+                {input.question}
+            </div>
+        </div>
+);
+
+
+/**
+ * Helper for renderConversation
+ *
+ * @param i
+ * @param overrideFontSize
+ * @param dynamicAnswer
+ * @returns {*}
+ */
+const answerElement = ({i, overrideFontSize, dynamicAnswer}) => (
+
+        <div className="conversation__message-container conversation__message-answer" key={`answer_${i}`}
+             style={overrideFontSize}>
+            <div className="conversation__message-content white-space">
+                {dynamicAnswer}
+            </div>
+        </div>
+);
+
+
+class Emulator extends BaseComponent {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            FromZip: "",
-            FromState: "",
-            FromCity: "",
-            Body:"",
-            FromCountry: "",
-            To: "9132703506",
-            From:  window.sessionStorage.getItem('phone'),
-            Answer: "",
-            Commands: "",
-            CommandsCached: "",
-            CachedCommands: "false",
-            File: "",
-            Status: window.sessionStorage.getItem('status'),
+            FromZip: '',
+            FromState: '',
+            FromCity: '',
+            Body: '',
+            FromCountry: '',
+            To: '9132703506',
+            From: props.credentials.phone,
+            Answer: '',
+            Commands: '',
+            CommandsCached: '',
+            CachedCommands: 'false',
+            File: '',
+            Status: props.credentials.status,
             Conversation: [],
-            CommandSubTitle: "",
-            CommandLink: "",
-            EventArray:[]
-        }
+            CommandSubTitle: '',
+            CommandLink: '',
+            EventArray: []
+        };
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -55,8 +145,6 @@ class Emulator extends Component {
         this.renderConversation = this.renderConversation.bind(this);
         this.loadMoreMessages = this.loadMoreMessages.bind(this);
         this.onConversationKeypress = this.onConversationKeypress.bind(this);
-
-
     }
 
     handleInputChange(event) {
@@ -65,17 +153,23 @@ class Emulator extends Component {
     }
 
     dynamicLinks(str) {
-        if (typeof str !== 'string') { return str; }
-        var listSpace = str.split(' ')
-        listSpace.forEach(function(valSpace, iSpace) {
-            if (valSpace.includes('http')){
-                var listLine = valSpace.split('\n');
-                listLine.forEach(function(valLine, iLine){
-                    if (valLine.includes('http')){
-                        if (valLine.indexOf('</Message></Response>') > -1 ){
-                            valLine = valLine.replace ('</Message></Response>', '');
+        if (typeof str !== 'string') {
+            return str;
+        }
+
+        const listSpace = str.split(' ');
+        listSpace.forEach((valSpace, iSpace) => {
+
+            if (valSpace.includes('http')) {
+                const listLine = valSpace.split('\n');
+
+                listLine.forEach((valLine, iLine) => {
+
+                    if (valLine.includes('http')) {
+                        if (valLine.indexOf('</Message></Response>') > -1) {
+                            valLine = valLine.replace('</Message></Response>', '');
                         }
-                        listLine[iLine] = '<a target="_blank" href="' + valLine + '">' + valLine + '</a>';
+                        listLine[iLine] = '<a target="_blank" href="' + valLine + '"/' + valLine + '>';
                         listSpace[iSpace] = listLine.join('\n');
                     }
                 });
@@ -83,8 +177,9 @@ class Emulator extends Component {
         });
         return listSpace.join(' ');
     }
+
     onConversationKeypress(ev) {
-        var key = ev.keyCode || ev.which;
+        const key = ev.keyCode || ev.which;
         if (key === 13) { // enter key
             this.handleSubmit(ev);
         }
@@ -93,17 +188,17 @@ class Emulator extends Component {
 
 
     determineEventCommand(command) {
-        //console.log ("command  passedin   "   + command) ;
-        var enabled = 'enabled';
-        this.state.EventArray.forEach(function (item, index) {
-            //console.log ("item eventStatus  "   + item.eventStatus) ;
-            var re = /\((.*)\)/g;
-            var commandArray = item.key.match(re);
-            //should be only one record like   (hellotest | hi)
+        let enabled = 'enabled';
+
+        this.state.EventArray.forEach(item => {
+            const re = /\((.*)\)/g;
+            const commandArray = item.key.match(re);
+
+            // should be only one record like   (hellotest | hi)
             commandArray[0] = commandArray[0].replace('(', '').replace(')', '');
-            var commands = commandArray[0].split('|');
-            commands.forEach(function (commandItem, commandIndex) {
-                //console.log ("commandItem   "   + commandItem.trim()) ;
+            const commands = commandArray[0].split('|');
+
+            commands.forEach(commandItem => {
                 if (commandItem.trim() === command && item.eventStatus === 'disabled') {
                     enabled = 'disabled'
                 }
@@ -114,81 +209,75 @@ class Emulator extends Component {
     }
 
     handleSubmit(ev) {
-        var eventyStatus =this.determineEventCommand(this.state.Body);
-        var self = this;
-        var payload = {
+        ev.preventDefault();
+        const eventyStatus = this.determineEventCommand(this.state.Body);
+        const self = this;
+        const payload = {
             Body: this.state.Body,
             From: this.state.From,
             Status: this.state.Status,
             To: this.state.To
-        }
-        if (eventyStatus === 'enabled'){
-            ajax({
-                method:'POST',
-                url:'/api/convo',
+        };
+        if (eventyStatus === 'enabled') {
+            restAPI({
+                method: 'POST',
+                url: '/api/convo',
                 data: payload,
-                headers: {"token": window.sessionStorage.getItem('apitoken') }
-            }).then(function(res) {
+                headers: {'token': this.props.credentials.apitoken}
+            }).then(() => {
 
-                self.setState({ Body: "" });
+                self.setState({Body: ''});
                 self.getConversationsForPhone();
 
-            }).catch(function(err){
-                console.log(err)}
-            );
-        }else {
-            console.log('command is not  enabled');
-            var newConvo = [];
-            ajax({
-                method:'POST',
-                url:'/api/convo/inactivecommand',
+            }).catch(err => console.log(err));
+        } else {
+            console.log('command is not enabled');
+            restAPI({
+                method: 'POST',
+                url: '/api/convo/inactivecommand',
                 data: payload
-            }).then(function(res) {
-                newConvo =   res.data.concat(self.state.Conversation);
-                self.setState({ Body: "" });
-                self.setState({
-                    Conversation: newConvo
-                });
+            }).then(res => {
+                const newConvo = res.data.concat(self.state.Conversation);
+                self.setState({Body: ""});
+                self.setState({Conversation: newConvo});
 
-            }).catch(function(err){
-                console.log(err)}
-            );
+            }).catch(err => console.log(err));
         }
-        ev.preventDefault();
     }
+
     componentWillMount() {
-        var self = this;
+        super.componentWillMount();
+        const self = this;
 
+        let commandArray;
+        let eventStatus;
+        const eventArray = [];
 
-       var commandArray=[];
-       var eventStatus = [];
-       var eventArray = [];
-
-        var myData = {
+        const myData = {
             Body: "availablecommands",
             To: "+19132703506",
-            From: window.sessionStorage.getItem('phone')
+            From: this.props.credentials.phone
         };
 
-        ajax({
+        restAPI({
             method: 'POST',
             url: '/api/convo',
             data: myData,
-            headers: {"token": window.sessionStorage.getItem('apitoken') }
+            headers: {"token": this.props.credentials.apitoken}
         }).then(function (res) {
-            var re = /(.*)[\n\r]/g;
-            var tempString = res.data;
+            const re = /(.*)[\n\r]/g;
+            let tempString = res.data;
             tempString = tempString + '\n';
             tempString = self.dynamicLinks(tempString);
             commandArray = tempString.match(re);
 
-            commandArray = commandArray.map(command=> command.replace('\n', '').replace('\r',''));
+            commandArray = commandArray.map(command => command.replace('\n', '').replace('\r', ''));
             self.setState(
                 {
                     CommandSubTitle: commandArray[0].replace('<?xml version="1.0" encoding="UTF-8"?><Response><Message>', ''),
                     CommandLink: commandArray[commandArray.length - 1]
                 }
-            )
+            );
 
             commandArray.splice(0, 1);
             commandArray.splice(commandArray.length - 1, 1);
@@ -204,26 +293,25 @@ class Emulator extends Component {
             }
 
 
-            var eventData = {
-                events: commandArray
-            };
+            const eventData = {events: commandArray};
 
-            ajax({
+            restAPI({
                 method: 'POST',
                 url: '/api/convo/geteventstatus',
                 data: eventData
             }).then(function (events) {
 
                 eventStatus = events.data;
-                commandArray.forEach(function (item,index){
-                    eventArray.push({key:item, eventStatus:"enabled"});
-                    eventStatus.forEach(function( event, eventIndex){
+                commandArray.forEach(function (item, index) {
+                    eventArray.push({key: item, eventStatus: "enabled"});
+                    eventStatus.forEach(event => {
 
-                        if (item === event.name ){
+                        if (item === event.name) {
 
                             eventArray[index] = {
-                                key:item,
-                                eventStatus:"disabled"
+                                _id: event._id,
+                                key: item,
+                                eventStatus: "disabled"
                             }
                         }
                     });
@@ -241,7 +329,7 @@ class Emulator extends Component {
                 function (err) {
                     console.log(err)
                 }
-                );
+            );
         }).catch(
             function (err) {
                 console.log(err)
@@ -250,163 +338,206 @@ class Emulator extends Component {
         this.getConversationsForPhone();
     }
 
-    scrollConversationToBottom() {
+    static scrollConversationToBottom() {
         const el = document.getElementById('emulator__conversation-thread');
         el.scrollTop = el.scrollHeight;
     }
 
     loadMoreMessages() {
-        var skip = this.state.Conversation.length;
+        const skip = this.state.Conversation.length;
         this.getConversationsForPhone(skip);
     }
 
     getConversationsForPhone(skip) {
-        var self = this;
+        const self = this;
 
-        var phoneFrom = window.sessionStorage.getItem('phone');
-        var getConvoData = {
+        const phoneFrom = this.props.credentials.phone;
+        const getConvoData = {
             To: "+19132703506",
             From: phoneFrom
         };
-        var skipCount = skip ? skip : 0;
+        const skipCount = skip ||  0;
 
-        ajax({
+        restAPI({
             method: 'GET',
-            url: '../api/convo/getconvoforphone?phone=' + phoneFrom + '&skip=' + skipCount,
+            url: `../api/convo/getconvoforphone?phone=${phoneFrom}&skip=${skipCount}`,
             data: getConvoData
-        }).then(function(res) {
-            var newConvo = (skipCount === 0) ? res.data : self.state.Conversation.concat(res.data);
+        }).then(function (res) {
+            const newConvo = (skipCount === 0) ? res.data : self.state.Conversation.concat(res.data);
             self.setState({
                 Conversation: newConvo
             });
-            self.scrollConversationToBottom();
+            Emulator.scrollConversationToBottom();
             self.forceUpdate();
-        }).catch(function(err){ console.log(err) });
-    }
-
-    renderConversation() {
-        const convo = this.state.Conversation;
-        if (convo.length > 0) {
-            var elements = [];
-            for (var i = 0; i < convo.length; i++) {
-                var input = convo[i];
-                var dynamicAnswer = this.dynamicLinks(input.answer);
-                var questionElement = (
-                    <div className="conversation__message-container conversation__message-question" key={'question_' + i}>
-                        <div className="conversation__message-content white-space" dangerouslySetInnerHTML={{__html: input.question}}></div>
-                    </div>
-                );
-                var answerElement = (
-                    <div className="conversation__message-container conversation__message-answer" key={'answer_' + i}>
-                        <div className="conversation__message-content white-space" dangerouslySetInnerHTML={{__html: dynamicAnswer}}></div>
-                    </div>
-                )
-                elements.push(answerElement);
-                elements.push(questionElement);
-            }
-            return elements.reverse();
-        } else {
-            return [];
-        }
-    }
-
-
-    onAfterSaveCell(row, cellName, cellValue) {
-
-        var update = {
-            event: {
-                key: row.key,
-                status:row.eventStatus
-            }
-        }
-        ajax({
-            method:'post',
-            url:'../api/convo/disableevent',
-            data: update,
-        }).then(function (result){
-
-        }).catch(function(err){
+        }).catch(function (err) {
             console.log(err)
         });
-
     }
 
+
+    /**
+     * Paints the conversation elements to the sending cneter's transcript
+     *
+     * @returns {*[]}
+     */
+    renderConversation() {
+        const convo = this.state.Conversation;
+        const elements = [];
+        const overrideFontSize = {fontSize: "0.9rem"};
+        convo.forEach((input, i) => {
+            const dynamicAnswer = this.dynamicLinks(input.answer);
+
+            elements.push(questionElement({i, overrideFontSize, input}));
+            elements.push(answerElement({i, overrideFontSize, dynamicAnswer}));
+
+        });
+        return elements.reverse();
+    }
+
+
+    /**
+     * Saves to Mongodb. Called by onBlur event tied to editable table cells. Specifically, the method
+     * sends the cellValue to the API to modify the document according to eventStatus enabled/disabled.
+     * @param row
+     * @param cellName
+     * @param cellValue -- an object of all fields of the row's document
+     */
+    onAfterSaveCell(row, cellName, cellValue) {
+
+        restAPI({
+            method: 'post',
+            url: '../api/convo/disableevent',
+            data: cellValue
+        })
+            .then(result => console.log(`onAfterSaveCell`, result))
+            .catch(err => console.log(err));
+    }
 
 
     render() {
-        var conversationElements = this.renderConversation();
-        var editable =  false;
-        if (window.sessionStorage.getItem('status')==='admin'){
-            editable={
-                type: 'select', options: { values: ['enabled','disabled'] } 
-            }
+        if (!checkCredentials()) {
+            return '';
         }
+        // TODO Stop injecting HTML from the API. See help.js for its own TODO
+        const CommandLink = ({value}) => (<div dangerouslySetInnerHTML={{__html: value}}/>);
+
+        const buttonAligment = {marginTop: '2rem', width: "100%"};
+        const conversationElements = this.renderConversation();
+        const isAdmin = this.props.credentials.status === 'admin';
+
+        const titleStyle = {fontSize: "1.22rem", color: "#66f"};
+
+        const card1 =
+            <Card>
+                <CardBody>
+                    <CardTitle style={titleStyle}>Sending Center</CardTitle>
+                    <Row>
+                        <Col>
+                            <span style={{fontSize: "0.85rem", color: "#888"}}>
+                                {`${this.state.Conversation.length || 'no'} commands sent:`}</span>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col className="emulator__message-list" id="emulator__conversation-thread">
+                            {conversationElements}
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col md={"8"}>
+                            <Input name="Body"
+                                   type="text"
+                                   autoFocus
+                                   value={this.state.Body || ''}
+                                   onChange={this.handleInputChange}
+                                   onKeyPress={this.onConversationKeypress}
+                                   label={"Enter command"}
+                            />
+                        </Col>
+                        <Col md={"4"}>
+                            <Button size={"sm"}
+                                    color={"light"}
+                                    onClick={this.handleSubmit}
+                                    style={buttonAligment}><MDBIcon icon="paper-plane" />&nbsp;Send</Button>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col md={"8"}>
+                            <Input name="From"
+                                   type="tel"
+                                   validate
+                                   value={this.state.From || ''}
+                                   onChange={this.handleInputChange}
+                                   label={"Enter phone"}
+                            />
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col md={"5"}>
+                            <Button size={"sm"}
+                                    color={"light"}
+                                    style={buttonAligment}
+                                    onClick={this.loadMoreMessages}>Load More Msgs</Button>
+                        </Col>
+                    </Row>
+
+
+                </CardBody>
+            </Card>
+        ;
+
+        const card2 =
+            <Card>
+                <CardBody>
+                    <CardTitle  style={titleStyle}>Installed Commands</CardTitle>
+                    <Row>
+                        <Col>
+                            <BootstrapTable
+                                bootstrap4
+                                data={this.state.EventArray}
+                                columns={columns(isAdmin)}
+                                keyField={'key'}
+                                pagination={paginationFactory( commandsPaginationOptions )}
+                                cellEdit={cellEditFactory({
+                                    mode: 'click',
+                                    blurToSave: true,
+                                    afterSaveCell: this.onAfterSaveCell
+                                })}
+                                striped
+                                hover
+                                condensed
+                            />
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <CommandLink value={this.state.CommandLink}/>
+                        </Col>
+                    </Row>
+                </CardBody>
+            </Card>
+        ;
+
         return (
-            <div className="container">
-                <NotificationBar  />
-                <div className="row">
-                    <div className="col-md-12"><h1>Emulator</h1></div>
-                </div>
-                <form encType="multipart/form-data" action="">
-                    <input type="file" name="fileName" defaultValue="fileName" id="upload" style={{display: 'none'}} onChange={this.uploadFile}/>
-                </form>
+            <Card>
+                <CardBody>
+                    <NotificationBar/>
+                    <CardTitle>Command Emulator</CardTitle>
 
-                <div className="row">
-                    <div className="col-md-6">
-                        <div className="emulator-container">
-                            <div className="row">
-                                <div className="emulator__message-list" id="emulator__conversation-thread">
-                                    { conversationElements }
-                                </div>
-                            </div>
-                            <div className="row">
-                                <div className="col-md-10">
-                                    <input name="Body" type="text" className="form-control emulator-input" autoFocus value={this.state.Body} onChange={this.handleInputChange} onKeyPress={this.onConversationKeypress} placeholder="Type any of the available commands..." />
-                                </div>
-                                <div className="col-md-2">
-                                    <button className="btn btn-default" onClick={this.handleSubmit}>Send</button>
-                                </div>
-                                <div className="col-md-4">
-                                    <input name="From" className="form-control" type="tel" value={this.state.From} onChange={this.handleInputChange} placeholder="Phone Number" />
-                                </div>
-                                <div className="col-md-3">
-                                    <button className="btn btn-primary" onClick={this.loadMoreMessages}>Load More</button>
-                                </div>
-                                <div className="col-md-3">
-                                    <span>{ this.state.Conversation.length } Showing</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <form encType="multipart/form-data" action="">
+                        <Input type="file" name="fileName" id="upload" style={{display: 'none'}}
+                               onChange={this.uploadFile}/>
+                    </form>
 
-                    <div className="col-md-6">
+                    <Row>
+                        <Col md={"5"}>{card1}</Col>
+                        <Col>{card2}</Col>
+                    </Row>
 
-                        <div>
-                        <h3 className="command">Available Convo Commands</h3>
-                        <BootstrapTable
-                            data={ this.state.EventArray }
-                            pagination
-                            cellEdit={ {
-                                mode: 'click',
-                                blurToSave: true,
-                                afterSaveCell: this.onAfterSaveCell
-                            }}>
-                          <TableHeaderColumn dataField='key' isKey  width ="75%">{this.state.CommandSubTitle}</TableHeaderColumn>
-                          <TableHeaderColumn dataField='eventStatus' width="25%"  editable={ editable  }> Status</TableHeaderColumn>
-                        </BootstrapTable>
-                        </div>
-                        <div className="white-space" dangerouslySetInnerHTML={{__html: this.state.CommandLink}}></div>
-                    </div>
-                </div>
-            </div>
+                </CardBody>
+            </Card>
         )
     }
 }
 
-
-
-
-
-
-
-export default Emulator
+const mapStateToProps = state => ({credentials: state.credentials});
+export default connect(mapStateToProps)(Emulator);

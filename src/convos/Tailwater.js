@@ -14,283 +14,499 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React from 'react';
-import ajax from '../util/ajax';
-import { Modal  } from 'react-bootstrap';  
+import React, {Fragment} from 'react';
+import restAPI from '../service/restAPI';
+import BaseComponent from '../BaseComponent';
+// noinspection ES6CheckImport
+import {
+    Row,
+    Col,
+    Container,
+    Button,
+    MDBInput,
+    MDBIcon,
+    MDBModal,
+    MDBModalBody,
+    MDBModalHeader,
+    MDBModalFooter,
+    MDBCard,
+    MDBCardBody,
+    MDBCardTitle,
+    toast
+} from 'mdbreact';
+import CommonUI from "../common/CommonUI";
+import paginationFactory from "react-bootstrap-table2-paginator";
+import {pageinationOptions} from "../common/pageinationOptions";
+import cellEditFactory from "react-bootstrap-table2-editor";
+import BootstrapTable from 'react-bootstrap-table-next';
 
-class Tailwater extends React.Component {
+class Tailwater extends BaseComponent {
     constructor(props) {
         super(props);
+
         this.state = {
             locations: [],
-            editing: null,
-            insertID: null,
-            insertLocation: null,
-            insertType: null,
-            insertState: null,
-            insertFlow: null,
-            insertName: null,
-            insertError: null
-        }
+            editing: '',
+
+            insertID: '',
+            insertLocation: '',
+            insertType: '',
+            insertState: '',
+            insertFlow: '',
+            insertName: '',
+
+            insertError: '',
+            addItemModal: false
+        };
 
         this.componentWillMount = this.componentWillMount.bind(this);
-        this.renderItemOrEditField = this.renderItemOrEditField.bind(this);
         this.handleEditItem = this.handleEditItem.bind(this);
         this.handleInsertItem = this.handleInsertItem.bind(this);
         this.toggleEditing = this.toggleEditing.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleDeleteItem = this.handleDeleteItem.bind(this);
+        this.onAfterSaveCell = this.onAfterSaveCell.bind(this);
+        this.openDeleteModal = this.openDeleteModal.bind(this);
+        this.closeDeleteModal = this.closeDeleteModal.bind(this);
+        this.fetchTailwaters = this.fetchTailwaters.bind(this);
+        this.openAddItemModal = this.openAddItemModal.bind(this);
+        this.closeAddItemModal = this.closeAddItemModal.bind(this);
+        this.modalAddItem = this.modalAddItem.bind(this);
     }
+
 
     componentWillMount() {
+        super.componentWillMount();
         this.fetchTailwaters();
     }
+
 
     fetchTailwaters() {
-        var self = this;
-        ajax({ 
-            url:'../api/tailwater', 
+        restAPI({
+            url: '../api/tailwater',
             data: this.state,
             cache: false
-        }).then(function(res, me) {
-            self.setState({ locations: res.data });
-        }).catch(function(err){console.log(err)});
+        }).then((res) => {
+            this.setState({locations: res.data});
+        }).catch((err) => console.log(err));
     }
 
-    handleTailwaterInsert(insert) {
-        var that = this;
-        ajax({
-            method:'post',
-            url:'../api/tailwater/insert', 
-            data: insert,
-        }).then(function(res, me) {
-            that.fetchTailwaters();
-        }).catch(function(err){console.log(err)});
-        this.setState( { insertID: null,
-            insertLocation: null,
-            insertType: null,
-            insertState: null,
-            insertFlow: null,
-            insertName: null } );
-        this.setState( { editing: null } );
-        this.fetchTailwaters();
+
+    handleTailwaterInsert(item) {
+        restAPI({
+            method: 'post',
+            url: '../api/tailwater/insert',
+            data: item,
+        }).then(() => {
+            this.closeAddItemModal();
+            this.fetchTailwaters();
+            toast.success(`Inserted new item ${item.id}`);
+        }).catch((err) =>
+            console.log(err)
+        );
+
+        this.setState({
+            editing: '',
+            insertID: '',
+            insertLocation: '',
+            insertType: '',
+            insertState: '',
+            insertFlow: '',
+            insertName: ''
+        });
+
     }
+
 
     handleTailwaterUpdate(update) {
-        var that = this;
-        ajax({
-            method:'post',
-            url:'../api/tailwater/update', 
+        const that = this;
+        restAPI({
+            method: 'put',
+            url: '../api/tailwater/update',
             data: update,
-        }).then(function(res, me) {
+        }).then(function () {
             that.fetchTailwaters();
-        }).catch(function(err){console.log(err)});
+        }).catch((err) => {
+            console.log(err)
+        });
 
-        this.setState( { editing: null } );
+        this.setState({editing: ''});
         this.fetchTailwaters();
     }
+
 
     handleTailwaterDelete(remove) {
-        var that = this;
-        ajax({ 
-            method:'delete',
-            url:'../api/tailwater', 
+        const that = this;
+        restAPI({
+            method: 'delete',
+            url: '../api/tailwater',
             data: remove,
-        }).then(function(res, me) {
+        }).then( () => {
             that.closeDeleteModal();
             that.fetchTailwaters();
-        }).catch(function(err){console.log(err)});
-        this.closeDeleteModal();
-        this.fetchTailwaters();
-    }
-
-    toggleEditing( itemId ) {
-        this.setState( { editing: itemId } );
-    }
-
-    handleEditItem() {
-        let itemId = this.state.editing;
-
-        this.handleTailwaterUpdate({
-        id: itemId,
-        location: this.refs[ `location_${ itemId }` ].value,
-        type: this.refs[ `type_${ itemId }` ].value,
-        state: this.refs[ `state_${ itemId }` ].value,
-        flowData: this.refs[ `flowData_${ itemId }` ].value === 'true' ? true : false,
-        name: this.refs[ `name_${ itemId }` ].value
+            toast.success(`Deleted item ${remove.id}`);
+        }).catch( err => {
+            console.log(err)
         });
     }
 
-    handleInsertItem() {
+
+    toggleEditing(itemId) {
+        this.setState({editing: itemId});
+    }
+
+
+    handleEditItem() {
+        const itemId = this.state.editing;
+
+        // noinspection JSDeprecatedSymbols
+        this.handleTailwaterUpdate({
+            id: itemId,
+            location: this.refs[`location_${itemId}`].value,
+            type: this.refs[`type_${itemId}`].value,
+            state: this.refs[`state_${itemId}`].value,
+            flowData: this.refs[`flowData_${itemId}`].value === 'true',
+            name: this.refs[`name_${itemId}`].value
+        });
+    }
+
+
+    handleInsertItem(event) {
+        event.preventDefault();
+
         if (this.state.insertID) {
             this.setState({
-                insertError: null
-                });
+                insertError: ''
+            });
 
             this.handleTailwaterInsert({
-            id: this.state.insertID,
-            location: this.state.insertLocation,
-            type: this.state.insertType,
-            state: this.state.insertState,
-            flowData: this.state.insertFlow === 'true' ? true : false,
-            name: this.state.insertName
+                id: this.state.insertID,
+                location: this.state.insertLocation,
+                type: this.state.insertType,
+                state: this.state.insertState,
+                flowData: this.state.insertFlow === 'true',
+                name: this.state.insertName
             });
         } else {
+            const msg = 'ID cannot be empty';
             this.setState({
-                insertError: "ID cannot be empty"
-                });
+                insertError: msg
+            });
+            toast.error(msg);
         }
     }
 
-    handleDeleteItem() {
-        let itemId = this.state.editing;
 
+    handleDeleteItem() {
+        const it = this.state.currentItem;
+
+        // noinspection JSDeprecatedSymbols
         this.handleTailwaterDelete({
-        id: itemId,
-        location: this.refs[ `location_${ itemId }` ].value,
-        type: this.refs[ `type_${ itemId }` ].value,
-        state: this.refs[ `state_${ itemId }` ].value,
-        flowData: this.refs[ `flowData_${ itemId }` ].value,
-        name: this.refs[ `name_${ itemId }` ].value
+            id: it.id,
+            location: it.location,
+            type: it.type,
+            state: it.state,
+            flowData: it.flowData,
+            name: it.name
         });
     }
-    
+
+
     handleInputChange(event) {
         const target = event.target;
         this.setState({[target.name]: target.value});
     }
 
-    closeDeleteModal(){
-        this.setState( { deleteModal: false })
+
+    closeDeleteModal() {
+        this.setState({deleteModal: false})
     }
 
-    openDeleteModal(){
-        this.setState( { deleteModal: true }) 
+
+    openDeleteModal(item) {
+        console.log(`row`, item);
+        this.setState({
+            currentItem: item,
+            deleteModal: true
+        })
     }
 
-    renderItemOrEditField(loc) {
-        if ( this.state.editing === loc.id ) {
-        // Handle rendering our edit fields here.
-            return <div className="row">
-                    <div className="col-md-2">{loc.id}</div>
-                    <div className="col-md-2">
-                        <input
-                        type="text"
-                        className="form-control"
-                        ref={ `location_${ loc.id }` }
-                        name="location"
-                        defaultValue={ loc.location }
-                        />
-                    </div>
-                    <div className="col-md-1">
-                        <input
-                        type="text"
-                        className="form-control"
-                        ref={ `type_${ loc.id }` }
-                        name="type"
-                        defaultValue={ loc.type }
-                        />
-                    </div>
-                    <div className="col-md-1">
-                        <input
-                        type="text"
-                        className="form-control"
-                        ref={ `state_${ loc.id }` }
-                        name="state"
-                        defaultValue={ loc.state }
-                        />
-                    </div>
-                    <div className="col-md-1">
-                        <input
-                        type="text"
-                        className="form-control"
-                        ref={ `flowData_${ loc.id }` }
-                        name="flowData"
-                        defaultValue={ loc.flowData.toString() }
-                        />
-                    </div>
-                    <div className="col-md-2">
-                        <input
-                        type="text"
-                        className="form-control"
-                        ref={ `name_${ loc.id }` }
-                        name="name"
-                        defaultValue={ loc.name }
-                        />
-                    </div>
-                    <div className="glyphicon glyphicon-floppy-save clickable text-success col-md-1" onClick={ this.handleEditItem }/>
-                    <div className="glyphicon glyphicon-remove clickable text-danger col-md-1" onClick={() => this.openDeleteModal()}/>
 
-                        <Modal show={this.state.deleteModal} onHide={this.close}>
-                            <Modal.Body>
-                                <div className="form-group">
-                                    <label>Are you sure you want to delete this?</label>
-                                </div>
-                                <div className="row">
-                                    <div className="col-md-3"> </div>
-                                    <div className="col-md-4">  <button className="btn btn-danger"  onClick={() => this.handleDeleteItem()} >Delete</button> </div>
-                                    <div className="col-md-5">  <button className="btn btn-default" onClick={() => this.closeDeleteModal()}>Cancel</button></div>                 
-                                </div> 
-                            </Modal.Body>
-                        </Modal>
-                </div>;
-
-        } else {
-        return <div className="row">
-                    <div className="col-md-2">{loc.id}</div>
-                    <div className="col-md-2">{loc.location}</div>
-                    <div className="col-md-1">{loc.type}</div>
-                    <div className="col-md-1">{loc.state}</div>
-                    <div className="col-md-1">{loc.flowData.toString()}</div>
-                    <div className="col-md-2">{loc.name}</div>
-                    <div className="glyphicon glyphicon-edit clickable text-primary col-md-1" onClick={ this.toggleEditing.bind(null, loc.id) }/>
-                </div>;
-        }
+    /**
+     * CellValue is, a Blackist record, including _id. This methods  updates any of its fields except _id.
+     * eg. PUT a bookstrap table cell edit's "cellValue". The API will update its copy.
+     *
+     * @param row -- mongo id
+     * @param cellName -- mongo id
+     * @param cellValue -- entire table row object
+     */
+    onAfterSaveCell(row, cellName, cellValue) {
+        restAPI({
+            method: 'put',
+            url: '../api/tailwater/update',
+            data: cellValue,
+        }).then((res) => {
+            console.log(res);
+            toast.success(`Cell updated.`)
+        }).catch(err => console.log(err));
     }
+
+
+    modelDeleteItem() {
+        return (
+            <MDBModal size={"sm"} isOpen={this.state.deleteModal}>
+                <div className={"modal-wrapper"}>
+                    <MDBModalBody>
+                        <MDBModalHeader>Delete Tailwaters Item?</MDBModalHeader>
+                        <Row><Col sm={"1"}>&nbsp;</Col><Col>{this.state.currentItem
+                            ? `ID: ${this.state.currentItem.id}` : ''}</Col></Row>
+                        <MDBModalFooter>
+                            <Button size={"sm"} color={"success"} onClick={this.handleDeleteItem}>Yes</Button>
+                            <Button size={"sm"} color={"danger"} onClick={this.closeDeleteModal}>No</Button>
+                        </MDBModalFooter>
+                    </MDBModalBody>
+                </div>
+            </MDBModal>
+        )
+
+    }
+
+
+    openAddItemModal() {
+        this.setState(
+            {addItemModal: true}
+        );
+    }
+
+
+    closeAddItemModal() {
+        this.setState(
+            {addItemModal: false}
+        );
+    }
+
+
+    modalAddItem() {
+
+        return (
+            <MDBModal size={"sm"} isOpen={this.state.addItemModal}>
+                <div className={"modal-wrapper"}>
+                    <form onSubmit={this.handleInsertItem}>
+
+                        <MDBModalBody>
+                            <MDBModalHeader>Add Tailwater Item</MDBModalHeader>
+                            <Container>
+                                <Row>
+                                    <Col>
+                                        <p className="text-danger">{this.state.errorMsg}</p>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col md={"4"}>
+                                        <MDBInput
+                                            name="insertID"
+                                            required
+                                            type={"text"}
+                                            value={this.state.insertID}
+                                            onChange={this.handleInputChange}
+                                            label="ID"/>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col md={"4"}>
+                                        <MDBInput
+                                            name="insertLocation"
+                                            required
+                                            type={"text"}
+                                            value={this.state.insertLocation}
+                                            onChange={this.handleInputChange}
+                                            label="Location"/>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col md={"3"}>
+                                        <MDBInput
+                                            name="insertType"
+                                            required
+                                            type={"text"}
+                                            value={this.state.insertType}
+                                            onChange={this.handleInputChange}
+                                            label="Type"/>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col md={"3"}>
+                                        <MDBInput
+                                            name="insertState"
+                                            required
+                                            type={"text"}
+                                            value={this.state.insertState}
+                                            onChange={this.handleInputChange}
+                                            label="State"/>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col md={"3"}>
+                                        <MDBInput
+                                            name="insertFlow"
+                                            required
+                                            type={"text"}
+                                            value={this.state.insertFlow}
+                                            onChange={this.handleInputChange}
+                                            label="Flow"/>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col md={"12"}>
+                                        <MDBInput
+                                            name="insertName"
+                                            required
+                                            type={"text"}
+                                            value={this.state.insertName}
+                                            onChange={this.handleInputChange}
+                                            label="Name"/>
+                                    </Col>
+                                </Row>
+
+                            </Container>
+                        </MDBModalBody>
+
+                        <MDBModalFooter>
+                            <Button
+                                size={"sm"}
+                                color={"primary"}
+                                type={"submit"}
+                            ><MDBIcon icon="plus"/>&nbsp;Add&nbsp;Item</Button>
+                            <Button
+                                size={"sm"}
+                                color={"danger"}
+                                onClick={this.closeAddItemModal}> Cancel</Button>
+                        </MDBModalFooter>
+                    </form>
+                </div>
+            </MDBModal>
+        );
+    }
+
+
+    managementToolbar(cell, row, rowIndex, tailwaters) {
+        return <div className="btn-group" role="toolbar" aria-label="management">
+            <div onClick={() => tailwaters.openDeleteModal(row)}>
+                <MDBIcon style={{marginLeft: '0.5rem', color: 'red'}} size={'lg'} icon={"minus-circle"}/>
+            </div>
+        </div>
+    }
+
 
     render() {
+
+        const columns = [
+            {
+                hidden: true,
+                dataField: '_id',
+                isKey: true
+            },
+            {
+                text: 'ID',
+                dataField: 'id',
+                sort: true,
+                width: '5%',
+                sortCaret: CommonUI.ColumnSortCaret,
+                editable: true
+            }, {
+                text: 'Location',
+                dataField: 'location',
+                sort: true,
+                width: '5%',
+                sortCaret: CommonUI.ColumnSortCaret,
+                editable: true
+            },
+            {
+                text: 'Type',
+                dataField: 'type',
+                sort: true,
+                width: '5%',
+                sortCaret: CommonUI.ColumnSortCaret,
+                editable: true
+            },
+            {
+                text: 'State',
+                dataField: 'state',
+                sort: true,
+                sortCaret: CommonUI.ColumnSortCaret,
+                editable: true
+            },
+            {
+                text: 'Flow',
+                dataField: 'flowData',
+                sort: true,
+                sortCaret: CommonUI.ColumnSortCaret,
+                editable: true
+            },
+            {
+                text: 'Name',
+                dataField: 'name',
+                sort: true,
+                sortCaret: CommonUI.ColumnSortCaret,
+                editable: true
+            },
+            {
+                text: '',
+                dataField: 'df1',
+                isDummyField: true,
+                width: '5%',
+                formatter: this.managementToolbar,
+                formatExtraData: this,
+                editable: false,
+                align: 'center',
+                headerAlign: 'center'
+            }
+        ];
+
         return (
-            <div className="container">
-                <div className="row">
-                    <div className="col-md-12"><h1>Tailwaters</h1></div>
-                </div> 
-                <div className="row">
-                    <div className="col-md-2">
-                        <input name="insertID"id="insertID" className="form-control" type="text" value={this.state.insertID} onChange={this.handleInputChange} placeholder="ID" />
-                    </div>
-                    <div className="col-md-2">
-                        <input name="insertLocation"id="insertLocation" className="form-control" type="text" value={this.state.insertLocation} onChange={this.handleInputChange} placeholder="Location" />
-                    </div>
-                    <div className="col-md-1">
-                        <input name="insertType"id="insertType" className="form-control" type="text" value={this.state.insertType} onChange={this.handleInputChange} placeholder="Type" />
-                    </div>
-                    <div className="col-md-1">
-                        <input name="insertState"id="insertState" className="form-control" type="text" value={this.state.insertState} onChange={this.handleInputChange} placeholder="State" />
-                    </div>
-                    <div className="col-md-1">
-                        <input name="insertFlow"id="insertFlow" className="form-control" type="text" value={this.state.insertFlow} onChange={this.handleInputChange} placeholder="Flow" />
-                    </div>
-                    <div className="col-md-2">
-                        <input name="insertName"id="insertName" className="form-control" type="text" value={this.state.insertName} onChange={this.handleInputChange} placeholder="Name" />
-                    </div>
-                    <div className="col-md-1 text-success glyphicon glyphicon-floppy-save clickable" onClick={ this.handleInsertItem }/>
-                    <div className="col-md-2 text-danger">{this.state.insertError}</div>
-                </div>       
-                <div className="col-md-12">
-                    <div className="row">
-                        <div className="col-md-2"><b>Id</b></div>
-                        <div className="col-md-2"><b>Location</b></div>
-                        <div className="col-md-1"><b>Type</b></div>
-                        <div className="col-md-1"><b>State</b></div>
-                        <div className="col-md-1"><b>Flow</b></div>
-                        <div className="col-md-2"><b>Name</b></div>
-                    </div>
-                {this.state.locations.map(loc => {
-                    return this.renderItemOrEditField(loc);
-                })}
-                </div>
-            </div>
-        );
+            <Fragment>
+                <MDBCard>
+                    <MDBCardBody>
+                        <MDBCardTitle>Tailwaters</MDBCardTitle>
+
+                        <Row>
+                            <Col md={"10"}>
+                                <BootstrapTable
+                                    bootstrap4
+                                    data={this.state.locations}
+                                    columns={columns}
+                                    keyField={'_id'}
+                                    insertRow={true}
+                                    pagination={paginationFactory(pageinationOptions)}
+                                    cellEdit={cellEditFactory({
+                                        mode: 'click',
+                                        blurToSave: true,
+                                        afterSaveCell: this.onAfterSaveCell
+                                    })}
+                                    striped
+                                    hover
+                                    condensed
+                                />
+                            </Col>
+
+                            <Col md={"2"}>
+                                <Row><Col><Button size={"md"} style={{width: "100%"}} color={"light"}
+                                                  onClick={this.openAddItemModal}
+                                ><MDBIcon icon="plus-circle"/>
+                                    &nbsp;Add Item</Button></Col></Row>
+                            </Col>
+                        </Row>
+                    </MDBCardBody>
+                </MDBCard>
+
+                {this.modelDeleteItem()}
+
+                {this.modalAddItem()}
+
+            </Fragment>
+        )
+
+
     }
 }
 

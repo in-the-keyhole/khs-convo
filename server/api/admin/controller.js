@@ -15,30 +15,18 @@ limitations under the License.
 */
 
 'use strict';
-var express = require('express');
-var mongo = require('../../services/mongo');
-var sendmail = require('sendmail')({silent: false})
-var nodemailer = require('nodemailer');
 
-var config = require('../../config');
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema
-var graphql = require('graphql')
-var GraphQLObjectType = graphql.GraphQLObjectType
-var GraphQLBoolean = graphql.GraphQLBoolean
-var GraphQLID = graphql.GraphQLID
-var GraphQLString = graphql.GraphQLString
-var GraphQLList = graphql.GraphQLList
-var GraphQLNonNull = graphql.GraphQLNonNull
-var GraphQLSchema = graphql.GraphQLSchema
-var uuid = require('uuid');
-var _ = require('lodash');
-var Loader = require('../../services/eventloader');
-var fs = require('fs');
+const mongo = require('../../services/mongo');
+const ObjectId = require('mongodb').ObjectID;
+const nodemailer = require('nodemailer');
+const config = require('../../config');
+const uuid = require('uuid');
+const _ = require('lodash');
+const Loader = require('../../services/eventloader');
+const fs = require('fs');
 
 const path = require('path');
-const util = require('util');
-var events = require('../../services/convo/events');
+const events = require('../../services/convo/events');
 const emailConfig = config.email;
 
 let platform = process.platform;
@@ -49,84 +37,98 @@ let serverPath = '/convoevents/';
 let serverAdmin = '/api/admin';
 
 function get(req, res) {
-    
+
     mongo.GetSort({}, {LastName: 1, FirstName: 1}, 'Users')
         .then(function (users) {
-            
-            var visible = _.filter(users, function(user) {
+
+            const visible = _.filter(users, function (user) {
                 return user.Status !== 'removed';
             });
-            
-            res.send(visible); 
+
+            res.send(visible);
         })
 }
 
 function blacklistget(req, res) {
-    
+
     mongo.GetSort({}, {phone: 1}, 'Blacklist')
         .then(function (contacts) {
-            res.send(contacts); 
+            res.send(contacts);
         })
 }
 
 function contentget(req, res) {
-    
+
     mongo.Get({}, 'Content')
         .then(function (contacts) {
-            res.send(contacts); 
+            res.send(contacts);
         })
 }
 
+
+/**
+ * Adds a new Convo user.
+ *
+ * @param req
+ * @param res
+ * @returns {*}
+ */
 function post(req, res) {
 
+    const email = req.body.Email ? req.body.Email.toLowerCase() : '';
+    const email2 = req.body.Email ? req.body.ConfirmEmail.toLowerCase() : '';
+
     req.body.uuid = uuid();
-    if (req.body.Email != req.body.ConfirmEmail){
-         return res.send("your email addresses are not the same");
+    if (email !== email2) {
+        return res.send("The email address pair does not match");
     }
 
-   mongo.Get({Username:req.body.Email, Status:{$ne:"removed"}}, "Users" )
-   .then (function (response){
-  
-       if (response.length> 0 ){
-           res.send("The email address you have entered is already registered") ;
-       }else {
-            mongo.Insert(req.body, 'Users')
-            .then(function (contact) { 
-            });
-    
-            req.body.RegistrationEmail = req.body.Email;
-            return sendRegistrationEmail(req,res );
-       }
-   })
-   .catch (function (error){
-        console.log(" duplication check error  "    + error) ;
-       
-   }); 
+    req.body.Email = email;
+    return mongo.Get({Email: email, Status: {$ne: "removed"}}, "Users")
+        .then( (response) => {
+
+            if (response.length) {
+                res.send("dupe");
+            } else {
+                mongo.Insert(req.body, 'Users')
+                    .then(function (contact) {
+                        // TODO What is this no-op function ???
+                    });
+
+                req.body.RegistrationEmail = email;
+                return sendRegistrationEmail(req, res);
+            }
+        })
+        .catch( (error) => {
+            console.log(`duplication check error  ${error}`);
+
+        });
 }
 
 function blacklistpost(req, res) {
-    
+
     if (req.body.phone) {
         mongo.Insert(req.body, 'Blacklist')
-            .then(function (contact) {
+            .then(function () {
                 res.send(req.body);
             })
     }
 }
 
 function remove(req, res) {
-    if (req.body.uuid){
+    if (req.body.uuid) {
         res.send('delete has been disabled');
-/*
-        mongo.Delete(req.body, 'Users')
-            .then(function (contact) {
-                res.send(contact);
-            })
-            */
+        /*
+                mongo.Delete(req.body, 'Users')
+                    .then(function (contact) {
+                        res.send(contact);
+                    })
+                    */
     }
 }
 
 function blacklistremove(req, res) {
+    console.log(`blacklistremove`, req);
     mongo.Delete(req.body, 'Blacklist')
         .then(function (contact) {
             res.send(contact);
@@ -135,32 +137,40 @@ function blacklistremove(req, res) {
 
 function put(req, res) {
 
-    var data = _.omit(req.body, ['_id']);
+    const data = _.omit(req.body, ['_id']);
 
-    mongo.Update({uuid: req.body.uuid}, {$set: data},  'Users')
-    .then(function (response) {  
-        res.send(response); 
-    })  
+    mongo.Update({uuid: req.body.uuid}, {$set: data}, 'Users')
+        .then(function (response) {
+            res.send(response);
+        })
 }
 
+/**
+ * Given, a Blackist record, including _id, update any or all of its fields except _id
+ * eg. PUT a bookstrap table cell edit's "cellValue". Mongo will update its copy.
+ * */
 function blacklistput(req, res) {
-    mongo.Update({phone: req.body.phone}, req.body,  'Blacklist')
-    .then(function (response) {  
-        res.send(response); 
-    })  
+    const r = req.body;
+    const query = {_id: ObjectId(r._id)};
+    const data = {phone: r.phone, notes: r.notes};
+
+    mongo.Update(query, data, 'Blacklist')
+        .then(function (response) {
+            res.send(response);
+        })
 }
 
 function contentput(req, res) {
-    mongo.Update({Name: req.body.Name}, req.body,  'Content')
-    .then(function (response) {  
-        res.send(response); 
-    })  
+    mongo.Update({Name: req.body.Name}, req.body, 'Content')
+        .then(function (response) {
+            res.send(response);
+        })
 }
 
 function contentpost(req, res) {
     if (req.body.Name) {
         mongo.Insert(req.body, 'Content')
-            .then(function (contact) {
+            .then(function () {
                 res.send(req.body);
             })
     }
@@ -174,30 +184,30 @@ function contentremove(req, res) {
 }
 
 function fileupload(req, res) {
-    if (req.files && req.files.length == 0) {
+    if (req.files && !req.files.length) {
         res.end("File is not uploaded");
     } else {
-        var l = new Loader();
-        var errCaught = false;
-        try{
+        const l = new Loader();
+        let errCaught = false;
+        try {
             l.loadevents('upload...' + req.files[0].originalname + '...' + req.query.directory, events);
-        } catch(e) {
+        } catch (e) {
             errCaught = true;
             res.end("File uploaded. However, a js error was encountered when attempting to load the convo event. " + e.toString());
         }
-        if (!errCaught){
+        if (!errCaught) {
             res.end("File is uploaded");
         }
     }
 }
 
 function fileExistsOnUpload(req, res) {
-    var fileName = req.query.name;
+    const fileName = req.query.name;
 
     let pathStr = [];
     let fileNames = [];
     let convoEventPath = '';
-    
+
     if (req.get('host').indexOf('localhost') > -1 && platform.startsWith('win')) {
         convoEventPath = hostPath + req.query.directory;
         pathStr.push(__dirname.replace(hostAdmin, ''));
@@ -208,9 +218,9 @@ function fileExistsOnUpload(req, res) {
     pathStr.push(convoEventPath);
     fs.readdirSync(pathStr.join("")).forEach(file => {
         fileNames.push(file.toString());
-    })
+    });
 
-    if (fileNames.indexOf(fileName) != -1) {
+    if (fileNames.indexOf(fileName) !== -1) {
         res.send('exists');
     } else {
         res.send('not exists');
@@ -218,28 +228,28 @@ function fileExistsOnUpload(req, res) {
 }
 
 function fileExistsOnUploadPost(req, res) {
-    var fileName = req.files[0].originalname;
+    const fileName = req.files[0].originalname;
 
     let pathStr = [];
-        let fileNames = [];
-        let convoEventPath = '';
-        if (req.get('host').indexOf('localhost') > -1&& platform.startsWith('win')) {
-            convoEventPath = hostPath + req.query.directory;
-            pathStr.push(__dirname.replace(hostAdmin, ''));
-        } else {
-            convoEventPath = serverPath + req.query.directory;
-            pathStr.push(__dirname.replace(serverAdmin, ''));
-        }
-        pathStr.push(convoEventPath);
-        fs.readdirSync(pathStr.join("")).forEach(file => {
-            fileNames.push(file.toString());
-        })
+    let fileNames = [];
+    let convoEventPath = '';
+    if (req.get('host').indexOf('localhost') > -1 && platform.startsWith('win')) {
+        convoEventPath = hostPath + req.query.directory;
+        pathStr.push(__dirname.replace(hostAdmin, ''));
+    } else {
+        convoEventPath = serverPath + req.query.directory;
+        pathStr.push(__dirname.replace(serverAdmin, ''));
+    }
+    pathStr.push(convoEventPath);
+    fs.readdirSync(pathStr.join("")).forEach(file => {
+        fileNames.push(file.toString());
+    });
 
-        if (fileNames.indexOf(fileName) != -1) {
-            res.send('exists');
-        } else {
-            res.send('not exists');
-        }
+    if (fileNames.indexOf(fileName) !== -1) {
+        res.send('exists');
+    } else {
+        res.send('not exists');
+    }
 }
 
 function getDirectories(req, res) {
@@ -257,19 +267,19 @@ function getDirectories(req, res) {
     pathStr.push(srcPath);
     let source = pathStr.join("");
 
-    var results = [];
+    const results = [];
 
-    var directories = fs.readdirSync(source).filter(function(file) {
-       return fs.statSync(path.join(source, file)).isDirectory();
+    const directories = fs.readdirSync(source).filter(function (file) {
+        return fs.statSync(path.join(source, file)).isDirectory();
     });
 
-    for(var i=0;i<directories.length;i++) {
+    for (let i = 0; i < directories.length; i++) {
         let currentDirectory = directories[i];
-        fs.readdirSync(path.join(__dirname, '../../convoevents/'+ currentDirectory)).forEach(file => {
-            var directoryAndFilesObj = {};
-            directoryAndFilesObj.dataDirectory = {currentDirectory : currentDirectory, words: []};
-            var fileReadablePath = [];
-            if (req.get('host').indexOf('localhost') > -1 && platform.startsWith('win') ){
+        fs.readdirSync(path.join(__dirname, '../../convoevents/' + currentDirectory)).forEach(file => {
+            const directoryAndFilesObj = {};
+            directoryAndFilesObj.dataDirectory = {currentDirectory: currentDirectory, words: []};
+            const fileReadablePath = [];
+            if (req.get('host').indexOf('localhost') > -1 && platform.startsWith('win')) {
                 fileReadablePath.push(__dirname.replace('\\api\\admin', '\\convoevents\\'));
                 fileReadablePath.push(currentDirectory + '\\')
             } else {
@@ -279,26 +289,29 @@ function getDirectories(req, res) {
 
             fileReadablePath.push(file);
             let fileLoad = fileReadablePath.join("");
-            var readStream = fs.readFileSync(fileLoad, 'utf8');
+            const readStream = fs.readFileSync(fileLoad, 'utf8');
 
-            let d = readStream.replace(/(\r\n|\n|\r)/gm,"");;
+            let d = readStream.replace(/(\r\n|\n|\r)/gm, "");
             let wordsArr = [];
             let words = d.toString().match(new RegExp("word: \\'" + "(.*?)" + "\\'", 'gm'));
-           
-           
-            let eventDescription =  d.toString().match(new RegExp("event.description(.*?);", 'gm'));
+
+
+            let eventDescription = d.toString().match(new RegExp("event.description(.*?);", 'gm'));
             if (eventDescription) {
-                var description = eventDescription[0].replace("event.description", "");
-                description = description.replace("=","").replace(";","").replace("\"","").replace("\"","").replace(" ","");
-                directoryAndFilesObj.description  =   description;
+                let description = eventDescription[0].replace("event.description", "");
+                description = description.replace("=", "").replace(";", "")
+                    .replace("\"", "").replace("\"", "")
+                    .replace(" ", "");
+                directoryAndFilesObj.description = description;
             }
 
             if (words != null) {
-                for(var i=0;i<words.length;i++) {
-                    var word = words[i].replace("word:", "");
+                let i;
+                for (i = 0; i < words.length; i++) {
+                    const word = words[i].replace("word:", "");
                     wordsArr.push(word.replace("'", ""));
                 }
-                for(var i=0;i<wordsArr.length;i++) {
+                for (i = 0; i < wordsArr.length; i++) {
                     wordsArr[i] = wordsArr[i].replace("'", "");
                 }
                 directoryAndFilesObj.dataDirectory.currentDirectory = currentDirectory;
@@ -311,51 +324,52 @@ function getDirectories(req, res) {
     res.send(results);
 }
 
-
-function sendRegistrationEmailNonSmtp(req, res) {
-    var msgBody =   '<a href="' + req.body.basePath +
-                    '/register?uuid=' + req.body.uuid + 
-                    '&registrationEmail=' + req.body.RegistrationEmail + 
+// Unused
+/*function sendRegistrationEmailNonSmtp(req, res) {
+    const msgBody =   '<a href="' + req.body.basePath +
+                    '/register?uuid=' + req.body.uuid +
+                    '&registrationEmail=' + req.body.RegistrationEmail +
                     '">Click this link to register for Convo.</a>';
     sendmail({
         from: 'no-reply@convo.com',
         to: req.body.RegistrationEmail,
         subject: 'Register for Convo',
         html: msgBody,
-    }, function(err, reply) {
+    }, function(err) {
         if (err){
             res.status(500).send('bad email');
         } else{
             res.send('email submitted');
         }
     });
-}
+}*/
 
 function sendRegistrationEmail(req, res) {
-    var msgBody =   '<a href="' + req.body.basePath +
-                    '/register?uuid=' + req.body.uuid +
-                    '&registrationEmail=' + req.body.RegistrationEmail +
-                    '">Click this link to register for Convo.</a>';
+    const msgBody = '<a href="' + req.body.basePath +
+        '/register?uuid=' + req.body.uuid +
+        '&registrationEmail=' + req.body.RegistrationEmail +
+        '">Click this link to register for Convo.</a>';
 
-    var transporter = nodemailer.createTransport({
-            host: emailConfig.smtp_host,
-            service: emailConfig.smtp_service,
-            auth: {
-                user: emailConfig.smtp_user,
-                pass: emailConfig.smtp_password
-            }
-        });
+    const transporter = nodemailer.createTransport({
+        host: emailConfig.smtp_host,
+        service: emailConfig.smtp_service,
+        auth: {
+            user: emailConfig.smtp_user,
+            pass: emailConfig.smtp_password
+        }
+    });
 
     let mailOptions = {
         from: emailConfig.from,
         to: req.body.RegistrationEmail,
         subject: emailConfig.register_subject,
         html: msgBody
-    }
+    };
 
-    transporter.sendMail(mailOptions, (error, info) => {
+    transporter.sendMail(mailOptions, (error) => {
         if (error) {
-            res.status(500).send('bad email');
+            // res.status(500).send('bad email'); // <== This caused server and client issues
+            res.send('bad email');
         } else {
             res.send('email submitted');
         }
@@ -375,7 +389,7 @@ var schema = buildSchema(`
   type User {
       FirstName: String
       LastName: String
-      
+
   }
 `);
 
@@ -418,4 +432,4 @@ module.exports = {
     fileExistsOnUploadPost: fileExistsOnUploadPost,
     getDirectories: getDirectories,
     sendRegistrationEmail: sendRegistrationEmail
-}
+};

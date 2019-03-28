@@ -21,10 +21,10 @@ limitations under the License.
     Load Convo Events
 */
 
-var Loader = require('../../eventloader');
+const Loader = require('../../eventloader');
 
 
-var events = [];
+const events = [];
 //require('./datetime')(events);
 //require('./hello')(events);
 //require('./timesheet')(events);
@@ -40,7 +40,7 @@ require('./help')(events);
 //require('./transition')(events);
 //require('./movies')(events);
 //require('./showtimes')(events);
-var l =new Loader();
+const l = new Loader();
 l.loadevents(undefined,events);
 
 module.exports = events;

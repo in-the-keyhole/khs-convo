@@ -16,32 +16,45 @@ limitations under the License.
 
 'use strict';
 
-var ConvoService = require('../../services/convo');
-var mongo = require('../../services/mongo');
-var uuid = require('uuid');
-var moment = require('moment');
-var request = require('request');
-var config = require('../../config');
-var events = require('../../services/convo/events');
+const ConvoService = require('../../services/convo');
+const mongo = require('../../services/mongo');
+const ObjectId = require('mongodb').ObjectID;
+const uuid = require('uuid');
+const request = require('request');
+const config = require('../../config');
+const events = require('../../services/convo/events');
+const Promise = require('promise');
 
-var client = require('twilio')(
+const client = require('twilio')(
     config.twilio.accountSid,
     config.twilio.authToken);
 
-const util = require('util');
+const DEFAULT_SORTFIELD = '_id';
+const ORDER_DESC = '-1';
+const DEFAULT_SORTORDER = ORDER_DESC;
 
 function get(req, res) {
-    mongo.GetSort({}, { _id: -1 }, 'Convos')
+    const sortField = req.query.sortField ? req.query.sortField : DEFAULT_SORTFIELD;
+    const sortOrder = req.query.sortOrder ? parseInt(req.query.sortOrder) : DEFAULT_SORTORDER;
+    mongo.GetSort({}, { [sortField]: sortOrder  }, 'Convos')
         .then(function (contact) {
             res.send(contact);
         });
 }
 
 function getvisitorschunk(req, res) {
-    mongo.GetSortByChunk({}, { _id: -1 }, 'Visitors', parseInt(req.query.limitCount), parseInt(req.query.skipCount))
-        .then(function (visitor) {
-            res.send(visitor);
-        });
+    const sortField = req.query.sortField ? req.query.sortField : DEFAULT_SORTFIELD;
+    const sortOrder = req.query.sortOrder ? parseInt(req.query.sortOrder) : DEFAULT_SORTORDER;
+    const filters = req.query.filters; // Implies companion filters param
+    if (!filters) {
+        mongo.GetSortByChunk({}, {[sortField]: sortOrder}, 'Visitors', parseInt(req.query.limitCount), parseInt(req.query.skipCount))
+            .then(function (visitor) {
+                res.send(visitor);
+            });
+    } else {
+        const collection = 'Visitors';
+        _getFilteredSortedPaginatedChuck({req, res, sortField, sortOrder, filters, collection});
+    }
 }
 
 function getvisitorscount(req, res) {
@@ -52,126 +65,165 @@ function getvisitorscount(req, res) {
 }
 
 function getconvochunk(req, res) {
-    mongo.GetSortByChunk({}, { _id: -1 }, 'Convos', parseInt(req.query.limitCount), parseInt(req.query.skipCount))
-        .then(function (contact) {
-            res.send(contact);
-        });
+    const sortField = req.query.sortField ? req.query.sortField : DEFAULT_SORTFIELD;
+    const sortOrder = req.query.sortOrder ? parseInt(req.query.sortOrder) : DEFAULT_SORTORDER;
+    const filters = req.query.filters; // Implies companion filters param
+    if (!filters) {
+        mongo.GetSortByChunk({}, {[sortField]: sortOrder}, 'Convos',
+            parseInt(req.query.limitCount), parseInt(req.query.skipCount))
+
+            .then( data => res.send(data));
+    } else {
+        const collection = 'Convos';
+        _getFilteredSortedPaginatedChuck({req, res, sortField, sortOrder, filters, collection});
+    }
 }
 
+// Local-only helper augments any chunked, sorted, paginated collection to also have single-field filtering
+function _getFilteredSortedPaginatedChuck({req, res, sortField, sortOrder, filters, collection}) {
+
+    // 1. Create a MongoDB composite "AND query" from the filters. Use a regexp for each comparision constant
+    const utf8 = Buffer.from(filters, 'base64').toString('utf8');
+    const qobj = JSON.parse(utf8);
+
+    // Convert args to regexp
+    for(const v in qobj){
+        if (qobj.hasOwnProperty(v)){
+            qobj[v] = new RegExp(qobj[v], 'i');
+        }
+    }
+
+    // 2. Query filtered, sorted chunked  result array. (Remember, it's only a page of it)
+    const promise = mongo.GetSortByChunk(
+        qobj,
+        {[sortField]: sortOrder},
+        collection,
+        parseInt(req.query.limitCount),
+        parseInt(req.query.skipCount));
+
+    // 3. Capture unchunked result size
+    promise.then( (data) => {
+        // return new Promise( resolve => resolve({data: data, size: data.length}) );
+        return  new Promise( resolve => {
+            mongo.GetCount(qobj, collection).then( count => {
+                resolve( {data: data, totalSize: count} )
+            });
+        })
+
+    }).then( dto => {
+        // 4. Keep a data chunk: (for first iteration) use skipCount of 0; use inbound limit
+        return new Promise( resolve => {
+            const v = Object.assign({}, dto);
+            v.skipCount = 0; // We'd like this to move across subsequent calls. How to manage?
+            v.limitCount = Math.min(req.query.limitCount, v.data.length);
+            v.data = v.data.slice(v.skipCount, v.limitCount);
+            resolve(res.send(v));
+        });
+    });
+
+}
+
+// Optional MongoDB query expression defaults to "all"
 function getconvocount(req, res) {
-    mongo.GetCount({}, 'Convos')
-        .then(function (contact) {
-            res.send(contact);
+    const query = req.query || {};
+    mongo.GetCount(query, 'Convos')
+        .then( data => {
+            res.send(data);
         });
 }
 
 function getduplicates(req, res) {
-    //let dupes = ConvoService.duplicates();
-    //console.log(dupes);
     res.send(ConvoService.duplicates());
 }
 
 function getgroupquestion(req, res) {
-    let questionsArr = [];
+    let i;
+    const questionsArr = [];
 
-    for (var i = 0; i < req.body.length; i++) {
+    for (i = 0; i < req.body.length; i++) {
         questionsArr.push(req.body[i].replace("'", ""));
     }
 
     let allQuestions = [];
-    for (var i = 1; i < questionsArr.length; i++) {
+    for (i = 1; i < questionsArr.length; i++) {
         allQuestions[i] = questionsArr[i].charAt(0).toUpperCase() + questionsArr[i].slice(1);
     }
 
-    for (var i = 1; i < allQuestions.length; i++) {
+    for (i = 1; i < allQuestions.length; i++) {
         questionsArr.push(allQuestions[i]);
     }
 
     mongo.Aggregate([
-        {
-            "$group": {
-                _id: { tag: '$question', lower: { $toLower: '$question' } },
-                //"count": { "$sum": 1 },
-                "count": {
-                    "$sum": {
-                        "$cond": [
-                            {
+            {
+                "$group": {
+                    _id: {tag: '$question', lower: {$toLower: '$question'}},//"count": { "$sum": 1 },
+                    "count": {
+                        "$sum": {
+                            "$cond": [{
                                 "$anyElementTrue": {
                                     "$map": {
                                         "input": questionsArr,
                                         "as": "el",
-                                        "in": { "$eq": ["$$el", "$question"] }
+                                        "in": {"$eq": ["$$el", "$question"]}
                                     }
                                 }
-                            },
-                            1,
-                            0
-                        ]
+                            }, 1, 0]
+                        }
+                    }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    text: "$_id.lower",
+                    count: 1,
+                    value: "$count"
+                }
+            },
+            {
+                $redact: {
+                    $cond: {
+                        if: {$eq: ["$count", 0]},
+                        then: '$$PRUNE',
+                        else: '$$DESCEND'
                     }
                 }
             }
-        },
-        {
-            $project: {
-                _id: 0,
-                text: "$_id.lower",
-                count: 1,
-                value: "$count"
-            }
-        },
-        {
-            $redact: {
-                $cond: {
-                    if: { $eq: ["$count", 0] },
-                    then: '$$PRUNE',
-                    else: '$$DESCEND'
-                }
-            }
-        }
-    ]
-        , 'Convos')
-        .then(function (contact) {
-            res.send(cleanUpGroupByQuestions(contact));
-        });
+        ], 'Convos').then(contact => res.send(cleanUpGroupByQuestions(contact)));
 }
 
-function cleanUpGroupByQuestions(array) {
-    var textArr = [];
-    for (var i = 0; i < array.length; i++) {
-        textArr.push(array[i].text);
-    }
 
-    var sorted_arr = textArr.slice().sort();
-    var dupTexts = [];
-    for (var i = 0; i < sorted_arr.length - 1; i++) {
-        if (sorted_arr[i + 1] == sorted_arr[i]) {
+function cleanUpGroupByQuestions(array) {
+    console.log(`Raw cleanUpGroupByQuestions`, array);
+
+    const textArray = [];
+    array.forEach( t => textArray.push(t.text) );
+
+    const sorted_arr = textArray.slice().sort();
+    const dupTexts = [];
+    for (let i = 0; i < sorted_arr.length - 1; i++) {
+        if (sorted_arr[i + 1] && ( sorted_arr[i + 1] === sorted_arr[i] )) {
             dupTexts.push(sorted_arr[i]);
         }
     }
 
-    for (var i = 0; i < dupTexts.length; i++) {
-        var text = dupTexts[i];
-        var obj = {};
-        var count = 0;
 
-        for (var j = 0; j < array.length; j++) {
-            if (array[j].text == text) {
-                count += array[j].count;
-            }
-        }
+    dupTexts.forEach( text => {
+
+        const count = array.filter( obj => obj.text === text).length;
+        const obj = {};
         obj.count = count;
         obj.text = text;
         obj.value = count;
 
-        array = array.filter(function (obj) {
-            return obj.text !== text;
-        });
+        array = array.filter( obj => obj.text !== text);
 
         array.push(obj);
-    }
+    });
 
     return array;
-};
+}
+
 
 function getgroupphone(req, res) {
     mongo.Aggregate(
@@ -196,56 +248,46 @@ function getgroupphone(req, res) {
 
 
 function getConvoForPhone(req, res) {
-    var phone = req.query.phone;
-    var skipCount = parseInt(req.query.skip) || 0;
-    var limitCount = parseInt(req.query.limit) || 20;
-    var query = { phone: phone, question: { $ne: "availablecommands" } };
+    const phone = req.query.phone;
+    const skipCount = parseInt(req.query.skip) || 0;
+    const limitCount = parseInt(req.query.limit) || 20;
+    const query = {phone: phone, question: {$ne: "availablecommands"}};
     mongo.GetSortByChunk(query, { date: -1 }, 'Convos', limitCount, skipCount)
         .then(function (conversation) {
             res.send(conversation);
         });
 }
 
-var twilio = require('twilio');
-var MessagingResponse = require('twilio').twiml.MessagingResponse;
+
+// const twilio = require('twilio');
+const MessagingResponse = require('twilio').twiml.MessagingResponse;
 
 function post(req, res) {
-    var body = req.body['Body'] || req.body['body'];
-
-    var result = {};
-    result.phone = req.body.From.replace(/[\(\)\-\+]/g, "");
-    if (result.phone.charAt(0) === '1') {
-        result.phone = result.phone.slice(1, result.phone.length);
-    }
-
-    // ************************************************************
-    // Could not determine why the 2 commented out lines were doing
-    // what they are doing, so changed it to just splitting on a space
-    // and not converting the entire "sub" to lowerCase, but rather
-    // just trimming them.  If no ill effects are seen because of 
-    // this change, the commented out lines below can be removed.
-    
-    //var sub = body.match(/([a-zA-Z0-9\+\*\/\-\!\?'])+/gm);
-    var sub = body.split(' ');
-    for (var i = 0; i < sub.length; i++) {
-        //sub[i] = sub[i].toLowerCase().trim();
-        sub[i] = sub[i].trim();
-    }
-    // ************************************************************
-
-    result.question = sub;
-    result.rawQuestion = body;
-    result.raw = req.body;
-    result.scheduleDate = req.body['scheduleDate'];
 
     if (!isTokenValid(req)) {
         res.end("Invalid API token");
         return;
     }
 
+    const body = req.body['Body'] || req.body['body'];
+
+    const result = {};
+    result.phone = req.body.From.replace(/[()\-+]/g, "");
+    if (result.phone.charAt(0) === '1') {
+        result.phone = result.phone.slice(1, result.phone.length);
+    }
+
+    const sub =  [];
+    body.split(' ').forEach( v => sub.push(v.trim()));
+
+    result.question = sub;
+    result.rawQuestion = body;
+    result.raw = req.body;
+    result.scheduleDate = req.body['scheduleDate'];
+
     ConvoService.findAnswer(result)
         .then(function (result) {
-            var twiml = new MessagingResponse();
+            const twiml = new MessagingResponse();
             // IMPORTANT: don't change date to moment format
             mongo.Insert({ date: new Date(), phone: result.phone, question: result.rawQuestion, answer: result.answer, word: result.word }, 'Convos');
             mongo.Update({ phone: result.phone }, { phone: result.phone, lastaccessdate: new Date() }, "Visitors", { upsert: true });
@@ -258,52 +300,51 @@ function post(req, res) {
 }
 
 function timesheetnotification(req, res) {
-    var allConvoUsers = req.body;
-    var notificationText = req.query.text;
+    const allConvoUsers = req.body;
+    const notificationText = req.query.text;
 
+    // noinspection JSUnresolvedVariable
     request({
         url: config.timesheet.url + '/sherpa/service/convo/latesttimeentries',
         method: 'GET'
     }, function (error, response, body) {
-        var timesheetsDueUserNames = [];
-        var allLatestEntriesUserNames = [];
+        let k;
+        const timesheetsDueUserNames = [];
+        const allLatestEntriesUserNames = [];
 
-        var client = require('twilio')(
+        const client = require('twilio')(
             config.twilio.accountSid,
             config.twilio.authToken
         );
 
-        let now = new Date();
-        let today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        let lastSunday = new Date(today.setDate(today.getDate() - today.getDay()));
-        let minDate = new Date();
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const lastSunday = new Date(today.setDate(today.getDate() - today.getDay()));
+        const minDate = new Date();
         minDate.setDate(lastSunday.getDate() - 7);
 
-        let tsDueUsers = JSON.parse(body);
+        const tsDueUsers = JSON.parse(body);
 
-        for (var k = 0; k < tsDueUsers.length; k++) {
+        for (k = 0; k < tsDueUsers.length; k++) {
             allLatestEntriesUserNames.push(tsDueUsers[k].userName);
         }
-        //console.log('All latest time entries: ' + util.inspect(tsDueUsers));
 
-        for (var k = 0; k < tsDueUsers.length; k++) {
+        for (k = 0; k < tsDueUsers.length; k++) {
             let entry = tsDueUsers[k].day.split("-");
             let entryDate = new Date(entry[0], entry[1] - 1, entry[2]);
             if (entryDate < minDate) {
                 timesheetsDueUserNames.push(tsDueUsers[k].userName);
             }
         }
-        console.log('All DUE latest time entry usernames: ' + util.inspect(timesheetsDueUserNames));
+        // console.log('All DUE latest time entry usernames: ' + util.inspect(timesheetsDueUserNames));
 
-        let phones = retrieveDueTimesheetPhones(allConvoUsers, allLatestEntriesUserNames, timesheetsDueUserNames)
+        const phones = retrieveDueTimesheetPhones(allConvoUsers, allLatestEntriesUserNames, timesheetsDueUserNames);
 
-        let uniquePhones = phones.filter(function (elem, index, self) {
+        const uniquePhones = phones.filter(function (elem, index, self) {
             return index === self.indexOf(elem);
-        })
+        });
 
-        for (var i = 0; i < uniquePhones.length; i++) {
-            //console.log('SEND TEXT TO: +1'+uniquePhones[i]);
-
+        for (let i = 0; i < uniquePhones.length; i++) {
             client.messages.create({
                 from: '+' + config.twilio.phone,
                 to: '+1' + uniquePhones[i],
@@ -316,11 +357,11 @@ function timesheetnotification(req, res) {
 }
 
 function retrieveDueTimesheetPhones(all, allLatestEntriesUserNames, timesheetsDueUserNames) {
-    var phoneNumbers = [];
+    const phoneNumbers = [];
 
-    for (var i = 0; i < all.length; i++) {
-        for (var j = 0; j < timesheetsDueUserNames.length; j++) {
-            if (all[i].Username == timesheetsDueUserNames[j]) {
+    for (let i = 0; i < all.length; i++) {
+        for (let j = 0; j < timesheetsDueUserNames.length; j++) {
+            if (all[i].Username === timesheetsDueUserNames[j]) {
                 phoneNumbers.push(all[i].Phone.replace(/\D/g, ''));
             }
         }
@@ -332,7 +373,7 @@ function retrieveDueTimesheetPhones(all, allLatestEntriesUserNames, timesheetsDu
 
 function geteventstatus(req, res) {
 
-    var events = req.body.events;
+    const events = req.body.events;
 
     mongo.Get({ name: { $in: events } }, "disabled")
         .then(function (result) {
@@ -340,43 +381,48 @@ function geteventstatus(req, res) {
         })
 }
 
+/**
+ * If req.body.eventStatus; is 'enabled" then remove the record for the input key (req.body.key).
+ * Othewise, "upsert" the record designted by the input key.
+ *
+ * Notice that req.body.key is the application-level key, but we use the primarty key,, _id provided by
+ * Mongodb.
+ *
+ * @param req
+ * @param res
+ */
 function disableevent(req, res) {
-    var event = req.body.event.key;
-    var status = req.body.event.status;
+    const query = { _id: ObjectId(req.body._id) };
+    const status = req.body.eventStatus;
+    const collection = 'disabled';
 
-    if (status == 'enabled') {
-        mongo.Delete({ name: event }, "disabled")
-            .then(function (result) {
-                res.send(result);
-            })
+    if (status === 'enabled') {
+        mongo.Delete(query, collection)
+            .then( result => res.send(result));
     } else {
-        mongo.Update({ name: event }, { name: event }, "disabled", { upsert: true })
-            .then(function (result) {
-                res.send(result);
-            })
+        mongo.Update(query, { name: req.body.key }, collection, { upsert: true })
+            .then( (result) => res.send(result));
     }
 }
 
 
 function inactivecommand(req, res) {
-    var id = uuid();
-    var body = req.body['Body'] || req.body['body'];
-    var phone = "";
-    phone = req.body.From.replace(/[\(\)\-\+]/g, "");
+    const id = uuid();
+    const body = req.body['Body'] || req.body['body'];
+    let phone = req.body.From.replace(/[()\-+]/g, "");
     if (phone.charAt(0) === '1') {
         phone = phone.slice(1, phone.length);
     }
-    var convo = [{
+    const convo = [{
         date: new Date(),
         phone: phone,
         question: body,
         answer: "\'" + body + "\' has been disabled",
         word: ''
-    }]
+    }];
 
     mongo.Insert(convo, 'Convos')
-        .then(function (result) {
-        });
+        .then( (result) => console.log(result));
 
     convo.id = id;
     res.send(convo);
@@ -384,27 +430,27 @@ function inactivecommand(req, res) {
 
 
 /**
- * 
- * Text and SMS text message
- * 
+ * Sed an SMS text message
+ * @param req
+ * @param res
  */
-
 function sms(req, res) {
 
-    var request = processRequest(req);
+    const request = processRequest(req);
 
-    var event;
-    var convo = request.question[0];
+    let event;
+    const convo = request.question[0];
 
     if (!isTokenValid(req)) {
         res.end("Invalid API token");
         return;
     }
 
-    return new Promise(function (resolve, reject) {
+    return new Promise(function (resolve) {
 
-        for (var i = 0; i < events.length; i++) {
-            for (var j = 0; j < events[i].words.length; j++) {
+        // noinspection JSUnresolvedVariable
+        for (let i = 0; i < events.length; i++) {
+            for (let j = 0; j < events[i].words.length; j++) {
                 if (events[i].words[j].word.toLowerCase() === convo.toLowerCase()) {
                     event = events[i];
                     break;
@@ -419,7 +465,7 @@ function sms(req, res) {
                     if (contact != null)
                         request.me = contact[0];
                     if (event.isAuth) {
-                        if (contact.length == 0) {
+                        if (!contact.length) {
                             request.answer = "No Auth: Please Contact Admin!";
                             return resolve(request);
                         }
@@ -432,15 +478,16 @@ function sms(req, res) {
                                 from: '+' + config.twilio.phone,
                                 to: '+1' + request.phoneto,
                                 body: answer
-                            }).then(function (msg) { console.log(answer); });
+                            }).then( () => console.log(answer));
 
 
                             return resolve(request);
                         });
 
-                })
+                });
 
 
+            // noinspection JSUnresolvedVariable
             res.send("Executed: " + event.Description);
 
         } else {
@@ -453,11 +500,13 @@ function sms(req, res) {
 
 function processRequest(req) {
 
-    var result = {};
-    var body = req.body['Body'] || req.body['body'];
-    result.phoneto = req.body.To.replace(/[\(\)\-\+]/g, "");
-    result.phonefrom = req.body.From.replace(/[\(\)\-\+]/g, "");
-    result.phone = req.body.From.replace(/[\(\)\-\+]/g, "");
+    const result = {};
+    const body = req.body['Body'] || req.body['body'];
+
+    result.phoneto = body.To.replace(/[()\-+]/g, "");
+    result.phonefrom = body.From.replace(/[()\-+]/g, "");
+    result.phone = body.From.replace(/[()\-+]/g, "");
+
     if (result.phoneto.charAt(0) === '1') {
         result.phoneto = result.phoneto.slice(1, result.phoneto.length);
     }
@@ -466,8 +515,9 @@ function processRequest(req) {
         result.phonefrom = result.phonefrom.slice(1, result.phonefrom.length);
     }
 
-    var sub = body.match(/([a-zA-Z0-9\+\*\/\-\!\?'])+/gm);
-    for (var i = 0; i < sub.length; i++) {
+    // const sub = body.match(/([a-zA-Z0-9\+\*\/\-\!\?'])+/gm);
+    const sub = body.match(/([a-zA-Z0-9]|\+|\*|\/|-|\?)+/gm);
+    for (let i = 0; i < sub.length; i++) {
         sub[i] = sub[i].toLowerCase().trim();
     }
 
@@ -479,15 +529,16 @@ function processRequest(req) {
 }
 
 function isTokenValid(req) {
-    var token = req.headers['token'];
+    let token = req.headers['token'];
     if (token) {
         if (token === config.api_token) {
             return true;
         }
     }
 
-    var body = req.body['Body'] || req.body['body'];
-    token = req.body.AccountSid;
+    const body = req.body['Body'] || req.body['body'];
+    // noinspection JSUnresolvedVariable
+    token = body.AccountSid;
     if (token) {
         if (token === config.api_token) {
             return true;
@@ -514,4 +565,4 @@ module.exports = {
     inactivecommand: inactivecommand,
     timesheetnotification: timesheetnotification,
     sms: sms
-}
+};

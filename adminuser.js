@@ -14,32 +14,32 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-var mongo = require('./server/services/mongo');
-var uuid = require('uuid');
+const mongo = require('./server/services/mongo');
+const uuid = require('uuid');
 const crypto = require('crypto');
 const secret = process.env.passwordCrypto || "k2312lk3m12l31";
 
 
-var id = uuid();
+const id = uuid();
 
 function encodePassword(password) {
-    var hash = crypto.createHmac('sha512', secret);
+    const hash = crypto.createHmac('sha512', secret);
     hash.update(password);
-    var temp = hash.digest('hex');
-    return temp;
+    return hash.digest('hex');
 }
 
 
-var Prompt = require('prompt-password');
-var prompt = new Prompt({
-  type: 'password',
-  message: 'Enter your password please',
-  name: 'password'
+const Prompt = require('prompt-password');
+const prompt = new Prompt({
+    type: 'password',
+    message: 'Please set the admin password:',
+    name: 'password'
 });
- 
+
+// noinspection JSUnresolvedFunction
 prompt.run()
   .then(function(password) {
-    console.log(password)
+    console.log(password);
 
   mongo.Update({ Username: 'admin'},  {
              uuid: id,
@@ -49,19 +49,19 @@ prompt.run()
              Name: 'Admin User',
              Status: 'admin'
             }, 'Users', {upsert: true})
-            .then(function (response) {
+            .then( () => {
 
                 mongo.Update(
                     {uuid: id},
                     {uuid: id, password: encodePassword(password)},
-                    'Passwords',                                
+                    'Passwords',
                     { upsert: true })
                 .then(function () {
 
-                    console.log("Admin user added..., login and change password, or add other users...");
+                    console.log("Admin user added. Pleae log in, change password, or add other users ...");
                     process.exit();
-                })       
+                })
             });
 
-    
+
  });

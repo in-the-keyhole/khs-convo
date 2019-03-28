@@ -16,23 +16,34 @@ limitations under the License.
 
 'use strict';
 
-var config = require('../config');
-var log4js = require('log4js');
-var logger = log4js.getDefaultLogger();
-var http = require("http");
+const config = require('../config');
+const logger = require('log4js').getLogger();
+const ping = require('ping');
+
+logger.level = 'debug';
+
+const timerName = 'Ping Timed Event';
 
 module.exports = {
-    config: { 
-        timerName: 'Ping Timer',
-        callbackDelay: 0,
-        callbackMaxRun: 0
-    },
 
-    process: function() {
-        if(config.ping_url) {
-            var res = http.get(config.ping_url, function(response) {
-                logger.info('   Timer Pinging Server: ' + response.statusCode + ' / ' + response.statusMessage);
-            });
+    process: function () {
+
+        if (config.ping_url) {
+            // Contain any throw to protect server
+            try {
+                // Pluck host from configured URL
+                const host = (url => (url.indexOf('//') > -1 ? url.split('/')[2] : url.split('/')[0]))(config.ping_url) ;
+
+                ping.sys.probe(host,  isAlive => {
+                    const msg =`${timerName}: host "${host}" is `;
+                    logger.info(`${msg} ${isAlive ? "ALIVE" : "DEAD"}`);
+                });
+            } catch (err) {
+                logger.error(`ping timer event may have a malformed ping URL configured`);
+            }
+
+        } else {
+            logger.error(`ping timer event has no ping URL configured`);
         }
     }
 }

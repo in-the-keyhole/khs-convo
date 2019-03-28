@@ -14,18 +14,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React, { Component } from 'react';
+import React from 'react';
+// noinspection ES6CheckImport
+import {MDBFooter, MDBIcon} from "mdbreact";
 
-class Footer extends Component {
-    render() {
-        return (
+const crUrl = 'https://keyholesoftware.com/company/creations/content-usage-guidelines/';
 
-            <div className="footer">
-                <p></p>
-                <p></p>
-                <p> @Keyhole software {(new Date().getFullYear())} +  <a href ="https://keyholesoftware.com/company/creations/content-usage-guidelines/"> Content Usage </a> Guidelines</p>
-            </div>
-        )
-    }
-}
-export default Footer
+export const FooterPanel = (/*props*/) => (
+    <MDBFooter  color={"unique-color"} className={"white-text"}>
+        <div className="text-center py-3" style={{}}>
+            &copy; {new Date().getFullYear()} Copyright: KeyHole Software&nbsp;
+            <MDBIcon icon="link" />&nbsp;
+            <a target={"_blank"}
+               href={crUrl}>Content Usage Guidelines</a>
+        </div>
+    </MDBFooter>
+);

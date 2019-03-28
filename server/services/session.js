@@ -15,9 +15,7 @@ limitations under the License.
 */
 
 
-
-var mongo = require('./mongo');
-var moment = require('moment');
+const mongo = require('./mongo');
 
 module.exports = {
     Remember: Remember,
@@ -26,14 +24,12 @@ module.exports = {
     GetCurrent: GetCurrent,
     Replace: Replace
 
-}
-
+};
 
 
 function Replace(phone, event, msg, state, data) {
 
-    var conversation = {};
-    var d =  new Date(); //moment(Date.now()).format('LLLL');
+    const d = new Date();
     mongo.Update({ phone: phone},{ date: d, phone: phone, event: event, message: msg, state: state, data: data }, 'Sessions', {upsert: true});
 
 }
@@ -41,61 +37,54 @@ function Replace(phone, event, msg, state, data) {
 
 function Remember(phone, event, msg, state) {
 
-    var conversation = {};
-    var d =  new Date(); //moment(Date.now()).format('LLLL');
+    const d = new Date();
     mongo.Insert({ date: d, phone: phone, event: event, message: msg, state: state }, 'Sessions');
-
 
 }
 
 
 function GetCurrent(phone) {
 
-
-    return new Promise(function (resolve, reject) {
-        var result;
+    // noinspection ES6ModulesDependencies
+    return new Promise( (resolve) => {
+        let result;
         mongo.Get({ phone: phone }, 'Sessions').then(function (results) {
-            var index = results.length;
-           
+            const index = results.length;
+
             if (index >= 0) {
                 result = results[index-1];
             }
 
-        
             return resolve(result);
 
         });
     });
-
-
 
 }
 
 
 function Get(phone) {
 
+    // noinspection ES6ModulesDependencies
+    return new Promise( (resolve) => {
 
-    return new Promise(function (resolve, reject) {
-
-        var result = mongo.Get({ phone: phone }, 'Sessions');
+        const result = mongo.Get({phone: phone}, 'Sessions');
         return resolve(result);
     });
-
-
 
 }
 
 
-
+/**
+ * @return {boolean}
+ */
 function Delete(phone) {
 
      mongo.Get({phone: phone}, 'Sessions')
-        .then(function (list) {
+        .then( () => {
              mongo.Delete({ phone: phone }, 'Sessions');
-        });            
+        });
 
     return true;
-
-
 
 }

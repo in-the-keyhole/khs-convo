@@ -14,120 +14,167 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-var config = require('../../config');
-var mongo = require('../mongo')
+const config = require('../../config');
+const mongo = require('../mongo');
 
-let getWebhookUrl = function () {
-    var slackwebhookuri;
 
-    return new Promise(function (resolve, reject) {
-        mongo.Get({ Name: "slackwebhookuri" }, 'Content')
-            .then(function (result) {
-                var  slackwebhookuri;
-                if (result != null  && result.length>0 && result[0].Content != null) {
-                    slackwebhookuri = result[0].Content;
-                }else {
-                    slackwebhookuri = config.slack.webhookUri;
-                }
-                resolve(slackwebhookuri);
-            })
-            .catch(function (error) {
-                reject('error');
-            });
-    })
+/**
+ * Return result content, if present, else return given defaultValue.
+ *
+ * @param result
+ * @param defaultValue
+ * @returns {*}
+ */
+function resolveSlackResult(result, defaultValue) {
+    return (result && result.length && result[0].Content)
+        ? result[0].Content
+        : defaultValue;
 }
 
-let getSlackMessage = function (slackType) {
+
+/**
+ * @returns promise of web hook URI
+ */
+const getWebhookUrl = () => {
+
+    // noinspection ES6ModulesDependencies
+    return new Promise(function (resolve, reject) {
+        mongo.Get({Name: "slackwebhookuri"}, 'Content')
+            .then(function (result) {
+
+                // const slackwebhookuri =
+                //     (result && result.length && result[0].Content)
+                //         ? result[0].Content
+                //         : config.slack.webhookUri;
+
+                resolve(resolveSlackResult(result, config.slack.webhookUri));
+            })
+            .catch(() => {
+                reject(`Error`);
+            });
+    })
+};
+
+
+/**
+ * Return promised result content, if present, else return resovled given failure or successMessage.
+ *
+ * @param slackType
+ */
+const getSlackMessage = slackType => {
     if (slackType) {
 
+        // noinspection ES6ModulesDependencies
         return new Promise(function (resolve, reject) {
-            mongo.Get({ Name: "slacksuccessmessage" }, 'Content').then(function (result) {
-                var  slackmessage;
-                if (result != null && result.length>0 && result[0].Content != null) {
-                    slackmessage = result[0].Content;
-                }else {
-                    slackmessage = config.slack.successMessage;
-                }
-                resolve(slackmessage);
+            mongo.Get({Name: "slacksuccessmessage"}, 'Content').then(function (result) {
+
+                // const slackmessage =
+                //     (result && result.length && result[0].Content)
+                //         ? result[0].Content
+                //         : config.slack.successMessage;
+
+                resolve(resolveSlackResult(result, config.slack.successMessage));
+
             }).catch(function (error) {
                 reject(error);
             })
         });
 
     } else {
+        // noinspection ES6ModulesDependencies
         return new Promise(function (resolve, reject) {
-            mongo.Get({ Name: "slackfailuremessage" }, 'Content').then(function (result) {
-                var  slackmessage;
-                if (result != null && result.length>0  && result[0].Content != null) {
-                    slackmessage = result[0].Content;
-                }else {
-                    slackmessage = config.slack.failureMessage;
-                }
-                resolve(slackmessage);
+            mongo.Get({Name: "slackfailuremessage"}, 'Content').then(function (result) {
+
+                // const slackmessage =
+                //     (result && result.length && result[0].Content)
+                //         ? result[0].Content
+                //         : config.slack.failureMessage;
+
+                resolve(resolveSlackResult(result, config.slack.failureMessage));
+
             }).catch(function (error) {
                 reject(error);
             })
         });
     }
-}
+};
 
-let getSlackChannel = function () {
 
-    return new Promise(function (resolve, reject) {
-        mongo.Get({ Name: "slackchannel" }, 'Content')
+/**
+ * Return promise of result content, if present, else return promise of given failure or successMessage.
+ */
+const getSlackChannel = () => {
+
+    // noinspection ES6ModulesDependencies
+    return new Promise(resolve => {
+        mongo.Get({Name: "slackchannel"}, 'Content')
             .then(function (result) {
-                var slackChannel;
-                if (result!=null && result.length>0 &&  result[0].Content !=null){
-                    slackChannel = result[0].Content;
-                }else {
-                    slackChannel =  config.slack.channel;
-                }
-                resolve(slackChannel);
+
+                // const slackChannel =
+                //     (result && result.length && result[0].Content)
+                //         ? result[0].Content
+                //         : config.slack.channel;
+
+                resolve(resolveSlackResult(result, config.slack.channel));
+
             })
             .catch(function (error) {
                 console.log(error)
             })
     });
-}
+};
 
-let getSlackUserName = function () {
-    return new Promise(function (resolve, reject) {
-        mongo.Get({ Name: "slackusername" }, 'Content')
+
+/**
+ * Return promise of user name, if present, else return promise of given failure or successMessage.
+ */
+const getSlackUserName = () => {
+    // noinspection ES6ModulesDependencies
+    return new Promise(resolve => {
+        mongo.Get({Name: "slackusername"}, 'Content')
             .then(function (result) {
-                var slackusername;
-                if (result!=null && result.length>0  && result[0].Content !=null){
-                    slackusername = result[0].Content;
-                }else {
-                    slackusername =  config.slack.channel;
-                }
-                resolve(slackusername);
+
+                // const slackusername =
+                //     (result && result.length && result[0].Content)
+                //         ? result[0].Content
+                //         : config.slack.channel;
+
+                resolve(resolveSlackResult(result, config.slack.channel));
+
             })
-            .catch(function (error) {
+            .catch(error => {
                 console.log(error)
             })
     });
-}
+};
 
 
-let getSlackInfo = function (slackType) {
+/**
+ * PUBLIC API
+ * Returns aggregate promise of web hook URL, slack message-per-slack-type, slack channel, and slack user name
+ * @param slackType
+ */
+const getSlackInfo = slackType => {
+    // noinspection ES6ModulesDependencies
     return new Promise(function (resolve, reject) {
-        
-        Promise.all([getWebhookUrl(), getSlackMessage(slackType), getSlackChannel(), getSlackUserName()]).then(function (results) {
 
-            var slack = {
-                webhookUri: results[0],
-                slackMessage: results[1],
-                slackChannel: results[2],
-                slackUserName: results[3]
-            }
-            resolve(slack);
+        // noinspection ES6ModulesDependencies
+        Promise.all([getWebhookUrl(), getSlackMessage(slackType), getSlackChannel(), getSlackUserName()]).then((result) => {
+
+            let i = 0;
+            resolve({
+                webhookUri: result[i++],
+                slackMessage: result[i++],
+                slackChannel: result[i++],
+                slackUserName: result[i]
+            });
         })
             .catch(function (error) {
                 reject(error);
             });
     })
-}
+};
 
 module.exports = {
     getSlackInfo: getSlackInfo
-}
+};

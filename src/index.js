@@ -14,20 +14,34 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
+import "font-awesome/css/font-awesome.min.css";
+import "bootstrap-css-only/css/bootstrap.min.css";
+import "mdbreact/dist/css/mdb.css";
 import './styles/index.css';
-import Footer from './footer';
+import './styles/data-table.css';
+import React, {Fragment} from 'react';
+import ReactDOM from 'react-dom';
+import {BrowserRouter} from 'react-router-dom'
+import App from './App';
+import {FooterPanel} from './footer';
+import {Provider} from 'react-redux';
+import {store} from './configureStore';
+import ConvoNotificationContainer from './common/ConvoNotificationContainer';
 
 const element = (
-  <div id="wrapper">
-    <div id="header"></div>
-    <div id="content"> <App /></div>
-    <div id="footer"> <Footer/></div>
-  </div>
+    <Fragment>
+        <BrowserRouter id="wrapper">
+            <Provider store={store}>
+                {/*<div id="header"></div>*/}
+                <div id="content"><App/></div>
+                <div id="footer" className={"header-footer"}><FooterPanel/></div>
+            </Provider>
+        </BrowserRouter>
+        <ConvoNotificationContainer/>
+    </Fragment>
 );
+
 ReactDOM.render(
-  element,
-  document.getElementById('root')
+    element,
+    document.getElementById('root')
 );

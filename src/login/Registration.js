@@ -14,97 +14,139 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import * as _ from 'lodash';
-import axios from 'axios';
+import {restLogin} from '../service/restAPI';
+import {base} from '../service/restHelpers';
+// noinspection ES6CheckImport
+import {
+    Container,
+    Button,
+    Row,
+    Col,
+    Input,
+    toast,
+    Card,
+    CardBody,
+    CardTitle,
+    MDBIcon
+} from 'mdbreact';
+
 
 class Registration extends Component {
 
     constructor(props) {
-        super(props); 
+        super(props);
+
         this.state = {
             newPassword: '',
             repeatPassword: '',
             error: ''
-        }
+        };
 
-        this.handleInputChange = this.handleInputChange.bind(this); 
+        this.handleInputChange = this.handleInputChange.bind(this);
     }
+
 
     handleInputChange(event) {
         const target = event.target;
-        this.setState({[target.name]: target.value});
-        this.setState({error: ''});
+        this.setState({[target.name]: target.value, error: ''});
     }
 
-    registerCreds(){
 
-        var urlParams = _.chain(window.location.search)
+    registerCreds() {
+
+        const urlParams = _.chain(window.location.search)
             .replace('?', '') // a=b454&c=dhjjh&f=g6hksdfjlksd
             .split('&') // ["a=b454","c=dhjjh","f=g6hksdfjlksd"]
             .map(_.ary(_.partial(_.split, _, '='), 1)) // [["a","b454"],["c","dhjjh"],["f","g6hksdfjlksd"]]
             .fromPairs() // {"a":"b454","c":"dhjjh","f":"g6hksdfjlksd"}
-            .value()
-            
-        console.log(urlParams);
-        
-        var creds = {
+            .value();
+
+        const creds = {
             uuid: urlParams.uuid,
             Username: urlParams.registrationEmail,
             Password: this.state.newPassword
-        }        
+        };
 
-       console.log(creds);
-
-        var base = '';
-        if (window.location.hostname === 'localhost') {
-            base = 'http://localhost:3001';
-        }
-
-        axios({// using axios directly to avoid redirect interceptor
-            method:'post',
-            url:'/api/auth/register', 
+        restLogin({
+            method: 'post',
+            url: '/api/auth/register',
             baseURL: base,
             data: creds
-        }).then(function(res) {
+        }).then(() => {
+            // location re-init the app - a screen flash - all other routes should use a react-route within the SPA
             window.location = ('/login');
-        }).catch(function(err){
+        }).catch(err =>
             //self.setState({loginError: 'Username or password incorrect. Please try again.'});
-        });
+            console.log(`Registration API issue`, err)
+        );
 
     }
 
-    checkPasswordMatch(){
-        if (this.state.newPassword === this.state.repeatPassword){
-            this.registerCreds();       
+
+    checkPasswordMatch() {
+        if (this.state.newPassword === this.state.repeatPassword) {
+            this.registerCreds();
         } else {
-            this.setState({error: 'Passwords do not match'});
+            const noMatch = 'Passwords do not match';
+            this.setState({error: noMatch});
+            toast.warning(noMatch);
         }
     }
 
+
     render() {
+        const inputStyle = {padding: '0.5rem', color: "#000"};
+        const cardLayout = {width: "26.0rem", padding: "3.0rem", height: "20rem"};
+
         return (
-            <div className="container">
-                
-                <div className="row">
-                    <div className="col-md-12"><h1>Register</h1></div>
-                </div>        
+            <Container>
+                <Row>
+                    <Col/>
+                    <Col>
+                        <Card style={cardLayout}>
+                            <CardBody>
+                                <CardTitle>Password Registration</CardTitle>
 
-                <div className="col-md-3">                        
-                    <div className="red">{this.state.error}</div>
+                                <form onSubmit={this.handleSubmit}>
 
-                    <label for="newPassword">Password</label>
-                    <input autoComplete="off" name="newPassword" id="newPassword" className="form-control" type="password" required="required" value={this.state.newPassword} onChange={this.handleInputChange} placeholder="Password" />
-                    
-                    <label for="repeatPassword">Repeat Password</label>
-                    <input autoComplete="off" name="repeatPassword" id="repeatPassword" className="form-control" type="password" required="required" value={this.state.repeatPassword} onChange={this.handleInputChange} placeholder="Repeat Password" />
-                
-                    
-                    <button className="btn btn-primary" onClick={() => this.checkPasswordMatch()}>Register</button>                
-                </div>
+                                    <Input name={"password"}
+                                           id={"password"}
+                                           label={"Password"}
+                                           type={"password"}
+                                           icon={"lock"}
+                                           style={inputStyle}
+                                           value={this.state.password}
+                                           onChange={this.handleInputChange}
+                                    />
 
-            </div>
-        ); 
+                                    <Input name={"repeatPassword"}
+                                           id={"repeatPassword"}
+                                           label={"Repeat Password"}
+                                           type={"password"}
+                                           icon={"lock"}
+                                           style={inputStyle}
+                                           value={this.state.repeatPassword}
+                                           onChange={this.handleInputChange}
+                                    />
+
+                                    <Button size={""}
+                                            type={"submit"}
+                                            color={"light"}
+                                            value={"register"}>
+                                        <MDBIcon icon="user"/>&nbsp;Register</Button>
+
+                                </form>
+
+                            </CardBody>
+                        </Card>
+                    </Col>
+                    <Col/>
+                </Row>
+            </Container>
+
+        );
     }
 
 }

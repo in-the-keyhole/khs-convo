@@ -19,7 +19,7 @@ module.exports = {
     jwt_secret: process.env.jwt_secret || 'lfanflaefknawelf',
     jwt_expires: process.env.jwt_expires || 3600,
 
-  
+
     passwordCrypto: process.env.passwordCrypto || "k2312lk3m12l31",
 
 
@@ -30,7 +30,7 @@ module.exports = {
 
     event_dir: process.env.event_dir || './server/convoevents',
 
-    
+
     session_timeout: process.env.SESSION_TIMEOUT || 5,
 
     timerevent_dir: './server/timerevents',
@@ -40,17 +40,17 @@ module.exports = {
 
 
     uploaded_event_dir: './server/convoevents',
-    
+
     template_dir: process.env.template_dir || 'server/convoevents',
-    
+
     ping_url: process.env.PING_URL || 'http://khs-convo-dev.herokuapp.com',
-    
+
     slack: {
         webhookUri: 'your slack webhook here',
         channel:  '<channel name>',
         userName: '<user name>',
-        successMessage:  'You Success Message here',
-        failureMessage: 'You failure message here '
+        successMessage:  'Your Success Message here',
+        failureMessage: 'Your failure message here '
     },
 
     twilio: {
@@ -66,6 +66,6 @@ module.exports = {
         smtp_service: '<smtp service>',
         from: '<from email address>',
         notify_subject: '<subject from notifications>',
-        register_subject: '<subject from register>' 
-    }  
+        register_subject: '<subject from register>'
+    }
 }

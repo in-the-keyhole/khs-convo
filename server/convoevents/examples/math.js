@@ -18,7 +18,7 @@ limitations under the License.
 
 module.exports = function (events) {
 
-    var event = {};
+    const event = {};
     event.isAuth = false;
     event.description = "Mathematical Expressions";
     event.words = [{
@@ -33,15 +33,17 @@ module.exports = function (events) {
     }, {
         word: '\\*',
         value: 10
-    }]
+    }];
+
     event.threash = 10;
     event.run = function (result) {
-        return new Promise(function (resolve, reject) {
-            var ma = result.rawQuestion.replace(/[a-zA-Z?!$\r\n\s\t]*/gm, "");
+        // noinspection ES6ModulesDependencies
+        return new Promise(function (resolve) {
+            const ma = result.rawQuestion.replace(/[a-zA-Z?!$\r\n\s\t]*/gm, "");
             return resolve(eval(ma));
         })
-    }
+    };
 
     events.push(event);
 
-}
+};

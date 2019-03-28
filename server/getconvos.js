@@ -15,21 +15,21 @@ limitations under the License.
 */
 
 
-var fs = require('fs-extra');
- 
-
-var filterFunc = function(s,d) {
-
-     if (fs.lstatSync(s).isDirectory() && s.indexOf('.git') < 0) {
-                return true;
-     }
-     
-    return s.toLowerCase().indexOf('.js') > 0 ? true : false;
-};
+const fs = require('fs-extra');
 
 
-fs.copySync('/Users/davidpitt/git/khs-convo-sms-events' , '/Users/davidpitt/git/khs-grok-convo/server/convoevents',{filter: filterFunc } );
+const filterFunc =  (s => {
+
+    // noinspection JSUnresolvedFunction
+    if (fs.lstatSync(s).isDirectory() && s.indexOf('.git') < 0) {
+        return true;
+    }
+
+    return s.toLowerCase().indexOf('.js') > 0;
+});
+
+
+// noinspection JSUnresolvedFunction
+fs.copySync('/Users/davidpitt/git/khs-convo-sms-events' ,
+    '/Users/davidpitt/git/khs-grok-convo/server/convoevents',{filter: filterFunc } );
 console.log("Success, convos copied");
-
-
-

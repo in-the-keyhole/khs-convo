@@ -14,23 +14,44 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React from 'react';
-import ajax from '../util/ajax';
-import { Modal  } from 'react-bootstrap';        
-import '../styles/data-table.css';
-import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 
 import '../styles/index.css';
+import '../styles/data-table.css';
+import React from 'react';
+import restAPI from '../service/restAPI';
+import BootstrapTable from 'react-bootstrap-table-next';
+import BaseComponent from '../BaseComponent';
+import CommonUI from "../common/CommonUI";
+import paginationFactory from "react-bootstrap-table2-paginator";
+import {pageinationOptions} from "../common/pageinationOptions";
+import cellEditFactory from "react-bootstrap-table2-editor";
+// noinspection ES6CheckImport
+import {
+    Row,
+    Col,
+    Card,
+    CardBody,
+    CardTitle,
+    MDBModal,
+    MDBModalBody,
+    MDBModalHeader,
+    MDBModalFooter,
+    MDBInput,
+    MDBIcon,
+    Button,
+    toast
+} from 'mdbreact';
+import {connect} from "react-redux";
 
-class Properties extends React.Component {
+class Properties extends BaseComponent {
     constructor(props) {
         super(props);
         this.state = {
             contents: [],
             insertName: null,
             insertContent: null,
-            currentProperty:null
-        }
+            currentProperty: null
+        };
 
         this.componentWillMount = this.componentWillMount.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -40,83 +61,98 @@ class Properties extends React.Component {
     }
 
     componentWillMount() {
+        super.componentWillMount();
         this.fetchContents();
     }
 
     fetchContents() {
-        var self = this;
-        ajax({ 
-            url:'../api/admin/content', 
+        const self = this;
+        restAPI({
+            url: '../api/admin/content',
             data: this.state
-        }).then(function(res, me) {
+        }).then(res => {
 
-            self.setState({ contents: res.data.sort(function (a,b){
-                return  (a.Name.toLowerCase() > b.Name.toLowerCase()) ? 1 : -1;
-            }) });
-        }).catch(function(err){console.log(err)});
+            self.setState(
+                {contents: res.data.sort((a, b) => (a.Name.toLowerCase() > b.Name.toLowerCase()) ? 1 : -1)});
+        }).catch(err => console.log(err));
     }
- 
+
 
     handleContentDelete(remove) {
-        ajax({
-            method:'delete',
-            url:'../api/admin/content',
+        restAPI({
+            method: 'delete',
+            url: '../api/admin/content',
             data: remove,
-        }).then(function(res, me) {
-            console.log(me);
-        }).catch(function(err){console.log(err)});
+        }).then((res) => {
+            console.log(res);
+        }).catch((err) => {
+            console.log(err)
+        });
     }
 
     deleteProperty() {
-        var itemId = this.state.currentProperty;
-        var remove = {
-            Name: itemId.Name 
+        const itemId = this.state.currentProperty;
+        const remove = {
+            Name: itemId.Name
         };
-        
-        ajax({
-            method:'delete',
-            url:'../api/admin/content',
-            data: remove,
-        }).then(function(res, me) {
-            console.log(me);
-        }).catch(function(err){console.log(err)});
 
-        this.fetchContents();
-        this.setState ({
-            deleteModal: false 
+        restAPI({
+            method: 'delete',
+            url: '../api/admin/content',
+            data: remove,
+        }).then((res) => {
+            console.log(res);
+
+            this.fetchContents();
+            toast.info(`Deleted property "${remove.Name}"`);
+
+        }).catch((err) => {
+            console.log(err)
+        });
+
+        this.setState({
+            deleteModal: false
         })
+
     }
 
-    onAfterSaveCell(row, cellName, cellValue) {
-        var update = {
+    onAfterSaveCell(row /*, cellName, cellValue*/) {
+        const update = {
             Name: row.Name,
-            Content:row.Content
-        }
- 
-        ajax({ 
-            method:'put',
-            url:'../api/admin/content', 
+            Content: row.Content
+        };
+
+        restAPI({
+            method: 'put',
+            url: '../api/admin/content',
             data: update,
-        }).then(function(res, me) {
+        }).then(function (res, me) {
             console.log(me);
-        }).catch(function(err){console.log(err)});
-    } 
+        }).catch(function (err) {
+            console.log(err)
+        });
+    }
 
 
     handleContentInsert(insert) {
-            ajax({
-                method:'post',
-                url:'../api/admin/content',
-                data: insert,
-            }).then(function(res, me) {
-                console.log(me);
-            }).catch(function(err){console.log(err)});
+        restAPI({
+            method: 'post',
+            url: '../api/admin/content',
+            data: insert,
+        }).then(res => {
+            console.log(res);
+
+            toast.success(`Inserted property "${insert.Name}"`);
+            this.setState({insertName: null, insertContent: null});
+        }).catch(err => {
+            console.log(err)
+        });
     }
 
     handleInsertItem() {
         if (this.state.insertName) {
             this.setState({
-               insertError: null
+                insertError: null
             });
 
             this.handleContentInsert({
@@ -125,88 +161,155 @@ class Properties extends React.Component {
             });
         } else {
             this.setState({
-               insertError: "Name cannot be empty"
+                insertError: "Name cannot be empty"
             });
         }
 
         this.fetchContents();
     }
 
+
     handleInputChange(event) {
         const target = event.target;
         this.setState({[target.name]: target.value});
     }
 
+
     propertyToolbar(cell, row) {
         return (
-                <div className="adminIcons">
-                    <i title="delete" className="glyphicon glyphicon-remove-sign text-danger clickable"  onClick={() => this.openDeleteModal(row)}  />
-                </div>  
+            <div className="btn-group" role="toolbar" aria-label="management">
+                <div onClick={() => this.openDeleteModal(row)}>
+                    <MDBIcon style={{marginLeft: '0.5rem', color: 'red'}} size={'lg'} icon={"minus-circle"}/>
+                </div>
+            </div>
         )
     }
-   
 
-    openDeleteModal(property){ this.setState( { 
-        currentProperty: property,
-        deleteModal: true
-    })}
 
-    closeDeleteModal(){ this.setState({ 
-        currentProperty: null,        
-        deleteModal: false 
-    })}
-  
+    openDeleteModal(row) {
+        console.log(`openDeleteModal`, row);
+        this.setState({
+            name: row.Name,
+            currentProperty: row,
+            deleteModal: true
+        })
+    }
+
+    closeDeleteModal() {
+        this.setState({
+            currentProperty: null,
+            deleteModal: false
+        })
+    }
+
 
     render() {
+
+        const columns = [
+            {
+                hidden: true,
+                dataField: '_id',
+                isKey: true
+            }, {
+                text: 'Name',
+                dataField: 'Name',
+                sort: true,
+                width: '5%',
+                sortCaret: CommonUI.ColumnSortCaret,
+                editable: false
+            },
+            {
+                text: 'Content',
+                dataField: 'Content',
+                sort: true,
+                sortCaret: CommonUI.ColumnSortCaret,
+                editable: true
+            },
+            {
+                text: '',
+                dataField: 'df1',
+                isDummyField: true,
+                width: '5%',
+                formatter: this.propertyToolbar,
+                editable: false,
+                align: 'center',
+                headerAlign: 'center'
+            }
+        ];
+
         return (
-            <div className="container">
-                <div className="row">
-                    <div className="col-md-12"><h1>Properties</h1></div>
-                </div>
-                <div className="row">
-                    <div className="col-md-2">
-                        <input name="insertName"id="insertName" className="form-control" type="text" value={this.state.insertName} onChange={this.handleInputChange} placeholder="Name" />
-                    </div>
-                    <div className="col-md-4">
-                        <input name="insertContent"id="insertContent" className="form-control" type="text" value={this.state.insertContent} onChange={this.handleInputChange} placeholder="Content" />
-                    </div>
-                    <div className="col-md-1 text-success glyphicon glyphicon-floppy-save clickable" onClick={ this.handleInsertItem }/>
-                    <div className="col-md-2 text-danger">{this.state.insertError}</div>
-                </div>
+            <div>
+                <Card>
+                    <CardBody>
+                        <CardTitle>Administer Properties</CardTitle>
+
+                        <Row>
+                            <Col md={"2"}>
+                                <MDBInput name="insertName" id="insertName"
+                                          type="text"
+                                          autoFocus
+                                          value={this.state.insertName || ''}
+                                          label={"Name"}
+                                          onChange={this.handleInputChange}/>
+                            </Col>
+                            <Col md={"6"}>
+                                <MDBInput name="insertContent" id="insertContent"
+                                          type="text"
+                                          value={this.state.insertContent || ''}
+                                          label={"Content"}
+                                          onChange={this.handleInputChange}/>
+                            </Col>
+                            <Col md={"2"}>
+                                <Button size={"sm"} color={"light"}
+                                        onClick={this.handleInsertItem}
+                                        disabled={!this.state.insertName || !this.state.insertContent}
+                                        style={{marginTop: "1.5rem", width: "100%"}}>
+                                    <MDBIcon icon="plus-circle"/>&nbsp;Add Property</Button>
+                            </Col>
+                            <Col md={"2"} className="text-danger">
+                                {this.state.insertError}
+                            </Col>
+                        </Row>
+
+                        <Row>
+                            <Col md={"9"}>
+                                <BootstrapTable
+                                    bootstrap4
+                                    data={this.state.contents}
+                                    columns={columns}
+                                    keyField={'_id'}
+                                    insertRow={true}
+                                    pagination={paginationFactory(pageinationOptions)}
+                                    cellEdit={cellEditFactory({
+                                        mode: 'click',
+                                        blurToSave: true,
+                                        afterSaveCell: this.onAfterSaveCell
+                                    })}
+                                    striped
+                                    hover
+                                    condensed
+                                />
+                            </Col>
+                        </Row>
+                    </CardBody>
+                </Card>
 
 
-                <Modal show={this.state.deleteModal} onHide={this.close}>
-                    <Modal.Body>
-                        <div className="form-group">
-                            <label>Are you sure you want to delete this property?</label>
-                        </div>
-                        <div className="row">
-                             <div className="col-md-3"> </div>
-                             <div className="col-md-4"> <button className="btn btn-danger"  onClick={() => this.deleteProperty()} >Delete</button> </div>
-                             <div className="col-md-5"> <button className="btn btn-default" onClick={() => this.closeDeleteModal()}>Cancel</button>   </div>                 
-                        </div> 
-                    </Modal.Body>
-                </Modal>
-                <div className="col-md-12 list">
-                    <div className="row">
-                        <BootstrapTable 
-                            data={ this.state.contents } 
-                            pagination
-                            cellEdit={ {
-                                mode: 'click',
-                                blurToSave: true,
-                                afterSaveCell: this.onAfterSaveCell
-                            }}>
-                            <TableHeaderColumn dataField='_id' isKey hidden>ID</TableHeaderColumn>
-                            <TableHeaderColumn dataField='Name' editable={ false } >Property</TableHeaderColumn>
-                            <TableHeaderColumn dataField='Content' >Value</TableHeaderColumn>
-                            <TableHeaderColumn width="60" editable={ false } dataFormat={this.propertyToolbar}></TableHeaderColumn>
-                        </BootstrapTable>
-                    </div>
-                </div>  
+                <MDBModal isOpen={this.state.deleteModal} onHide={this.close}>
+                    <MDBModalBody>
+                        <MDBModalHeader>Delete property</MDBModalHeader>
+                        <Row><Col sm={"1"}>&nbsp;</Col><Col>{this.state.name || ''}</Col></Row>
+                        <MDBModalFooter>
+                            <Button color="danger" onClick={() => this.deleteProperty()}>Delete</Button>
+                            <Button onClick={() => this.closeDeleteModal()}>Cancel</Button>
+                        </MDBModalFooter>
+                    </MDBModalBody>
+                </MDBModal>
             </div>
         );
     }
 }
 
-export default Properties;
+const mapStateToProps = state => ({credentials: state.credentials});
+export default connect(mapStateToProps)(Properties);
+

@@ -16,7 +16,7 @@ limitations under the License.
 
 module.exports = function (events) {
 
-    var event = {};
+    const event = {};
     event.isAuth = false;
     event.description = "Tip Calculator";
     event.words = [{
@@ -26,33 +26,34 @@ module.exports = function (events) {
     {
         word: 'tips',
         value: 10
-    }]
+    }];
+
     event.threash = 10;
     event.run = function (result) {
 
-        var tips = "Bill Amount Please, example... \n tip 100.00";
+        let tips = "Bill Amount Please, example... \n tip 100.00";
 
-        return new Promise(function (resolve, reject) {
-
-            var decimal = ".00";
+        // noinspection ES6ModulesDependencies
+        return new Promise(function (resolve) {
+            let decimal = ".00";
             if (result.question.length > 1) {
 
                 if (result.question[1] > 2  ) {
                       decimal = "."+result.question[2];
                 }
-                
-                var amount = parseFloat(result.question[1] + decimal);
-              
+
+                const amount = parseFloat(result.question[1] + decimal);
+
                 if (!amount) {
                     tips = "Use a number please, example...\ tip 100.00";
                 } else {
-                    var fifteen = amount * 0.15;
-                    var twenty = amount * 0.20;
-                    var twentyfive = amount * 0.25;
+                    const fifteen = amount * 0.15;
+                    const twenty = amount * 0.20;
+                    const twentyfive = amount * 0.25;
 
-                    tips = "15%  = " + fifteen.toFixed(2) + " ($"+ (amount + fifteen).toFixed(2) + ") \n";
-                    tips = tips + "20%  = " + twenty.toFixed(2) + " ($" + (amount + twenty).toFixed(2) + ")  \n";
-                    tips = tips + "25%  = " + twentyfive.toFixed(2) + " ($" + (amount + twentyfive).toFixed(2) +")\n";
+                    tips = `15% = ${fifteen.toFixed(2)} ($${(amount + fifteen).toFixed(2)})`;
+                    tips += ` 20% = ${twenty.toFixed(2)} ($${(amount + twenty).toFixed(2)})`;
+                    tips += ` 25% = ${twentyfive.toFixed(2)} ($${(amount + twentyfive).toFixed(2)})`;
                 }
 
             }
@@ -60,8 +61,8 @@ module.exports = function (events) {
             return resolve(tips);
 
         })
-    }
+    };
 
     events.push(event);
 
-}
+};

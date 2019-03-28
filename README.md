@@ -604,9 +604,9 @@ Here is an example `allmovies.PUG` template file. This template generates an HTM
         title Movies
         meta(name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no")
         link(href='http://fonts.googleapis.com/css?family=Roboto', rel='stylesheet', type='text/css')
-        link(href='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css', rel="stylesheet")
+        link(href='https://cdnjs.cloudflare.com/restApi/libs/materialize/0.100.2/css/materialize.min.css', rel="stylesheet")
         link(href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css", rel='stylesheet')
-        link(href='https://cdnjs.cloudflare.com/ajax/libs/Swiper/3.4.2/css/swiper.min.css', rel="stylesheet")
+        link(href='https://cdnjs.cloudflare.com/restApi/libs/Swiper/3.4.2/css/swiper.min.css', rel="stylesheet")
         link(href='/styles/global.css', rel='stylesheet')
         link(href='/styles/movies.css', rel='stylesheet')
     body
@@ -629,8 +629,8 @@ Here is an example `allmovies.PUG` template file. This template generates an HTM
                     .swiper-button-next.swiper-button-white
                     .swiper-button-prev.swiper-button-white
 
-        script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js")
-        script(src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/3.4.2/js/swiper.min.js")
+        script(src="https://restApi.googleapis.com/restApi/libs/jquery/1.10.2/jquery.min.js")
+        script(src="https://cdnjs.cloudflare.com/restApi/libs/Swiper/3.4.2/js/swiper.min.js")
         script(type="text/javascript").
             $(document).ready( function() {
 

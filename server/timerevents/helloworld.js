@@ -16,11 +16,12 @@ limitations under the License.
 
 'use strict';
 
-var log4js = require('log4js');
-var logger = log4js.getDefaultLogger();
+const log4js = require('log4js');
+const logger = log4js.getLogger();
+logger.level = 'debug';
 
 module.exports = {
-    config: { 
+    config: {
         timerName: 'Hello World Timer',
         callbackDelay: 8000,
         callbackMaxRun: 3
@@ -30,7 +31,7 @@ module.exports = {
         logger.info('   helloworld.process() called');
         module.exports.sayHello();
     },
- 
+
     sayHello: function() {
         logger.info('   helloworld.sayHello()');
     }

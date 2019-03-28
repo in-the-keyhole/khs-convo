@@ -14,20 +14,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-var log4js = require('log4js');
-var logger = log4js.getDefaultLogger();
-var fs = require('fs');
-var config = require('../config');
-var path = require('path');
+const log4js = require('log4js');
+const logger = log4js.getLogger();
+const fs = require('fs');
+const config = require('../config');
+// const path = require('path');
+
+logger.level = 'debug';
 
 module.exports = {
+
     load: function() {
         logger.info('TimerEventLoader: load()');
 
-
         // Remove expired Scheduled Notifications and process others
         try {
-            var tmp2 = require('./convo/scheduledNotifications.js');
+            const tmp2 = require('./convo/scheduledNotifications.js');
 
             if(typeof tmp2.removeExpired === 'function') {
                 tmp2.removeExpired();
@@ -37,14 +39,13 @@ module.exports = {
                 logger.info('TimerEventLoader: Loading - scheduledNotifications.js');
                 module.exports.setupTimer(tmp2.process, tmp2.config);
             }
-        } 
+        }
         catch (err){
-            console.log("NO SCHEDULE NOTIFICATIONS FILE");
+            logger.error("NO SCHEDULE NOTIFICATIONS FILE");
         }
 
-        
 
-        var filepath = config.timerevent_dir;
+        const filepath = config.timerevent_dir;
 
         // Read current directory contents
         fs.readdir(filepath, function (err, filenames) {
@@ -52,21 +53,21 @@ module.exports = {
                 logger.error(err);
                 return;
             }
-            
+
             if(filenames.length > 0) {
-                // Loop thru filenames
-                filenames.forEach(function (filename, index) {
+                // Enumerate filenames
+                filenames.forEach( (filename) => {
                         fs.stat(filepath + '/' + filename, function (err, stats) {
                         // Only look at files
                         if(stats.isFile()) {
-                            var tmp = require('../../' + filepath + '/' + filename);
+                            const tmp = require(`../../${filepath}/${filename}`);
 
                             // If there is a "process()", then setup timer
-                            if(typeof tmp.process === 'function') {
-                                logger.info('TimerEventLoader: Loading - ' + filepath + '/' + filename);
+                            if(tmp.process && typeof tmp.process === 'function') {
+                                logger.info(`===> TimerEventLoader: Loading - ${filepath}/${filename}`);
                                 module.exports.setupTimer(tmp.process, tmp.config);
                             }  else {
-                                logger.error('TimerEventLoader: No process() found in: ' + filepath + '/' + filename);
+                                logger.error(`TimerEventLoader: No process() found in: ${filepath}/${filename}`);
                             }
                         }
                     });
@@ -78,39 +79,52 @@ module.exports = {
     },
 
     setupTimer: function( callback = null, timerconfig = {} ) {
-        if (callback !== null) {
-            let timerName = typeof timerconfig.timerName === 'string' ? timerconfig.timerName : config.timerevent_timerName_default;
-            let callbackDelay = typeof timerconfig.callbackDelay === 'number' && timerconfig.callbackDelay > 0 ? timerconfig.callbackDelay : config.timerevent_callbackDelay_default;
-            let callbackMaxRun = typeof timerconfig.callbackMaxRun === 'number' ? timerconfig.callbackMaxRun : config.timerevent_callbackMaxRun_default;
-            logger.debug('   setupTimer: timerName: ' + timerName);
-            logger.debug('   setupTimer: callbackDelay: ' + callbackDelay);
-            logger.debug('   setupTimer: callbackMaxRun: ' + callbackMaxRun);
+
+        if ( callback ) {
+            const timerName = typeof timerconfig.timerName === 'string'
+                ? timerconfig.timerName
+                : config.timerevent_timerName_default;
+
+            const callbackDelay = typeof timerconfig.callbackDelay === 'number' && timerconfig.callbackDelay > 0
+                ? timerconfig.callbackDelay
+                : config.timerevent_callbackDelay_default;
+
+            const callbackMaxRun = typeof timerconfig.callbackMaxRun === 'number'
+                ? timerconfig.callbackMaxRun
+                : config.timerevent_callbackMaxRun_default;
+
+            logger.debug(`\tsetupTimer: timerName: ${timerName}`);
+            logger.debug(`\tsetupTimer: callbackDelay: ${callbackDelay}`);
+            logger.debug(`\tsetupTimer: callbackMaxRun: ${callbackMaxRun}`);
 
             let runCallbackCount = 0;
 
-            // Run callback initially
-            logger.info('Running: ' + timerName + ': ' + (runCallbackCount+1) + (callbackMaxRun > 0 ? ' of ' + callbackMaxRun : ''));
+
+            // Always run callback initially with zero delay
+            logger.info(`==> setupTimer initial call: ${timerName}: ${runCallbackCount + 1}${callbackMaxRun > 0 ? ' of ' + callbackMaxRun : ''}`);
             callback();
             runCallbackCount++;
 
-            // Create setInterval if needed to run more than 1 time
-            if(callbackMaxRun === 0 || callbackMaxRun > 1) {
+            // Delay any subsequent callbacks by configured interval
+            if ( callbackMaxRun > 1 ) {
                 // Setup setInterval() using parameters
-                let si = setInterval(function() {
-                    logger.info('Running: ' + timerName + ': ' + (runCallbackCount+1) + (callbackMaxRun > 0 ? ' of ' + callbackMaxRun : ''));
+                const si = setInterval(() => {
+                    logger.info(`setupTimer subsequent call: ${timerName}: ${runCallbackCount + 1}${callbackMaxRun > 0 ? ' of ' + callbackMaxRun : ''}`);
                     callback();
                     runCallbackCount++;
-                
+
                     // If there is a max number of calls, then evaluate and stop if necessary
-                    if(callbackMaxRun > 1 && runCallbackCount >= callbackMaxRun) {
-                        logger.info('* Stopping: ' + timerName);
+                    if( runCallbackCount >= callbackMaxRun) {
+                        logger.info(`* Stopping: ${timerName}`);
                         clearInterval(si);
-                    } 
+                    }
                 }, callbackDelay);
             }
-        } 
+
+        }
         else {
-            logger.error('No callback passed in');
+            logger.ar('No callback passed in');
         }
     }
-}
+
+};
