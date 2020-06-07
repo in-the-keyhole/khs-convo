@@ -15,7 +15,9 @@ limitations under the License.
 */
 
 
-const mongo = require('./mongo');
+
+var mongo = require('./mongo');
+var moment = require('moment');
 
 module.exports = {
     Remember: Remember,
@@ -24,12 +26,14 @@ module.exports = {
     GetCurrent: GetCurrent,
     Replace: Replace
 
-};
+}
+
 
 
 function Replace(phone, event, msg, state, data) {
 
-    const d = new Date();
+    var conversation = {};
+    var d =  new Date(); //moment(Date.now()).format('LLLL');
     mongo.Update({ phone: phone},{ date: d, phone: phone, event: event, message: msg, state: state, data: data }, 'Sessions', {upsert: true});
 
 }
@@ -37,54 +41,61 @@ function Replace(phone, event, msg, state, data) {
 
 function Remember(phone, event, msg, state) {
 
-    const d = new Date();
+    var conversation = {};
+    var d =  new Date(); //moment(Date.now()).format('LLLL');
     mongo.Insert({ date: d, phone: phone, event: event, message: msg, state: state }, 'Sessions');
+
 
 }
 
 
 function GetCurrent(phone) {
 
-    // noinspection ES6ModulesDependencies
-    return new Promise( (resolve) => {
-        let result;
-        mongo.Get({ phone: phone }, 'Sessions').then(function (results) {
-            const index = results.length;
 
+    return new Promise(function (resolve, reject) {
+        var result;
+        mongo.Get({ phone: phone }, 'Sessions').then(function (results) {
+            var index = results.length;
+           
             if (index >= 0) {
                 result = results[index-1];
             }
 
+        
             return resolve(result);
 
         });
     });
+
+
 
 }
 
 
 function Get(phone) {
 
-    // noinspection ES6ModulesDependencies
-    return new Promise( (resolve) => {
 
-        const result = mongo.Get({phone: phone}, 'Sessions');
+    return new Promise(function (resolve, reject) {
+
+        var result = mongo.Get({ phone: phone }, 'Sessions');
         return resolve(result);
     });
+
+
 
 }
 
 
-/**
- * @return {boolean}
- */
+
 function Delete(phone) {
 
      mongo.Get({phone: phone}, 'Sessions')
-        .then( () => {
+        .then(function (list) {
              mongo.Delete({ phone: phone }, 'Sessions');
-        });
+        });            
 
     return true;
+
+
 
 }

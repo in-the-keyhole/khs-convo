@@ -16,10 +16,10 @@ limitations under the License.
 
 'use strict';
 
-const MongoClient = require('mongodb').MongoClient;
-const config = require('../config');
+var MongoClient = require('mongodb').MongoClient;
+var config = require('../config');
 
-const url = config.mongodb;
+var url = config.mongodb;
 
 module.exports = {
     Get: Get,
@@ -32,144 +32,131 @@ module.exports = {
     DeleteOne: DeleteOne,
     Update: Update,
     Aggregate: Aggregate
-};
-
-const MSG_CONNECTION_ERROR = 'Failed to Connect to MongoDB ';
+}
 
 function Get(query, collectionName) {
-    // noinspection ES6ModulesDependencies
     return new Promise(function (resolve, reject) {
-        return MongoClient.connect(url, function (err, db) {
+        MongoClient.connect(url, function (err, db) {
             if (err) {
-                reject(MSG_CONNECTION_ERROR, err);
+                reject("Failed to Connect to MongoDB ", err);
             }
 
-            resolve(db.collection(collectionName).find(query).toArray());
+            return resolve(db.collection(collectionName).find(query).toArray());
         });
     });
 }
 
-// Carry out case-insensitive find
+// Performs case insensite find
 function GetCI(query, sort, collectionName) {
-    // noinspection ES6ModulesDependencies
     return new Promise(function (resolve, reject) {
-        return MongoClient.connect(url, function (err, db) {
+        MongoClient.connect(url, function (err, db) {
             if (err) {
-                reject(MSG_CONNECTION_ERROR, err);
+                reject("Failed to Connect to MongoDB ", err);
             }
 
-            resolve(db.collection(collectionName).find(query).sort(sort).collation({
-                locale: 'en',
-                strength: 1
-            }).toArray());
+            return resolve(db.collection(collectionName).find(query).sort(sort).collation({locale:'en', strength: 1}).toArray());
         });
     });
 }
 
 function GetSort(query, sort, collectionName) {
-    // noinspection ES6ModulesDependencies
     return new Promise(function (resolve, reject) {
-        return MongoClient.connect(url, function (err, db) {
+        MongoClient.connect(url, function (err, db) {
             if (err) {
-                reject(MSG_CONNECTION_ERROR, err);
+                reject("Failed to Connect to MongoDB ", err);
             }
 
-            resolve(db.collection(collectionName).find(query).sort(sort).toArray());
+            return resolve(db.collection(collectionName).find(query).sort(sort).toArray());
         });
     });
 }
 
 function GetSortByChunk(query, sort, collectionName, limitCount, skipCount) {
-    // noinspection ES6ModulesDependencies
     return new Promise(function (resolve, reject) {
-        return MongoClient.connect(url, function (err, db) {
+        MongoClient.connect(url, function (err, db) {
             if (err) {
-                reject(MSG_CONNECTION_ERROR, err);
+                reject("Failed to Connect to MongoDB ", err);
             }
 
-            resolve(db.collection(collectionName).find(query).sort(sort).skip(skipCount).limit(limitCount).toArray());
+            return resolve(db.collection(collectionName).find(query).sort(sort).skip(skipCount).limit(limitCount).toArray());
         });
     });
 }
 
 function GetCount(query, collectionName) {
-    // noinspection ES6ModulesDependencies
-    return new Promise(function (resolve, reject) {
-        return MongoClient.connect(url, function (err, db) {
-            if (err) {
-                reject(MSG_CONNECTION_ERROR, err);
-            }
+     return new Promise(function (resolve, reject) {
+         MongoClient.connect(url, function (err, db) {
+             if (err) {
+                 reject("Failed to Connect to MongoDB ", err);
+             }
 
-            db.collection(collectionName).find(query).count().then(function (count) {
-                resolve(String(count || 0));
-            })
-        });
-    });
-}
+             db.collection(collectionName).count().then(function(count) {
+                return resolve('' + count);
+             })
+         });
+     });
+ }
 
 function Aggregate(query, collectionName) {
-    // noinspection ES6ModulesDependencies
     return new Promise(function (resolve, reject) {
-        return MongoClient.connect(url, function (err, db) {
+        MongoClient.connect(url, function (err, db) {
             if (err) {
-                reject(MSG_CONNECTION_ERROR, err);
+                reject("Failed to Connect to MongoDB ", err);
             }
 
-            resolve(db.collection(collectionName).aggregate(query).toArray());
+            return resolve(db.collection(collectionName).aggregate(query).toArray());
         });
     });
 }
 
 function Delete(query, collectionName) {
-    // noinspection ES6ModulesDependencies
     return new Promise(function (resolve, reject) {
-        return MongoClient.connect(url, function (err, db) {
+        MongoClient.connect(url, function (err, db) {
             if (err) {
-                reject(MSG_CONNECTION_ERROR, err);
+                reject("Failed to Connect to MongoDB ", err);
             }
 
-            resolve(db.collection(collectionName).deleteMany(query));
+            return resolve(db.collection(collectionName).deleteMany(query));
         });
     });
 }
 
 function DeleteOne(query, collectionName) {
-    // noinspection ES6ModulesDependencies
     return new Promise(function (resolve, reject) {
-        return MongoClient.connect(url, function (err, db) {
+        MongoClient.connect(url, function (err, db) {
             if (err) {
-                reject(MSG_CONNECTION_ERROR, err);
+                reject("Failed to Connect to MongoDB ", err);
             }
 
-            resolve(db.collection(collectionName).deleteOne({"id": query}));
+            return resolve(db.collection(collectionName).deleteOne({"id" : query}));
         });
     });
 }
 
 function Insert(query, collectionName) {
-    // noinspection ES6ModulesDependencies
     return new Promise(function (resolve, reject) {
-        return MongoClient.connect(url, function (err, db) {
+        MongoClient.connect(url, function (err, db) {
             if (err) {
-                reject(MSG_CONNECTION_ERROR, err);
+                reject("Failed to Connect to MongoDB ", err);
             }
 
-            resolve(db.collection(collectionName).insert(query));
+            return resolve(db.collection(collectionName).insert(query));
         });
     });
 }
 
 function Update(query, data, collectionName, options) {
-    // noinspection ES6ModulesDependencies
     return new Promise(function (resolve, reject) {
-        return MongoClient.connect(url, function (err, db) {
+        MongoClient.connect(url, function (err, db) {
             if (err) {
-                reject(MSG_CONNECTION_ERROR, err);
+                reject("Failed to Connect to MongoDB ", err);
             }
 
-            resolve(db.collection(collectionName).update(query, data, options));
+            return resolve(db.collection(collectionName).update(query, data, options));
         });
     });
 }
+
+
 
 

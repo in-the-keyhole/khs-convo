@@ -19,8 +19,8 @@ limitations under the License.
 module.exports = function (app) {
    require('./authentication')(app);
    require('./convo')(app);
-   require('./notify')(app);
+   require('./notify')(app);   
    require('./admin')(app);
    require('./tailwater')(app);
    require('./public')(app);
-};
+}

@@ -16,9 +16,9 @@ limitations under the License.
 
 'use strict';
 
-const express = require('express');
-const router = express.Router();
-const controller = require('./controller');
+var express = require('express');
+var router = express.Router();
+var controller = require('./controller');
 
 module.exports = function (app) {
 
@@ -26,4 +26,4 @@ module.exports = function (app) {
     router.post('/register', controller.register);
 
     app.use('/api/auth', router);
-};
+}

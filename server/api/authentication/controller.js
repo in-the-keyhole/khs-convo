@@ -16,14 +16,13 @@ limitations under the License.
 
 'use strict';
 
-const AuthenticationService = require('../../services/authentication');
-const logger = require('log4js').getLogger();
-logger.level = 'debug';
+var AuthenticationService = require('../../services/authentication');
+var logger = require('log4js').getLogger();
 
 function login(req, res) {
     console.log(req.body);
-    const username = req.body['username'] || '';
-    const password = req.body['password'] || '';
+    var username = req.body['username'] || '';
+    var password = req.body['password'] || '';
     if (username === '' || password === '') {
         res.sendStatus(403);
     }
@@ -33,19 +32,19 @@ function login(req, res) {
 
             res.send(response);
         })
-        .catch( () => {
+        .catch(function (err) {
             res.sendStatus(403);
         });
 
 }
 
 function register(req, res) {
-
+    
     AuthenticationService.register(req, res)
         .then(function (response) {
             res.send(response);
         })
-        .catch( () => {
+        .catch(function (err) {
             res.sendStatus(403);
         });
 
@@ -56,5 +55,5 @@ function register(req, res) {
 module.exports = {
     login: login,
     register: register
-};
+}
 

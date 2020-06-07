@@ -16,84 +16,76 @@ limitations under the License.
 
 'use strict';
 
-const mongo = require("../../mongo");
-const config = require('../../../config');
-const pug = require('pug');
+var events = require('../events');
+var mongo = require("../../mongo");
+var config = require('../../../config');
+var pug = require('pug');
 
-const host_url = config.url;
+var host_url = config.url;
 
 
 module.exports = function (events) {
-    const compileHtml = function (events) {
-        const compiledFunction = pug.compileFile('templates/help.pug');
-        console.log(events);
-        return compiledFunction({url: host_url, convos: events});
-    };
-    const event = {};
+    var event = {};
     event.isAuth = false;
     event.description = "Command Help";
     event.words = [{
         word: 'commands',
         value: 10
     },
-        {
-            word: 'command',
-            value: 10
-        }];
+    {
+        word: 'command',
+        value: 10
+    }]
     event.threash = 10;
     event.run = function (result) {
 
-        // noinspection ES6ModulesDependencies
-        return new Promise((resolve) => {
+        return new Promise(function (resolve, reject) {
 
-            mongo.Get({Name: "commandsintro"}, 'Content')
-                .then((comIntro) => {
+            mongo.Get({ Name: "commandsintro" }, 'Content')
+                .then(function (comIntro) {
                     console.log(comIntro);
+                    mongo.Get({ Name: "commandsend" }, 'Content')
+                        .then(function (comEnd) {
+                            //console.log(comEnd);
 
-                    mongo.Get({Name: "commandsend"}, 'Content')
-                        .then((comEnd) => {
-
-                            let help = '';
-                            if (comIntro && comIntro.length) {
+                            //console.log(comIntro[0].Content + "  " + comEnd[0].Content);
+                            var help = '';
+                            if (comIntro != null && comIntro[0] != null) {
                                 help = comIntro[0].Content + "\n";
                             } else {
-                                help = 'Keyhole SMS commands\n';
+                                help = "Keyhole SMS commands\n";
                             }
 
-                            for (let i = 0; i < events.length; i++) {
+                            for (var i = 0; i < events.length; i++) {
                                 let event = events[i];
                                 console.log(event);
-
                                 help = help + event.description + " (";
-                                for (let j = 0; j < event.words.length; j++) {
+                                for (var j = 0; j < event.words.length; j++) {
                                     if (event.words.length > 1) {
-                                        if (j === 0) {
-                                            help += event.words[j].word;
+                                        if (j == 0) {
+                                            help = help + event.words[j].word;
                                         } else {
-                                            help += (" | " + event.words[j].word);
+                                            help = help + " | " + event.words[j].word;
                                         }
                                     } else if (event.words.length === 1) {
                                         help = help + event.words[j].word;
+                                        continue;
                                     } else {
                                         break;
                                     }
                                 }
-                                help += ')\n';
+                                help = help + ")\n";
                             }
 
-                            if (comEnd && comEnd.length) {
-                                help += comEnd[0].Content;
+                            if (comEnd != null && comEnd[0] != null) {
+                                help = help + comEnd[0].Content;
                             } else {
-                                help += 'https://public.grokola.com/#grok/6a3fdc54-d830-4720-a275-9b5f19f1ea70';
+                                help = help + "Here's a link for more info https://public.grokola.com/#grok/6a3fdc54-d830-4720-a275-9b5f19f1ea70";
                             }
-// TODO Stop injecting HTML from the API
-                            mongo.Update({phone: result.phone, event: 'commands'}, {
-                                phone: result.phone,
-                                event: 'commands',
-                                html: compileHtml(events)
-                            }, "ui", {upsert: true});
 
-                            help += ` Information: ${host_url}api/public/html/${result.phone || '9132700360'}/commands`;
+                            mongo.Update({ phone: result.phone, event: 'commands' }, { phone: result.phone, event: 'commands', html: compileHtml(events) }, "ui", { upsert: true });
+
+                            help += ' Link to UI: ' + host_url + 'api/public/html/' + result.phone + '/commands';
 
 
                             console.log(help);
@@ -102,9 +94,14 @@ module.exports = function (events) {
                         });
                 });
         })
-    };
+    }
 
+    var compileHtml = function (events) {
+        var compiledFunction = pug.compileFile('templates/help.pug');
+        console.log(events);
+        return compiledFunction({ url: host_url, convos: events });
+    }
 
     events.push(event);
 
-};
+}

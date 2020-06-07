@@ -95,6 +95,27 @@ const questionElement = ({i, overrideFontSize, input}) =>  (
 
 
 /**
+ * Helper for renderConversation()
+ *
+ * @param i
+ * @param overrideFontSize
+ * @param input
+ * @returns {*}
+ */
+const answerLinkElement = ({i, overrideFontSize, text, link}) =>  (
+
+    <div className="conversation__message-container conversation__message-answer"  key={`answer_${i}`}
+         style={overrideFontSize}
+         >
+        <div className="conversation__message-content white-space">
+           <a target="_blank" href={link}> {text} {link}  </a>
+        </div>
+    </div>
+);
+
+
+
+/**
  * Helper for renderConversation
  *
  * @param i
@@ -106,7 +127,7 @@ const answerElement = ({i, overrideFontSize, dynamicAnswer}) => (
 
         <div className="conversation__message-container conversation__message-answer" key={`answer_${i}`}
              style={overrideFontSize}>
-            <div className="conversation__message-content white-space">
+           <div className="conversation__message-content white-space"> 
                 {dynamicAnswer}
             </div>
         </div>
@@ -169,7 +190,8 @@ class Emulator extends BaseComponent {
                         if (valLine.indexOf('</Message></Response>') > -1) {
                             valLine = valLine.replace('</Message></Response>', '');
                         }
-                        listLine[iLine] = '<a target="_blank" href="' + valLine + '"/' + valLine + '>';
+                       // listLine[iLine] = '<a target="_blank" href="' + valLine + '"/' + valLine + '>';
+                        listLine[iLine] = "link:"+valLine;
                         listSpace[iSpace] = listLine.join('\n');
                     }
                 });
@@ -388,7 +410,14 @@ class Emulator extends BaseComponent {
             const dynamicAnswer = this.dynamicLinks(input.answer);
 
             elements.push(questionElement({i, overrideFontSize, input}));
-            elements.push(answerElement({i, overrideFontSize, dynamicAnswer}));
+            if (dynamicAnswer.indexOf('link:') >= 0 ) {    
+              var v =  dynamicAnswer.split('link:');
+              const text = v[0];
+              const link = v[1]; 
+              elements.push(answerLinkElement({i, overrideFontSize, text, link })); 
+            } else {
+              elements.push(answerElement({i, overrideFontSize, dynamicAnswer}));
+            }
 
         });
         return elements.reverse();

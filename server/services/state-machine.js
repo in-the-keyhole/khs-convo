@@ -135,7 +135,7 @@ StateMachine.prototype.getReply = function (stateIndex, session, request, event,
    if (!deleteState) {
      extraInstructions += "\n text 'X' to cancel and start over";
    }   
-    if (event.html) {
+    if (event.html && stateIndex == 0) {
         extraInstructions += " or (U)I for a User Interface"
     }
 

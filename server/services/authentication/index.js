@@ -16,12 +16,10 @@ limitations under the License.
 
 'use strict';
 
-const jwt = require('jsonwebtoken');
-const config = require('../../config');
-const log4js = require('log4js');
-const logger = log4js.getLogger();
-logger.level = 'debug';
-const mongo = require('../mongo');
+var jwt = require('jsonwebtoken');
+var config = require('../../config');
+var logger = require('log4js').getLogger();
+var mongo = require('../mongo');
 const crypto = require('crypto');
 const secret = config.passwordCrypto;
 
@@ -41,7 +39,7 @@ function auth(username, password) {
                     if (docs.length === 0) {
                         return reject();
                     }
-                    const user = docs[0];
+                    var user = docs[0];
                     mongo.Get({uuid: user.uuid}, "Passwords")
                         .then(function (docs) {
                             console.log(user);
@@ -53,14 +51,14 @@ function auth(username, password) {
                                     expiresIn: Date.now() + config.jwt_expires
                                 };
 
-                                const obj = {
+                                var obj = {
                                     username: username,
                                     date: Date.now(),
                                     status: user.Status
                                 };
 
 
-                                const token = jwt.sign(
+                                var token = jwt.sign(
                                     obj,
                                     config.jwt_secret,
                                     expiresIn
@@ -69,7 +67,7 @@ function auth(username, password) {
                                 user.token = token;
                                 user.apitoken = config.api_token;
                                 user.slackchannel = config.slack.channel;
-
+                                
                                 return resolve(user);
                             }
                             else{
@@ -89,7 +87,7 @@ function auth(username, password) {
 function verify(token) {
     return new Promise(function (resolve, reject) {
         try {
-            const obj = jwt.verify(token, config.jwt_secret);
+            var obj = jwt.verify(token, config.jwt_secret);
             resolve(obj);
 
         }
@@ -100,7 +98,7 @@ function verify(token) {
 }
 
 function isAuth(req, res, next) {
-    const token = req.headers['token'] || '';
+    var token = req.headers['token'] || ''
     verify(token)
         .then(function (obj) {
             req.use = obj;
@@ -115,7 +113,7 @@ function isAuth(req, res, next) {
 
 
 function isAuthAdmin(req, res, next) {
-    const token = req.headers['token'] || '';
+    var token = req.headers['token'] || ''
     verify(token)
         .then(function (obj) {
             if (obj.status == 'admin'){
@@ -124,12 +122,12 @@ function isAuthAdmin(req, res, next) {
             }else{
                 res.sendStatus(403);
             }
-
+            
         })
         .catch(function (err) {
             //logger.info(err);
                 res.sendStatus(403);
-
+            
         });
 }
 
@@ -149,12 +147,12 @@ function register(req, res) {
                 mongo.Update(
                     {uuid: req.body.uuid},
                     {uuid: req.body.uuid, password: encodePassword(req.body.Password)},
-                    'Passwords',
+                    'Passwords',                                
                     { upsert: true })
                 .then(function () {
 
-                    res.send('registered');
-                })
+                    res.send('registered'); 
+                })       
             });
 
 
@@ -173,6 +171,6 @@ module.exports = {
     auth: auth,
     isAuthAdmin: isAuthAdmin,
     register: register
-
+    
 }
 

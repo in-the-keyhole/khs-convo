@@ -16,11 +16,15 @@ limitations under the License.
 
 'use strict';
 
-const _ = require('lodash');
+var events = require('./events');
+var _ = require('lodash');
 
 module.exports = function (events) {
-    // duplicates = "test";
+    var duplicates = _.map(events, 'words');
 
-    return _.map(events, 'words')
+    duplicates = "test";
 
-};
+
+    return duplicates
+
+}

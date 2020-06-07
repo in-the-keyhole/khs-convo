@@ -1,0 +1,39 @@
+//- office.pug
+doctype html
+html(lang="en")
+   head
+      title Keyhole Quiz
+      meta(name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no")
+      link(href='http://fonts.googleapis.com/css?family=Roboto', rel='stylesheet', type='text/css')
+      link(href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css", rel='stylesheet')
+      link(href='/styles/global.css', rel='stylesheet')
+      link(href='/styles/quiz.css', rel='stylesheet')
+   body
+      .page-container
+
+         .page-conatiner__nav-bar
+            .nav-bar__title Keyhole Office Schedule
+
+         .page-container__content
+            .page-content__container
+
+               .page-quiz__score-container
+                  span.large-text Schedule for Week of #{date}
+
+               .page-quiz__questions-container
+                  each result, index in results
+                     .page-quiz__question
+                        .question__header
+                           .question__index #{result.dow} 
+                           .question__status.question__status--incorrect Scheduled #{result.folks.length}
+                          
+                        .question-content
+                           each name in result.folks
+                              .question-content__option
+                                  span.question-option__text #{name}, 
+                                
+
+                      
+         .page-conatiner__footer
+            .footer__container--right
+               span.medium-text Brought to you by #[a(href='https://keyholesoftware.com' target='_blank') www.keyholesoftware.com]

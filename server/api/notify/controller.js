@@ -15,39 +15,37 @@ limitations under the License.
 */
 
 'use strict';
-const mongo = require('../../services/mongo');
-const _ = require('lodash');
-const uuid = require('uuid');
-const moment = require('moment');
-
+var express = require('express');
+var mongo = require('../../services/mongo');
+var config = require('../../config');
+var _ = require('lodash');
+var fs = require('fs');
+var uuid = require('uuid');
+var moment = require('moment');
 
 function postgroup(req, res) {
     req.body.uuid = uuid();
     mongo.Insert(req.body, 'NotificationGroups')
-        .then( (/*group*/) => {
+        .then(function (group) {
             res.send(req.body);
         });
 }
 
-
 function getgroup(req, res) {
-    const sort = {"GroupName": 1};
-    mongo.GetSort({}, sort, 'NotificationGroups')
+    mongo.Get({}, 'NotificationGroups')
         .then(function (groups) {
-            res.send(groups);
+            res.send(groups); 
         });
 }
-
 
 function putgroup(req, res) {
-    const data = _.omit(req.body, ['_id']);
+    var data = _.omit(req.body, ['_id']);
 
     mongo.Update({uuid: req.body.uuid}, {$set: data},  'NotificationGroups')
-        .then(function (response) {
-            res.send(response);
+        .then(function (response) {  
+            res.send(response); 
         });
 }
-
 
 function deletegroup(req, res) {
     mongo.Delete({uuid: req.body.uuid}, 'NotificationGroups')
@@ -57,70 +55,64 @@ function deletegroup(req, res) {
         });
 }
 
-/*function getgroupusers(req, res) {
+function getgroupusers(req, res) {
     mongo.GetSort({}, {LastName: 1, FirstName: 1}, 'Users')
         .then(function (users) {
-
+            
             var visible = _.filter(users, function(user) {
                 return user.Status !== 'removed';
             });
-
-            res.send(visible);
+            
+            res.send(visible); 
         });
-}*/
+}
 
-
-/*function put(req, res) {
+function put(req, res) {
     var data = _.omit(req.body, ['_id']);
 
     mongo.Update({uuid: req.body.uuid}, {$set: data},  'NotificationGroups')
-    .then(function (response) {
-        res.send(response);
-    })
-}*/
-
+    .then(function (response) {  
+        res.send(response); 
+    })  
+}
 
 function getschedulednotification(req, res) {
-    const today = new Date();
+    var today = new Date();
     today.setSeconds(0);
 
     mongo.GetCI(
-        {'group': req.query.group, 'scheduleDate': {'$gte': today} },
-        {scheduleDate: 1},
+        {'group': req.query.group, 'scheduleDate': {'$gte': today} }, 
+        {scheduleDate: 1}, 
         'ScheduledNotifications')
     .then(function (sns) {
-        res.send(sns);
+        res.send(sns); 
     });
 }
-
-
 function deleteschedulednotification(req, res) {
     mongo.Delete({'uuid': req.body.uuid}, 'ScheduledNotifications')
        .then(function (response) {
            res.send(response);
-       });
+       });  
 }
-
-
 function putschedulednotification(req, res) {
-    const data = _.omit(req.body, ['_id']);
-    // noinspection JSUndefinedPropertyAssignment
+    var data = _.omit(req.body, ['_id']);
     data.scheduleDate = moment(data.scheduleDate).toDate();
 
     mongo.Update({uuid: req.body.uuid}, {$set: data},  'ScheduledNotifications')
-    .then(function (response) {
-        res.send(response);
+    .then(function (response) {  
+        res.send(response); 
     });
 }
 
 
+
 module.exports = {
-    postgroup: postgroup,
+    postgroup: postgroup, 
     getgroup: getgroup,
     putgroup: putgroup,
     deletegroup: deletegroup,
-
+    
     getschedulednotification: getschedulednotification,
     deleteschedulednotification: deleteschedulednotification,
     putschedulednotification: putschedulednotification
-};
+}

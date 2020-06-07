@@ -36,6 +36,8 @@ function doStates(convoEvent,request) {
             session.GetCurrent(request.phone)
                 .then(function (savedSession) {
 
+                    console.log("DO STATES = "+JSON.stringify( savedSession));
+
                     var currentState = savedSession && savedSession.state ? savedSession.state : 0;
                     var data = savedSession ? savedSession.data : {};
 
