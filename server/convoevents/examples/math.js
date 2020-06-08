@@ -40,6 +40,7 @@ module.exports = function (events) {
         // noinspection ES6ModulesDependencies
         return new Promise(function (resolve) {
             const ma = result.rawQuestion.replace(/[a-zA-Z?!$\r\n\s\t]*/gm, "");
+            console.log("Math = "+ma);
             return resolve(eval(ma));
         })
     };

@@ -22,7 +22,7 @@ module.exports = function (events) {
 
     var event = {};
     event.isAuth = true;
-    event.description = "Keyhole contacts";
+    event.description = "Contacts";
     event.words = [{
         word: 'phone',
         value: 10

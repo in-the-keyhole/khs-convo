@@ -410,7 +410,8 @@ class Emulator extends BaseComponent {
             const dynamicAnswer = this.dynamicLinks(input.answer);
 
             elements.push(questionElement({i, overrideFontSize, input}));
-            if (dynamicAnswer.indexOf('link:') >= 0 ) {    
+           
+            if (typeof dynamicAnswer === 'string' && dynamicAnswer.indexOf('link:') >= 0 ) {    
               var v =  dynamicAnswer.split('link:');
               const text = v[0];
               const link = v[1]; 
