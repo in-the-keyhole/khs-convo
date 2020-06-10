@@ -66,8 +66,12 @@ var today = function (session, request, event, data) {
 
             console.log(JSON.stringify(request));
 
-            mongo.Update({ phone: request.phone }, { firstname: request.me.FirstName, lastname: request.me.LastName, date: new Date, in: true, phone: request.phone }, "office", { upsert: true });
-            folks.refresh();
+            mongo.Update({ phone: request.phone }, { firstname: request.me.FirstName, lastname: request.me.LastName, date: new Date, in: true, phone: request.phone }, "office", { upsert: true }).then (
+
+                function(o) { folks.refresh(); }
+
+            );
+            
 
 
         });
@@ -85,6 +89,8 @@ var who = function (session, request, event, data) {
 
     var list = folks.cached();
 
+    console.log(JSON.stringify(list));
+
     var now = new Date();
     for (i in list) {
 
@@ -98,10 +104,11 @@ var who = function (session, request, event, data) {
         } else {
 
 
-            mongo.Delete({ phone: request.phone }, "office");
+            mongo.Delete({ phone: list[i].phone }, "office");
             folks.refresh();
 
         }
+
 
     }
 
@@ -193,7 +200,7 @@ module.exports = function (events) {
 
     var event = {};
     event.states = [
-        { reply: 'Working In Office? (T)oday, W(h)o is in (S)cheduled (L)eft', validator: 'choice:t,s,h,l', desc: 'working-in-office' },
+        { reply: "Welcome to the Keyhole Office Scheduler. \n Use the following text commands to navigate: \n S - to schedule a visit this week \n H - to see who's currently in the office \n T - to join today's schedule \n", validator: 'choice:t,s,h,l', desc: 'working-in-office' },
         {
             choices: [{ choice: 't', reply: today, desc: 'today', postAction: 'stop' },
             { choice: 's', reply: scheduled, desc: 'scheduled' },
@@ -205,7 +212,7 @@ module.exports = function (events) {
 
 
     ];
-    event.isAuth = false;
+    event.isAuth = true;
     event.description = "Office Schedule";
     event.words = [{
         word: 'office',
@@ -227,6 +234,7 @@ module.exports = function (events) {
         });
 
     }
+    event.htmldescription = " Weekly Schedule ";
     event.html = function (request) {
         // Compile the source code
   
