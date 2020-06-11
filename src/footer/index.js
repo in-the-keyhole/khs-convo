@@ -21,7 +21,7 @@ import {MDBFooter, MDBIcon} from "mdbreact";
 const crUrl = 'https://keyholesoftware.com/company/creations/content-usage-guidelines/';
 
 export const FooterPanel = (/*props*/) => (
-    <MDBFooter  color={"unique-color"} className={"white-text"}>
+    <MDBFooter  color={"unique-color"} className={"white-text,fixed-bottom"}>
         <div className="text-center py-3" style={{}}>
             &copy; {new Date().getFullYear()} Copyright: KeyHole Software&nbsp;
             <MDBIcon icon="link" />&nbsp;

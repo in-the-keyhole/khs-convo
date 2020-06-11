@@ -113,7 +113,7 @@ function findAnswer(result) {
                 }
 
 
-            
+
                 if (r.length > 0) {
 
                     // validate session, if out of date, delete....
@@ -142,7 +142,7 @@ function findAnswer(result) {
                     }
 
                     if (mainEvent === undefined) {
-                        console.log("Reg Ex pattern....lookup  ");    
+                        console.log("Reg Ex pattern....lookup  ");
                         for (var y = 0; y < result.question.length; y++) {
                             var quest = result.question[y].toLowerCase();
                             for (var i = 0; i < events.length; i++) {
@@ -201,13 +201,42 @@ function findAnswer(result) {
 
                         })
                 } else {
-                    result.answer = "Sorry, I do not understand '" + result.rawQuestion + "'.";
+
+                    var msg = "Sorry, Did not understand " + entry + " \n try texting the main option again.";
+
+                    result.answer = msg;
                     return resolve(result);
                 }
 
             });
     });
 }
+
+function findEventForState(word) {
+
+    for (var i = 0; i < events.length; i++) {
+        if (events[i].states) {
+            for (var j = 0; j < events[i].states.length; j++) {
+                if (events[i].states[j].choices) {
+
+                    var choices = events[i].states[j].choices;
+                    for (var c = 0; c < choices.length; c++) {
+                        if (choices[c].choice.toLowerCase() === word.toLowerCase()) {
+                            return events[i]
+                        }
+
+                    }
+                }
+
+            }
+        }
+    }
+
+    return undefined;
+
+}
+
+
 
 function saveHtml(result, html, word) {
 
@@ -216,39 +245,39 @@ function saveHtml(result, html, word) {
 }
 
 
-function sms( phone, message, event, request ) {
-
-   
-   return new Promise(function (resolve, reject) {
-   
-   
-    var answer;
-    mongo.Get({ Phone: phone }, 'Users')
-    .then(function (contact) {
-        if (contact != null)
-            var me = contact[0];
-        if (event.isAuth) {
-            if (contact.length == 0) {
-                answer = "No Auth: Please Contact Admin!";
-                return resolve(answer);
-            }
-        }
-
-        event.run(request)
-            .then(function (a) {
-                answer = a;
-                client.messages.create({
-                    from: '+' + config.twilio.phone,
-                    to: '+1' + phone,
-                    body: answer
-                }).then(function (msg) { console.log(answer); });
+function sms(phone, message, event, request) {
 
 
-                return resolve(answer);
-            });
+    return new Promise(function (resolve, reject) {
 
-    })  
-});
+
+        var answer;
+        mongo.Get({ Phone: phone }, 'Users')
+            .then(function (contact) {
+                if (contact != null)
+                    var me = contact[0];
+                if (event.isAuth) {
+                    if (contact.length == 0) {
+                        answer = "No Auth: Please Contact Admin!";
+                        return resolve(answer);
+                    }
+                }
+
+                event.run(request)
+                    .then(function (a) {
+                        answer = a;
+                        client.messages.create({
+                            from: '+' + config.twilio.phone,
+                            to: '+1' + phone,
+                            body: answer
+                        }).then(function (msg) { console.log(answer); });
+
+
+                        return resolve(answer);
+                    });
+
+            })
+    });
 
 }
 
