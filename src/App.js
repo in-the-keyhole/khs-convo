@@ -231,7 +231,7 @@ class App extends Component {
                 </Navbar>
 
                 {/*This is the working content panel, but capped by a navbar header.*/}
-                <Container style={{marginTop: "1.75rem"}}>
+                <Container style={{ marginTop: "1.75rem", minHeight: "39rem" }}>
                     <Row><Col>{main}</Col></Row>
                 </Container>
 

@@ -45,7 +45,7 @@ h3.command {
 
 div.emulator {
     margin-top: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 0px;
 }
 
 div.list-item {
@@ -121,7 +121,7 @@ svg {
 }
 
 body {
-    margin-bottom: 5rem;
+    margin-bottom: 0rem;
 }
 
 .row-striped {
