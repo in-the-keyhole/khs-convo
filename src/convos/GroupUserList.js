@@ -183,7 +183,8 @@ class GroupUserList extends BaseComponent {
                 const newUser = {
                     uuid: selectedUser.uuid,
                     Name: selectedUser.Name,
-                    Username: selectedUser.Username
+                    Username: selectedUser.Username,
+                    Email: selectedUser.Email
                 };
                 const group = this.props.group;
                 group.Users.push(newUser);
@@ -200,8 +201,7 @@ class GroupUserList extends BaseComponent {
     addAllUsers(/*event*/) {
         const group = this.props.group;
         // noinspection JSValidateTypes
-        group.Users = _.map(this.state.availableUsers, _.partialRight(_.pick, ['uuid', 'Name', 'Username']));
-
+        group.Users = _.map(this.state.availableUsers, _.partialRight(_.pick, ['uuid', 'Name', 'Username', 'Email']));
         this.putGroup(group);
     }
 
@@ -244,21 +244,35 @@ class GroupUserList extends BaseComponent {
                         <Col md={"12"} className="notificationsHeaderStyle"><span>Network</span>
                         </Col>
                     </Row>
-                    <Row>
-                        <Col md={"3"}>
-                            <MDBInput type={"checkbox"} name="checkSMS" checked={this.props.group.checkSMS}
-                                      label={"SMS"}
-                                      onChange={this.handleChange}/>
+
+                    <Row className="notificationNetworkSelectionStyle">
+                        <Col md={"10"}>
+                            <label>SMS</label>
                         </Col>
-                        <Col md={"3"}>
-                            <MDBInput type={"checkbox"} name="checkEmail" checked={this.props.group.checkEmail}
-                                      label={"Email"}
-                                      onChange={this.handleChange}/>
+                        <Col md={"2"}>
+                            <MDBInput style={{ marginTop: "-1.1rem" }} type={"checkbox"} name="checkSMS" checked={this.props.group.checkSMS}
+                                size={"sm"}
+                                onChange={this.handleChange} />
                         </Col>
-                        <Col md={"6"}>
-                            <MDBInput type={"checkbox"} name="checkSlack" checked={this.props.group.checkSlack}
-                                      label={`Slack ${this.props.credentials.slackchannel}`}
-                                      onChange={this.handleChange}/>
+                    </Row>
+                    <Row className="notificationNetworkSelectionStyle">
+                        <Col md={"10"}>
+                            <label>Email</label>
+                        </Col>
+                        <Col md={"2"}>
+                            <MDBInput style={{ marginTop: "-1.1rem" }} type={"checkbox"} name="checkEmail" checked={this.props.group.checkEmail}
+                                size={"sm"}
+                                onChange={this.handleChange} />
+                        </Col>
+                    </Row>
+                    <Row className="notificationNetworkSelectionStyle">
+                        <Col md={"10"}>
+                            <label>Slack {this.props.credentials.slackchannel}</label>
+                        </Col>
+                        <Col md={"2"}>
+                            <MDBInput style={{ marginTop: "-1.1rem" }} type={"checkbox"} name="checkSlack" checked={this.props.group.checkSlack}
+                            size={"sm"}
+                            onChange={this.handleChange} />
                         </Col>
                     </Row>
 
