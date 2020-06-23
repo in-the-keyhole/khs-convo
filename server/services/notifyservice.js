@@ -74,7 +74,7 @@ function ChooseChannels(msg, group){
              }
             
              if (groupData[0].checkSlack){
-                 sendSlack(msg, group);
+                 SendSlack(msg, group);
              }
             
              if (groupData[0].checkEmail){
@@ -123,7 +123,6 @@ function SendEmail( msg, group ){
 
     let transporter = nodemailer.createTransport({
         host: emailConfig.smtp_host,
-        service: emailConfig.smtp_service,
         auth: {
             user: emailConfig.smtp_user,
             pass: emailConfig.smtp_password
@@ -135,11 +134,11 @@ function SendEmail( msg, group ){
             if(groups.length > 0 && groups[0].Users.length > 0) {
                 groups[0].Users.forEach(user => {
                     console.log(user);
-                        if (user.Username) {
+                        if (user.Email) {
 
                             let mailOptions = {
                                 from: emailConfig.from,
-                                to: user.Username,
+                                to: user.Email,
                                 subject: emailConfig.notify_subject,
                                 html: msg
                             };

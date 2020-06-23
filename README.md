@@ -184,8 +184,14 @@ Here are properties annotated with descriptions.
     },
    
     // SMTP Configuration 
-    smtp_user: 'grokola@keyholesoftware.com',
-    smtp_password: '%KeyholeGrokola',
+    email: {
+        smtp_user: '<smtp user>',
+        smtp_password: '<smtp password>',
+        smtp_host: '<smtp host>',
+        from: '<from email address>',
+        notify_subject: '<subject from notifications>',
+        register_subject: '<subject from register>'
+    }
   
 # Event Loading Directory 
 
