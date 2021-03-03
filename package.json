@@ -45,7 +45,7 @@
     "ping": "^0.2.2",
     "prompt-password": "^1.2.0",
     "prop-types": "^15.7.2",
-    "pug": "^2.0.0-rc.3",
+    "pug": "^3.0.1",
     "react": "^16.3.0",
     "react-addons-update": "^15.0.0",
     "react-bar-chart": "^0.1.2",
