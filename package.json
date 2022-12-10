@@ -18,7 +18,7 @@
     "@types/lodash": "^4.14.73",
     "acorn": "^6.0.5",
     "axios": "^0.21.2",
-    "body-parser": "^1.17.2",
+    "body-parser": "^1.20.1",
     "braces": "^2.3.2",
     "connect-busboy": "0.0.2",
     "connect-multiparty": "^2.0.0",
