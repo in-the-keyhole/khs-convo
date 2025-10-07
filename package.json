@@ -40,7 +40,7 @@
     "mongoose": "^8.8.3",
     "multer": "^2.0.2",
     "newrelic": "^5.0.0",
-    "nodemailer": "^6.9.9",
+    "nodemailer": "^7.0.7",
     "path": "^0.12.7",
     "ping": "^0.2.2",
     "prompt-password": "^1.2.0",
