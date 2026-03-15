@@ -38,7 +38,7 @@
     "moment": "^2.29.4",
     "mongodb": "^3.1.13",
     "mongoose": "^8.8.3",
-    "multer": "^2.0.2",
+    "multer": "^2.1.1",
     "newrelic": "^5.0.0",
     "nodemailer": "^7.0.7",
     "path": "^0.12.7",
