@@ -80,7 +80,7 @@
     "sync-request": "^4.1.0",
     "twilio": "^3.4.0",
     "typescript": "^3.3.3",
-    "uuid": "^3.1.0"
+    "uuid": "^14.0.0"
   },
   "browserslist": [
     ">0.2%",
