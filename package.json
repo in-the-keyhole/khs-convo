@@ -37,7 +37,7 @@
     "mdbreact": "^4.18.1",
     "moment": "^2.29.4",
     "mongodb": "^3.1.13",
-    "mongoose": "^8.8.3",
+    "mongoose": "^8.22.1",
     "multer": "^2.0.2",
     "newrelic": "^5.0.0",
     "nodemailer": "^7.0.7",
